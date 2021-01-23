@@ -5,6 +5,14 @@
 }/* #home_page_panel */
 
 
+#details_panel {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}/* #details_panel */
+
+
 /********/
 
 

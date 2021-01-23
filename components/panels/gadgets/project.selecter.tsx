@@ -51,7 +51,7 @@ export default class ProjectSelecter extends BaseControl<any> {
 
 						onChange={() => {
 
-							this.setState ({ project_selected: true })
+							this.props.parent.setState ({ project_selected: true })
 
 						}}>
 
@@ -76,7 +76,6 @@ export default class ProjectSelecter extends BaseControl<any> {
 		projects: null,
 
 		client_selected: false,
-		project_selected: false,
 
 		project_list_resized: false
 

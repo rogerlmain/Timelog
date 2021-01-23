@@ -74,6 +74,11 @@ input[type=text], input[type=password] {
 }/* input[type=text], input[type=password] */
 
 
+select:not([multiple]) {
+	height: 1.5em;
+}/* select:not(multiple) */
+
+
 content-panel {
 	display: contents;
 }/* content-panel */
