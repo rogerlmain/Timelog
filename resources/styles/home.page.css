@@ -1,0 +1,22 @@
+#home_page_panel {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1em;
+}/* #home_page_panel */
+
+
+/********/
+
+
+.home_button_panel {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}/* #home_button_panel */
+
+
+.home_button_panel button {
+	margin: 0 0.5em;
+}/* #home_button_panel button */
+
+

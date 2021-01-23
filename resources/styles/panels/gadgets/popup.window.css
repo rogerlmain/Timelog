@@ -1,0 +1,16 @@
+.popup-modal {
+	background-color: #352E07;
+	opacity: 0.5;
+}/* .popup-modal */
+
+
+.popup-window {
+	background-color: white;
+}/* popup-window */
+
+
+.popup-panel  {
+	display: flex;
+	align-items: center;
+	justify-items: center;
+}/* popup-panel  */

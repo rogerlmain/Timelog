@@ -1,0 +1,3 @@
+D:\Dropbox\Websites\Projects\Node\Timelog\obj\Debug\Timelog.njsprojAssemblyReference.cache
+D:\Dropbox\Websites\Projects\Node\Timelog\obj\Debug\Timelog.njsproj.CoreCompileInputs.cache
+D:\Dropbox\Websites\Projects\Node\Timelog\bin\Microsoft.NodejsTools.WebRole.dll

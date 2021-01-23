@@ -1,0 +1,15 @@
+call npm install --save @types/node
+call npm install --save @types/react
+call npm install --save @types/react-dom
+call npm install --save @types/react-transition-group
+call npm install --save express
+call npm install --save node
+call npm install --save path
+call npm install --save react
+call npm install --save react-dom
+call npm install --save react-transition-group
+call npm install --save ts-loader
+call npm install --save typescript
+call npm install --save util
+call npm install --save webpack
+call npm install --save webpack-cli
