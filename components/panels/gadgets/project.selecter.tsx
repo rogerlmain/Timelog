@@ -75,9 +75,7 @@ export default class ProjectSelecter extends BaseControl<any> {
 		clients: null,
 		projects: null,
 
-		client_selected: false,
-
-		project_list_resized: false
+		client_selected: false
 
 	}// state;
 

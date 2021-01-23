@@ -38,7 +38,6 @@ export default class LoggingPanel extends BaseControl<any> {
 
 	public state = {
 
-		project_list_resized: false,
 		login_button_resized: false,
 
 		history_loaded: false,
@@ -60,7 +59,7 @@ export default class LoggingPanel extends BaseControl<any> {
 				<div style={{ display: "flex", flexDirection: "row", columnGap: "0.5em" }}>
 
 					<form id="log_form" ref={this.create_reference} encType="multipart/form-data">
-						<ProjectSelecter id="project_selecter" ref={this.create_reference} />
+						<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this} />
 					</form>
 
 					<FadeControl visible={this.get_state ("project_selecter", "project_selected")} style={{ width: 0 }} vanishing={true}>

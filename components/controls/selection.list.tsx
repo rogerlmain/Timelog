@@ -21,12 +21,6 @@ interface selectionListInterface extends defaultInterface {
 
 export default class SelectionList extends BaseControl<selectionListInterface> {
 
-
-	public state = {
-		project_list_resized: false,
-	}// state;
-
-
 	public render () {
 		return (
 
