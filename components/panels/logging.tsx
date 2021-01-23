@@ -38,7 +38,7 @@ export default class LoggingPanel extends BaseControl<any> {
 
 	public state = {
 
-		login_button_resized: false,
+		project_selected: false,
 
 		history_loaded: false,
 		gadget_updated: false,
@@ -54,15 +54,16 @@ export default class LoggingPanel extends BaseControl<any> {
 
 			<div id="log_panel">
 
-				<link rel="stylesheet" href="resources/styles/panels/logging.panel.css" />
+				<link rel="stylesheet" href="resources/styles/panels/projects.css" />
+				<link rel="stylesheet" href="resources/styles/panels/logging.css" />
 
-				<div style={{ display: "flex", flexDirection: "row", columnGap: "0.5em" }}>
+				<div className="project_select_form">
 
 					<form id="log_form" ref={this.create_reference} encType="multipart/form-data">
 						<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this} />
 					</form>
 
-					<FadeControl visible={this.get_state ("project_selecter", "project_selected")} style={{ width: 0 }} vanishing={true}>
+					<FadeControl visible={this.state.project_selected} style={{ width: 0 }} vanishing={true}>
 						<SelectButton id="log_button" ref={this.create_reference} style={{ height: "100%", whiteSpace: "nowrap" }}
 
 							onclick={() => {

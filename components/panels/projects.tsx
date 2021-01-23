@@ -14,7 +14,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 	public render () {
 		return (
 
-			<div id="project_select_form">
+			<div id="project_select_form" className="project_select_form">
 
 				<link rel="stylesheet" href="/resources/styles/panels/projects.css" />
 
