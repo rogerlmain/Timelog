@@ -87,6 +87,7 @@ export default class LoggingPanel extends BaseControl<any> {
 					</form>
 
 					<FadeControl visible={this.state.project_selected} vanishing={true}>
+
 						<SelectButton id="log_button" ref={this.create_reference} style={{ whiteSpace: "nowrap" }}
 
 							onclick={() => {
@@ -98,6 +99,7 @@ export default class LoggingPanel extends BaseControl<any> {
 							}// onClick;
 
 						}>Log {this.logged_in () ? "out" : "in"}</SelectButton>
+
 					</FadeControl>
 
 				</div>

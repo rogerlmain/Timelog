@@ -1,3 +1,6 @@
+#projects_panel label { text-align: right }
+
+
 .project_select_form {
 	position: relative;
 	display: grid;

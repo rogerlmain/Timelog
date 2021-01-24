@@ -125,7 +125,8 @@ border: solid 1px green;
 
 .center-right-container {
 	display: flex;
-	justify-items: flex-end;
+	flex-direction: row;
+	justify-content: flex-end;
 	align-items: center;
 }/* .center-right-container */
 
