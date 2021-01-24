@@ -100,11 +100,14 @@ border: solid 1px green;
 
 
 #main_panel {
-	border: solid 1px #AAA;
-	margin: 1em;
 	padding: 1em;
-	height: auto;
 }/* #main_panel */
+
+
+#main_panel .outlined-panel {
+	border: solid 1px #AAA;
+	padding: 1em;
+}/* #main_panel .outlined-panel */
 
 
 /********/

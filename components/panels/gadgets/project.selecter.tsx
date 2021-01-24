@@ -23,7 +23,8 @@ export default class ProjectSelecter extends BaseControl<any> {
 
 		this.fetch_items ("projects", parameters, (data: any) => {
 			this.setState ({ projects: data }, () => {
-				this.setState ({ client_selected: true })
+				this.setState ({ client_selected: true });
+				this.reference ("project_selecter").disabled = false;
 			});
 		});
 	}// load_projects;
@@ -32,6 +33,8 @@ export default class ProjectSelecter extends BaseControl<any> {
 	private client_change_handler (event: any) {
 
 		this.execute_event (this.props.onClientChange);
+
+		this.reference ("project_selecter").disabled = true;
 
 		if (common.is_null (this.state.projects)) {
 			this.load_projects ();

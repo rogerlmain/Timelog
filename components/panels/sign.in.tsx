@@ -94,7 +94,7 @@ export default class SigninPanel extends BaseControl<defaultInterface> {
 							afterHiding={() => { this.setState ({ button_visible: true }) }}>
 						</Eyecandy>
 
-						<FadeControl id="signin_button_panel" visible={this.state.button_visible}
+						<FadeControl id="signin_button_panel" visible={this.state.button_visible} className="center-right-container"
 							afterHiding={() => { this.setState ({ eyecandy_visible: true }) }}>
 							<button onClick={() => {
 								parent.setState ({ signing_status: signing_state.pending });

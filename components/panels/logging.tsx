@@ -70,9 +70,10 @@ export default class LoggingPanel extends BaseControl<any> {
 				<link rel="stylesheet" href="resources/styles/panels/projects.css" />
 				<link rel="stylesheet" href="resources/styles/panels/logging.css" />
 
-				<div className="project_select_form">
+				<form id="log_form" ref={this.create_reference} encType="multipart/form-data">
 
-					<form id="log_form" ref={this.create_reference} encType="multipart/form-data">
+					<div className="project_select_form">
+
 						<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
 							onClientChange={() => {
 								this.setState ({
@@ -84,25 +85,26 @@ export default class LoggingPanel extends BaseControl<any> {
 								this.setState ({ gadget_updated: false }, this.load_entries.bind (this))
 							}}>
 						</ProjectSelecter>
-					</form>
 
-					<FadeControl visible={this.state.project_selected} vanishing={true}>
+						<FadeControl visible={this.state.project_selected} vanishing={true}>
 
-						<SelectButton id="log_button" ref={this.create_reference} style={{ whiteSpace: "nowrap" }}
+							<SelectButton id="log_button" ref={this.create_reference} style={{ whiteSpace: "nowrap" }}
 
-							onclick={() => {
-								let current_entry = this.current_entry ();
-								let parameters = common.isset (current_entry) ? { entry_id: current_entry.entry_id } : null;
-								this.log_and_fetch (() => {
-									this.reference ("log_button").setState ({ selected: false });
-								}, parameters);
-							}// onClick;
+								onclick={() => {
+									let current_entry = this.current_entry ();
+									let parameters = common.isset (current_entry) ? { entry_id: current_entry.entry_id } : null;
+									this.log_and_fetch (() => {
+										this.reference ("log_button").setState ({ selected: false });
+									}, parameters);
+								}// onClick;
 
-						}>Log {this.logged_in () ? "out" : "in"}</SelectButton>
+							}>Log {this.logged_in () ? "out" : "in"}</SelectButton>
 
-					</FadeControl>
+						</FadeControl>
 
-				</div>
+					</div>
+
+				</form>
 
 				<OverflowControl control_panel={this.reference ("history_panel")} main_panel={document.getElementById ("program_panel")}>
 					<FadeControl visible={this.state.gadget_updated && (this.state.entries.length > 0)} dom_control={this.reference ("history_panel")}>

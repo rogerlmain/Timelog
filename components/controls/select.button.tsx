@@ -52,6 +52,15 @@ export default class SelectButton extends BaseControl<selectButton> {
 	}// change_color;
 
 
+	private flash = () => {
+
+		this.execute_event (this.props.beforeClick);
+		this.setState ({ flashing: true });
+		this.change_color (true, flash_repeats * 2); // twice - once for on and once for off
+
+	}// flash;
+
+
 	/********/
 
 
@@ -64,25 +73,10 @@ export default class SelectButton extends BaseControl<selectButton> {
 					color: this.state.selected ? selected_color : (this.state.flashing ? unselected_color: null),
 					background: this.state.selected ? selected_background : (this.state.flashing ? unselected_background: null),
 				}}
-				onClick={() => {
-					this.flash ();
-					this.execute_event (this.props.onclick);
-				}}>{this.props.children}
+				onClick={this.flash}>{this.props.children}
 			</button>
 		);
 	}// render;
-
-
-	/********/
-
-
-	flash = () => {
-
-		this.execute_event (this.props.beforeClick);
-		this.setState ({ flashing: true });
-		this.change_color (true, flash_repeats * 2); // twice - once for on and once for off
-
-	}// flash;
 
 
 }// SelectButton;

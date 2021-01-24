@@ -43,3 +43,9 @@
 #history_panel .log-entry div:nth-child(3) {
 	text-align: right;
 }/* #history_panel .log-entry div:nth-child(3) */
+
+
+#log_button {
+	height: 100%;
+	white-space: nowrap;
+}/* #log_button */

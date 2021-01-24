@@ -1,10 +1,13 @@
 import * as React from "react";
+
 import * as common from "components/classes/common";
 
 import { menu_items } from "components/types/constants";
 
-import SelectButton from "components/controls/select.button";
+import { globals } from "components/types/globals";
+
 import BaseControl, { defaultInterface } from "components/controls/base.control";
+import SelectButton from "components/controls/select.button";
 import FadeControl from "components/controls/fade.control";
 
 import HomePanel from "components/panels/home";
@@ -56,8 +59,12 @@ export default class HomePage extends BaseControl<defaultInterface> {
 
 	private settings_button () {
 		return (<SelectButton id="settings_button" ref={this.create_reference} onclick={() => {
-			alert ("to do: create settings panel");
-			this.reference ("settings_button").setState ({ selected: false });
+
+			globals.main_page.setState ({
+				popup_contents: <div>Custom contents</div>,
+				popup_visible: true
+			});
+
 		}}>Settings</SelectButton>)
 	}/* settings_button */
 

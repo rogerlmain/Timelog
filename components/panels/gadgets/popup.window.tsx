@@ -2,6 +2,9 @@ import React from "react";
 
 import BaseControl, { defaultInterface } from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
+import SelectButton from "components/controls/select.button";
+
+import { globals } from "components/types/globals";
 
 
 interface popupWindowInterface extends defaultInterface {
@@ -25,15 +28,31 @@ export default class PopupWindow extends BaseControl<popupWindowInterface> {
 
 
 	public render () {
-		let window = (<div className="popup-window">{this.props.children}</div>);
-		if (this.modal) window = <div className="full-size centering-container popup-modal">{window}</div>;
 		return (
-			<div id={this.id} className="full-size" style={{ ...this.props.style }}>
+			<FadeControl id={this.id} ref={this.create_reference} visible={this.props.open} className="full-size"
+				beforeShowing={() => {
+
+					this.reference (this.id).dom_control.current.style.zIndex = 10
+
+				}}
+				afterHiding={() => {
+
+					this.reference (this.id).dom_control.current.style.zIndex = -1
+
+				}}>
 				<link rel="stylesheet" href="/resources/styles/panels/gadgets/popup.window.css" />
-				{/* <FadeControl visible={this.props.open} beforeShowing={() => { alert ("about to show"); }}> */}
-					<div className="full-size popup-panel">{window}</div>
-				{/* </FadeControl> */}
-			</div>
+				<div className="full-size popup-panel">
+					{this.modal ? <div className="full-size centering-container popup-modal" /> : null}
+					<div className="popup-window">
+						<div className="popup-inset">
+							{this.props.children}
+							<SelectButton id="close_button" onclick={() => {
+								globals.main_page.setState ({ popup_visible: false });
+							}}>Close</SelectButton>
+						</div>
+					</div>
+				</div>
+			</FadeControl>
 		);
 	}// render;
 

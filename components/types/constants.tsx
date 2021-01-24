@@ -24,7 +24,7 @@ export const underscore = "_";
 
 export const hidden_index = -10;	// zIndex to put unseen items behind the page
 
-export const animation_speed = 1000;
+export const animation_speed = 500;
 
 
 export const account_types = {
