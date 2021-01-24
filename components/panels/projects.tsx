@@ -1,6 +1,6 @@
 import React from "react";
 
-import BaseControl from "components/controls/base.control";
+import BaseControl, { defaultInterface } from "components/controls/base.control";
 import ProjectSelecter from "components/panels/gadgets/project.selecter";
 import FadeControl from "components/controls/fade.control";
 import SelectButton from "components/controls/select.button";

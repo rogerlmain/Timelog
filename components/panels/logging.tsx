@@ -16,12 +16,25 @@ import ProjectSelecter from "./gadgets/project.selecter";
 export default class LoggingPanel extends BaseControl<any> {
 
 
-	private fetch_entries (action: string, callback: any = null, additional_parameters: any = null) {
+	private load_entries () {
+		let log_form = this.reference ("log_form");
+		let parameters = null;
+		if (common.is_null (log_form)) return null;
+		parameters = new FormData (log_form);
+		parameters.set ("action", "entries");
+		this.fetch_items ("logging", parameters, (result: any) => {
+			this.setState ({ entries: result }, () => {
+				this.setState ({ gadget_updated: true });
+			});
+		});
+	}// load_entries;
+
+
+	private log_and_fetch (callback: any = null, additional_parameters: any = null) {
 		let parameters = new FormData (this.reference ("log_form"));
 		if (common.isset (additional_parameters)) for (let key of Object.keys (additional_parameters)) {
 			parameters.set (key, additional_parameters [key]);
 		}// if;
-		parameters.set ("action", action);
 		this.fetch_items ("logging", parameters, (data: any) => {
 			let response_string = JSON.stringify (data [0]);
 			let current_entry: datatype.entry = datatype.entry.parse (response_string);
@@ -30,7 +43,7 @@ export default class LoggingPanel extends BaseControl<any> {
 			this.setState ({ entries: data }, () => { this.setState ({ gadget_updated: true }); });
 			if (common.isset (callback)) callback ();
 		});
-	}// fetch_entries;
+	}// log_and_fetch;
 
 
 	/********/
@@ -60,16 +73,26 @@ export default class LoggingPanel extends BaseControl<any> {
 				<div className="project_select_form">
 
 					<form id="log_form" ref={this.create_reference} encType="multipart/form-data">
-						<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this} />
+						<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
+							onClientChange={() => {
+								this.setState ({
+									gadget_updated: false,
+									project_selected: false
+								})
+							}}
+							onProjectChange={() => {
+								this.setState ({ gadget_updated: false }, this.load_entries.bind (this))
+							}}>
+						</ProjectSelecter>
 					</form>
 
-					<FadeControl visible={this.state.project_selected} style={{ width: 0 }} vanishing={true}>
-						<SelectButton id="log_button" ref={this.create_reference} style={{ height: "100%", whiteSpace: "nowrap" }}
+					<FadeControl visible={this.state.project_selected} vanishing={true}>
+						<SelectButton id="log_button" ref={this.create_reference} style={{ whiteSpace: "nowrap" }}
 
 							onclick={() => {
 								let current_entry = this.current_entry ();
 								let parameters = common.isset (current_entry) ? { entry_id: current_entry.entry_id } : null;
-								this.fetch_entries ("logging", (current_entry) => {
+								this.log_and_fetch (() => {
 									this.reference ("log_button").setState ({ selected: false });
 								}, parameters);
 							}// onClick;
@@ -80,7 +103,7 @@ export default class LoggingPanel extends BaseControl<any> {
 				</div>
 
 				<OverflowControl control_panel={this.reference ("history_panel")} main_panel={document.getElementById ("program_panel")}>
-					<FadeControl visible={this.state.gadget_updated} dom_control={this.reference ("history_panel")}>
+					<FadeControl visible={this.state.gadget_updated && (this.state.entries.length > 0)} dom_control={this.reference ("history_panel")}>
 						<LogHistoryGadget id="history_panel" parent={this} entries={this.state.entries} />
 					</FadeControl>
 				</OverflowControl>

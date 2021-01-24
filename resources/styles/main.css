@@ -203,7 +203,7 @@ border: solid 1px green;
 .two-piece-form {
 	display: grid;
 	grid-template-columns: auto auto;
-	row-gap: 0.5em;
+	row-gap: 0.2em;
 	column-gap: 1em;
 }/* two-piece-form */
 
@@ -227,7 +227,7 @@ border: solid 1px green;
 	display: inline-grid;
 	flex-direction: row;
 	grid-template-columns: repeat(4, auto);
-	row-gap: 0.5em;
+	row-gap: 0.2em;
 	column-gap: 1em;
 }/* flex-grid */
 

@@ -114,7 +114,7 @@ export default class BaseControl<properties> extends React.Component<any> {
 	}// execute_event;
 
 
-	protected fetch_items (view: any, parameters: any, callback: any) {
+	protected fetch_items (view: any, parameters: any, callback: any = null) {
 
 		let form_data = (parameters instanceof FormData);
 

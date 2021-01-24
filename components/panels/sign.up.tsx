@@ -63,6 +63,8 @@ export default class SignupPanel extends BaseControl<defaultInterface> {
 
 			<div>
 
+				<link rel="stylesheet" href="/resources/styles/panels/accounts.css" />
+
 				<form id="account_form" encType="multipart/form-data">
 
 					<div className="flex-grid form-table">
@@ -88,7 +90,7 @@ export default class SignupPanel extends BaseControl<defaultInterface> {
 								});
 							}}>
 							{Object.entries (account_types).map (item => { return (
-								<option value={item [1].value} style={{ textTransform: "capitalize" }}>{item [1].title}</option>
+								<option key={item [1].title} value={item [1].value} style={{ textTransform: "capitalize" }}>{item [1].title}</option>
 							)} )}
 						</select>
 
