@@ -51,7 +51,8 @@ export default class FadeControl extends BaseControl<fadeControl> {
 
 	private fade_style = {
 		transition: `opacity ${globals.settings.animation_speed}ms ease-in-out`,
-		opacity: 0
+		opacity: 0,
+		zIndex: 0
 	}// fade_style;
 
 
@@ -145,8 +146,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 					return <div id={`${this.id_badge ()}_resize`} ref={this.dom_resize} style={{
 						...this.props.style,
 						...this.resize_style,
-						...this.resize_transition_style [state],
-
+						...this.resize_transition_style [state]
 					}} className={this.props.className}>{this.state.contents ?? this.props.children}</div>
 				}}
 
@@ -191,7 +191,8 @@ export default class FadeControl extends BaseControl<fadeControl> {
 			<Transition in={this.state.panel_states.fade_panel} timeout={globals.settings.animation_delay}
 
 				// Before Showing
-				onEnter={(node: any) => {
+				onEnter={() => {
+					this.dom_control.current.style.zIndex = 100;
 					if (!this.props.vanishing) this.execute_event (this.props.beforeShowing);
 					this.execute_event (this.props.beforeFadein);
 				}}
@@ -213,14 +214,14 @@ export default class FadeControl extends BaseControl<fadeControl> {
 					this.execute_event (this.props.afterFadeout);
 					if (!this.props.vanishing) this.execute_event (this.props.afterHiding);
 					if (this.props.vanishing) this.setState ({ panel_states: {...this.state.panel_states, resize_panel: false } });
+					this.dom_control.current.style.zIndex = 0;
 				}}>
 
 				{state => {
 					return <div id={this.id} ref={this.dom_control} style={{
 						...this.props.style,
 						...this.fade_style,
-						...this.fade_transition_style [state],
-						zIndex: this.props.visible ? 1 : 0
+						...this.fade_transition_style [state]
 					}} className={this.props.className}>{this.props.vanishing ? this.resize_control () : this.props.children}</div>
  				}}
 

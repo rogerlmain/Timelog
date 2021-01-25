@@ -9,7 +9,11 @@ import SelectButton from "components/controls/select.button";
 export default class ProjectsPanel extends BaseControl<any> {
 
 
-	public state = { project_selected: false }
+	public state = {
+		client_selected: false,
+		project_selected: false
+	}// state;
+
 
 	public render () {
 		return (
@@ -20,10 +24,12 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 				<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this} />
 				<div className="button-panel">
-					<SelectButton id="new_button">New</SelectButton>
-					<FadeControl id="edit_button_panel" ref={this.create_reference} vanishing={false} visible={this.state.project_selected}>
-						<SelectButton id="edit_button">Edit</SelectButton>
-					</FadeControl>
+					<div className="button-cell">
+						<SelectButton id="new_button">New</SelectButton>
+						<FadeControl id="edit_button_panel" ref={this.create_reference} vanishing={true} visible={this.state.client_selected}>
+							<SelectButton id="edit_button">Edit</SelectButton>
+						</FadeControl>
+					</div>
 				</div>
 			</div>
 

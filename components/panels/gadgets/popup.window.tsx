@@ -35,10 +35,8 @@ export default class PopupWindow extends BaseControl<popupWindowInterface> {
 			<FadeControl id={this.id} ref={this.create_reference} visible={this.props.open} className="full-size"
 				beforeShowing={() => {
 					this.execute_event (this.props.beforeOpening);
-					this.reference (this.id).dom_control.current.style.zIndex = 10
 				}}
 				afterHiding={() => {
-					this.reference (this.id).dom_control.current.style.zIndex = -1;
 					this.execute_event (this.props.afterClosing);
 				}}>
 				<link rel="stylesheet" href="/resources/styles/panels/gadgets/popup.window.css" />

@@ -17,6 +17,12 @@
 }/* .project_select_form .button-panel */
 
 
+.project_select_form .button-cell {
+	display: grid;
+	grid-template-columns: repeat(2, max-content);
+}/* project_select_form .button-panel */
+
+
 .project_select_form .button-panel button {
 	display: flex;
 	width: 100%;

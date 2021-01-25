@@ -86,10 +86,7 @@ export default class ProjectSelecter extends BaseControl<any> {
 					<select id="project_selecter" ref={this.create_reference} name="project_id" className="form-item"
 						defaultValue="placeholder" style={{ margin: 0 }}
 
-						onChange={() => {
-							this.props.parent.setState ({ project_selected: true });
-							this.execute_event (this.props.onProjectChange);
-						}}>
+						onChange={() => { this.execute_event (this.props.onProjectChange) }}>
 
 						<option key="placeholder" value="placeholder" disabled={true} />
 						{this.select_options (this.state.projects, "project_id", "project_name")}

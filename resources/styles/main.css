@@ -212,6 +212,18 @@ border: solid 1px green;
 }/* two-piece-form */
 
 
+.popup-window-form {
+	margin-bottom: 1em;
+	justify-content: center;
+	align-items: center;
+}/* .popup-window-form */
+
+
+.popup-window-form label {
+	text-align: right;
+}/* .popup-window-form label */
+
+
 .flex-aligned-right {
 	display: flex;
 	flex-direction: column;

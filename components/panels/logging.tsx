@@ -81,7 +81,10 @@ export default class LoggingPanel extends BaseControl<any> {
 								})
 							}}
 							onProjectChange={() => {
-								this.setState ({ gadget_updated: false }, this.load_entries.bind (this))
+								this.setState ({
+									gadget_updated: false,
+									project_selected: true
+								}, this.load_entries.bind (this))
 							}}>
 						</ProjectSelecter>
 
