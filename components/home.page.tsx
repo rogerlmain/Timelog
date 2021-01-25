@@ -15,6 +15,7 @@ import AccountPanel from "components/panels/sign.up";
 import ProjectsPanel from "components/panels/projects";
 import LoggingPanel from "components/panels/logging";
 import TeamPanel from "components/panels/teams";
+import SettingsPanel from "components/panels/settings";
 
 
 class ButtonReference implements React.RefObject<SelectButton> { current: SelectButton }
@@ -58,10 +59,10 @@ export default class HomePage extends BaseControl<defaultInterface> {
 
 
 	private settings_button () {
-		return (<SelectButton id="settings_button" ref={this.create_reference} onclick={() => {
+		return (<SelectButton id="settings_button" ref={this.create_reference} sticky={false} onclick={() => {
 
 			globals.main_page.setState ({
-				popup_contents: <div>Custom contents</div>,
+				popup_contents: <SettingsPanel />,
 				popup_visible: true
 			});
 
@@ -74,11 +75,10 @@ export default class HomePage extends BaseControl<defaultInterface> {
 		let parent = this.props.parent;
 
 		return (
-			<SelectButton id="signout_button" ref={this.create_reference}
+			<SelectButton id="signout_button" ref={this.create_reference} sticky={false}
 				onclick={() => {
-					this.delete_cookie ("current_account");
+					common.delete_cookie ("current_account");
 					this.button_list.forEach (button => { button.current.setState ({ selected: false }) });
-					this.reference ("signout_button").setState ({ selected: false });
 					this.load_panel (this.panel_list.home);
 					this.selected_button = null;
 					parent.load_panel (parent.panels.signin_panel);

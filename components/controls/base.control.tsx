@@ -46,7 +46,7 @@ export default class BaseControl<properties> extends React.Component<any> {
 
 
 	public signed_in () {
-		return common.not_null (this.get_cookie ("current_account"));
+		return common.not_null (common.get_cookie ("current_account"));
 	}// signed_in;
 
 
@@ -56,7 +56,7 @@ export default class BaseControl<properties> extends React.Component<any> {
 
 
 	public logged_in () {
-		return common.not_null (this.get_cookie ("current_entry"));
+		return common.not_null (common.get_cookie ("current_entry"));
 	}// logged_in;
 
 
@@ -83,12 +83,12 @@ export default class BaseControl<properties> extends React.Component<any> {
 
 
 	protected current_account (): datatype.account {
-		return datatype.account.parse (this.get_cookie ("current_account"));
+		return datatype.account.parse (common.get_cookie ("current_account"));
 	}// current_account;
 
 
 	protected current_entry (): datatype.entry {
-		return datatype.entry.parse (this.get_cookie ("current_entry"));
+		return datatype.entry.parse (common.get_cookie ("current_entry"));
 	}// current_entry;
 
 
@@ -135,33 +135,10 @@ export default class BaseControl<properties> extends React.Component<any> {
 	}// fetch_items;
 
 
-	protected get_cookie (name: any) {
-		const cookies = document.cookie.split (";");
-		for (var cookie of cookies) {
-			var parts = cookie.split ("=");
-			if (parts.length != 2) return null;
-			if (parts [0].trim () != name) continue;
-			return parts [1];
-		}// for;
-	}// get_cookie;
-
-
 	protected id_badge (stub: any = null) {
 		if (common.is_null (stub)) stub = this.constructor.name;
 		return this.props.id ?? stub + underscore + Date.now ();
 	}// id_badge;
-
-
-	protected set_cookie (name: string, value: any) {
-		document.cookie = `${name}=${value}`;
-	}// set_cookie;
-
-
-	protected delete_cookie (name: any) {
-		document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-	}// delete_cookie;
-
-	protected clear_cookie (name: any) { this.delete_cookie (name); }
 
 
 	protected reference (name: string) {

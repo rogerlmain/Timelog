@@ -9,7 +9,10 @@ import { globals } from "components/types/globals";
 
 interface popupWindowInterface extends defaultInterface {
 	open: any,
-	modal: boolean
+	modal: boolean,
+
+	beforeOpening?: any,
+	afterClosing?: any
 }// popupWindowInterface;
 
 
@@ -31,14 +34,12 @@ export default class PopupWindow extends BaseControl<popupWindowInterface> {
 		return (
 			<FadeControl id={this.id} ref={this.create_reference} visible={this.props.open} className="full-size"
 				beforeShowing={() => {
-
+					this.execute_event (this.props.beforeOpening);
 					this.reference (this.id).dom_control.current.style.zIndex = 10
-
 				}}
 				afterHiding={() => {
-
-					this.reference (this.id).dom_control.current.style.zIndex = -1
-
+					this.reference (this.id).dom_control.current.style.zIndex = -1;
+					this.execute_event (this.props.afterClosing);
 				}}>
 				<link rel="stylesheet" href="/resources/styles/panels/gadgets/popup.window.css" />
 				<div className="full-size popup-panel">
@@ -46,7 +47,7 @@ export default class PopupWindow extends BaseControl<popupWindowInterface> {
 					<div className="popup-window">
 						<div className="popup-inset">
 							{this.props.children}
-							<SelectButton id="close_button" onclick={() => {
+							<SelectButton id="close_button" ref={this.create_reference} sticky={false} onclick={() => {
 								globals.main_page.setState ({ popup_visible: false });
 							}}>Close</SelectButton>
 						</div>

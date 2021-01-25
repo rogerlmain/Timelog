@@ -1,10 +1,10 @@
 import * as React from "react";
-
 import * as common from "components/classes/common";
 
 import { Transition } from "react-transition-group";
+import { globals } from "components/types/globals";
+
 import BaseControl, { defaultInterface } from "components/controls/base.control";
-import { animation_speed } from "components/types/constants";
 
 
 interface fadeControl extends defaultInterface {
@@ -50,13 +50,13 @@ export default class FadeControl extends BaseControl<fadeControl> {
 
 
 	private fade_style = {
-		transition: `opacity ${animation_speed}ms ease-in-out`,
+		transition: `opacity ${globals.settings.animation_speed}ms ease-in-out`,
 		opacity: 0
 	}// fade_style;
 
 
 	private resize_style = {
-		transition: `all ${animation_speed}ms ease-in-out`,
+		transition: `all ${globals.settings.animation_speed}ms ease-in-out`,
 		transitionProperty: "width, height",
 		overflow: "hidden"
 	}// resize_style;
@@ -115,7 +115,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 		if (this.props.visible) this.state.panel_states.resize_panel = true;
 
 		return (
-			<Transition in={this.state.panel_states.resize_panel} timeout={animation_speed}
+			<Transition in={this.state.panel_states.resize_panel} timeout={globals.settings.animation_delay}
 
 				// Before Opening
 				onEnter={() => {
@@ -188,7 +188,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 
 		return (
 
-			<Transition in={this.state.panel_states.fade_panel} timeout={animation_speed}
+			<Transition in={this.state.panel_states.fade_panel} timeout={globals.settings.animation_delay}
 
 				// Before Showing
 				onEnter={(node: any) => {

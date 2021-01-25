@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { menu_items } from "components/types/constants";
+import * as common from "components/classes/common";
 
 import BaseControl, { defaultInterface } from "components/controls/base.control";
 
@@ -25,20 +25,17 @@ interface selectButton extends defaultInterface {
 
 	style?: any;
 
+	sticky?: boolean;
+
 }// selectButton;
 
 
 export default class SelectButton extends BaseControl<selectButton> {
 
 
-	button_reference: React.RefObject<HTMLButtonElement> = React.createRef ();
-	id: string = this.props.id;
-
-
-	state = {
-		selected: false,
-		flashing: false
-	}// state;
+	private button_reference: React.RefObject<HTMLButtonElement> = React.createRef ();
+	private id: string = this.props.id;
+	private sticky = true;
 
 
 	private change_color = (select_value, count) => {
@@ -46,7 +43,7 @@ export default class SelectButton extends BaseControl<selectButton> {
 		if (count > 0) {
 			setTimeout (() => { this.change_color (!select_value, --count) }, flash_speed);
 		} else {
-			this.setState ({ selected: true, flashing: false });
+			this.setState ({ selected: this.sticky, flashing: false });
 			this.execute_event (this.props.onclick);
 		}// if;
 	}// change_color;
@@ -62,6 +59,17 @@ export default class SelectButton extends BaseControl<selectButton> {
 
 
 	/********/
+
+
+	public state = {
+		selected: false,
+		flashing: false
+	}// state;
+
+
+	public componentDidMount () {
+		if (common.isset (this.props.sticky)) this.sticky = this.props.sticky;
+	}// componentDidMount;
 
 
 	public render () {

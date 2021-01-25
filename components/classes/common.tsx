@@ -29,6 +29,32 @@ export function not_null (value: any) {
 /********/
 
 
+export function get_cookie (name: any) {
+	const cookies = document.cookie.split (";");
+	for (var cookie of cookies) {
+		var parts = cookie.split ("=");
+		if (parts.length != 2) return null;
+		if (parts [0].trim () != name) continue;
+		return parts [1];
+	}// for;
+}// get_cookie;
+
+
+export function set_cookie (name: string, value: any) {
+	document.cookie = `${name}=${value}`;
+}// set_cookie;
+
+
+export function delete_cookie (name: any) {
+	document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+}// delete_cookie;
+
+export function clear_cookie (name: any) { this.delete_cookie (name); }
+
+
+/********/
+
+
 export let is_blank = is_empty;
 export let not_blank = not_empty;
 

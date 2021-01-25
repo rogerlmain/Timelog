@@ -30,7 +30,7 @@ export default class LoggingPanel extends BaseControl<any> {
 	}// load_entries;
 
 
-	private log_and_fetch (callback: any = null, additional_parameters: any = null) {
+	private log_and_fetch (additional_parameters: any = null) {
 		let parameters = new FormData (this.reference ("log_form"));
 		if (common.isset (additional_parameters)) for (let key of Object.keys (additional_parameters)) {
 			parameters.set (key, additional_parameters [key]);
@@ -38,10 +38,9 @@ export default class LoggingPanel extends BaseControl<any> {
 		this.fetch_items ("logging", parameters, (data: any) => {
 			let response_string = JSON.stringify (data [0]);
 			let current_entry: datatype.entry = datatype.entry.parse (response_string);
-			this.clear_cookie ("current_entry");
-			if (common.is_null (current_entry.end_time)) this.set_cookie ("current_entry", response_string);
+			common.clear_cookie ("current_entry");
+			if (common.is_null (current_entry.end_time)) common.set_cookie ("current_entry", response_string);
 			this.setState ({ entries: data }, () => { this.setState ({ gadget_updated: true }); });
-			if (common.isset (callback)) callback ();
 		});
 	}// log_and_fetch;
 
@@ -88,14 +87,12 @@ export default class LoggingPanel extends BaseControl<any> {
 
 						<FadeControl visible={this.state.project_selected} vanishing={true}>
 
-							<SelectButton id="log_button" ref={this.create_reference} style={{ whiteSpace: "nowrap" }}
+							<SelectButton id="log_button" ref={this.create_reference} sticky={false} style={{ whiteSpace: "nowrap" }}
 
 								onclick={() => {
 									let current_entry = this.current_entry ();
 									let parameters = common.isset (current_entry) ? { entry_id: current_entry.entry_id } : null;
-									this.log_and_fetch (() => {
-										this.reference ("log_button").setState ({ selected: false });
-									}, parameters);
+									this.log_and_fetch (parameters);
 								}// onClick;
 
 							}>Log {this.logged_in () ? "out" : "in"}</SelectButton>
