@@ -9,35 +9,35 @@ function root_pathed (file_path) {
 
 
 module.exports = {
-    devtool: 'source-map',
+	devtool: 'source-map',
 	mode: "development",
 
 	entry: {
 		"main": "./main.tsx"
 	},
 
-    output: {
-        filename: "[name].js"
+	output: {
+		filename: "[name].js"
 	},
 
-    resolve: {
-        extensions: ['.Webpack.js', '.web.js', '.ts', '.js', '.jsx', '.tsx'],
-        alias: {
+	resolve: {
+		extensions: ['.Webpack.js', '.web.js', '.ts', '.js', '.jsx', '.tsx'],
+		alias: {
 			root: root_path,
 			components: root_pathed ("components")
-        },
+		},
 		symlinks: false
 	},
 
-    module: {
-        rules: [
-            {
-                test: /\.js$|tsx/,
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'ts-loader'
-                }
-            }
-        ]
-    }
+	module: {
+		rules: [
+			{
+				test: /\.js$|tsx/,
+				exclude: /(node_modules|bower_components)/,
+				use: {
+					loader: 'ts-loader'
+				}
+			}
+		]
+	}
 }

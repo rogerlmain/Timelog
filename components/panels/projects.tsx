@@ -22,7 +22,9 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 				<link rel="stylesheet" href="/resources/styles/panels/projects.css" />
 
-				<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this} />
+				<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this} onClientChange={() => {
+					this.setState ({ client_selected: true });
+				}} />
 				<div className="button-panel">
 					<div className="button-cell">
 						<SelectButton id="new_button">New</SelectButton>

@@ -5,6 +5,7 @@ import { Transition } from "react-transition-group";
 import { globals } from "components/types/globals";
 
 import BaseControl, { defaultInterface } from "components/controls/base.control";
+import { fade_zindex, hidden_zindex, popup_zindex } from "components/types/constants";
 
 
 interface fadeControl extends defaultInterface {
@@ -52,7 +53,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 	private fade_style = {
 		transition: `opacity ${globals.settings.animation_speed}ms ease-in-out`,
 		opacity: 0,
-		zIndex: 0
+		zIndex: (this.props.visible ? fade_zindex : hidden_zindex)
 	}// fade_style;
 
 
@@ -192,7 +193,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 
 				// Before Showing
 				onEnter={() => {
-					this.dom_control.current.style.zIndex = 100;
+					this.dom_control.current.style.zIndex = popup_zindex;
 					if (!this.props.vanishing) this.execute_event (this.props.beforeShowing);
 					this.execute_event (this.props.beforeFadein);
 				}}
@@ -214,7 +215,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 					this.execute_event (this.props.afterFadeout);
 					if (!this.props.vanishing) this.execute_event (this.props.afterHiding);
 					if (this.props.vanishing) this.setState ({ panel_states: {...this.state.panel_states, resize_panel: false } });
-					this.dom_control.current.style.zIndex = 0;
+					this.dom_control.current.style.zIndex = hidden_zindex;
 				}}>
 
 				{state => {

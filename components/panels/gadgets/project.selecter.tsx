@@ -4,7 +4,6 @@ import * as common from "components/classes/common";
 
 import BaseControl, { defaultInterface } from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
-import { text_highlights } from "components/types/constants";
 
 
 interface projectsPanelInterface extends defaultInterface {
@@ -13,7 +12,7 @@ interface projectsPanelInterface extends defaultInterface {
 }// projectsPanelInterface;
 
 
-export default class ProjectSelecter extends BaseControl<any> {
+export default class ProjectSelecter extends BaseControl<projectsPanelInterface> {
 
 
 	private load_projects () {
@@ -30,7 +29,7 @@ export default class ProjectSelecter extends BaseControl<any> {
 	}// load_projects;
 
 
-	private client_change_handler (event: any) {
+	private client_change_handler () {
 
 		this.execute_event (this.props.onClientChange);
 

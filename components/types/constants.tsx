@@ -22,9 +22,13 @@ export const empty = blank;
 export const comma = ",";
 export const underscore = "_";
 
-export const hidden_index = -10;	// zIndex to put unseen items behind the page
+export const hidden_zindex = -1;	// zIndex to put unseen items behind the page
+export const fade_zindex = 5;
+export const popup_zindex = 10;
 
-export const animation_speed = 500;
+
+
+//export const animation_speed = 500;
 
 
 export const account_types = {
