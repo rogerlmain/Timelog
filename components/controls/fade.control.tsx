@@ -15,6 +15,8 @@ interface fadeControl extends defaultInterface {
 	// if true control doesn't occupy DOM space
 	vanishing: boolean;
 
+	onComponentUpdate?: any;
+
 	beforeFadein?: any;
 	afterFadein?: any;
 
@@ -38,6 +40,8 @@ interface fadeControl extends defaultInterface {
 
 	className?: string;
 
+	zIndex?: number;
+
 }// fadeControl;
 
 
@@ -53,7 +57,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 	private fade_style = {
 		transition: `opacity ${globals.settings.animation_speed}ms ease-in-out`,
 		opacity: 0,
-		zIndex: (this.props.visible ? fade_zindex : hidden_zindex)
+		zIndex: hidden_zindex
 	}// fade_style;
 
 
@@ -119,29 +123,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 		return (
 			<Transition in={this.state.panel_states.resize_panel} timeout={globals.settings.animation_delay}
 
-				// Before Opening
-				onEnter={() => {
-					this.resize_transition_style ["entering"] = this.resize_transition_style ["entered"] = this.growth_dimensions ();
-					this.execute_event (this.props.beforeShowing);
-					this.execute_event (this.props.beforeOpening);
-				}}
-
-				// After Opening
-				onEntered={() => {
-					this.execute_event (this.props.afterOpening);
-					this.setState ({ panel_states: {...this.state.panel_states, fade_panel: true } });
-				}}
-
-				// Before Closing
-				onExit={() => {
-					this.execute_event (this.props.beforeClosing);
-				}}
-
-				// After Closing
-				onExited={() => {
-					this.execute_event (this.props.afterClosing);
-					this.execute_event (this.props.afterHiding);
-				}}>
+				onEnter={() => { this.resize_transition_style ["entering"] = this.resize_transition_style ["entered"] = this.growth_dimensions () }}>
 
 				{state => {
 					return <div id={`${this.id_badge ()}_resize`} ref={this.dom_resize} style={{
@@ -175,10 +157,78 @@ export default class FadeControl extends BaseControl<fadeControl> {
 	}// state;
 
 
+	public transition_start = (event: TransitionEvent) => {
+
+		switch (event.propertyName) {
+			case "opacity": {
+				if (this.props.visible) {
+					if (!this.props.vanishing) {
+						this.dom_control.current.style.zIndex = (this.props.zIndex ?? fade_zindex);
+						this.execute_event (this.props.beforeShowing);
+					}// if;
+					this.execute_event (this.props.beforeFadein);
+					return;
+				}// if;
+				this.execute_event (this.props.beforeHiding);
+				this.execute_event (this.props.beforeFadeout);
+			} break;
+			case "height": {
+				if (this.props.visible) {
+					this.dom_control.current.style.zIndex = (this.props.zIndex ?? fade_zindex);
+					this.execute_event (this.props.beforeShowing);
+					this.execute_event (this.props.beforeOpening);
+					return;
+				}// if;
+				this.execute_event (this.props.beforeClosing);
+			} break;
+		}// switch;
+
+	}//transition_start;
+
+
+	public transition_end = (event: TransitionEvent) => {
+
+		switch (event.propertyName) {
+			case "opacity": {
+				if (this.props.visible) {
+					this.execute_event (this.props.afterFadein);
+					this.execute_event (this.props.afterShowing);
+					return;
+				}// if;
+				this.execute_event (this.props.afterFadeout);
+				switch (this.props.vanishing) {
+					case true: this.setState ({ panel_states: {...this.state.panel_states, resize_panel: false } }); break;
+					default: this.dom_control.current.style.zIndex = hidden_zindex; break;
+				}// switch;
+				this.execute_event (this.props.afterHiding);
+			} break;
+			case "height": {
+				if (this.props.visible) {
+					this.execute_event (this.props.afterOpening);
+					this.setState ({ panel_states: {...this.state.panel_states, fade_panel: true } });
+					return;
+				}// if;
+				this.dom_control.current.style.zIndex = hidden_zindex;
+				this.execute_event (this.props.afterClosing);
+				this.execute_event (this.props.afterHiding);
+			} break;
+		}// switch;
+
+	}// transition_end;
+
+
 	public componentDidMount () {
 		this.id = this.id_badge ();
 		this.initialize_resize_panel ();
+
+		this.dom_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
+		this.dom_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
 	}// componentDidMount;
+
+
+	public componentDidUpdate () {
+		this.execute_event (this.props.onComponentUpdate);
+	}// componentDidUpdate;
 
 
 	// fade_control
@@ -188,36 +238,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 		if (this.props.vanishing) this.state.panel_states.fade_panel = (this.props.visible ? this.state.panel_states.resize_panel : false);
 
 		return (
-
-			<Transition in={this.state.panel_states.fade_panel} timeout={globals.settings.animation_delay}
-
-				// Before Showing
-				onEnter={() => {
-					this.dom_control.current.style.zIndex = popup_zindex;
-					if (!this.props.vanishing) this.execute_event (this.props.beforeShowing);
-					this.execute_event (this.props.beforeFadein);
-				}}
-
-				// After Showing
-				onEntered={() => {
-					this.execute_event (this.props.afterFadein);
-					this.execute_event (this.props.afterShowing);
-				}}
-
-				// Before Hiding
-				onExiting={() => {
-					this.execute_event (this.props.beforeHiding);
-					this.execute_event (this.props.beforeFadeout);
-				}}
-
-				// After Hiding
-				onExited={() => {
-					this.execute_event (this.props.afterFadeout);
-					if (!this.props.vanishing) this.execute_event (this.props.afterHiding);
-					if (this.props.vanishing) this.setState ({ panel_states: {...this.state.panel_states, resize_panel: false } });
-					this.dom_control.current.style.zIndex = hidden_zindex;
-				}}>
-
+			<Transition in={this.state.panel_states.fade_panel} timeout={globals.settings.animation_delay}>
 				{state => {
 					return <div id={this.id} ref={this.dom_control} style={{
 						...this.props.style,
@@ -225,7 +246,6 @@ export default class FadeControl extends BaseControl<fadeControl> {
 						...this.fade_transition_style [state]
 					}} className={this.props.className}>{this.props.vanishing ? this.resize_control () : this.props.children}</div>
  				}}
-
  			</Transition>
 		);
 	}// fade_control.render;

@@ -1,6 +1,11 @@
 #projects_panel label { text-align: right }
 
 
+#new_project_button_panel { grid-column: 1 / span 2 }
+
+#new_project_button { width: 100% }
+
+
 .project_select_form {
 	position: relative;
 	display: grid;
@@ -19,13 +24,14 @@
 
 .project_select_form .button-cell {
 	display: grid;
-	grid-template-columns: repeat(2, max-content);
+	grid-template-columns: repeat(2, min-content);
+	column-gap: 0.25em;
+	row-gap: 0.2em;
 }/* project_select_form .button-panel */
 
 
 .project_select_form .button-panel button {
 	display: flex;
-	width: 100%;
 	height: 1.5em;
 	align-items: center;
 	justify-content: center;

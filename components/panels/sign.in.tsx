@@ -20,8 +20,13 @@ export default class SigninPanel extends BaseControl<defaultInterface> {
 		password_visible: false,
 		eyecandy_visible: false,
 		report_error: false,
-		button_visible: true
+		button_visible: false
 	}// state;
+
+
+	public componentDidMount () {
+		setTimeout (() => this.setState ({ button_visible: true }));
+	}// componentDidMount;
 
 
 	public render () {
@@ -70,7 +75,7 @@ export default class SigninPanel extends BaseControl<defaultInterface> {
 						<a onClick={() => { parent.load_panel (parent.panels.signup_panel) }}>Sign up</a>
 					</div>
 
-					<div className="overlay-container center-right-container">
+					<div className="overlay-container middle-right-container" style={{ paddingLeft: "1em" }}>
 
 						<Eyecandy id="signin_eyecandy_panel" visible={this.state.eyecandy_visible} text="Signing you in" subtext="One moment, please"
 							afterShowing={() => {
@@ -94,7 +99,7 @@ export default class SigninPanel extends BaseControl<defaultInterface> {
 							afterHiding={() => { this.setState ({ button_visible: true }) }}>
 						</Eyecandy>
 
-						<FadeControl id="signin_button_panel" visible={this.state.button_visible} className="center-right-container"
+						<FadeControl id="signin_button_panel" visible={this.state.button_visible} className="middle-right-container"
 							afterHiding={() => { this.setState ({ eyecandy_visible: true }) }}>
 							<button onClick={() => {
 								parent.setState ({ signing_status: signing_state.pending });

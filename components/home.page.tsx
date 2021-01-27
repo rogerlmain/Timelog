@@ -16,6 +16,7 @@ import ProjectsPanel from "components/panels/projects";
 import LoggingPanel from "components/panels/logging";
 import TeamPanel from "components/panels/teams";
 import SettingsPanel from "components/panels/settings";
+import Eyecandy from "./controls/eyecandy";
 
 
 class ButtonReference implements React.RefObject<SelectButton> { current: SelectButton }
@@ -39,7 +40,11 @@ export default class HomePage extends BaseControl<defaultInterface> {
 	}// panel_list;
 
 
-	private load_panel = (content: any) => this.setState ({ contents: content });
+	private load_panel = (content: any) => {
+
+		this.setState ({ contents: content });
+
+	}// load_panel;
 
 
 	private add_button_reference = (button: ButtonReference) => {
@@ -48,14 +53,14 @@ export default class HomePage extends BaseControl<defaultInterface> {
 	}/* add_button_reference */;
 
 
-	private select = (selected_button: SelectButton) => {
+	private select_button = (selected_button: SelectButton) => {
 		for (let button of this.button_list) {
 			if (button.current == selected_button) continue;
 			button.current.setState ({ selected: false });
 		}// for;
 		this.selected_button = selected_button;
-		this.setState ({ details_panel_visible: false });
-	}/* select */;
+		this.setState ({ content_loaded: false });
+	}/* select_button */;
 
 
 	private settings_button () {
@@ -93,13 +98,23 @@ export default class HomePage extends BaseControl<defaultInterface> {
 
 	public state = {
 
+		content_loaded: false,
+
 		button_list: null,
 		buttons_loaded: false,
 
-		details_panel_visible: true,
+		eyecandy_visible: false,
+		eyecandy_callback: null,
+
 		contents: this.panel_list.home
 
 	}// state;
+
+
+	public constructor (props) {
+		super (props);
+		globals.home_page = this;
+	}// constructor;
 
 
 	public componentDidMount () {
@@ -108,16 +123,12 @@ export default class HomePage extends BaseControl<defaultInterface> {
 			this.add_button_reference (reference);
 			return (
 				<SelectButton id={value} name={name} key={name} ref={reference}
-					beforeClick={() => {
-						this.select (reference.current)
-					}}
-					onClick={() => {
-						this.setState ({ contents: this.panel_list.history })
-					}}>{value}
+					beforeClick={() => { this.select_button (reference.current) }}>
+					{value}
 				</SelectButton>
 			);
 		}) }, () => {
-			this.setState ({ buttons_loaded: true });
+			setTimeout (() => this.setState ({ buttons_loaded: true }));
 		});
 	}// componentDidMount;
 
@@ -128,21 +139,31 @@ export default class HomePage extends BaseControl<defaultInterface> {
 
 				<link rel="stylesheet" href="resources/styles/home.page.css" />
 
-				<FadeControl id="button_panel" ref={this.create_reference} className="home_button_panel" visible={this.state.buttons_loaded}>
+				<div className="home_button_panel">
 					{this.state.button_list}
 					{this.settings_button ()}
 					{this.signout_button ()}
-				</FadeControl>
+				</div>
 
-				<FadeControl id="details_panel" ref={this.create_reference} visible={this.state.details_panel_visible}
-					className="full-screen horizontal-centering-container" style={{ marginTop: "2em" }}
-					afterHiding={() => {
-						this.setState ({ contents: this.panel_list [this.selected_button.props.name] }, () => {
-							this.setState ({ details_panel_visible: true });
-						});
-					}}>
-					{this.state.contents}
-				</FadeControl>
+				<div className="full-screen horizontal-centering-container overlay-container" style={{ marginTop: "2em" }}>
+
+					<Eyecandy id="home_eyecandy" visible={this.state.eyecandy_visible} text="Loading..." className="top-center-container"
+						afterShowing={() => {
+							this.setState ({ contents: this.panel_list [this.selected_button.props.name] });
+							this.setState ({ eyecandy_visible: false });
+						}}
+						afterHiding={() => { this.setState ({ content_loaded: true })}}>
+					</Eyecandy>
+
+
+					<FadeControl id="details_panel" ref={this.create_reference} visible={this.state.content_loaded}
+						className="full-screen top-center-container"
+						beforeShowing={() => { globals.main_page.setState ({ content_loaded: true }) }}
+						afterHiding={() => { this.setState ({ eyecandy_visible: true }) }}>
+						{this.state.contents}
+					</FadeControl>
+
+				</div>
 
 			</div>
 		);

@@ -5,6 +5,7 @@ import FadeControl from "components/controls/fade.control";
 import SelectButton from "components/controls/select.button";
 
 import { globals } from "components/types/globals";
+import { popup_zindex } from "components/types/constants";
 
 
 interface popupWindowInterface extends defaultInterface {
@@ -32,13 +33,11 @@ export default class PopupWindow extends BaseControl<popupWindowInterface> {
 
 	public render () {
 		return (
-			<FadeControl id={this.id} ref={this.create_reference} visible={this.props.open} className="full-size"
-				beforeShowing={() => {
-					this.execute_event (this.props.beforeOpening);
-				}}
-				afterHiding={() => {
-					this.execute_event (this.props.afterClosing);
-				}}>
+			<FadeControl id={this.id} ref={this.create_reference} visible={this.props.open} className="full-size" zIndex={popup_zindex}
+
+				beforeShowing={() => this.execute_event (this.props.beforeOpening)}
+				afterHiding={() => this.execute_event (this.props.afterClosing)}>
+
 				<link rel="stylesheet" href="/resources/styles/panels/gadgets/popup.window.css" />
 				<div className="full-size popup-panel">
 					{this.modal ? <div className="full-size centering-container popup-modal" /> : null}
@@ -51,6 +50,7 @@ export default class PopupWindow extends BaseControl<popupWindowInterface> {
 						</div>
 					</div>
 				</div>
+
 			</FadeControl>
 		);
 	}// render;

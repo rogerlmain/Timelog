@@ -87,7 +87,7 @@ export default class TeamPanel extends BaseControl<any> {
 {/*
 				{this.new_team_window ()}
  */}
-				<div className="team_list_panel">
+				<div className="team_list_panel vertical-centering-container" style={{ columnGap: "0.5em" }}>
 
 					<label htmlFor="client_selector">Team</label>
 
@@ -103,7 +103,8 @@ export default class TeamPanel extends BaseControl<any> {
 					<SelectButton rendered={this.team_available} key="create_team_button" id="create_team_button"
 						style={{
 							fontSize: "7pt",
-							height: "2.1em"
+							height: "2.1em",
+							marginLef: "0.5em"
 						}}
 						onclick={() => {
 							this.props.parent.setState ({ popup: true });

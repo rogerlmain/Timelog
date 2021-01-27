@@ -13,7 +13,8 @@ module.exports = {
 	mode: "development",
 
 	entry: {
-		"main": "./main.tsx"
+		"main": "./main.tsx",
+		"aaatest": "./aaatest.tsx"
 	},
 
 	output: {

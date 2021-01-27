@@ -28,7 +28,7 @@ export class account {
 	teams: any;
 
 	public static parse (json_string: string): account {
-		let result: account = JSON.parse (json_string);
+		let result: account = common.isset (json_string) ? JSON.parse (json_string) : null;
 		if (common.isset (result) && common.isset (result.teams)) result.teams = JSON.parse (result.teams as unknown as string);
 		return result;
 	}// parse;

@@ -10,7 +10,7 @@ interface settingsInterface {
 
 const default_settings: settingsInterface = {
 	animation_delay: 500,
-	animation_speed: 1000
+	animation_speed: 2000
 }// default_settings;
 
 
@@ -24,6 +24,7 @@ const settings_cookie = (): settingsInterface => {
 export const globals = {
 
 	main_page: null,
+	home_page: null,
 
 	settings: ((() => {
 

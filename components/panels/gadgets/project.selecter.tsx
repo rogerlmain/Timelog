@@ -4,15 +4,24 @@ import * as common from "components/classes/common";
 
 import BaseControl, { defaultInterface } from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
+import { globals } from "components/types/globals";
 
 
 interface projectsPanelInterface extends defaultInterface {
+	onLoad: any,
 	onClientChange: any,
 	onProjectChange: any
 }// projectsPanelInterface;
 
 
 export default class ProjectSelecter extends BaseControl<projectsPanelInterface> {
+
+
+	private load_clients () {
+		this.fetch_items ("clients", { action: "client_list" }, (data: any) => {
+			this.setState ({ clients: data });
+		});
+	}// load_clients;
 
 
 	private load_projects () {
@@ -56,7 +65,7 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 	private client_selecter () {
 		return (
 			<div style={{ display: "contents" }}>
-				<div className="center-right-container">
+				<div className="middle-right-container">
 					<label htmlFor="client_selecter">Client</label>
 				</div>
 				<select id="client_selecter" ref={this.create_reference} name="client_id" defaultValue="placeholder"
@@ -64,6 +73,7 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 					onChange={this.client_change_handler.bind (this)}>
 
 					<option value="placeholder" key="placeholder" disabled={true} />
+
 					{this.select_options (this.state.clients, "client_id", "name")}
 
 				</select>
@@ -76,7 +86,7 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 		return (
 			<div id="project_list" style={{ display: "contents" }}>
 
-				<FadeControl visible={this.state.client_selected} className="center-right-container" vanishing={true}>
+				<FadeControl visible={this.state.client_selected} className="middle-right-container" vanishing={true}>
 					<label htmlFor="project_selecter">Project</label>
 				</FadeControl>
 
@@ -109,16 +119,17 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 
 		client_changed: null,
 
-		client_selected: false
+		clients_loaded: false,
+		client_selected: false,
+
+		projects_loaded: false,
+		project_selected: false,
 
 	}// state;
 
 
 	public componentDidMount () {
-		this.fetch_items ("clients", { action: "client_list" }, (data: any) => {
-			this.setState ({ clients: data });
-			this.forceUpdate ();
-		});
+		this.load_clients ();
 	}// componentDidMount;
 
 

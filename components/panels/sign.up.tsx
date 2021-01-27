@@ -117,7 +117,7 @@ export default class SignupPanel extends BaseControl<defaultInterface> {
 				<div className="tagline" style={{ gridColumn: "1/5" }}>
 					<div>{this.signed_out () ? this.tagline () : null}</div>
 
-					<div className="overlay-container center-right-container">
+					<div className="overlay-container middle-right-container">
 
 						<Eyecandy visible={this.state.eyecandy_visible}
 							text={this.signed_in () ? "Saving your information" : "Creating your account"}
@@ -138,7 +138,7 @@ export default class SignupPanel extends BaseControl<defaultInterface> {
 							afterHiding={() => { this.setState ({ button_visible: true }) }}>
 						</Eyecandy>
 
-						<FadeControl visible={this.state.button_visible} className="center-right-container"
+						<FadeControl visible={this.state.button_visible} className="middle-right-container"
 							afterHiding={() => { this.setState ({ eyecandy_visible: true }) }}>
 							<button onClick={() => {
 								parent.setState ({ signing_status: signing_state.pending });

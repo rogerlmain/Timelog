@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import "components/types/prototypes";
 
-import { signing_state } from "components/types/constants";
+import { fade_zindex, signing_state } from "components/types/constants";
 
 import { globals } from "components/types/globals";
 
@@ -18,7 +18,7 @@ import SignupPanel from "components/panels/sign.up";
 import PopupWindow from "components/panels/gadgets/popup.window";
 
 
-export class MainPage extends BaseControl<any> {
+class MainPage extends BaseControl<any> {
 
 
 	public panels = {
@@ -42,8 +42,8 @@ export class MainPage extends BaseControl<any> {
 
 		panel_states: {
 			signup_panel: false,
-			signin_panel: this.signed_out (),
-			home_panel: this.signed_in ()
+			signin_panel: false,
+			home_panel: false
 		},
 
 doit: false,
@@ -53,7 +53,9 @@ doit: false,
 		signing_status: signing_state.signed_out,
 
 		popup_visible: false,
-		popup_contents: null
+		popup_contents: null,
+
+		content_loaded: false
 
 	}// state;
 
@@ -68,9 +70,27 @@ doit: false,
 	}// load_panel;
 
 
+	public componentDidMount () {
+		this.setState ({ panel_states: {
+			...this.state.panel_states,
+			signin_panel: this.signed_out (),
+			home_panel: this.signed_in ()
+		}});
+		let active_control = this.reference (this.signed_in () ? "home_control" : "signin_control");
+		active_control.dom_control.current.style.zIndex = fade_zindex;
+		this.forceUpdate ();
+	}// componentDidMount;
+
+
+public debug (text: string)	{
+	document.getElementById ("debug_output").innerHTML += text + "<br />";
+}// debug;
+
+
     public render () {
 		return (
-			<div className="full-screen">
+
+			<FadeControl visible={this.state.content_loaded} className="full-screen">
 
 				<PopupWindow id="popup_window" ref={this.create_reference} open={this.state.popup_visible}>
 					{this.state.popup_contents}
@@ -81,12 +101,12 @@ doit: false,
 
 					{/* DEBUG CODE */}
 
-					<div className="outlined"
+					<div className="gray-outlined"
 						style={{
 							position: "absolute",
 							left: "2em",
 							top: "2em",
-							zIndex: 5,
+							zIndex: 25,
 							display: "flex",
 							flexDirection: "column",
 							alignItems: "stretch"
@@ -107,23 +127,22 @@ doit: false,
 					<div className="full-screen outlined-panel overlay-container">
 
 						<FadeControl id="signin_control" ref={this.create_reference} className="full-screen centering-container"
-							visible={this.state.panel_states.signin_panel} afterHiding={() => {
-								this.setState ({ panel_states: {...this.state.panel_states, [this.active_panel]: true } })
-							}}>
+							visible={this.state.panel_states.signin_panel}
+							afterShowing={() => { this.setState ({ content_loaded: true })}}
+							afterHiding={() => { this.setState ({ panel_states: {...this.state.panel_states, [this.active_panel]: true } }) }}>
 							<SigninPanel id="signin_panel" ref={this.create_reference} parent={this} />
 						</FadeControl>
 
 						<FadeControl id="signup_control" ref={this.create_reference} className="full-screen centering-container"
-							visible={this.state.panel_states.signup_panel} afterHiding={() => {
-								this.setState ({ panel_states: {...this.state.panel_states, [this.active_panel]: true } })
-							}}>
+							visible={this.state.panel_states.signup_panel}
+							afterShowing={() => { this.setState ({ content_loaded: true })}}
+							afterHiding={() => { this.setState ({ panel_states: {...this.state.panel_states, [this.active_panel]: true } }) }}>
 							<SignupPanel id="signup_panel" ref={this.create_reference} parent={this} />
 						</FadeControl>
 
 						<FadeControl id="home_control" ref={this.create_reference} className="full-screen centering-container"
-							visible={this.state.panel_states.home_panel} afterHiding={() => {
-								this.setState ({ panel_states: {...this.state.panel_states, [this.active_panel]: true } })
-							}}>
+							visible={this.state.panel_states.home_panel}
+							afterHiding={() => { this.setState ({ panel_states: {...this.state.panel_states, [this.active_panel]: true } }) }}>
 							<HomePage id="home_page" ref={this.create_reference} parent={this} />
 						</FadeControl>
 
@@ -131,7 +150,8 @@ doit: false,
 
 				</div>
 
-			</div>
+			</FadeControl>
+
 		);
 	}// render;
 
@@ -139,11 +159,5 @@ doit: false,
 
 
 document.onreadystatechange = () => {
-	ReactDOM.render (
-		// <GlobalStore>
-			<MainPage id="main_page" />
-		// </GlobalStore>
-		,
-		document.getElementById ("main_page")
-	);
+	ReactDOM.render (<MainPage id="main_page" />, document.getElementById ("main_page"));
 }// document.ready;

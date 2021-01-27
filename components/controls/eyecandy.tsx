@@ -23,7 +23,7 @@ export default class Eyecandy extends BaseControl<eyecandy> {
 		var subtext = (this.props.subtext != null) ? <div>{this.props.subtext}</div> : null;
 
 		return (
-			<FadeControl id={this.id_badge ("Eyecandy")} visible={this.props.visible}
+			<FadeControl id={this.id_badge ("Eyecandy")} visible={this.props.visible} style={this.props.style} className={this.props.className}
 
 				beforeShowing={this.props.beforeShowing}
 				afterShowing={this.props.afterShowing}
