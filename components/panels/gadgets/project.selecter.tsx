@@ -26,7 +26,7 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 
 	private load_projects () {
 		let parameters = new FormData ();
-		parameters.set ("action", "project_list");
+		parameters.set ("action", "list");
 		parameters.set ("client_id", this.reference ("client_selecter").value);
 
 		this.fetch_items ("projects", parameters, (data: any) => {
@@ -135,7 +135,7 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 
 	public render () {
 		return (
-			<div id="projects_panel">
+			<form id={this.id_badge (this.props.id)}>
 
 				<div className="two-piece-form" style={{ overflow: "hidden" }}>
 
@@ -144,7 +144,7 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 
 				</div>
 
-			</div>
+			</form>
 		);
 	}// render;
 

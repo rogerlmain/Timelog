@@ -1,5 +1,6 @@
 import React from "react";
 
+import * as constants from "components/types/constants";
 import * as common from "components/classes/common";
 
 import BaseControl from "components/controls/base.control";
@@ -7,28 +8,42 @@ import FadeControl from "components/controls/fade.control";
 import EyecandyButton from "components/controls/eyecandy.button";
 import SelectButton from "components/controls/select.button";
 
+import Eyecandy from "components/controls/eyecandy";
+
 import ProjectSelecter from "components/panels/gadgets/project.selecter";
 
 import { globals } from "components/types/globals";
-import Eyecandy from "components/controls/eyecandy";
 
 
 export default class ProjectsPanel extends BaseControl<any> {
 
 
-	private dom (name: string, property: string = null): HTMLFormElement {
-		let element = document.getElementById (name) as HTMLFormElement;
-		if (common.is_null (property)) return element;
-		if (common.is_null (element)) return null;
-		return element [property];
-	}// dom;
+	private fetch_project () {
+		let parameters = new FormData (this.dom ("project_selecter"));
+		parameters.append ("action", "details");
+		this.fetch_data ("projects", parameters, (data: any) => {
+			this.setState ({
+				eyecandy_visible: false,
+				project_data: data
+			}, () => { this.forceUpdate () });
+		});
+	}// fetch_project;
+
+
+	private get_value (state: string, field: string): any {
+		return this.getState (state, field) ?? constants.empty;
+	}// get_value;
+
+
+
+	/********/
 
 
 	public state = {
 		client_selected: false,
 		project_selected: false,
 
-		loading_eyecandy: false,
+		eyecandy_visible: false,
 		project_loaded: false,
 
 		project_data: null
@@ -46,7 +61,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 					<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
 						onClientChange={() => { this.setState ({ client_selected: true }) }}
-						onProjectChange={() => { this.setState ({ loading_eyecandy: true }) }}
+						onProjectChange={() => { this.setState ({ eyecandy_visible: true }) }}
 						onLoad={() => { globals.home_page.setState ({ content_loaded: true })}}>
 					</ProjectSelecter>
 
@@ -69,7 +84,10 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 				<div className="overlay-container centering-cell">
 
-					<Eyecandy visible={this.state.loading_eyecandy} text="Loading" />
+					<Eyecandy visible={this.state.eyecandy_visible} text="Loading"
+						afterShowing={this.fetch_project.bind (this)}
+						afterHiding={() => { this.setState ({ project_loaded: true }) }}>
+					</Eyecandy>
 
 					<FadeControl id="project_details_panel" visible={this.state.project_loaded} style={{ width: "100%" }}>
 
@@ -77,15 +95,18 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 						<form id="project_form">
 
-							<input type="hidden" id="project_id" name="project_id" />
+							<input type="hidden" id="project_id" name="project_id" defaultValue={this.get_value ("project_data", "project_id")} />
 							<div className="two-piece-form">
 								<label htmlFor="project_name">Project Name</label>
-								<input type="text" id="project_name" name="project_name" />
+								<input type="text" id="project_name" name="project_name" defaultValue={this.get_value ("project_data", "name")} />
 							</div>
 
-							<textarea id="project_description" name="project_description" placeholder="Description (optional)" />
+							<textarea id="project_description" name="project_description" placeholder="Description (optional)"
+								defaultValue={this.get_value ("project_data", "description")}>
+							</textarea>
 
 						</form>
+
 						<div className="button-bar">
 
 							<EyecandyButton id="save_project_button" ref={this.create_reference} text={`Saving ${this.dom ("project_name", "value")}`}

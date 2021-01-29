@@ -76,13 +76,6 @@ const models = {
 	}/* get_clients */,
 
 
-	get_client_projects: (client_id) => {
-		let procedure = "call get_client_projects (?)";
-		let parameters = [client_id];
-		connection.query (procedure, parameters, data_response_handler);
-	}/* get_client_projects */,
-
-
 	/**** Projects ****/
 
 
@@ -94,6 +87,20 @@ const models = {
 		];
 		connection.query (procedure, parameters, data_response_handler);
 	}/* save_project */,
+
+
+	get_project: (project_id) => {
+		let procedure = "call get_project (?)";
+		let parameters = [project_id];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_project */,
+
+
+	get_client_projects: (client_id) => {
+		let procedure = "call get_client_projects (?)";
+		let parameters = [client_id];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_client_projects */,
 
 
 	/**** Entries ****/

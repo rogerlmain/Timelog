@@ -100,7 +100,8 @@ app.post ("/clients", function (request, response) {
 app.post ("/projects", function (request, response) {
 	app.process (request, response, (fields) => {
 		switch (fields.action) {
-			case "project_list": models.get_client_projects (fields.client_id); break;
+			case "list": models.get_client_projects (fields.client_id); break;
+			case "details": models.get_project (fields.project_id); break;
 			case "save": models.save_project (fields);
 		}// switch;
 	})

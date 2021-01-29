@@ -94,7 +94,23 @@ export default class BaseControl<properties> extends React.Component<any> {
 	/********/
 
 
+	protected getState = (name: string, fieldname: string) => {
+		let object = this.state [name];
+		if (common.is_null (object)) return null;
+		return object [fieldname];
+	}// getState;
+
+
+	/********/
+
+
 	protected references: ReferenceList;
+
+
+	protected add_reference (element: any, reference: any) {
+		reference = this.create_reference (element);
+		return reference;
+	}// add_reference;
 
 
 	protected current_account (): datatype.account {
@@ -107,10 +123,12 @@ export default class BaseControl<properties> extends React.Component<any> {
 	}// current_entry;
 
 
-	protected add_reference = (element, reference) => {
-		reference = this.create_reference (element);
-		return reference;
-	}// add_reference;
+	protected dom (name: string, property: string = null): HTMLFormElement {
+		let element = document.getElementById (name) as HTMLFormElement;
+		if (common.is_null (property)) return element;
+		if (common.is_null (element)) return null;
+		return element [property];
+	}// dom;
 
 
 	protected create_reference = element => {
@@ -127,6 +145,16 @@ export default class BaseControl<properties> extends React.Component<any> {
 	protected execute_event (event) {
 		if (event != null) return event ();
 	}// execute_event;
+
+
+	protected fetch_data (view: string, parameters: any, callback: any) {
+		fetch (`/${view}`, {
+			method: "post",
+			body: parameters
+		}).then (response => response.json ()).then (data => {
+			if (data.length > 0) callback (data [0]);
+		});
+	}// fetch_data;
 
 
 	protected fetch_items (view: any, parameters: any, callback: any = null) {
@@ -166,12 +194,6 @@ export default class BaseControl<properties> extends React.Component<any> {
 	protected ref_state = (reference: string, value: any) => {
 		this.reference (reference).setState (value);
 	}// ref_state;
-
-
-	protected get_state = (name: string, fieldname: string) => {
-		let ref = this.reference (name);
-		return common.isset (ref) ? ref.state [fieldname] : null;
-	}// get_state;
 
 
 	protected select_options (list: any, id_field: string, text_value: string) {
