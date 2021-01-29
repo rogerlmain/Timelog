@@ -56,8 +56,8 @@ export default class FadeControl extends BaseControl<fadeControl> {
 
 	private fade_style = {
 		transition: `opacity ${globals.settings.animation_speed}ms ease-in-out`,
-		opacity: 0,
-		zIndex: hidden_zindex
+		opacity: (this.props.visible ? 1 : 0),
+		zIndex: (this.props.visible ? fade_zindex : hidden_zindex)
 	}// fade_style;
 
 
@@ -96,7 +96,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 
 				result = {
 					display: computed_style.display,
-					width: Math.round (parseFloat (computed_style.width)),
+					width: Math.ceil (parseFloat (computed_style.width)),
 					height: Math.round (parseFloat (computed_style.height))
 				};
 

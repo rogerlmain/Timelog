@@ -34,6 +34,7 @@ class MainPage extends BaseControl<any> {
 	public constructor (props) {
 		super (props);
 		this.state.signing_status = this.signed_in () ? signing_state.signed_in : signing_state.signed_out;
+		this.load_logging_status ();
 		globals.main_page = this;
 	}// constructor;
 
@@ -90,7 +91,7 @@ public debug (text: string)	{
     public render () {
 		return (
 
-			<FadeControl visible={this.state.content_loaded} className="full-screen">
+			<FadeControl visible={this.state.content_loaded} className="full-screen overlay-container">
 
 				<PopupWindow id="popup_window" ref={this.create_reference} open={this.state.popup_visible}>
 					{this.state.popup_contents}

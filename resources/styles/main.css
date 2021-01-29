@@ -41,21 +41,6 @@ button:hover {
 }/* button:hover */
 
 
-html, body, .full-screen, .full-size {
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-}/* html, body, .full-screen, .full-size */
-
-
-.full-size {
-	position: absolute;
-	left: 0;
-	top: 0;
-}/* full_size */;
-
-
 body {
 	overflow: hidden;
 	padding: 1em;
@@ -148,7 +133,7 @@ border: solid 1px green;
 
 
 .overlay-container {
-	display: grid;
+	display: inline-grid;
 	grid-template-columns: auto;
 	grid-template-rows: auto;
 }/* .overlay-container */
@@ -191,6 +176,7 @@ border: solid 1px green;
 .two-piece-form {
 	display: grid;
 	grid-template-columns: auto auto;
+	align-items: center;
 	row-gap: 0.2em;
 	column-gap: 1em;
 }/* two-piece-form */

@@ -21,51 +21,7 @@ const data_response_handler = (error, results, fields) => {
 const models = {
 
 
-	get_clients: (company_id) => {
-		let procedure = "call get_clients (?)";
-		let parameters = [company_id];
-		connection.query (procedure, parameters, data_response_handler);
-	}/* get_clients */,
-
-
-	get_client_projects: (client_id) => {
-		let procedure = "call get_client_projects (?)";
-		let parameters = [client_id];
-		connection.query (procedure, parameters, data_response_handler);
-	}/* get_client_projects */,
-
-
-	get_entries: (client_id, project_id) => {
-		let procedure = "call get_entries (?, ?)";
-		let parameters = [ client_id, project_id ];
-		connection.query (procedure, parameters, data_response_handler);
-	}/* get_entries */,
-
-
-	save_entry: (client_id, project_id, entry_id) => {
-		let procedure = "call save_entry (?, ?, ?, ?)";
-		let parameters = [
-			account.current_account ().account_id,
-			parseInt (client_id),
-			parseInt (project_id),
-			global.isset (entry_id) ? parseInt (entry_id) : null
-		];
-		connection.query (procedure, parameters, data_response_handler);
-	}/* save_entry */,
-
-
-	get_teams: (account_id) => {
-		let procedure = "call get_teams (?)";
-		let parameters = [account_id];
-		connection.query (procedure, parameters, data_response_handler);
-	}/* get_teams */,
-
-
-	get_members: (team_id) => {
-		let procedure = "call get_team_members (?)";
-		let parameters = [team_id];
-		connection.query (procedure, parameters, data_response_handler);
-	}/* get_members */,
+	/**** Accounts ****/
 
 
 	save_account: () => {
@@ -103,11 +59,87 @@ const models = {
 					}// if;
 					global.response.send ();
 				} catch (except) {
-					let i = 0;
+					throw except;
 				}// try;
 			});
 		});
-	}/* signin */
+	}/* signin */,
+
+
+	/**** Clients ****/
+
+
+	get_clients: (company_id) => {
+		let procedure = "call get_clients (?)";
+		let parameters = [company_id];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_clients */,
+
+
+	get_client_projects: (client_id) => {
+		let procedure = "call get_client_projects (?)";
+		let parameters = [client_id];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_client_projects */,
+
+
+	/**** Projects ****/
+
+
+	save_project: (fields) => {
+		let procedure = "call save_project (?, ?, ?, ?)";
+		let parameters = [
+			fields.project_name, fields.project_description, fields.client_id,
+			global.isset (fields.project_id) ? parseInt (fields.project_id) : null
+		];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* save_project */,
+
+
+	/**** Entries ****/
+
+
+	get_entries: (client_id, project_id) => {
+		let procedure = "call get_entries (?, ?)";
+		let parameters = [ client_id, project_id ];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_entries */,
+
+
+	get_current_entry: () => {
+		let procedure = "call get_current_entry (?)";
+		connection.query (procedure, [account.current_account ().account_id], data_response_handler);
+	}/* get_current_entry */,
+
+
+	save_entry: (client_id, project_id, entry_id) => {
+		let procedure = "call save_entry (?, ?, ?, ?)";
+		let parameters = [
+			account.current_account ().account_id,
+			parseInt (client_id),
+			parseInt (project_id),
+			global.isset (entry_id) ? parseInt (entry_id) : null
+		];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* save_entry */,
+
+
+	/**** Teams ****/
+
+
+	get_teams: (account_id) => {
+		let procedure = "call get_teams (?)";
+		let parameters = [account_id];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_teams */,
+
+
+	get_members: (team_id) => {
+		let procedure = "call get_team_members (?)";
+		let parameters = [team_id];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_members */,
+
 
 }// models;
 

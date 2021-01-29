@@ -5,34 +5,57 @@
 
 #new_project_button { width: 100% }
 
+#project_details_panel { width: 100% }
 
-.project_select_form {
+
+#project_description {
+	height: 8em;
+	margin-top: 1em;
+	width: 100%;
+}/* #project_description */
+
+
+#project_page hr {
+	height: 0;
+	width: 100%;
+	border: none;
+	border-top: solid 1px black;
+	margin: 2em 0;
+}/* #project_page hr */
+
+
+/********/
+
+
+.project-select-form {
 	position: relative;
 	display: grid;
-	grid-template-columns: repeat(2, min-content);
+	grid-template-columns: repeat(2, auto);
 	column-gap: 0.5em;
-}/* .project_select_form */
+}/* .project-select-form */
 
 
-.project_select_form .button-panel {
+.project-select-form .button-panel {
 	display: grid;
 	grid-template-rows: repeat(2, auto);
 	justify-items: stretch;
 	row-gap: 0.2em;
-}/* .project_select_form .button-panel */
+}/* .project-select-form .button-panel */
 
 
-.project_select_form .button-cell {
+.project-select-form .button-cell {
 	display: grid;
 	grid-template-columns: repeat(2, min-content);
 	column-gap: 0.25em;
 	row-gap: 0.2em;
-}/* project_select_form .button-panel */
+}/* project-select-form .button-panel */
 
 
-.project_select_form .button-panel button {
+.project-select-form .button-panel button {
 	display: flex;
 	height: 1.5em;
 	align-items: center;
 	justify-content: center;
-}/* .project_select_form .button-panel button */
+}/* .project-select-form .button-panel button */
+
+

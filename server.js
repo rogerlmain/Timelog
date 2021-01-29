@@ -82,6 +82,7 @@ app.post ("/logging", function (request, response) {
 		switch (fields.action) {
 			case "entries": models.get_entries (fields.client_id, fields.project_id); break;
 			case "logging": models.save_entry (fields.client_id, fields.project_id, fields.entry_id); break;
+			case "log_status": models.get_current_entry (); break;
 		}// switch;
 	})
 });
@@ -100,6 +101,7 @@ app.post ("/projects", function (request, response) {
 	app.process (request, response, (fields) => {
 		switch (fields.action) {
 			case "project_list": models.get_client_projects (fields.client_id); break;
+			case "save": models.save_project (fields);
 		}// switch;
 	})
 });

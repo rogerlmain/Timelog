@@ -33,7 +33,7 @@ export default class Eyecandy extends BaseControl<eyecandy> {
 					<div><img src="resources/images/eyecandy.gif" /></div>
 					<div>
 						<div>{this.props.text}</div>
-						{subtext}
+						{subtext ?? "One moment, please"}
 					</div>
 				</div>
 			</FadeControl>

@@ -1,8 +1,30 @@
+/**** Global ****/
+
+
+html, body, .full-screen, .full-size {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}/* html, body, .full-screen, .full-size */
+
+
+textarea { padding: 0.2em 0.5em }
+
+
+.full-size {
+	position: absolute;
+	left: 0;
+	top: 0;
+}/* full_size */;
+
+
 /**** Containers ****/
 
 
 .centering-container {
 	display: inline-flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 }/* .centering-container */
@@ -37,3 +59,20 @@
 	align-items: center;
 }/* .top-center-container */
 
+
+/**** Button Panels ****/
+
+
+.button-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 1em;
+}/* .button-bar */
+
+
+.eyecandy-button-panel {
+	display: flex;
+	flex-direction: row;
+    justify-content: flex-end;
+}/* .eyecandy-button-panel */

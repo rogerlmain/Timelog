@@ -55,7 +55,22 @@ export default class BaseControl<properties> extends React.Component<any> {
 	}// signed_out;
 
 
-	public logged_in () {
+	public load_logging_status () {
+		if (this.logged_in ()) return;
+
+		let data = new FormData ();
+		data.append ("action", "log_status");
+
+		fetch ("/logging", {
+			body: data,
+			method: "post"
+		}).then (response => response.json ()).then ((data) => {
+			common.set_cookie ("current_entry", JSON.stringify (data [0]));
+		});
+	}// load_logging_status;
+
+
+	public logged_in (callback: any = null) {
 		return common.not_null (common.get_cookie ("current_entry"));
 	}// logged_in;
 
@@ -110,7 +125,7 @@ export default class BaseControl<properties> extends React.Component<any> {
 
 
 	protected execute_event (event) {
-		if (event != null) event ();
+		if (event != null) return event ();
 	}// execute_event;
 
 

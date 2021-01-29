@@ -4,6 +4,7 @@ import * as common from "components/classes/common";
 
 import BaseControl from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
+import EyecandyButton from "components/controls/eyecandy.button";
 import SelectButton from "components/controls/select.button";
 
 import ProjectSelecter from "components/panels/gadgets/project.selecter";
@@ -14,37 +15,94 @@ import { globals } from "components/types/globals";
 export default class ProjectsPanel extends BaseControl<any> {
 
 
+	private dom (name: string, property: string = null): HTMLFormElement {
+		let element = document.getElementById (name) as HTMLFormElement;
+		if (common.is_null (property)) return element;
+		if (common.is_null (element)) return null;
+		return element [property];
+	}// dom;
+
+
 	public state = {
 		client_selected: false,
-		project_selected: false
+		project_selected: false,
+
+		project_loaded: false
 	}// state;
 
 
 	public render () {
 		return (
 
-			<div id="project_select_form" className="project_select_form">
+			<div id="project_page" className="top-center-container">
 
-				<link rel="stylesheet" href="/resources/styles/panels/projects.css" />
+				<div className="project-select-form">
 
-				<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
-					onClientChange={() => { this.setState ({ client_selected: true }) }}
-					onLoad={() => { globals.home_page.setState ({ content_loaded: true })}}
-				/>
-				<div className="button-panel">
-					<div className="button-cell">
+					<link rel="stylesheet" href="/resources/styles/panels/projects.css" />
 
-						<SelectButton id="new_client_button">New</SelectButton>
-						<FadeControl id="edit_client_button_panel" ref={this.create_reference} vanishing={true} visible={this.state.client_selected}>
-							<SelectButton id="edit_client_button">Edit</SelectButton>
-						</FadeControl>
+					<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
+						onClientChange={() => { this.setState ({ client_selected: true }) }}
+						onLoad={() => { globals.home_page.setState ({ content_loaded: true })}}>
+					</ProjectSelecter>
 
-						<FadeControl id="new_project_button_panel" ref={this.create_reference} visible={this.state.client_selected}>
-							<SelectButton id="new_project_button">New</SelectButton>
-						</FadeControl>
+					<div className="button-panel">
+						<div className="button-cell">
+
+							<SelectButton id="new_client_button">New</SelectButton>
+							<FadeControl id="edit_client_button_panel" ref={this.create_reference} vanishing={true} visible={this.state.client_selected}>
+								<SelectButton id="edit_client_button">Edit</SelectButton>
+							</FadeControl>
+
+							<FadeControl id="new_project_button_panel" ref={this.create_reference} visible={this.state.client_selected}>
+								<SelectButton id="new_project_button" onclick={() => { this.setState ({ project_loaded: true }) }}>New</SelectButton>
+							</FadeControl>
+
+						</div>
+					</div>
+
+				</div>
+
+				<FadeControl id="project_details_panel" visible={this.state.project_loaded} style={{ width: "100%" }}>
+
+					<hr />
+
+					<form id="project_form">
+
+						<input type="hidden" id="project_id" name="project_id" />
+						<div className="two-piece-form">
+							<label htmlFor="project_name">Project Name</label>
+							<input type="text" id="project_name" name="project_name" />
+						</div>
+
+						<textarea id="project_description" name="project_description" placeholder="Description (optional)" />
+
+					</form>
+					<div className="button-bar">
+
+						<EyecandyButton id="save_project_button" ref={this.create_reference} text={`Saving ${this.dom ("project_name", "value")}`}
+
+							onclick={() => {
+
+								let parameters = new FormData (this.dom ("project_form"));
+								parameters.append ("client_id", this.dom ("client_selecter").value);
+								parameters.append ("action", "save");
+
+								fetch ("/projects", {
+									method: "post",
+									body: parameters
+								}).then (response  => response.json ()).then ((data) => {
+									if (data.length != 1) return;
+									(document.getElementById ("project_id") as HTMLFormElement).value = data [0].project_id;
+									this.reference ("save_project_button").setState ({ eyecandy_visible: false });
+								});
+
+							}}
+
+						>Create / Save</EyecandyButton>
 
 					</div>
-				</div>
+				</FadeControl>
+
 			</div>
 
 		);

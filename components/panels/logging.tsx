@@ -69,48 +69,68 @@ export default class LoggingPanel extends BaseControl<any> {
 				<link rel="stylesheet" href="resources/styles/panels/projects.css" />
 				<link rel="stylesheet" href="resources/styles/panels/logging.css" />
 
-				<form id="log_form" ref={this.create_reference} encType="multipart/form-data">
 
-					<div className="project_select_form">
+				<div id="log_information_panel"
+					style={{ display: this.logged_in () ? null : "none" }}>
 
-						<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
-							onClientChange={() => {
-								this.setState ({
-									gadget_updated: false,
-									project_selected: false
-								})
-							}}
-							onProjectChange={() => {
-								this.setState ({
-									gadget_updated: false,
-									project_selected: true
-								}, this.load_entries.bind (this))
-							}}>
-						</ProjectSelecter>
+Logged in to ...
 
-						<FadeControl visible={this.state.project_selected} vanishing={true}>
+{(() => {
 
-							<SelectButton id="log_button" ref={this.create_reference} sticky={false} style={{ whiteSpace: "nowrap" }}
+	let current_entry = common.get_cookie ("current_entry");
+	return current_entry;
 
-								onclick={() => {
-									let current_entry = this.current_entry ();
-									let parameters = common.isset (current_entry) ? { entry_id: current_entry.entry_id } : null;
-									this.log_and_fetch (parameters);
-								}// onClick;
+})()}
 
-							}>Log {this.logged_in () ? "out" : "in"}</SelectButton>
+				</div>
 
+
+				<div id="log_form_panel">
+
+					<form id="log_form" ref={this.create_reference} encType="multipart/form-data">
+
+						<div className="project-select-form">
+
+							<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
+								onClientChange={() => {
+									this.setState ({
+										gadget_updated: false,
+										project_selected: false
+									})
+								}}
+								onProjectChange={() => {
+									this.setState ({
+										gadget_updated: false,
+										project_selected: true
+									}, this.load_entries.bind (this))
+								}}>
+							</ProjectSelecter>
+
+							<FadeControl visible={this.state.project_selected} vanishing={true}>
+
+								<SelectButton id="log_button" ref={this.create_reference} sticky={false} style={{ whiteSpace: "nowrap" }}
+
+									onclick={() => {
+										let current_entry = this.current_entry ();
+										let parameters = common.isset (current_entry) ? { entry_id: current_entry.entry_id } : null;
+										this.log_and_fetch (parameters);
+									}// onClick;
+
+								}>Log {this.logged_in () ? "out" : "in"}</SelectButton>
+
+							</FadeControl>
+
+						</div>
+
+					</form>
+
+					<OverflowControl control_panel={this.reference ("history_panel")} main_panel={document.getElementById ("program_panel")}>
+						<FadeControl visible={this.state.gadget_updated && (this.state.entries.length > 0)} dom_control={this.reference ("history_panel")}>
+							<LogHistoryGadget id="history_panel" parent={this} entries={this.state.entries} />
 						</FadeControl>
+					</OverflowControl>
 
-					</div>
-
-				</form>
-
-				<OverflowControl control_panel={this.reference ("history_panel")} main_panel={document.getElementById ("program_panel")}>
-					<FadeControl visible={this.state.gadget_updated && (this.state.entries.length > 0)} dom_control={this.reference ("history_panel")}>
-						<LogHistoryGadget id="history_panel" parent={this} entries={this.state.entries} />
-					</FadeControl>
-				</OverflowControl>
+				</div>
 
 			</div>
 

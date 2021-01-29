@@ -6,7 +6,7 @@ import BaseControl, { defaultInterface } from "components/controls/base.control"
 
 
 
-const flash_speed = 50;
+const flash_speed = 70;
 const flash_repeats = 3;
 
 const selected_color: string = "white";

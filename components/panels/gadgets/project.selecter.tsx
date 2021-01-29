@@ -137,7 +137,7 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 		return (
 			<div id="projects_panel">
 
-				<div id="project_form" className="two-piece-form" style={{ overflow: "hidden" }}>
+				<div className="two-piece-form" style={{ overflow: "hidden" }}>
 
 					{this.client_selecter ()}
 					{this.project_selecter ()}

@@ -26,7 +26,8 @@ global.not_null = (value) => {
 
 
 global.isset = (value) => {
-	return value != null;
+	return value ? true : false;
+//	return value != null;
 }// not_null;
 
 
