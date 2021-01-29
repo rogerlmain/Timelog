@@ -132,19 +132,6 @@ border: solid 1px green;
 }/* form-item */
 
 
-.overlay-container {
-	display: inline-grid;
-	grid-template-columns: auto;
-	grid-template-rows: auto;
-}/* .overlay-container */
-
-
-.overlay-container > * {
-	grid-column: 1;
-	grid-row: 1;
-}/* .overlay-container > * */
-
-
 /**** Debugging ****/
 
 
