@@ -7,7 +7,7 @@ export function is_empty (value: any) {
 
 
 export function isset (value: any, ...nullables: any) {
-	return this.not_null (value) && !nullables.includes (value);
+	return not_null (value) && !nullables.includes (value);
 }// isset;
 
 
@@ -17,16 +17,36 @@ export function is_null (value: any) {
 
 
 export function not_empty (value: string) {
-	return !this.is_empty (value);
+	return !is_empty (value);
 }// not_empty;
 
 
 export function not_null (value: any) {
-	return !this.is_null (value);
+	return !is_null (value);
 }// not_null;
 
 
 /********/
+
+
+export function dimensions (object: HTMLElement) {
+	let result = null;
+	if (isset (object)) {
+		let current_style = {
+			visibility: object.style.visibility,
+			display: object.style.display
+		}// current_style;
+		object.style.visibility = "hidden";
+		object.style.display = null;
+		result = {
+			width: object.offsetWidth,
+			height: object.offsetHeight
+		}// result;
+		object.style.display = current_style.display;
+		object.style.visibility = current_style.visibility;
+		return result;
+	}// if;
+}// dimensions;
 
 
 export function get_cookie (name: any) {

@@ -114,12 +114,7 @@ public debug (text: string)	{
 						}}>
 
 						<button onClick={() => { alert (this.show_states (true)); }}>show states</button>
-						<button onClick={() => { this.setState ({ doit: !this.state.doit }) }}>fade test</button>
-						<FadeControl id="test_panel" visible={this.state.doit} vanishing={true} style={{ border: "solid 1px blue" }}>
-							<div style={{ whiteSpace: "nowrap" }}>
-								this is the very very long fade bit
-							</div>
-						</FadeControl>
+						<button onClick={() => { alert (document.getElementById ("available_members_list").clientWidth) }}>Show width</button>
 					</div>
 
 

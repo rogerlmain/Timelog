@@ -71,9 +71,16 @@ app.post ("/signin", function (request, response) {
 });
 
 
-app.post ("/account", function (request, response) {
-	app.initialize (request, response);
-	models.save_account ();
+app.post ("/accounts", function (request, response) {
+//	app.initialize (request, response);
+	app.process (request, response, (fields) => {
+		switch (fields.action) {
+			case "save": models.save_account (); break;
+			case "company": models.get_accounts_by_company (fields.company_id); break;
+			case "project": models.get_accounts_by_project (fields.project_id); break;
+			default: break;
+		}
+	})
 });
 
 

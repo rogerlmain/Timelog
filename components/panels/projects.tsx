@@ -7,25 +7,54 @@ import BaseControl from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
 import EyecandyButton from "components/controls/eyecandy.button";
 import SelectButton from "components/controls/select.button";
+import SelectList from "components/controls/select.list";
 
 import Eyecandy from "components/controls/eyecandy";
 
 import ProjectSelecter from "components/panels/gadgets/project.selecter";
 
 import { globals } from "components/types/globals";
+import { accounts } from "components/models/accounts";
+import { projects } from "components/models/projects";
 
 
 export default class ProjectsPanel extends BaseControl<any> {
 
 
 	private fetch_project () {
-		let parameters = new FormData (this.dom ("project_selecter"));
-		parameters.append ("action", "details");
-		this.fetch_data ("projects", parameters, (data: any) => {
+
+		this.dom ("project_selecter")
+
+		projects.fetch_by_id (this.state.project_id, (data) => {
+
 			this.setState ({
 				eyecandy_visible: false,
 				project_data: data
-			}, () => { this.forceUpdate () });
+			}, () => {
+
+				accounts.fetch_by_company (this.current_account ().company_id, (company_members: any) => {
+
+					accounts.fetch_by_project (this.state.project_id, (project_members: any) => {
+						this.setState ({
+							project_accounts: project_members,
+							available_accounts: company_members.filter ((member: any) => {
+								let result = true;
+								project_members.forEach ((employee: any) => {
+									if (employee.account_id == member.account_id) {
+										result = false;
+										return false;
+									}// if;
+								});
+								return result;
+							})
+						}, () => {
+							this.forceUpdate ()
+						});
+					});
+
+				});
+
+			});
 		});
 	}// fetch_project;
 
@@ -33,7 +62,6 @@ export default class ProjectsPanel extends BaseControl<any> {
 	private get_value (state: string, field: string): any {
 		return this.getState (state, field) ?? constants.empty;
 	}// get_value;
-
 
 
 	/********/
@@ -46,7 +74,11 @@ export default class ProjectsPanel extends BaseControl<any> {
 		eyecandy_visible: false,
 		project_loaded: false,
 
-		project_data: null
+		project_accounts: null,
+		available_accounts: null,
+
+		project_data: null,
+		project_id: null
 	}// state;
 
 
@@ -61,7 +93,12 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 					<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
 						onClientChange={() => { this.setState ({ client_selected: true }) }}
-						onProjectChange={() => { this.setState ({ eyecandy_visible: true }) }}
+						onProjectChange={(event) => {
+							this.setState ({
+								eyecandy_visible: true,
+								project_id: parseInt (event.target.value)
+							 })
+						}}
 						onLoad={() => { globals.home_page.setState ({ content_loaded: true })}}>
 					</ProjectSelecter>
 
@@ -86,24 +123,51 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 					<Eyecandy visible={this.state.eyecandy_visible} text="Loading"
 						afterShowing={this.fetch_project.bind (this)}
-						afterHiding={() => { this.setState ({ project_loaded: true }) }}>
+						afterHiding={() => { this.setState ({ project_loaded: true }, () => {
+							let select_list = this.reference ("available_members");
+							if (common.isset (select_list)) select_list.forceUpdate ();
+						}) }}>
 					</Eyecandy>
 
-					<FadeControl id="project_details_panel" visible={this.state.project_loaded} style={{ width: "100%" }}>
+					<FadeControl id="project_details_panel" visible={this.state.project_loaded} style={{ width: "100%" }}
+
+						beforeShowing={() => {
+
+						}}>
 
 						<hr />
 
 						<form id="project_form">
 
-							<input type="hidden" id="project_id" name="project_id" defaultValue={this.get_value ("project_data", "project_id")} />
-							<div className="two-piece-form">
-								<label htmlFor="project_name">Project Name</label>
-								<input type="text" id="project_name" name="project_name" defaultValue={this.get_value ("project_data", "name")} />
-							</div>
+							<div className="two-column-panel">
 
-							<textarea id="project_description" name="project_description" placeholder="Description (optional)"
-								defaultValue={this.get_value ("project_data", "description")}>
-							</textarea>
+								<div>
+
+									<input type="hidden" id="project_id" name="project_id" defaultValue={this.state.project_id} />
+									<div className="two-piece-form">
+										<label htmlFor="project_name">Project Name</label>
+										<input type="text" id="project_name" name="project_name" defaultValue={this.get_value ("project_data", "name")} />
+									</div>
+
+									<textarea id="project_description" name="project_description" placeholder="Description (optional)"
+										defaultValue={this.get_value ("project_data", "description")}>
+									</textarea>
+
+								</div>
+
+
+								<div>
+									<div className="three-piece-form">
+										<label htmlFor="available_members">Team members</label>
+										<SelectList id="available_members" ref={this.create_reference}>
+											{this.select_options (this.state.available_accounts, "account_id", "username")}
+										</SelectList>
+
+										<button id="add_member_button" disabled={true}>Add</button>
+									</div>
+								</div>
+
+							</div>
 
 						</form>
 
@@ -126,9 +190,11 @@ export default class ProjectsPanel extends BaseControl<any> {
 										this.reference ("save_project_button").setState ({ eyecandy_visible: false });
 									});
 
-								}}
+								}}>
 
-							>Create / Save</EyecandyButton>
+								{common.isset (this.state.project_id, constants.empty) ? "Save" : "Create"}
+
+							</EyecandyButton>
 
 						</div>
 					</FadeControl>

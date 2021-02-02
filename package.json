@@ -39,5 +39,6 @@
 		"AfterBuild": [
 			"build"
 		]
-	}
+	},
+	"devDependencies": {}
 }

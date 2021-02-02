@@ -9,6 +9,7 @@ import SelectButton from "components/controls/select.button";
 import PopupWindow from "components/panels/gadgets/popup.window";
 
 import { account_types } from "components/types/constants";
+import { Database } from "components/classes/database";
 
 
 const free_account_team_count = 2;
@@ -56,14 +57,19 @@ export default class TeamPanel extends BaseControl<any> {
 
 
 	public componentDidMount () {
-		this.fetch_items ("team", { action: "team_list" }, (data: any) => {
+
+		// TEMPORARY - TRANSPLANT TO teams MODEL CLASS
+		new Database ().fetch_items ("team", { action: "team_list" }, (data: any) => {
 			this.setState ({ teams : data });
 		});
+
 	}// componentDidMount;
 
 
 	public fetch_team_list (event) {
-		this.fetch_items ("team", {
+
+		// TEMPORARY - TRANSPLANT TO teams MODEL CLASS
+		new Database ().fetch_items ("team", {
 			action: "member_list",
 			team_id: event.target.value
 		}, (data: account []) => {
@@ -75,6 +81,7 @@ export default class TeamPanel extends BaseControl<any> {
 				this.setState ({ list_loaded: true });
 			});
 		});
+
 	}// fetch_team_list
 
 

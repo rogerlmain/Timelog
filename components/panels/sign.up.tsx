@@ -9,6 +9,7 @@ import Eyecandy from "components/controls/eyecandy";
 import CreditCardGadget from "components/panels/gadgets/credit.card.gadget";
 
 import { account_types, signing_state } from "components/types/constants";
+import { accounts } from "components/models/accounts";
 
 
 
@@ -123,17 +124,15 @@ export default class SignupPanel extends BaseControl<defaultInterface> {
 							text={this.signed_in () ? "Saving your information" : "Creating your account"}
 							subtext="One moment, please"
 							afterShowing={() => {
-								fetch ("/account", {
-									method: "POST",
-									body: new FormData (document.getElementById ("account_form") as HTMLFormElement),
-									credentials: "same-origin"
-								}).then (response => response.json ()).then (data => {
+
+								accounts.save_account (new FormData (document.getElementById ("account_form") as HTMLFormElement), (data: any) => {
 									if (this.signed_in ()) {
 										parent.active_panel = parent.panels.home_panel;
 										parent.setState ({ panel_states: { ...parent.state.panel_states, signup_panel: false } });
 										this.setState ({ eyecandy_visible: false });
 									}// if;
-								});
+								})
+
 							}}
 							afterHiding={() => { this.setState ({ button_visible: true }) }}>
 						</Eyecandy>

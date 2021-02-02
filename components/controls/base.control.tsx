@@ -142,40 +142,9 @@ export default class BaseControl<properties> extends React.Component<any> {
 	}// create_reference;
 
 
-	protected execute_event (event) {
-		if (event != null) return event ();
+	protected execute_event (event: any, ...parameters: any[]) {
+		if (event != null) return event (...parameters);
 	}// execute_event;
-
-
-	protected fetch_data (view: string, parameters: any, callback: any) {
-		fetch (`/${view}`, {
-			method: "post",
-			body: parameters
-		}).then (response => response.json ()).then (data => {
-			if (data.length > 0) callback (data [0]);
-		});
-	}// fetch_data;
-
-
-	protected fetch_items (view: any, parameters: any, callback: any = null) {
-
-		let form_data = (parameters instanceof FormData);
-
-		let fetch_parameters: RequestInit = {
-			method: "post",
-			credentials: "same-origin",
-			body: form_data ? parameters : JSON.stringify (parameters)
-		}// fetch_parameters;
-
-		if (!form_data) fetch_parameters ["headers"] = {
-			"Accept": "application/json",
-			"Content-Type": "application/json"
-		}// if;
-
-		fetch (`/${view}`, fetch_parameters).then (response => {
-			return response.json ()
-		}). then (callback);
-	}// fetch_items;
 
 
 	protected id_badge (stub: any = null) {
@@ -191,14 +160,17 @@ export default class BaseControl<properties> extends React.Component<any> {
 	}// reference;
 
 
-	protected ref_state = (reference: string, value: any) => {
+	protected ref_state (reference: string, value: any) {
 		this.reference (reference).setState (value);
 	}// ref_state;
 
 
 	protected select_options (list: any, id_field: string, text_value: string) {
 		if (common.is_null (list)) return null;
-		return list.map ((item: any) => { return <option value={item [id_field]} key={item [id_field]}>{item [text_value]}</option> });
+		let result = list.map ((item: any) => {
+			return <option value={item [id_field]} key={item [id_field]}>{item [text_value]}</option>
+		});
+		return result;
 	}// select_options;
 
 

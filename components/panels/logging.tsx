@@ -11,6 +11,7 @@ import SelectButton from "components/controls/select.button";
 
 import LogHistoryGadget from "components/panels/gadgets/log.history.gadget";
 import ProjectSelecter from "./gadgets/project.selecter";
+import { Database } from "components/classes/database";
 
 
 export default class LoggingPanel extends BaseControl<any> {
@@ -22,11 +23,14 @@ export default class LoggingPanel extends BaseControl<any> {
 		if (common.is_null (log_form)) return null;
 		parameters = new FormData (log_form);
 		parameters.set ("action", "entries");
-		this.fetch_items ("logging", parameters, (result: any) => {
+
+		// TEMPORARY - TRANSPLANT TO accounts MODEL CLASS
+		new Database ().fetch_items ("logging", parameters, (result: any) => {
 			this.setState ({ entries: result }, () => {
 				this.setState ({ gadget_updated: true });
 			});
 		});
+
 	}// load_entries;
 
 
@@ -35,13 +39,16 @@ export default class LoggingPanel extends BaseControl<any> {
 		if (common.isset (additional_parameters)) for (let key of Object.keys (additional_parameters)) {
 			parameters.set (key, additional_parameters [key]);
 		}// if;
-		this.fetch_items ("logging", parameters, (data: any) => {
+
+		// TEMPORARY - TRANSPLANT TO accounts MODEL CLASS
+		new Database ().fetch_items ("logging", parameters, (data: any) => {
 			let response_string = JSON.stringify (data [0]);
 			let current_entry: datatype.entry = datatype.entry.parse (response_string);
 			common.clear_cookie ("current_entry");
 			if (common.is_null (current_entry.end_time)) common.set_cookie ("current_entry", response_string);
 			this.setState ({ entries: data }, () => { this.setState ({ gadget_updated: true }); });
 		});
+
 	}// log_and_fetch;
 
 

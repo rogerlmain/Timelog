@@ -158,7 +158,9 @@ export default class HomePage extends BaseControl<defaultInterface> {
 
 					<FadeControl id="details_panel" ref={this.create_reference} visible={this.state.content_loaded}
 						className="full-screen top-center-container"
-						beforeShowing={() => { globals.main_page.setState ({ content_loaded: true }) }}
+						beforeShowing={() => {
+							globals.main_page.setState ({ content_loaded: true })
+						}}
 						afterHiding={() => { this.setState ({ eyecandy_visible: true }) }}>
 						{this.state.contents}
 					</FadeControl>

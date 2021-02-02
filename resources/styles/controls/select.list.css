@@ -1,0 +1,48 @@
+.select-list .select-textbox {
+	border: solid 1px black;
+	border-radius: 100px;
+	min-width: 4em;
+	min-height: 1.5em;
+	display: grid;
+	grid-template-columns: 1fr min-content;
+	justify-content: center;
+	align-items: center;
+	cursor: default;
+	padding-left: 0.5em;
+	width: 100%;
+	white-space: nowrap;
+}
+
+
+.select-list .select-textbox .select-textbox-glyph {
+	width: 0.5em;
+	height: 0.5em;
+	border: solid 2px #222;
+	border-top: none;
+	border-left: none;
+	transform: rotate(45deg);
+	margin: 0 0.5em 0.2em;
+}
+
+
+.select-list .select-items {
+	border: solid 1px black;
+	background-color: white;
+}
+
+
+.select-list .select-items > div {
+	padding: 0.2em;
+}
+
+
+.select-list .select-items > div:hover {
+	color: white;
+	background-color: #1E90FF;
+	cursor: default;
+}
+
+
+.select-list img {
+	margin-right: 0.5em;
+}

@@ -79,6 +79,26 @@ textarea { padding: 0.2em 0.5em }
 }/* .overlay-container > * */
 
 
+/********/
+
+
+.two-column-panel {
+	display: grid;
+	grid-template-columns: repeat(2, auto);
+}/* .two-column-panel */
+
+
+.two-column-panel > div:first-child {
+	padding-right: 1em;
+}/* .two-column-panel > div:first-child */
+
+
+.two-column-panel > div:last-child {
+	padding-left: 1em;
+	border-left: solid 1px black;
+}/* .two-column-panel > div:first-child */
+
+
 /**** Button Panels ****/
 
 

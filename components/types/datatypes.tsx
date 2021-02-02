@@ -24,6 +24,7 @@ export class account {
 	username: string;
 	email_address: string;
 	account_type: number;
+	company_id: number;
 	administrator: boolean;
 	teams: any;
 

@@ -24,6 +24,20 @@ const models = {
 	/**** Accounts ****/
 
 
+	get_accounts_by_company: (company_id) => {
+		let procedure = "call get_accounts_by_company (?)";
+		let parameters = [company_id];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_accounts_by_company */,
+
+
+	get_accounts_by_project: (project_id) => {
+		let procedure = "call get_accounts_by_project (?)";
+		let parameters = [project_id];
+		connection.query (procedure, parameters, data_response_handler);
+	}/* get_accounts_by_project */,
+
+
 	save_account: () => {
 		new multiparty.Form ().parse (global.request, (form_error, form_fields, files) => {
 			let procedure = "call save_account (?, ?, ?, ?, ?, ?, ?)";
@@ -115,6 +129,11 @@ const models = {
 
 	get_current_entry: () => {
 		let procedure = "call get_current_entry (?)";
+		let current_account = account.current_account ();
+		if (global.is_null (current_account )) {
+			global.response.send ();
+			return;
+		}// if;
 		connection.query (procedure, [account.current_account ().account_id], data_response_handler);
 	}/* get_current_entry */,
 
