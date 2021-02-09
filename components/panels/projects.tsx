@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 
 import * as constants from "components/types/constants";
 import * as common from "components/classes/common";
@@ -64,18 +64,104 @@ export default class ProjectsPanel extends BaseControl<any> {
 	}// get_value;
 
 
+	private find_account (arr: Array<any>, account_id: any) {
+		return arr.find ((item: any) => {
+			if (item ["account_id"] == parseInt (account_id)) return true;
+		});
+	}// find_item;
+
+
+	private save_project (event: SyntheticEvent) {
+
+		let parameters = new FormData (this.dom ("project_form"));
+		parameters.append ("client_id", this.dom ("project_selecter_client_selecter").value);
+		parameters.append ("selected_team", JSON.stringify (this.state.selected_accounts));
+		parameters.append ("action", "save");
+
+		fetch ("/projects", {
+			method: "post",
+			body: parameters
+		}).then (response  => response.json ()).then ((data) => {
+			if ((data.length != 1) || (common.isset (this.state.project_id))) return;
+			let project = JSON.parse (data.project);
+			(document.getElementById ("project_id") as HTMLFormElement).value = project.project_id;
+			this.reference ("save_project_button").setState ({ eyecandy_visible: false });
+		});
+
+	}// save_project;
+
+
+	private select_member () {
+		let member_list = this.reference ("available_members");
+
+		let selected_value = member_list.selected_value ();
+		let selected_account = this.find_account (this.state.available_accounts, selected_value);
+
+		let acs = this.state.available_accounts;
+		acs.remove (selected_account);
+
+		this.setState ({
+			available_accounts: acs,
+			selected_accounts: [...(this.state.selected_accounts ?? []), selected_account],
+			account_selected: true
+		});
+
+		member_list.setState ({ selected_entry: null });
+	}// select_member;
+
+
+	private remove_member (account_id: number) {
+		let sac = this.state.selected_accounts;
+
+		let active_account = this.find_account (sac, account_id);
+		sac.remove (active_account);
+
+		this.setState ({
+			available_accounts: [...(this.state.available_accounts ?? []), active_account],
+			selected_accounts: sac
+		});
+	}// remove_member;
+
+
+	private Components = {
+		MemberEntries: function (props: any) {
+			let result = null;
+			if (Array.isArray (props.parent.state.selected_accounts)) props.parent.state.selected_accounts.forEach ((item: any) => {
+				let next_item = <div className="member_list_entry">
+					<div className="member_name">{item.username}</div>
+					<div className="member_options">
+						<SelectList>
+							<option key="1" value="1">Team lead</option>
+							<option key="2" value="2">Designer</option>
+							<option key="3" value="3">Programmer</option>
+							<option key="4" value="4">QA</option>
+						</SelectList>
+						<SelectButton className="xbutton" onclick={() => { props.parent.remove_member (item.account_id) }}>X</SelectButton>
+					</div>
+				</div>
+				if (common.is_null (result)) result = [];
+				result.push (next_item);
+			})
+			return result;
+		}// MemberEntries;
+	}// Components;
+
+
 	/********/
 
 
 	public state = {
 		client_selected: false,
 		project_selected: false,
+		account_selected: false,
 
 		eyecandy_visible: false,
+
 		project_loaded: false,
 
 		project_accounts: null,
 		available_accounts: null,
+		selected_accounts: null,
 
 		project_data: null,
 		project_id: null
@@ -99,19 +185,19 @@ export default class ProjectsPanel extends BaseControl<any> {
 								project_id: parseInt (event.target.value)
 							 })
 						}}
-						onLoad={() => { globals.home_page.setState ({ content_loaded: true })}}>
+						onLoad={() => { globals.home_page.setState ({ content_loaded: true }) }}>
 					</ProjectSelecter>
 
-					<div className="button-panel">
+					<div className="button-panel form-panel">
 						<div className="button-cell">
 
-							<SelectButton id="new_client_button">New</SelectButton>
+							<SelectButton id="new_client_button" sticky={false}>New</SelectButton>
 							<FadeControl id="edit_client_button_panel" ref={this.create_reference} vanishing={true} visible={this.state.client_selected}>
-								<SelectButton id="edit_client_button">Edit</SelectButton>
+								<SelectButton id="edit_client_button" sticky={false}>Edit</SelectButton>
 							</FadeControl>
 
 							<FadeControl id="new_project_button_panel" ref={this.create_reference} visible={this.state.client_selected}>
-								<SelectButton id="new_project_button" onclick={() => { this.setState ({ project_loaded: true }) }}>New</SelectButton>
+								<SelectButton id="new_project_button" sticky={false} onclick={() => { this.setState ({ project_loaded: true }) }}>New</SelectButton>
 							</FadeControl>
 
 						</div>
@@ -129,11 +215,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 						}) }}>
 					</Eyecandy>
 
-					<FadeControl id="project_details_panel" visible={this.state.project_loaded} style={{ width: "100%" }}
-
-						beforeShowing={() => {
-
-						}}>
+					<FadeControl id="project_details_panel" visible={this.state.project_loaded} style={{ width: "100%" }}>
 
 						<hr />
 
@@ -146,57 +228,40 @@ export default class ProjectsPanel extends BaseControl<any> {
 									<input type="hidden" id="project_id" name="project_id" defaultValue={this.state.project_id} />
 									<div className="two-piece-form">
 										<label htmlFor="project_name">Project Name</label>
-										<input type="text" id="project_name" name="project_name" defaultValue={this.get_value ("project_data", "name")} />
+										<input type="text" id="project_name" name="project_name" defaultValue={this.get_value ("project_data", "name")} onBlur={this.save_project.bind (this)} />
 									</div>
 
 									<textarea id="project_description" name="project_description" placeholder="Description (optional)"
-										defaultValue={this.get_value ("project_data", "description")}>
+										defaultValue={this.get_value ("project_data", "description")} onBlur={this.save_project.bind (this)}>
 									</textarea>
 
 								</div>
 
 
 								<div>
-									<div className="three-piece-form">
+									<div id="member_list_panel" className="three-piece-form form-panel">
 										<label htmlFor="available_members">Team members</label>
-										<SelectList id="available_members" ref={this.create_reference}>
+										<SelectList id="available_members" ref={this.create_reference} required={true}
+											onchange={(event: any) => { this.setState ({ project_selected: common.isset (event.list.selected_value ()) }) }}>
 											{this.select_options (this.state.available_accounts, "account_id", "username")}
 										</SelectList>
-
-										<button id="add_member_button" disabled={true}>Add</button>
+										<SelectButton id="add_member_button" onclick={this.select_member.bind (this)}
+											disabled={!this.state.project_selected}>
+											Add
+										</SelectButton>
 									</div>
+
+									<FadeControl id="members_list" visible={this.state.account_selected}>
+										<label>Project Members</label>
+										<div id="member_list_entries" ref={this.create_reference}><this.Components.MemberEntries parent={this} /></div>
+									</FadeControl>
+
 								</div>
 
 							</div>
 
 						</form>
 
-						<div className="button-bar">
-
-							<EyecandyButton id="save_project_button" ref={this.create_reference} text={`Saving ${this.dom ("project_name", "value")}`}
-
-								onclick={() => {
-
-									let parameters = new FormData (this.dom ("project_form"));
-									parameters.append ("client_id", this.dom ("client_selecter").value);
-									parameters.append ("action", "save");
-
-									fetch ("/projects", {
-										method: "post",
-										body: parameters
-									}).then (response  => response.json ()).then ((data) => {
-										if (data.length != 1) return;
-										(document.getElementById ("project_id") as HTMLFormElement).value = data [0].project_id;
-										this.reference ("save_project_button").setState ({ eyecandy_visible: false });
-									});
-
-								}}>
-
-								{common.isset (this.state.project_id, constants.empty) ? "Save" : "Create"}
-
-							</EyecandyButton>
-
-						</div>
 					</FadeControl>
 
 				</div>

@@ -23,5 +23,6 @@
 		"esnext"
 	],
 
-	"esModuleInterop": true
+	"esModuleInterop": true,
+	"declaration": true
 }

@@ -10,6 +10,7 @@ import BaseControl, { defaultInterface } from "./base.control";
 
 interface selectListInterface extends defaultInterface {
 	children?: React.ReactElement<HTMLOptionElement>[];
+	onchange?: any;
 }// selectListInterface;
 
 
@@ -24,26 +25,61 @@ export default class SelectList extends BaseControl<selectListInterface> {
 
 
 	private list_items () {
+		if (common.is_null (this.props.children)) return null;
+
 		let elements = Array.isArray (this.props.children) ? this.props.children : [this.props.children];
+
 		return elements.map ((item: React.ReactElement<HTMLOptionElement>) => {
 			if (common.is_null (item)) return null;
-			return (<div onClick={(event: SyntheticEvent) => {
-				this.setState ({
-					selection_text: event.currentTarget.innerHTML,
-					open: false
-				})
-			}}>{item.props.children}</div>);
+			return (<div
+				onClick={(event: SyntheticEvent) => {
+					this.setState ({
+						selected_entry: event.currentTarget,
+						selection_text: event.currentTarget.innerHTML,
+						open: false
+					}, () => {
+						this.execute_event (this.props.onchange, {...event, list: this });
+					});
+				}}>
+				<input type="hidden" name="value" defaultValue={item.props.value} />
+				{item.props.children}
+			</div>);
 		});
+
 	}// list_items;
+
+
+	private selected_text () {
+		if (common.is_null (this.state.selected_entry)) return null;
+		return this.state.selected_entry.innerText;
+	}// selected_text ();
+
+
+	private selected_value () {
+		try {
+			return this.state.selected_entry.querySelector ("[type=hidden]").value;
+		} catch (except) { return null }
+	}// selected_value;
 
 
 	/********/
 
 
 	public state = {
-		selection_text: null,
+		selected_entry: null,
 		open: false
 	}// state;
+
+
+	public componentDidMount () {
+		let dropdown: HTMLElement = document.getElementById (this.list_id) as HTMLElement;
+		document.body.addEventListener ("click", () => {
+			if (dropdown.visible ()) this.setState ({ open: false });
+		});
+		document.body.addEventListener ("keyup", (event) => {
+			if ((event.isComposing || event.key.matches ("Escape", true)) && (dropdown.visible ())) this.setState ({ open: false });
+		});
+	}// componentDidMount;
 
 
 	public componentDidUpdate () {
@@ -83,21 +119,16 @@ export default class SelectList extends BaseControl<selectListInterface> {
 
 				<div id={this.textbox_id} className="select-textbox"
 
-					onClick={() => {
-						this.setState ({ open: this.state.open ? false : true })
+					onClick={(event) => {
+						this.setState ({ open: this.state.open ? false : true });
+						event.stopPropagation ();
 					}}>
 
-					<div dangerouslySetInnerHTML={{__html: this.state.selection_text}} />
+					<div dangerouslySetInnerHTML={{__html: this.selected_text ()}} />
 					<div className="glyph-cell"><div className="select-textbox-glyph" /></div>
 				</div>
 
-				<div id={this.list_id} className="select-items" onChange={() => { alert ("here") }}
-					style={{
-						position: "absolute",
-						display: this.state.open ? null : "none"
-					}}
-
-					ref={this.list_reference}>
+				<div id={this.list_id} className="select-items" style={{ display: this.state.open ? null : "none" }} ref={this.list_reference}>
 					{this.list_items ()}
 				</div>
 			</div>

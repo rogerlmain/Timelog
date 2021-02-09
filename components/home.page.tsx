@@ -122,7 +122,7 @@ export default class HomePage extends BaseControl<defaultInterface> {
 			let reference: ButtonReference = React.createRef ();
 			this.add_button_reference (reference);
 			return (
-				<SelectButton id={value} name={name} key={name} ref={reference}
+				<SelectButton id={value} name={name} key={name} ref={reference} sticky={true}
 					beforeClick={() => { this.select_button (reference.current) }}>
 					{value}
 				</SelectButton>

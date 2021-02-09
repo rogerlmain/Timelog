@@ -12,13 +12,15 @@ export interface defaultInterface {
 	id?: string;
 	className?: string;
 
+	references?: ReferenceList;
+
+	disabled?: boolean;
+
 	parent?: any;
 	style?: any;
 	afterRender?: any;
 
 	dom_control?: any;
-
-	references?: ReferenceList;
 
 }// defaultInterface;
 
@@ -78,6 +80,12 @@ export default class BaseControl<properties> extends React.Component<any> {
 	public logged_out () {
 		return !this.logged_in ();
 	}// logged_out;
+
+
+	public mapping (array: Array<any>, callback: any) {
+		if (common.is_null (array)) return;
+		return array.map (callback);
+	}// mapping;
 
 
 	/********/

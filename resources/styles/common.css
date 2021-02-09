@@ -89,14 +89,30 @@ textarea { padding: 0.2em 0.5em }
 
 
 .two-column-panel > div:first-child {
-	padding-right: 1em;
+	padding-right: 2em;
 }/* .two-column-panel > div:first-child */
 
 
 .two-column-panel > div:last-child {
-	padding-left: 1em;
+	padding-left: 2em;
 	border-left: solid 1px black;
 }/* .two-column-panel > div:first-child */
+
+
+/********/
+
+
+.form-panel input {
+	height: 1.5em;
+}/* .form-panel input */
+
+
+.form-panel button {
+	display: flex;
+	height: 1.5em;
+	align-items: center;
+	justify-content: center;
+}/* .form-panel */
 
 
 /**** Button Panels ****/
@@ -107,6 +123,8 @@ textarea { padding: 0.2em 0.5em }
     flex-direction: row;
     justify-content: flex-end;
     margin-top: 1em;
+    z-index: 1;
+    position: relative;
 }/* .button-bar */
 
 

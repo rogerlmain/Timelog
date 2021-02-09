@@ -93,14 +93,43 @@ const models = {
 	/**** Projects ****/
 
 
-	save_project: (fields) => {
-		let procedure = "call save_project (?, ?, ?, ?)";
-		let parameters = [
-			fields.project_name, fields.project_description, fields.client_id,
-			global.isset (fields.project_id) ? parseInt (fields.project_id) : null
-		];
-		connection.query (procedure, parameters, data_response_handler);
-	}/* save_project */,
+	// save_project: function (fields) {
+
+	// 	let project_response = null;
+
+	// 	let save_team = (list) => {
+
+	// 		let members = JSON.parse (list);
+	// 		members.forEach ((item) => {
+	// 			let procedure = "call save_team_account (null, null, ?, ?, ?)";
+	// 			let parameters = [fields]; /* ALL WRONG - FIX IT ACCORDING TO DB */
+	// 		});
+
+	// 		// let procedure = "call save_team ()";
+	// 		// let parameters = [
+	// 		// 	fields.project_name, fields.project_description, fields.client_id,
+	// 		// 	global.isset (fields.project_id) ? parseInt (fields.project_id) : null
+	// 		// ];
+
+	// 		connection.query (procedure, parameters, handler.bind (this));
+
+	// 	}// save_team;
+
+
+	// 	let project_handler = (error, results, fields) => {
+	// 		if (global.is_null (results)) throw "Invalid data response";
+	// 		this.project_response = results [0];
+	// 		save_team ();
+	// 	}// project_handler;
+
+
+	// 	let procedure = "call save_project (?, ?, ?, ?)";
+	// 	let parameters = [
+	// 		fields.project_name, fields.project_description, fields.client_id,
+	// 		global.isset (fields.project_id) ? parseInt (fields.project_id) : null
+	// 	];
+	// 	connection.query (procedure, parameters, project_handler.bind (this));
+	// }/* save_project */,
 
 
 	get_project: (project_id) => {
@@ -170,4 +199,60 @@ const models = {
 }// models;
 
 
-module.exports = models;
+module.exports.model_methods = models;
+module.exports.save_project = save_project;
+
+
+function save_project (fields) {
+
+	let team_members = JSON.parse (fields.selected_team);
+	let project_response = null;
+
+
+	let project_handler = (error, results) => {
+		if (global.is_null (results)) throw "Invalid data response: project_handler";
+		project_response = { project: JSON.stringify (results [0][0]) };
+		save_team ();
+	}// project_handler;
+
+
+	let team_handler = (error, results) => {
+		if (global.is_null (results)) throw "Invalid data response: team_handler";
+		if (global.is_null (project_response.members)) project_response.members = [];
+		project_response.members.push (JSON.stringify (results [0][0]));
+		if (project_response.members.length == team_members.length) global.response.send (JSON.stringify (project_response));
+	}// team_handler;
+
+
+	let reset_handler = () => {
+		team_members.forEach ((item) => {
+			let procedure = "call save_team_account (null, ?, ?, ?)";
+			let parameters = [fields.project_id, item.account_id, item.role];
+			connection.query (procedure, parameters, team_handler);
+		});
+	}// reset_handler;
+
+
+	let save_team = () => {
+		let procedure = "call reset_team (null, ?)";
+		let parameters = [fields.project_id];
+		connection.query (procedure, parameters, reset_handler);
+	}// save_team;
+
+
+	let save_project_details = () => {
+		let procedure = "call save_project (?, ?, ?, ?)";
+		let parameters = [
+			fields.project_name, fields.project_description, fields.client_id,
+			global.isset (fields.project_id) ? parseInt (fields.project_id) : null
+		];
+		connection.query (procedure, parameters, project_handler);
+	}// save_project_details;
+
+
+	save_project_details ();
+
+
+}// save_project;
+
+

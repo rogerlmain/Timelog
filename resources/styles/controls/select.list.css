@@ -11,6 +11,9 @@
 	padding-left: 0.5em;
 	width: 100%;
 	white-space: nowrap;
+	background-color: white;
+	z-index: 1;
+	position: relative;
 }
 
 
@@ -28,6 +31,9 @@
 .select-list .select-items {
 	border: solid 1px black;
 	background-color: white;
+	box-shadow: #aaa 0px 0px 11px;
+	position: absolute;
+	z-index: 2;
 }
 
 

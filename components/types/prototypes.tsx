@@ -1,6 +1,46 @@
 import { directions } from "components/types/constants";
 
-if (HTMLDivElement.prototype ["freeze"] == null) HTMLDivElement.prototype ["freeze"] = function () {
+
+declare global {
+
+	interface HTMLElement {
+		visible (): boolean;
+		freeze (): void;
+	}// HTMLElement;
+
+
+	interface HTMLSelectElement {
+		selectedValue (): void;
+	}// HTMLSelectElement;
+
+
+	interface Array<T> {
+		remove (element: any): void;
+	}// array;
+
+
+	interface String {
+		padded (length: number, character: any, direction?: any): string;
+		matches (comparison: string, case_sensitive: boolean): boolean;
+	}// String;
+
+
+	interface Number {
+		padded (length: number): String;
+	}// Number;
+
+}// global;
+
+
+HTMLElement.prototype.visible = function () {
+	if (this.style.display.matches ("none")) return false;
+	if (this.style.visibility.matches ("hidden")) return false;
+	if (parseInt (this.style.opacity) == 0) return false;
+	return true;
+}// if;
+
+
+HTMLElement.prototype.freeze = function () {
 	let dimensions = {
 		width: this.offsetWidth,
 		height: this.offsetHeight
@@ -11,12 +51,22 @@ if (HTMLDivElement.prototype ["freeze"] == null) HTMLDivElement.prototype ["free
 }// freeze;
 
 
-if (HTMLSelectElement.prototype ["selectedValue"] == null) HTMLSelectElement.prototype ["selectedValue"] = function () {
+HTMLSelectElement.prototype.selectedValue = function () {
 	return this.children [this.selectedIndex].value;
 }// selectedValue;
 
 
-if (String.prototype ["padded"] == null) String.prototype ["padded"] = function (length: number, character: any, direction: any = null) {
+/********/
+
+
+Array.prototype.remove = function (element: any) {
+	let index = this.indexOf (element);
+	if (index < 0) return;
+	this.splice (index, 1);
+}// remove;
+
+
+String.prototype.padded = function (length: number, character: any, direction: any = null) {
 	let result = this;
 	while (result.length < length) {
 		switch (direction) {
@@ -28,6 +78,16 @@ if (String.prototype ["padded"] == null) String.prototype ["padded"] = function 
 }// padded;
 
 
-if (Number.prototype ["padded"] == null) Number.prototype ["padded"] = function (length: number) {
+String.prototype.matches = function (comparison: string, case_sensitive: boolean = false) {
+	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
+}// matches;
+
+
+/********/
+
+
+Number.prototype.padded = function (length: number) {
 	return this.toString ().padded (length, "0", directions.left);
 }// if;
+
+

@@ -41,6 +41,14 @@ button:hover {
 }/* button:hover */
 
 
+button[disabled], button[disabled]:hover {
+	color: white;
+	background-color: #CCC;
+	border-color: #AAA;
+	cursor: default;
+}/* button[disabled],button [disabled]:hover */
+
+
 body {
 	overflow: hidden;
 	padding: 1em;
@@ -140,7 +148,8 @@ border: solid 1px green;
 
 
 .gray-outlined {
-	border: solid 1px gray;
+	border: none;
+	row-gap: 0.25em;
 }/* .gray-outlined */
 
 

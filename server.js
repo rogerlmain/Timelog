@@ -67,7 +67,7 @@ app.use (express.json ());
 
 app.post ("/signin", function (request, response) {
 	app.initialize (request, response);
-	models.signin ();
+	models.model_methods.signin ();
 });
 
 
@@ -75,9 +75,9 @@ app.post ("/accounts", function (request, response) {
 //	app.initialize (request, response);
 	app.process (request, response, (fields) => {
 		switch (fields.action) {
-			case "save": models.save_account (); break;
-			case "company": models.get_accounts_by_company (fields.company_id); break;
-			case "project": models.get_accounts_by_project (fields.project_id); break;
+			case "save": models.model_methods.save_account (); break;
+			case "company": models.model_methods.get_accounts_by_company (fields.company_id); break;
+			case "project": models.model_methods.get_accounts_by_project (fields.project_id); break;
 			default: break;
 		}
 	})
@@ -87,9 +87,9 @@ app.post ("/accounts", function (request, response) {
 app.post ("/logging", function (request, response) {
 	app.process (request, response, (fields) => {
 		switch (fields.action) {
-			case "entries": models.get_entries (fields.client_id, fields.project_id); break;
-			case "logging": models.save_entry (fields.client_id, fields.project_id, fields.entry_id); break;
-			case "log_status": models.get_current_entry (); break;
+			case "entries": models.model_methods.get_entries (fields.client_id, fields.project_id); break;
+			case "logging": models.model_methods.save_entry (fields.client_id, fields.project_id, fields.entry_id); break;
+			case "log_status": models.model_methods.get_current_entry (); break;
 		}// switch;
 	})
 });
@@ -98,7 +98,7 @@ app.post ("/logging", function (request, response) {
 app.post ("/clients", function (request, response) {
 	app.process (request, response, (fields) => {
 		switch (fields.action) {
-			case "client_list": models.get_clients (global.current_account.company_id); break;
+			case "client_list": models.model_methods.get_clients (global.current_account.company_id); break;
 		}// switch;
 	})
 });
@@ -107,8 +107,8 @@ app.post ("/clients", function (request, response) {
 app.post ("/projects", function (request, response) {
 	app.process (request, response, (fields) => {
 		switch (fields.action) {
-			case "list": models.get_client_projects (fields.client_id); break;
-			case "details": models.get_project (fields.project_id); break;
+			case "list": models.model_methods.get_client_projects (fields.client_id); break;
+			case "details": models.model_methods.get_project (fields.project_id); break;
 			case "save": models.save_project (fields);
 		}// switch;
 	})
@@ -118,8 +118,8 @@ app.post ("/projects", function (request, response) {
 app.post ("/team", function (request, response) {
 	app.process (request, response, (fields) => {
 		switch (fields.action) {
-			case "team_list": models.get_teams (global.current_account.account_id); break;
-			case "member_list": models.get_members (fields.team_id); break;
+			case "team_list": models.model_methods.get_teams (global.current_account.account_id); break;
+			case "member_list": models.model_methods.get_members (fields.team_id); break;
 		}// switch;
 	})
 });

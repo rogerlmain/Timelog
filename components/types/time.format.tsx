@@ -21,7 +21,7 @@ export default class TimeFormatter {
 			replace ("MM", date.getMonth ().toString()).
 			replace ("dd", date.getDate ().toString ()).
 			replace ("H", ((hours > 12) ? hours - 12 : hours).toString ()).
-			replace ("mm", date.getMinutes ().toString () ["padded"] (2, "0")).
+			replace ("mm", date.getMinutes ().toString ().padded (2, "0")).
 			replace ("ap", (hours < 12) ? "am" : "pm");
 	}// format;
 
@@ -30,7 +30,7 @@ export default class TimeFormatter {
 		let days = Math.floor (elapsed_time / (60 * 60 * 24));
 		let hours = Math.floor ((elapsed_time % (60 * 60 * 24)) / (60 * 60));
 		let minutes = Math.round ((elapsed_time % (60 * 60)) / 60);
-		return `${((days > 0) ? `${days}:` : empty)}${((days > 0) ? hours ["padded"] (2) : hours)}:${minutes ["padded"] (2)}`;
+		return `${((days > 0) ? `${days}:` : empty)}${((days > 0) ? hours.padded (2) : hours)}:${minutes.padded (2)}`;
 	}// elapsed;
 
 }// timeFormat;

@@ -3,6 +3,7 @@ import * as React from "react";
 import * as common from "components/classes/common";
 
 import BaseControl, { defaultInterface } from "components/controls/base.control";
+import { SyntheticEvent } from "react";
 
 
 
@@ -26,6 +27,7 @@ interface selectButton extends defaultInterface {
 	style?: any;
 
 	sticky?: boolean;
+	submit?: boolean;
 
 }// selectButton;
 
@@ -35,25 +37,29 @@ export default class SelectButton extends BaseControl<selectButton> {
 
 	private button_reference: React.RefObject<HTMLButtonElement> = React.createRef ();
 	private id: string = this.props.id;
-	private sticky = true;
+
+	private sticky = false;
+	private submit = false;
 
 
-	private change_color = (select_value, count) => {
+	private change_color = (event: SyntheticEvent, select_value: boolean, count: number) => {
 		this.setState ({ selected: select_value });
 		if (count > 0) {
-			setTimeout (() => { this.change_color (!select_value, --count) }, flash_speed);
+			setTimeout (() => { this.change_color (event, !select_value, --count) }, flash_speed);
 		} else {
 			this.setState ({ selected: this.sticky, flashing: false });
-			this.execute_event (this.props.onclick);
+			this.execute_event (this.props.onclick, event);
 		}// if;
 	}// change_color;
 
 
-	private flash = () => {
+	private flash = (event: SyntheticEvent) => {
+
+		if (!this.submit) event.preventDefault ();
 
 		this.execute_event (this.props.beforeClick);
 		this.setState ({ flashing: true });
-		this.change_color (true, flash_repeats * 2); // twice - once for on and once for off
+		this.change_color (event, true, flash_repeats * 2); // twice - once for on and once for off
 
 	}// flash;
 
@@ -69,12 +75,13 @@ export default class SelectButton extends BaseControl<selectButton> {
 
 	public componentDidMount () {
 		if (common.isset (this.props.sticky)) this.sticky = this.props.sticky;
+		if (common.isset (this.props.submit)) this.submit = this.props.submit;
 	}// componentDidMount;
 
 
 	public render () {
 		return (
-			<button id={this.id} name={this.props.name}
+			<button id={this.id} name={this.props.name} className={this.props.className} disabled={this.props.disabled}
 				ref={this.button_reference}
 				style={{
 					...this.props.style,
