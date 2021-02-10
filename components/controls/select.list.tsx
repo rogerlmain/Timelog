@@ -30,43 +30,38 @@ export default class SelectList extends BaseControl<selectListInterface> {
 		let elements = Array.isArray (this.props.children) ? this.props.children : [this.props.children];
 
 		return elements.map ((item: React.ReactElement<HTMLOptionElement>) => {
+
 			if (common.is_null (item)) return null;
-			return (<div
+
+			return <div key={item.key}
 				onClick={(event: SyntheticEvent) => {
+
+					let list_item = (event.currentTarget as HTMLDivElement);
+
 					this.setState ({
-						selected_entry: event.currentTarget,
-						selection_text: event.currentTarget.innerHTML,
+						selected_text: list_item.innerText,
+						selected_value: (list_item.querySelector ("[type=hidden]") as HTMLInputElement).value,
 						open: false
 					}, () => {
 						this.execute_event (this.props.onchange, {...event, list: this });
 					});
 				}}>
-				<input type="hidden" name="value" defaultValue={item.props.value} />
+
+				<input type="hidden" value={item.props.value} />
 				{item.props.children}
-			</div>);
+			</div>
+
 		});
 
 	}// list_items;
-
-
-	private selected_text () {
-		if (common.is_null (this.state.selected_entry)) return null;
-		return this.state.selected_entry.innerText;
-	}// selected_text ();
-
-
-	private selected_value () {
-		try {
-			return this.state.selected_entry.querySelector ("[type=hidden]").value;
-		} catch (except) { return null }
-	}// selected_value;
 
 
 	/********/
 
 
 	public state = {
-		selected_entry: null,
+		selected_text: null,
+		selected_value: null,
 		open: false
 	}// state;
 
@@ -111,9 +106,22 @@ export default class SelectList extends BaseControl<selectListInterface> {
 	}// componentDidUpdate;
 
 
+	public reset () {
+		this.setState ({
+			selected_text: null,
+			selected_value: null
+		});
+	}// reset;
+
+
 	public render () {
+
+		let id = this.id_badge (this.props.id);
+
 		return (
-			<div id={this.id_badge (this.props.id)} className={`select-list ${common.isset (this.props.className) ? this.props.className : constants.empty}`}>
+			<div id={id} className={`select-list ${common.isset (this.props.className) ? this.props.className : constants.empty}`}>
+
+				{/* <input type="hidden" name={`${id}_value`} value={this.selected_value} /> */}
 
 				<link rel="stylesheet" href="/resources/styles/controls/select.list.css" />
 
@@ -124,7 +132,7 @@ export default class SelectList extends BaseControl<selectListInterface> {
 						event.stopPropagation ();
 					}}>
 
-					<div dangerouslySetInnerHTML={{__html: this.selected_text ()}} />
+					<div>{this.state.selected_text}</div>
 					<div className="glyph-cell"><div className="select-textbox-glyph" /></div>
 				</div>
 

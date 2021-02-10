@@ -25,12 +25,12 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 
 
 	private load_clients () {
-
-		// TEMPORARY - TRANSPLANT TO projects MODEL CLASS
 		new Database ().fetch_items ("clients", { action: "client_list" }, (data: any) => {
-			this.setState ({ clients: data });
+			this.setState ({ clients: data }, () => {
+				this.setState ({ clients_loaded: true });
+				this.execute_event (this.props.onLoad);
+			});
 		});
-
 	}// load_clients;
 
 

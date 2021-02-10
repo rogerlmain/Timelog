@@ -224,19 +224,19 @@ function save_project (fields) {
 	}// team_handler;
 
 
-	let reset_handler = () => {
+	let save_team_account = () => {
 		team_members.forEach ((item) => {
 			let procedure = "call save_team_account (null, ?, ?, ?)";
 			let parameters = [fields.project_id, item.account_id, item.role];
 			connection.query (procedure, parameters, team_handler);
 		});
-	}// reset_handler;
+	}// save_team_account;
 
 
 	let save_team = () => {
 		let procedure = "call reset_team (null, ?)";
 		let parameters = [fields.project_id];
-		connection.query (procedure, parameters, reset_handler);
+		connection.query (procedure, parameters, save_team_account);
 	}// save_team;
 
 

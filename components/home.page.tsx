@@ -150,7 +150,6 @@ export default class HomePage extends BaseControl<defaultInterface> {
 					<Eyecandy id="home_eyecandy" visible={this.state.eyecandy_visible} text="Loading..." className="top-center-container"
 						afterShowing={() => {
 							this.setState ({ contents: this.panel_list [this.selected_button.props.name] });
-							this.setState ({ eyecandy_visible: false });
 						}}
 						afterHiding={() => { this.setState ({ content_loaded: true })}}>
 					</Eyecandy>
