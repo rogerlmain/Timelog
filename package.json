@@ -14,7 +14,8 @@
 		"core-js": "^3.8.1",
 		"crypto": "^1.0.1",
 		"express": "^4.17.1",
-		"fbjs": "^0.7.2",
+		"express-session": "^1.17.1",
+		"fbjs": "^3.0.0",
 		"multiparty": "^4.2.2",
 		"mysql": "^2.18.1",
 		"node": "^15.4.0",
@@ -39,6 +40,5 @@
 		"AfterBuild": [
 			"build"
 		]
-	},
-	"devDependencies": {}
+	}
 }

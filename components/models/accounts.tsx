@@ -8,7 +8,7 @@ export class AccountDataHandler extends Database {
 		parameters.append ("action", "company");
 		parameters.append ("company_id", company_id.toString ());
 		this.fetch_data ("accounts", parameters, callback);
-	}// fetch_by_project;
+	}// fetch_by_company;
 
 
 	public fetch_by_project (project_id: number, callback: any) {

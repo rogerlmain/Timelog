@@ -146,6 +146,8 @@ public debug (text: string)	{
 
 				</div>
 
+				<img id="data_indicator" src="resources/images/save.indicator.gif" />
+
 			</FadeControl>
 
 		);

@@ -293,6 +293,18 @@ border: solid 1px green;
 /********/
 
 
+#data_indicator {
+	position: absolute;
+	right: 2em;
+	bottom: 2em;
+	transition: opacity 100ms ease-in-out;
+	opacity: 0;
+}
+
+
+/********/
+
+
 .login-error {
 	display: flex;
 	justify-items: center;

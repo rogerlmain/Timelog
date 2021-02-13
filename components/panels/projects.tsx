@@ -6,14 +6,13 @@ import * as common from "components/classes/common";
 import BaseControl from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
 import SelectButton from "components/controls/select.button";
-import SelectList from "components/controls/select.list";
 
 import Eyecandy from "components/controls/eyecandy";
 
-import ProjectSelecter from "components/panels/gadgets/project.selecter";
+import ProjectSelecterGadget from "components/panels/gadgets/project.selecter.gadget";
+import TeamSelecterGadget from "components/panels/gadgets/team.selecter.gadget";
 
 import { globals } from "components/types/globals";
-import { accounts } from "components/models/accounts";
 import { projects } from "components/models/projects";
 
 
@@ -30,29 +29,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 				eyecandy_visible: false,
 				project_data: data
 			}, () => {
-
-				accounts.fetch_by_company (this.current_account ().company_id, (company_members: any) => {
-
-					accounts.fetch_by_project (this.state.project_id, (project_members: any) => {
-						this.setState ({
-							project_accounts: project_members,
-							available_accounts: company_members.filter ((member: any) => {
-								let result = true;
-								project_members.forEach ((employee: any) => {
-									if (employee.account_id == member.account_id) {
-										result = false;
-										return false;
-									}// if;
-								});
-								return result;
-							})
-						}, () => {
-							this.forceUpdate ()
-						});
-					});
-
-				});
-
+				this.reference ("team_panel").setState ({ project_id: this.state.project_id });
 			});
 		});
 	}// fetch_project;
@@ -63,18 +40,13 @@ export default class ProjectsPanel extends BaseControl<any> {
 	}// get_value;
 
 
-	private find_account (arr: Array<any>, account_id: any) {
-		return arr.find ((item: any) => {
-			if (item ["account_id"] == parseInt (account_id)) return true;
-		});
-	}// find_item;
-
-
 	private save_project (event: SyntheticEvent) {
+
+		document.getElementById ("data_indicator").style.opacity = "1";
 
 		let parameters = new FormData (this.dom ("project_form"));
 		parameters.append ("client_id", this.dom ("project_selecter_client_selecter").value);
-		parameters.append ("selected_team", JSON.stringify (this.state.selected_accounts));
+		parameters.append ("selected_team", JSON.stringify (this.reference ("team_panel").state.selected_accounts));
 		parameters.append ("action", "save");
 
 		fetch ("/projects", {
@@ -85,71 +57,10 @@ export default class ProjectsPanel extends BaseControl<any> {
 			let project = JSON.parse (data.project);
 			(document.getElementById ("project_id") as HTMLFormElement).value = project.project_id;
 			this.reference ("save_project_button").setState ({ eyecandy_visible: false });
+			document.getElementById ("data_indicator").style.opacity = "0";
 		});
 
 	}// save_project;
-
-
-	private select_member () {
-		let member_list = this.reference ("available_members");
-
-		let selected_value = member_list.state.selected_value;
-		let selected_account = this.find_account (this.state.available_accounts, selected_value);
-
-		let acs = this.state.available_accounts;
-		acs.remove (selected_account);
-
-		this.setState ({
-			available_accounts: acs,
-			selected_accounts: [...(this.state.selected_accounts ?? []), selected_account],
-			account_selected: true
-		});
-
-		member_list.reset ();
-	}// select_member;
-
-
-	private remove_member (account_id: number) {
-		let sac = this.state.selected_accounts;
-
-		let active_account = this.find_account (sac, account_id);
-		sac.remove (active_account);
-
-		this.setState ({
-			available_accounts: [...(this.state.available_accounts ?? []), active_account],
-			selected_accounts: sac
-		});
-	}// remove_member;
-
-
-	private Components = {
-		MemberEntries: function (props: any) {
-			let result = null;
-			if (Array.isArray (props.parent.state.selected_accounts)) props.parent.state.selected_accounts.forEach ((item: any) => {
-
-				let select_list = <SelectList onchange={() => { alert ("changed") }}>
-					<option key="1" value="1">Team lead</option>
-					<option key="2" value="2">Programmer</option>
-					<option key="3" value="3">Designer</option>
-					<option key="4" value="4">QA</option>
-				</SelectList>
-
-				let next_item = <div className="member_list_entry">
-					<div className="member_name">{item.username}</div>
-					<div className="member_options">
-						{select_list}
-						<SelectButton className="xbutton" onclick={() => {
-							let x = select_list;
-							/*.selected_value ()*/
-						}}>X</SelectButton>
-					</div>
-				</div>
-				if (common.is_null (result)) result = [];
-				result.push (next_item);
-			})
-			return result;
-		}// MemberEntries;
-	}// Components;
 
 
 	/********/
@@ -157,16 +68,11 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 	public state = {
 		client_selected: false,
-		project_selected: false,
-		account_selected: false,
 
 		eyecandy_visible: false,
 
 		project_loaded: false,
-
 		project_accounts: null,
-		available_accounts: null,
-		selected_accounts: null,
 
 		project_data: null,
 		project_id: null
@@ -182,7 +88,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 					<link rel="stylesheet" href="/resources/styles/panels/projects.css" />
 
-					<ProjectSelecter id="project_selecter" ref={this.create_reference} parent={this}
+					<ProjectSelecterGadget id="project_selecter" ref={this.create_reference} parent={this}
 						onClientChange={() => { this.setState ({ client_selected: true }) }}
 						onProjectChange={(event) => {
 							this.setState ({
@@ -191,7 +97,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 							 })
 						}}
 						onLoad={() => { globals.home_page.setState ({ eyecandy_visible: false }) }}>
-					</ProjectSelecter>
+					</ProjectSelecterGadget>
 
 					<div className="button-panel form-panel">
 						<div className="button-cell">
@@ -242,28 +148,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 								</div>
 
-
-								<div>
-									<div id="member_list_panel" className="three-piece-form form-panel">
-										<label htmlFor="available_members">Team members</label>
-										<SelectList id="available_members" ref={this.create_reference} required={true}
-											onchange={(event: any) => {
-												this.setState ({ project_selected: common.isset (event.list.state.selected_value) })
-											}}>
-											{this.select_options (this.state.available_accounts, "account_id", "username")}
-										</SelectList>
-										<SelectButton id="add_member_button" onclick={this.select_member.bind (this)}
-											disabled={!this.state.project_selected}>
-											Add
-										</SelectButton>
-									</div>
-
-									<FadeControl id="members_list" visible={this.state.account_selected}>
-										<label>Project Members</label>
-										<div id="member_list_entries" ref={this.create_reference}><this.Components.MemberEntries parent={this} /></div>
-									</FadeControl>
-
-								</div>
+								<TeamSelecterGadget id="team_panel" ref={this.create_reference} />
 
 							</div>
 

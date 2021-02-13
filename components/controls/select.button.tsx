@@ -48,7 +48,7 @@ export default class SelectButton extends BaseControl<selectButton> {
 			setTimeout (() => { this.change_color (event, !select_value, --count) }, flash_speed);
 		} else {
 			this.setState ({ selected: this.sticky, flashing: false });
-			this.execute_event (this.props.onclick, event);
+			this.execute_event (this.props.onclick, {...event, button: this});
 		}// if;
 	}// change_color;
 

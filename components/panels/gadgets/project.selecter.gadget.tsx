@@ -4,7 +4,7 @@ import * as common from "components/classes/common";
 
 import BaseControl, { defaultInterface } from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
-import { globals } from "components/types/globals";
+
 import { Database } from "components/classes/database";
 
 
@@ -15,7 +15,7 @@ interface projectsPanelInterface extends defaultInterface {
 }// projectsPanelInterface;
 
 
-export default class ProjectSelecter extends BaseControl<projectsPanelInterface> {
+export default class ProjectSelecterGadget extends BaseControl<projectsPanelInterface> {
 
 
 	private id = null;
@@ -170,4 +170,4 @@ export default class ProjectSelecter extends BaseControl<projectsPanelInterface>
 	}// constructor;
 
 
-}// ProjectSelecter
+}// ProjectSelecterGadget;
