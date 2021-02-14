@@ -99,7 +99,7 @@ module.exports = function (request, response, account) {
 
 		save_project: (fields) => {
 
-			let team_members = JSON.parse (fields.selected_team);
+			let project_members = JSON.parse (fields.selected_team);
 			let project_response = null;
 
 
@@ -113,25 +113,25 @@ module.exports = function (request, response, account) {
 			let team_handler = (error, results) => {
 				if (global.is_null (results)) throw "Invalid data response: team_handler";
 				if (global.is_null (project_response.members)) project_response.members = [];
-				project_response.members.push (JSON.stringify (results [0][0]));
-				if (project_response.members.length < team_members.length) return;
+				project_response.members.push (results [0][0]);
+				if (project_response.members.length < project_members.length) return;
 				response.send (JSON.stringify (project_response));
 			}// team_handler;
 
 
-			let save_team_account = () => {
-				team_members.forEach ((item) => {
-					let procedure = "call save_team_account (null, ?, ?, ?)";
+			let save_project_member = (error) => {
+				project_members.forEach ((item) => {
+					let procedure = "call save_project_member (?, ?, null, ?)";
 					let parameters = [fields.project_id, item.account_id, item.role];
 					execute_query (procedure, parameters, team_handler);
 				});
-			}// save_team_account;
+			}// save_project_member;
 
 
 			let save_team = () => {
-				let procedure = "call reset_team (null, ?)";
+				let procedure = "call reset_project_members (?)";
 				let parameters = [fields.project_id];
-				execute_query (procedure, parameters, save_team_account);
+				execute_query (procedure, parameters, save_project_member);
 			}// save_team;
 
 

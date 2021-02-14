@@ -12,33 +12,8 @@ var app = express ();
 
 
 app.initialize = (request, response) => {
-
 	app.accounts = require ("./accounts")(request);
-	let account = app.accounts.current_account ();
-
-	app.models = require ("./models")(request, response, account);
-
-	// if (global.isset (account) && global.isset (account.companies)) {
-	// 	let companies = account.companies = JSON.parse (account.companies);
-
-	// 	companies.id_string = function () {
-
-	// 		let result = null;
-
-	// 		for (let key of Object.keys (this)) {
-	// 			if (isNaN (parseInt (key))) continue;
-	// 			if (global.is_null (result)) {
-	// 				result = key;
-	// 				continue;
-	// 			}// if;
-	// 		 	result += `,${key}`;
-	// 		}// for;
-
-	// 		return result;
-
-	// 	}// id_string;
-
-	// }// if;
+	app.models = require ("./models")(request, response, app.accounts.current_account ());
 }// app.initialize;
 
 
@@ -113,7 +88,7 @@ app.post ("/projects", function (request, response) {
 		switch (fields.action) {
 			case "list": app.models.get_client_projects (fields.client_id); break;
 			case "details": app.models.get_project (fields.project_id); break;
-//			case "save": models.save_project (fields); break;
+			case "save": app.models.save_project (fields); break;
 		}// switch;
 	})
 });

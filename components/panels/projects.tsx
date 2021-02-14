@@ -53,11 +53,11 @@ export default class ProjectsPanel extends BaseControl<any> {
 			method: "post",
 			body: parameters
 		}).then (response  => response.json ()).then ((data) => {
-			if ((data.length != 1) || (common.isset (this.state.project_id))) return;
-			let project = JSON.parse (data.project);
-			(document.getElementById ("project_id") as HTMLFormElement).value = project.project_id;
-			this.reference ("save_project_button").setState ({ eyecandy_visible: false });
 			document.getElementById ("data_indicator").style.opacity = "0";
+			if (common.isset (this.state.project_id)) return;
+			let project = JSON.parse (data.project);
+			this.setState ({ project_id: project.project_id });
+			this.reference ("save_project_button").setState ({ eyecandy_visible: false });
 		});
 
 	}// save_project;
@@ -136,7 +136,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 								<div>
 
-									<input type="hidden" id="project_id" name="project_id" defaultValue={this.state.project_id} />
+									<input type="hidden" id="project_id" name="project_id" value={this.state.project_id ?? 0} />
 									<div className="two-piece-form">
 										<label htmlFor="project_name">Project Name</label>
 										<input type="text" id="project_name" name="project_name" defaultValue={this.get_value ("project_data", "name")} onBlur={this.save_project.bind (this)} />
@@ -148,7 +148,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 								</div>
 
-								<TeamSelecterGadget id="team_panel" ref={this.create_reference} />
+								<TeamSelecterGadget id="team_panel" ref={this.create_reference} onchange={this.save_project.bind (this)} />
 
 							</div>
 

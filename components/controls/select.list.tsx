@@ -34,6 +34,7 @@ export default class SelectList extends BaseControl<selectListInterface> {
 			if (common.is_null (item)) return null;
 
 			return <div key={item.key}
+
 				onClick={(event: SyntheticEvent) => {
 
 					let list_item = (event.currentTarget as HTMLDivElement);
@@ -45,10 +46,12 @@ export default class SelectList extends BaseControl<selectListInterface> {
 					}, () => {
 						this.execute_event (this.props.onchange, {...event, list: this });
 					});
+
 				}}>
 
-				<input type="hidden" value={item.props.value} />
+				<input type="hidden" key={`${item.key}_value`} value={item.props.value} />
 				{item.props.children}
+
 			</div>
 
 		});
@@ -121,8 +124,6 @@ export default class SelectList extends BaseControl<selectListInterface> {
 		return (
 			<div id={id} className={`select-list ${common.isset (this.props.className) ? this.props.className : constants.empty}`}>
 
-				{/* <input type="hidden" name={`${id}_value`} value={this.selected_value} /> */}
-
 				<link rel="stylesheet" href="/resources/styles/controls/select.list.css" />
 
 				<div id={this.textbox_id} className="select-textbox"
@@ -139,6 +140,7 @@ export default class SelectList extends BaseControl<selectListInterface> {
 				<div id={this.list_id} className="select-items" style={{ display: this.state.open ? null : "none" }} ref={this.list_reference}>
 					{this.list_items ()}
 				</div>
+
 			</div>
 		);
 	}// render;

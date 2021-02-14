@@ -11,17 +11,23 @@ import FadeControl from "components/controls/fade.control";
 import { accounts } from "components/models/accounts";
 
 
-export default class TeamSelecterGadget extends BaseControl<defaultInterface> {
+interface teamSelectorGadgetInterface extends defaultInterface { onchange?: any }
+
+
+export default class TeamSelecterGadget extends BaseControl<teamSelectorGadgetInterface> {
 
 
 	public componentDidUpdate () {
+
+		if (common.isset (this.state.available_accounts)) return;
+
 		accounts.fetch_by_company (this.current_account ().company_id, (company_members: any) => {
 
 			if (common.is_null (this.state.project_id)) return;
 
 			accounts.fetch_by_project (this.state.project_id, (project_members: any) => {
 				this.setState ({
-					project_accounts: project_members,
+					selected_accounts: project_members,
 					available_accounts: company_members.filter ((member: any) => {
 						let result = true;
 						project_members.forEach ((employee: any) => {
@@ -57,11 +63,11 @@ export default class TeamSelecterGadget extends BaseControl<defaultInterface> {
 
 		this.setState ({
 			available_accounts: acs,
-			selected_accounts: [...(this.state.selected_accounts ?? []), selected_account],
-			account_selected: true
+			selected_accounts: [...(this.state.selected_accounts ?? []), selected_account]
 		});
 
 		member_list.reset ();
+		this.execute_event (this.props.onchange);
 	}// select_member;
 
 
@@ -75,6 +81,7 @@ export default class TeamSelecterGadget extends BaseControl<defaultInterface> {
 			available_accounts: [...(this.state.available_accounts ?? []), active_account],
 			selected_accounts: sac
 		});
+		this.execute_event (this.props.onchange);
 	}// remove_member;
 
 
@@ -87,19 +94,21 @@ export default class TeamSelecterGadget extends BaseControl<defaultInterface> {
 			if (Array.isArray (props.parent.state.selected_accounts)) props.parent.state.selected_accounts.forEach (((item: any) => {
 
 				let select_list = <SelectList onchange={() => { alert ("changed") }}>
-					<option key="1" value="1">Team lead</option>
-					<option key="2" value="2">Programmer</option>
-					<option key="3" value="3">Designer</option>
-					<option key="4" value="4">QA</option>
+					<option key={`acct_${item.account_id}_1`} value="1">Team lead</option>
+					<option key={`acct_${item.account_id}_2`} value="2">Programmer</option>
+					<option key={`acct_${item.account_id}_3`} value="3">Designer</option>
+					<option key={`acct_${item.account_id}_4`} value="4">QA</option>
 				</SelectList>
 
-				let next_item = <div className="member_list_entry">
+				let next_item = <div key={item.account_id} className="member_list_entry">
 					<div className="member_name">{item.username}</div>
 					<div className="member_options">
+
 						{select_list}
 						<SelectButton className="xbutton" onclick={(() => {
 							project_panel.remove_member (item.account_id)
 						})}>X</SelectButton>
+
 					</div>
 				</div>
 				if (common.is_null (result)) result = [];
@@ -119,8 +128,7 @@ export default class TeamSelecterGadget extends BaseControl<defaultInterface> {
 		available_accounts: null,
 		selected_accounts: null,
 
-		project_selected: false,
-		account_selected: false,
+		project_selected: false
 	}// state;
 
 
@@ -142,7 +150,7 @@ export default class TeamSelecterGadget extends BaseControl<defaultInterface> {
 					</SelectButton>
 				</div>
 
-				<FadeControl id="members_list" visible={this.state.account_selected}>
+				<FadeControl id="members_list" visible={common.isset (this.state.selected_accounts)}>
 					<label>Project Members</label>
 					<div id="member_list_entries" ref={this.create_reference}><this.Components.MemberEntries parent={this} /></div>
 				</FadeControl>
