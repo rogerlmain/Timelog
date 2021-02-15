@@ -7,7 +7,7 @@ export class AccountDataHandler extends Database {
 		let parameters = new FormData ();
 		parameters.append ("action", "company");
 		parameters.append ("company_id", company_id.toString ());
-		this.fetch_data ("accounts", parameters, callback);
+		Database.fetch_data ("accounts", parameters, callback);
 	}// fetch_by_company;
 
 
@@ -15,7 +15,7 @@ export class AccountDataHandler extends Database {
 		let parameters = new FormData ();
 		parameters.append ("action", "project");
 		parameters.append ("project_id", project_id.toString ());
-		this.fetch_data ("accounts", parameters, callback);
+		Database.fetch_data ("accounts", parameters, callback);
 	}// fetch_by_project;
 
 

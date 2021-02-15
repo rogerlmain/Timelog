@@ -126,6 +126,8 @@ export default class SelectList extends BaseControl<selectListInterface> {
 
 				<link rel="stylesheet" href="/resources/styles/controls/select.list.css" />
 
+				<input type="hidden" name={id} value={this.state.selected_value ?? 0} />
+
 				<div id={this.textbox_id} className="select-textbox"
 
 					onClick={(event) => {

@@ -2,8 +2,13 @@ import * as consts from "components/types/constants";
 
 
 export function is_empty (value: any) {
-	return !this.isset (value, consts.blank);
+	return (not_set (value, consts.blank) || (Array.isArray (value) && (value.length == 0)));
 }// is_empty;
+
+
+export function not_empty (value: any) {
+	return !is_empty (value);
+}// not_empty;
 
 
 export function isset (value: any, ...nullables: any) {
@@ -11,14 +16,14 @@ export function isset (value: any, ...nullables: any) {
 }// isset;
 
 
+export function not_set (value: any, ...nullables: any) {
+	return !isset (value, ...nullables);
+}// not_set;
+
+
 export function is_null (value: any) {
 	return value == null;
 }// is_null;
-
-
-export function not_empty (value: string) {
-	return !is_empty (value);
-}// not_empty;
 
 
 export function not_null (value: any) {
@@ -27,6 +32,13 @@ export function not_null (value: any) {
 
 
 /********/
+
+
+export function exists (object: any, ...methods: any) {
+	if (is_null (object)) return false;
+	if (not_empty (methods)) return exists (object, ...(methods.slice (1, methods.length - 1)));
+	return true;
+}// exists;
 
 
 export function dimensions (object: HTMLElement) {

@@ -15,6 +15,8 @@ import TeamSelecterGadget from "components/panels/gadgets/team.selecter.gadget";
 import { globals } from "components/types/globals";
 import { projects } from "components/models/projects";
 
+import { Database } from "components/classes/database";
+
 
 export default class ProjectsPanel extends BaseControl<any> {
 
@@ -49,18 +51,22 @@ export default class ProjectsPanel extends BaseControl<any> {
 		parameters.append ("selected_team", JSON.stringify (this.reference ("team_panel").state.selected_accounts));
 		parameters.append ("action", "save");
 
-		fetch ("/projects", {
-			method: "post",
-			body: parameters
-		}).then (response  => response.json ()).then ((data) => {
+		Database.fetch_data ("projects", parameters, (data: any) => {
 			document.getElementById ("data_indicator").style.opacity = "0";
 			if (common.isset (this.state.project_id)) return;
-			let project = JSON.parse (data.project);
-			this.setState ({ project_id: project.project_id });
-			this.reference ("save_project_button").setState ({ eyecandy_visible: false });
+			if (common.exists (data, "project", "project_id")) this.setState ({ project_id: data.project.project_id });
 		});
 
 	}// save_project;
+
+
+	private reset_form (callback) {
+		if (this.state.project_loaded) return this.setState ({ project_loaded: false }, () => {
+			this.reference ("team_panel").reset ();
+			callback ();
+		});
+		callback ();
+	}// reset_form;
 
 
 	/********/
@@ -89,13 +95,14 @@ export default class ProjectsPanel extends BaseControl<any> {
 					<link rel="stylesheet" href="/resources/styles/panels/projects.css" />
 
 					<ProjectSelecterGadget id="project_selecter" ref={this.create_reference} parent={this}
-						onClientChange={() => { this.setState ({ client_selected: true }) }}
-						onProjectChange={(event) => {
-							this.setState ({
-								eyecandy_visible: true,
-								project_id: parseInt (event.target.value)
-							 })
-						}}
+
+						onClientChange={() => { this.reset_form (() => { this.setState ({ client_selected: true }) }) }}
+
+						onProjectChange={(event: any) => { this.reset_form (() => { this.setState ({
+							eyecandy_visible: true,
+							project_id: parseInt (event.target.value)
+						}) }) }}
+
 						onLoad={() => { globals.home_page.setState ({ eyecandy_visible: false }) }}>
 					</ProjectSelecterGadget>
 

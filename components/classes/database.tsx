@@ -1,12 +1,17 @@
+import * as common from "components/classes/common";
+import * as constants from "components/types/constants";
+
+
 export class Database {
 
 
-	protected fetch_data (view: string, parameters: any, callback: any) {
-		fetch (`/${view}`, {
+	public static fetch_data (view: string, parameters: any, callback: any) {
+		fetch (`${view [0] == "/" ? constants.empty : "/"}${view}`, {
 			method: "post",
 			body: parameters
-		}).then (response => response.json ()).then (data => {
-			if (data.length > 0) callback (data);
+		}).then (response => response.text ()).then (data_string => {
+			let data = (common.is_empty (data_string) ? null : JSON.parse (data_string));
+			callback ((Array.isArray (data) && (data.length == 0)) ? null : data);
 		});
 	}// fetch_data;
 
