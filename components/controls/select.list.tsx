@@ -49,7 +49,7 @@ export default class SelectList extends BaseControl<selectListInterface> {
 
 				}}>
 
-				<input type="hidden" key={`${item.key}_value`} value={item.props.value} />
+				<input type="hidden" key={`${item.key}_value`} value={item.props.value ?? 0} />
 				{item.props.children}
 
 			</div>
