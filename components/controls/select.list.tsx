@@ -11,6 +11,7 @@ import BaseControl, { defaultInterface } from "./base.control";
 interface selectListInterface extends defaultInterface {
 	children?: React.ReactElement<HTMLOptionElement>[];
 	onchange?: any;
+	selected_value?: number;
 }// selectListInterface;
 
 
@@ -24,12 +25,16 @@ export default class SelectList extends BaseControl<selectListInterface> {
 	private list_id = null;
 
 
+	private list_elements () {
+		let elements = Array.isArray (this.props.children) ? this.props.children : [this.props.children];
+		return elements;
+	}// list_elements;
+
+
 	private list_items () {
 		if (common.is_null (this.props.children)) return null;
 
-		let elements = Array.isArray (this.props.children) ? this.props.children : [this.props.children];
-
-		return elements.map ((item: React.ReactElement<HTMLOptionElement>) => {
+		return this.list_elements ().map ((item: React.ReactElement<HTMLOptionElement>) => {
 
 			if (common.is_null (item)) return null;
 
@@ -59,6 +64,19 @@ export default class SelectList extends BaseControl<selectListInterface> {
 	}// list_items;
 
 
+	private get_selected_text (value: number) {
+		let result = null;
+		this.list_elements ().some ((element: any) => {
+			if (common.is_null (element)) return false;
+			if (parseInt (element.props.value) == value) {
+				result = element.props.children;
+				return true;
+			}// if;
+		});
+		return result;
+	}// get_selected_text;
+
+
 	/********/
 
 
@@ -77,6 +95,12 @@ export default class SelectList extends BaseControl<selectListInterface> {
 		document.body.addEventListener ("keyup", (event) => {
 			if ((event.isComposing || event.key.matches ("Escape", true)) && (dropdown.visible ())) this.setState ({ open: false });
 		});
+
+		this.setState ({
+			selected_text: this.get_selected_text (this.props.selected_value),
+			selected_value: this.props.selected_value
+		});
+
 	}// componentDidMount;
 
 

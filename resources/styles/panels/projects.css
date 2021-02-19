@@ -107,6 +107,16 @@
 /********/
 
 
+#project_selecter {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}/* #project_selecter */
+
+
+/********/
+
+
 .project-select-form {
 	position: relative;
 	display: grid;

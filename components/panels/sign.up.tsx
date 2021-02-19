@@ -9,7 +9,7 @@ import Eyecandy from "components/controls/eyecandy";
 import CreditCardGadget from "components/panels/gadgets/credit.card.gadget";
 
 import { account_types, signing_state } from "components/types/constants";
-import { accounts } from "components/models/accounts";
+import { accounts_model } from "components/models/accounts";
 
 
 
@@ -125,7 +125,7 @@ export default class SignupPanel extends BaseControl<defaultInterface> {
 							subtext="One moment, please"
 							afterShowing={() => {
 
-								accounts.save_account (new FormData (document.getElementById ("account_form") as HTMLFormElement), (data: any) => {
+								accounts_model.save_account (new FormData (document.getElementById ("account_form") as HTMLFormElement), (data: any) => {
 									if (this.signed_in ()) {
 										parent.active_panel = parent.panels.home_panel;
 										parent.setState ({ panel_states: { ...parent.state.panel_states, signup_panel: false } });

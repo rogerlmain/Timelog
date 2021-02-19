@@ -6,6 +6,7 @@ import FadeControl from "./fade.control";
 
 interface eyecandy {
 	visible: boolean;
+	vanishing: boolean;
 
 	text: String;
 	subtext?: String;
@@ -23,7 +24,8 @@ export default class Eyecandy extends BaseControl<eyecandy> {
 		var subtext = (this.props.subtext != null) ? <div>{this.props.subtext}</div> : null;
 
 		return (
-			<FadeControl id={this.id_badge ("Eyecandy")} visible={this.props.visible} style={this.props.style} className={this.props.className}
+			<FadeControl id={this.id_badge ("Eyecandy")} visible={this.props.visible} style={this.props.style}
+				className={this.props.className} vanishing={this.props.vanishing ?? false}
 
 				beforeShowing={this.props.beforeShowing}
 				afterShowing={this.props.afterShowing}

@@ -13,7 +13,7 @@ import ProjectSelecterGadget from "components/panels/gadgets/project.selecter.ga
 import TeamSelecterGadget from "components/panels/gadgets/team.selecter.gadget";
 
 import { globals } from "components/types/globals";
-import { projects } from "components/models/projects";
+import { projects_model } from "components/models/projects";
 
 import { Database } from "components/classes/database";
 
@@ -25,7 +25,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 		this.dom ("project_selecter")
 
-		projects.fetch_by_id (this.state.project_id, (data) => {
+		projects_model.fetch_by_id (this.state.project_id, (data) => {
 
 			this.setState ({
 				eyecandy_visible: false,
@@ -155,7 +155,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 								</div>
 
-								<TeamSelecterGadget id="team_panel" ref={this.create_reference} onchange={this.save_project.bind (this)} />
+								<TeamSelecterGadget id="team_panel" ref={this.create_reference} onchange={this.save_project.bind (this)} parent={this} />
 
 							</div>
 
@@ -169,5 +169,12 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 		);
 	}// render;
+
+
+	public constructor (props) {
+		super (props);
+		globals.projects_page = this;
+	}// constructor;
+
 
 }// ProjectsPanel;

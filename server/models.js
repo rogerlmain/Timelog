@@ -104,7 +104,7 @@ module.exports = function (request, response, account) {
 
 			let project_handler = (error, results) => {
 				if (global.is_null (results)) throw "Invalid data response: project_handler";
-				project_response = { project: JSON.stringify (results [0][0]) };
+				project_response = { project: results [0][0] };
 				save_team ();
 			}// project_handler;
 
@@ -122,12 +122,12 @@ module.exports = function (request, response, account) {
 				if (Array.isArray (project_members)) {
 					project_members.forEach ((item) => {
 						let procedure = "call save_project_member (?, ?, null, ?)";
-						let parameters = [fields.project_id, item.account_id, item.role];
+						let parameters = [fields.project_id, item.account_id, item.role_id];
 						execute_query (procedure, parameters, team_handler);
 					});
 					return;
 				}// if;
-				response.send (null);
+				response.send (project_response);
 			}// save_project_member;
 
 

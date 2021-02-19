@@ -1,6 +1,6 @@
 import { Database } from "components/classes/database";
 
-export class AccountDataHandler extends Database {
+export class AccountsModel extends Database {
 
 
 	public fetch_by_company (company_id: number, callback: any) {
@@ -25,7 +25,7 @@ export class AccountDataHandler extends Database {
 	}// save_account;
 
 
-}// AccountDataHandler;
+}// AccountsModel;
 
 
-export const accounts = new AccountDataHandler ();
+export const accounts_model = new AccountsModel ();

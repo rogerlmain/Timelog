@@ -3,6 +3,13 @@ import { directions } from "components/types/constants";
 
 declare global {
 
+
+	interface FormData {
+		toObject (): any;
+		toJson (): string;
+	}// FormData;
+
+
 	interface HTMLElement {
 		visible (): boolean;
 		freeze (): void;
@@ -30,6 +37,21 @@ declare global {
 	}// Number;
 
 }// global;
+
+
+FormData.prototype.toObject = function () {
+	let result = {}
+	this.forEach ((value: any, key: string) => result [key] = value);
+	return result;
+}// toObject;
+
+
+FormData.prototype.toJson = function () {
+	return JSON.stringify (this.toObject ());
+}// toJson;
+
+
+/********/
 
 
 HTMLElement.prototype.visible = function () {

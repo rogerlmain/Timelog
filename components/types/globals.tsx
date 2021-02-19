@@ -26,6 +26,8 @@ export const globals = {
 	main_page: null,
 	home_page: null,
 
+	projects_page: null,
+
 	settings: ((() => {
 
 		let settings = settings_cookie ();
@@ -41,7 +43,7 @@ export const globals = {
 		globals.settings [name] = value;
 		common.set_cookie ("settings", JSON.stringify (globals.settings));
 
-		// fetch (to set user preferneces in the database - later)
+		// fetch (to set user preferences in the database - later)
 
 	}// set_setting;
 

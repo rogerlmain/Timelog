@@ -21,7 +21,7 @@ export class Database {
 			method: "post",
 			body: parameters
 		}).then (response => response.json ()).then (data => {
-			if (data.length > 0) callback (data [0]);
+			callback ((data.length > 0) ? data [0] : null);
 		});
 	}// fetch_item;
 

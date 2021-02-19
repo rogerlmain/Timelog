@@ -51,7 +51,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 	private id: string = null;
 
 	private dom_control: any = null;
-	private dom_resize: any = null;
+	private dom_resizer: any = null;
 
 
 	private fade_style = {
@@ -86,7 +86,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 
 		try {
 
-			let control = this.dom_resize.current.children [0];
+			let control = this.dom_resizer.current.children [0];
 
 			if (common.isset (control)) {
 				let control_position = control.style.position;
@@ -126,7 +126,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 				onEnter={() => { this.resize_transition_style ["entering"] = this.resize_transition_style ["entered"] = this.growth_dimensions () }}>
 
 				{state => {
-					return <div id={`${this.id_badge ()}_resize`} ref={this.dom_resize} style={{
+					return <div id={`${this.id_badge ()}_resize`} ref={this.dom_resizer} style={{
 						...this.props.style,
 						...this.resize_style,
 						...this.resize_transition_style [state]
@@ -144,7 +144,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 	constructor (props: fadeControl) {
 		super (props);
 		this.dom_control = this.props.dom_control ?? React.createRef ();
-		this.dom_resize = React.createRef ();
+		this.dom_resizer = React.createRef ();
 	}// constructor;
 
 
@@ -162,7 +162,9 @@ export default class FadeControl extends BaseControl<fadeControl> {
 		switch (event.propertyName) {
 			case "opacity": {
 				if (this.props.visible) {
-					if (!this.props.vanishing) {
+					if (this.props.vanishing) {
+						this.dom_resizer.current.style.width = this.dom_resizer.current.style.height = null;
+					} else {
 						this.dom_control.current.style.zIndex = (this.props.zIndex ?? fade_zindex);
 						this.execute_event (this.props.beforeShowing);
 					}// if;

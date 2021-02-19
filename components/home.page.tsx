@@ -13,8 +13,9 @@ import FadeControl from "components/controls/fade.control";
 import HomePanel from "components/panels/home";
 import AccountPanel from "components/panels/sign.up";
 import ProjectsPanel from "components/panels/projects";
-import LoggingPanel from "components/panels/logging";
 import TeamPanel from "components/panels/teams";
+import TasksPanel from "components/panels/tasks";
+import LoggingPanel from "components/panels/logging";
 import SettingsPanel from "components/panels/settings";
 import Eyecandy from "./controls/eyecandy";
 
@@ -33,10 +34,10 @@ export default class HomePage extends BaseControl<defaultInterface> {
 		home: <HomePanel />,
 		account: <AccountPanel parent={this.props.parent} />,
 		projects: <ProjectsPanel />,
-		logging: <LoggingPanel />,
 		team: <TeamPanel />,
-		history: <div>placeholder for history</div>,
-		tasks: <div>placeholder for tasks</div>
+		tasks: <TasksPanel />,
+		logging: <LoggingPanel />,
+		history: <div onLoad={() => { globals.home_page.setState ({ eyecandy_visible: false }) }}>placeholder for history</div>
 	}// panel_list;
 
 

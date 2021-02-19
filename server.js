@@ -1,4 +1,4 @@
-require ("./globals.js");
+require ("./server/globals.js");
 
 const path = require ("path");
 const express = require ("express");
@@ -12,8 +12,8 @@ var app = express ();
 
 
 app.initialize = (request, response) => {
-	app.accounts = require ("./accounts")(request);
-	app.models = require ("./models")(request, response, app.accounts.current_account ());
+	app.accounts = require ("./server/accounts")(request);
+	app.models = require ("./server/models")(request, response, app.accounts.current_account ());
 }// app.initialize;
 
 
@@ -77,7 +77,7 @@ app.post ("/logging", function (request, response) {
 app.post ("/clients", function (request, response) {
 	app.process (request, response, (fields) => {
 		switch (fields.action) {
-			case "client_list": app.models.get_clients (app.accounts.current_account ().company_id); break;
+			case "list": app.models.get_clients (app.accounts.current_account ().company_id); break;
 		}// switch;
 	})
 });
@@ -89,6 +89,16 @@ app.post ("/projects", function (request, response) {
 			case "list": app.models.get_client_projects (fields.client_id); break;
 			case "details": app.models.get_project (fields.project_id); break;
 			case "save": app.models.save_project (fields); break;
+		}// switch;
+	})
+});
+
+
+app.post ("/tasks", function (request, response) {
+	app.process (request, response, (fields) => {
+		let task_handler = require ("./server/models/tasks")(request, response, app.accounts.current_account ());
+		switch (fields.action) {
+			case "list": task_handler.get_tasks (fields.project_id); break;
 		}// switch;
 	})
 });

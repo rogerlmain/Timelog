@@ -25,7 +25,7 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 
 
 	private load_clients () {
-		new Database ().fetch_items ("clients", { action: "client_list" }, (data: any) => {
+		new Database ().fetch_items ("clients", { action: "list" }, (data: any) => {
 			this.setState ({ clients: data }, () => {
 				this.setState ({ clients_loaded: true });
 				this.execute_event (this.props.onLoad);

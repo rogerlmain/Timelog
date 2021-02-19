@@ -36,7 +36,7 @@ export function not_null (value: any) {
 
 export function exists (object: any, ...methods: any) {
 	if (is_null (object)) return false;
-	if (not_empty (methods)) return exists (object, ...(methods.slice (1, methods.length - 1)));
+	if (not_empty (methods)) return exists (object [methods [0]], ...(methods.slice (1)));
 	return true;
 }// exists;
 
