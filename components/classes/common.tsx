@@ -41,6 +41,13 @@ export function exists (object: any, ...methods: any) {
 }// exists;
 
 
+export function nested_value (object: any, ...methods: any) {
+	if (is_null (object)) return null;
+	if (not_empty (methods)) return nested_value (object [methods [0]], ...(methods.slice (1)));
+	return object;
+}// nested_value;
+
+
 export function dimensions (object: HTMLElement) {
 	let result = null;
 	if (isset (object)) {

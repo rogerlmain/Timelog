@@ -108,7 +108,11 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 					<select id={this.project_selecter_id} ref={this.create_reference} name="project_id" className="form-item"
 						defaultValue="placeholder" style={{ margin: 0 }}
 
-						onChange={(event) => { this.execute_event (this.props.onProjectChange, event) }}>
+						onChange={(event) => {
+							let selected_project = this.state.projects.find ((item: any) => { return item.project_id == parseInt (event.target.value) });
+							this.execute_event (this.props.onProjectChange, event);
+							this.setState ({ current_project: selected_project });
+						}}>
 
 						<option key="placeholder" value="placeholder" disabled={true} />
 						{this.select_options (this.state.projects, "project_id", "project_name")}
@@ -137,6 +141,8 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 
 		projects_loaded: false,
 		project_selected: false,
+
+		current_project: null
 
 	}// state;
 

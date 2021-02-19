@@ -20,6 +20,12 @@ const default_task_duration: number = 14;
 export default class TasksPanel extends BaseControl<any> {
 
 
+	private project_code () {
+		let project_control: ProjectSelecterGadget = this.reference ("project_selecter");
+		return common.nested_value (project_control, "state", "current_project", "project_code");
+	}// project_code;
+
+
 	private default_due_date () {
 		let current_time = new Date ();
 		return current_time.setDate (current_time.getDate () + default_task_duration);
@@ -104,6 +110,8 @@ export default class TasksPanel extends BaseControl<any> {
 						<div id="task_form_panel">
 
 							<input type="hidden" id="project_id" name="project_id" value={this.state.task_id} />
+
+							<div style={{ textAlign: "right", marginBottom: "1em" }}>{this.project_code ()}</div>
 
 							<div className="two-piece-form">
 								<label htmlFor="task_name">Name</label>

@@ -161,11 +161,11 @@ module.exports = function (request, response, account) {
 		}/* get_project */,
 
 
-		get_client_projects: (client_id) => {
-			let procedure = "call get_client_projects (?)";
+		get_projects_by_client: (client_id) => {
+			let procedure = "call get_projects_by_client (?)";
 			let parameters = [client_id];
 			execute_query (procedure, parameters);
-		}/* get_client_projects */,
+		}/* get_projects_by_client */,
 
 
 		/**** Entries ****/
