@@ -12,10 +12,18 @@ import * as common from "components/classes/common";
 import * as constants from "components/types/constants";
 
 import EyecandyPanel from "components/controls/eyecandy.panel";
-import Eyecandy from "components/controls/eyecandy";
-import OverflowControl from "components/controls/overflow.control";
+
+
+const default_task_duration: number = 14;
+
 
 export default class TasksPanel extends BaseControl<any> {
+
+
+	private default_due_date () {
+		let current_time = new Date ();
+		return current_time.setDate (current_time.getDate () + default_task_duration);
+	}// default_due_date;
 
 
 	private load_tasks (event: any) {
@@ -57,7 +65,8 @@ export default class TasksPanel extends BaseControl<any> {
 		name: constants.empty,
 		description: constants.empty,
 
-		due_date: new Date (),
+		due_date: this.default_due_date (),
+
 		estimate: 0,
 
 		editor_style: constants.empty
@@ -117,7 +126,7 @@ export default class TasksPanel extends BaseControl<any> {
 											this.forceUpdate ();
 										});
 									}}
-									selected={this.state.due_date}
+									selected={this.default_due_date ()}
 									value={this.state.due_date}>
 								</DatePicker>
 							</div>
