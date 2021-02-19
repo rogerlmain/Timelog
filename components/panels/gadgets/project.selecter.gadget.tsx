@@ -150,7 +150,7 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 		return (
 			<form id={this.id}>
 
-				<div className="two-piece-form" style={{ overflow: "hidden" }}>
+				<div className="two-piece-form" style={{ overflow: "hidden", alignItems: "flex-start" }}>
 
 					{this.client_selecter ()}
 					{this.project_selecter ()}

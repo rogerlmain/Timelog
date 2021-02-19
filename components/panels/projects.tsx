@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from "react";
+import React, { SyntheticEvent, useCallback } from "react";
 
 import * as constants from "components/types/constants";
 import * as common from "components/classes/common";
@@ -16,6 +16,9 @@ import { globals } from "components/types/globals";
 import { projects_model } from "components/models/projects";
 
 import { Database } from "components/classes/database";
+
+
+const max_code_length: number = 5;
 
 
 export default class ProjectsPanel extends BaseControl<any> {
@@ -42,7 +45,34 @@ export default class ProjectsPanel extends BaseControl<any> {
 	}// get_value;
 
 
+	private create_project_code () {
+
+		let name_field: HTMLInputElement = this.reference ("project_name");
+		let name_value = (common.isset (name_field) ? name_field.value : null);
+
+		if (common.is_null (name_value)) return;
+
+		let word_array = name_value.split (constants.space);
+		let letter_count = ((word_array.length < 3) ? 2 : ((word_array.length > 5) ? 5 : word_array.length));
+
+		let result: string = null;
+
+		word_array.forEach ((item: string) => {
+			if (common.is_null (result)) result = constants.empty;
+			result += item.slice (0, letter_count);
+		})
+
+		return result.toUpperCase ();
+
+	}// create_project_code;
+
+
 	private save_project (event: SyntheticEvent) {
+
+		let code_field: HTMLInputElement = this.reference ("project_code");
+		let code_value: string = (common.isset (code_field) ? code_field.value : null);
+
+		if (common.is_empty (code_value)) this.setState ({ project_data: {...this.state.project_data, code: this.create_project_code () } });
 
 		document.getElementById ("data_indicator").style.opacity = "1";
 
@@ -145,8 +175,19 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 									<input type="hidden" id="project_id" name="project_id" value={this.state.project_id ?? 0} />
 									<div className="two-piece-form">
+
 										<label htmlFor="project_name">Project Name</label>
-										<input type="text" id="project_name" name="project_name" defaultValue={this.get_value ("project_data", "name")} onBlur={this.save_project.bind (this)} />
+										<input type="text" id="project_name" name="project_name" ref={this.create_reference}
+											defaultValue={this.get_value ("project_data", "name")}
+											onBlur={this.save_project.bind (this)}>
+										</input>
+
+										<label htmlFor="project_code">Project Code</label>
+										<input type="text" id="project_code" name="project_code" ref={this.create_reference}
+											defaultValue={this.get_value ("project_data", "code")} maxLength={max_code_length}
+											onBlur={this.save_project.bind (this)} style={{ textAlign: "right" }}>
+										</input>
+
 									</div>
 
 									<textarea id="project_description" name="project_description" placeholder="Description (optional)"

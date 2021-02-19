@@ -139,9 +139,9 @@ module.exports = function (request, response, account) {
 
 
 			let save_project_details = () => {
-				let procedure = "call save_project (?, ?, ?, ?)";
+				let procedure = "call save_project (?, ?, ?, ?, ?)";
 				let parameters = [
-					fields.project_name, fields.project_description, fields.client_id,
+					fields.project_name, fields.project_code, fields.project_description, fields.client_id,
 					global.isset (fields.project_id) ? parseInt (fields.project_id) : null
 				];
 				execute_query (procedure, parameters, project_handler);
