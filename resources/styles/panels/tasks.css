@@ -11,11 +11,36 @@
 
 #task_list {
 	display: flex;
-	flex-direction: row;
-	align-items: center;
-	margin-right: 0.5em;
+	flex-direction: column;
+	align-items: right;
+	row-gap: 0.2em;
 	white-space: nowrap;
 }/* #task_list */
+
+
+#task_list .task-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	column-gap: 1em;
+}/* #task_list .task-row */
+
+
+#task_list_panel {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1em;
+}/* #task_list_panel */
+
+
+#task_list_panel button {}
+
+
+#task_form {
+	display: flex;
+	flex-direction: column;
+	row-gap: 0.2em;
+}/* #task_form */
 
 
 #task_form_panel {

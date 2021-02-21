@@ -3,6 +3,7 @@ import * as React from "react";
 import * as common from "components/classes/common";
 import * as datatype from "components/types/datatypes";
 
+import Database from "components/classes/database";
 import BaseControl from "components/controls/base.control";
 import OverflowControl from "components/controls/overflow.control";
 import FadeControl from "components/controls/fade.control";
@@ -11,7 +12,6 @@ import SelectButton from "components/controls/select.button";
 
 import LogHistoryGadget from "components/panels/gadgets/log.history.gadget";
 import ProjectSelecterGadget from "./gadgets/project.selecter.gadget";
-import { Database } from "components/classes/database";
 
 
 export default class LoggingPanel extends BaseControl<any> {
@@ -25,7 +25,7 @@ export default class LoggingPanel extends BaseControl<any> {
 		parameters.set ("action", "entries");
 
 		// TEMPORARY - TRANSPLANT TO accounts MODEL CLASS
-		new Database ().fetch_items ("logging", parameters, (result: any) => {
+		Database.fetch_rows ("logging", parameters, (result: any) => {
 			this.setState ({ entries: result }, () => {
 				this.setState ({ gadget_updated: true });
 			});
@@ -41,7 +41,7 @@ export default class LoggingPanel extends BaseControl<any> {
 		}// if;
 
 		// TEMPORARY - TRANSPLANT TO accounts MODEL CLASS
-		new Database ().fetch_items ("logging", parameters, (data: any) => {
+		Database.fetch_rows ("logging", parameters, (data: any) => {
 			let response_string = JSON.stringify (data [0]);
 			let current_entry: datatype.entry = datatype.entry.parse (response_string);
 			common.clear_cookie ("current_entry");

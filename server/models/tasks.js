@@ -32,12 +32,24 @@ module.exports = function (request, response, account) {
 			let procedure = "call get_tasks (?)";
 			let parameters = [project_id];
 			execute_query (procedure, parameters);
-		}/* get_tasks */
+		}/* get_tasks */,
+
+
+		save: (fields) => {
+			let procedure = "call save_task (?, ?, ?, ?, ?, ?, ?)";
+			let parameters = [
+				parseInt (fields.task_id), parseInt (fields.project_id), null, fields.task_name,
+				fields.task_description, parseInt (fields.estimate), fields.deadline
+			];
+			execute_query (procedure, parameters, data_response_handler);
+		}// save;
 
 
 	}// return;
 
 }// models;
+
+
 
 
 

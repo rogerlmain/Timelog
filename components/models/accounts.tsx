@@ -1,6 +1,6 @@
-import { Database } from "components/classes/database";
+import Database from "components/classes/database";
 
-export class AccountsModel extends Database {
+export class AccountsModel {
 
 
 	public fetch_by_company (company_id: number, callback: any) {
@@ -21,7 +21,7 @@ export class AccountsModel extends Database {
 
 	public save_account (data: FormData, callback: any) {
 		data.append ("action", "save");
-		this.save_data ("accounts", data, callback);
+		Database.save_data ("accounts", data, callback);
 	}// save_account;
 
 

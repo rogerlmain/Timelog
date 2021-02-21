@@ -99,6 +99,7 @@ app.post ("/tasks", function (request, response) {
 		let task_handler = require ("./server/models/tasks")(request, response, app.accounts.current_account ());
 		switch (fields.action) {
 			case "list": task_handler.get_tasks (fields.project_id); break;
+			case "save": task_handler.save (fields); break;
 		}// switch;
 	})
 });

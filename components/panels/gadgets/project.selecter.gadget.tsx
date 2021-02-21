@@ -2,10 +2,9 @@ import React from "react";
 
 import * as common from "components/classes/common";
 
+import Database from "components/classes/database";
 import BaseControl, { defaultInterface } from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
-
-import { Database } from "components/classes/database";
 
 
 interface projectsPanelInterface extends defaultInterface {
@@ -25,7 +24,7 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 
 
 	private load_clients () {
-		new Database ().fetch_items ("clients", { action: "list" }, (data: any) => {
+		Database.fetch_rows ("clients", { action: "list" }, (data: any) => {
 			this.setState ({ clients: data }, () => {
 				this.setState ({ clients_loaded: true });
 				this.execute_event (this.props.onLoad);
@@ -40,7 +39,7 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 		parameters.set ("client_id", this.reference (this.client_selecter_id).value);
 
 		// TEMPORARY - TRANSPLANT TO projects MODEL CLASS
-		new Database ().fetch_items ("projects", parameters, (data: any) => {
+		Database.fetch_rows ("projects", parameters, (data: any) => {
 			this.setState ({ projects: data }, () => {
 				this.setState ({ client_selected: true });
 				this.reference (this.project_selecter_id).disabled = false;

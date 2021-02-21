@@ -2,6 +2,7 @@ import React from "react";
 
 import { account, team } from "components/types/datatypes";
 
+import Database from "components/classes/database";
 import BaseControl from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
 import SelectButton from "components/controls/select.button";
@@ -9,7 +10,6 @@ import SelectButton from "components/controls/select.button";
 import PopupWindow from "components/panels/gadgets/popup.window";
 
 import { account_types } from "components/types/constants";
-import { Database } from "components/classes/database";
 
 
 const free_account_team_count = 2;
@@ -38,7 +38,6 @@ export default class TeamPanel extends BaseControl<any> {
 	// 	);
 	// }// new_team_window;
 
-
 	/********/
 
 
@@ -59,7 +58,7 @@ export default class TeamPanel extends BaseControl<any> {
 	public componentDidMount () {
 
 		// TEMPORARY - TRANSPLANT TO teams MODEL CLASS
-		new Database ().fetch_items ("team", { action: "team_list" }, (data: any) => {
+		Database.fetch_rows ("team", { action: "team_list" }, (data: any) => {
 			this.setState ({ teams : data });
 		});
 
@@ -69,7 +68,7 @@ export default class TeamPanel extends BaseControl<any> {
 	public fetch_team_list (event) {
 
 		// TEMPORARY - TRANSPLANT TO teams MODEL CLASS
-		new Database ().fetch_items ("team", {
+		Database.fetch_rows ("team", {
 			action: "member_list",
 			team_id: event.target.value
 		}, (data: account []) => {

@@ -3,6 +3,7 @@ import React, { SyntheticEvent, useCallback } from "react";
 import * as constants from "components/types/constants";
 import * as common from "components/classes/common";
 
+import Database from "components/classes/database";
 import BaseControl from "components/controls/base.control";
 import FadeControl from "components/controls/fade.control";
 import SelectButton from "components/controls/select.button";
@@ -15,7 +16,6 @@ import TeamSelecterGadget from "components/panels/gadgets/team.selecter.gadget";
 import { globals } from "components/types/globals";
 import { projects_model } from "components/models/projects";
 
-import { Database } from "components/classes/database";
 
 
 const max_code_length: number = 5;

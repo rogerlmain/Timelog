@@ -2,32 +2,10 @@ import * as common from "components/classes/common";
 import * as constants from "components/types/constants";
 
 
-export class Database {
+export default class Database {
 
 
-	public static fetch_data (view: string, parameters: any, callback: any) {
-		fetch (`${view [0] == "/" ? constants.empty : "/"}${view}`, {
-			method: "post",
-			body: parameters
-		}).then (response => response.text ()).then (data_string => {
-			let data = (common.is_empty (data_string) ? null : JSON.parse (data_string));
-			callback ((Array.isArray (data) && (data.length == 0)) ? null : data);
-		});
-	}// fetch_data;
-
-
-	protected fetch_item (view: string, parameters: any, callback: any) {
-		fetch (`/${view}`, {
-			method: "post",
-			body: parameters
-		}).then (response => response.json ()).then (data => {
-			callback ((data.length > 0) ? data [0] : null);
-		});
-	}// fetch_item;
-
-
-	// TEMPORARY - SET TO protected WHEN ALL ITEMS ARE IN MODELS CLASSES
-	public fetch_items (view: any, parameters: any, callback: any = null) {
+	public static fetch_rows (name: string, parameters: any, callback: any) {
 
 		let form_data = (parameters instanceof FormData);
 
@@ -42,18 +20,34 @@ export class Database {
 			"Content-Type": "application/json"
 		}// if;
 
-		fetch (`/${view}`, fetch_parameters).then (response => {
+		fetch (`/${name}`, fetch_parameters).then (response => {
 			return response.json ()
 		}). then (callback);
-	}// fetch_items;
+
+	}// fetch_rows;
 
 
-	protected save_data (tablename: string, data: FormData, callback: any) {
-		fetch (`/${tablename}`, {
-			method: "POST",
-			body: data,
-			credentials: "same-origin"
-		}).then (response => response.json ()).then (data => callback);
+	public static fetch_row (name: string, parameters: any, callback: any) {
+		Database.fetch_rows (name, parameters, (data: any) => {
+			callback (Array.isArray (data) && (data.length >= 1) ? data [0] : data);
+		});
+	}// fetch_row;
+
+
+	// TODO: REFACTOR TO USE fetch_rows
+	public static fetch_data (name: string, parameters: any, callback: any) {
+		fetch (`${name [0] == "/" ? constants.empty : "/"}${name}`, {
+			method: "post",
+			body: parameters
+		}).then (response => response.text ()).then (data_string => {
+			let data = (common.is_empty (data_string) ? null : JSON.parse (data_string));
+			callback ((Array.isArray (data) && (data.length == 0)) ? null : data);
+		});
+	}// fetch_data;
+
+
+	public static save_data (name: string, parameters: FormData, callback: any) {
+		Database.fetch_row (name, parameters, callback);
 	}// save_data;
 
 
