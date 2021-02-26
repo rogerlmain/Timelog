@@ -12,8 +12,10 @@ interface fadeControl extends defaultInterface {
 
 	visible: boolean;
 
-	// if true control doesn't occupy DOM space
-	vanishing: boolean;
+
+	vanishing: boolean;			// if true control doesn't occupy DOM space
+	reset_on_close: boolean;	// Only valid if vanishing: if true (default) doesn't occupy DOM space after closing
+								// Use for reset_on_close=false : resize immediately to fit new content (see eyecandy.panel.tsx)
 
 	onComponentUpdate?: any;
 
@@ -97,7 +99,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 				result = {
 					display: computed_style.display,
 					width: Math.ceil (parseFloat (computed_style.width)),
-					height: Math.round (parseFloat (computed_style.height))
+					height: Math.ceil (parseFloat (computed_style.height))
 				};
 
 				control.style.position = control_position;
@@ -130,7 +132,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 						...this.props.style,
 						...this.resize_style,
 						...this.resize_transition_style [state]
-					}} className={this.props.className}>{this.state.contents ?? this.props.children}</div>
+					}} className={this.props.className}><div className="resize-container">{this.state.contents ?? this.props.children}</div></div>
 				}}
 
 			</Transition>
@@ -162,7 +164,7 @@ export default class FadeControl extends BaseControl<fadeControl> {
 		switch (event.propertyName) {
 			case "opacity": {
 				if (this.props.visible) {
-					if (this.props.vanishing) {
+					if (this.props.vanishing && this.props.reset_on_close) {
 						this.dom_resizer.current.style.width = this.dom_resizer.current.style.height = null;
 					} else {
 						this.dom_control.current.style.zIndex = (this.props.zIndex ?? fade_zindex);

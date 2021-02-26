@@ -4,12 +4,17 @@ import React from "react";
 import FadeControl from "./fade.control";
 import Eyecandy from "./eyecandy";
 
-import * as constants from "components/types/constants";
-
+import { horizontal_alignment, vertical_alignment } from "components/types/constants";
 
 
 interface eyecandyPanelInterface extends defaultInterface {
 	eyecandy_text: string;
+
+	beforeShowing?: any;
+	afterShowing?: any;
+
+	beforeHiding?: any;
+	afterHiding?: any;
 
 	beforeShowingEyecandy?: any;
 	afterShowingEyecandy?: any;
@@ -23,6 +28,9 @@ interface eyecandyPanelInterface extends defaultInterface {
 	beforeHidingContents?: any;
 	afterHidingContents?: any;
 
+	align?: vertical_alignment;
+	justify?: horizontal_alignment;
+
 	vanishing?: boolean;
 }// eyecandyPanelInterface;
 
@@ -34,6 +42,7 @@ export default class EyecandyPanel extends BaseControl<eyecandyPanelInterface> {
 	private eyecandy_panel: Eyecandy = null;
 	private contents_panel: FadeControl = null;
 
+
 	/********/
 
 
@@ -42,24 +51,15 @@ export default class EyecandyPanel extends BaseControl<eyecandyPanelInterface> {
 		contents_visible: false,
 
 		eyecandy_text: null,
-		contents: null,
 
-		beforeShowingEyecandy: null,
-		afterShowingEyecandy: null,
-
-		beforeHidingEyecandy: null,
-		afterHidingEyecandy: null,
-
-		afterShowingContents: null,
-
-		beforeHidingContents: null,
-		afterHidingContents: null
+		load_handler: null
 	}// state;
 
 
 	public constructor (props) {
 		super (props);
 		this.id = this.id_badge (this.props.id);
+		this.show = this.show.bind (this);
 	}// constructor;
 
 
@@ -67,23 +67,15 @@ export default class EyecandyPanel extends BaseControl<eyecandyPanelInterface> {
 		this.eyecandy_panel = this.reference (`${this.id}_eyecandy`);
 		this.contents_panel = this.reference (`${this.id}_contents`);
 		this.setState ({ eyecandy_text: (this.props.eyecandy_text ?? "Loading") });
-		this.setState ({ contents: this.props.children });
 	}// componentDidMount;
 
 
-	public load_contents (content_loader: any) {
-		if (this.state.contents_visible) this.setState ({
-			afterShowingEyecandy: () => this.setState ({ contents: content_loader (() => this.setState ({ eyecandy_visible: false })) }),
-			contents_visible: false
-		})
-		else this.setState ({ contents: content_loader (() => this.setState ({ contents_visible: true })) });
-	}// load_contents;
-
-
-	public show () {
-		this.load_contents ((callback: any) => {
-			this.execute_event (callback);
-			return this.props.children;
+	public show (callback: any = null) {
+		this.setState ({ load_handler: () => callback (() => { this.setState ({ eyecandy_visible: false }) }) }, () => {
+			switch (this.state.contents_visible) {
+				case true: this.setState ({ contents_visible: false }); break;
+				default: this.setState ({ eyecandy_visible: true }); break;
+			}// switch;
 		});
 	}// show;
 
@@ -92,35 +84,74 @@ export default class EyecandyPanel extends BaseControl<eyecandyPanelInterface> {
 
 		return (
 
-			<div id={this.id} className="overlay-container">
+			<div id={this.id} className="eyecandy-panel overlay-container">
 
-				<Eyecandy id={`${this.id}_eyecandy`} className="self-centered"
+				<Eyecandy id={`${this.id}_eyecandy`} text={this.state.eyecandy_text}
 					visible={this.state.eyecandy_visible && !this.state.contents_visible}
-					text={this.state.eyecandy_text} vanishing={this.props.vanishing ?? false}
+					vanishing={this.props.vanishing ?? false} reset_on_close={false}
 
-					beforeShowing={this.state.beforeShowingEyecandy}
-					afterShowing={this.state.afterShowingEyecandy}
-					beforeHiding={this.state.beforeHidingEyecandy}
+					style={{
+						display: "inline-flex",
+						alignItems: (this.props.align ?? vertical_alignment.middle),
+						justifyContent: (this.props.justify ?? horizontal_alignment.center)
+					}}
+
+					beforeShowing={() => {
+						this.execute_event (this.props.beforeShowingEyecandy);
+						this.execute_event (this.props.beforeShowing);
+					}}
+
+					afterShowing={() => {
+						this.execute_event (this.props.afterShowingEyecandy);
+						this.execute_event (this.state.load_handler);
+						this.execute_event (this.props.afterShowing);
+					}}
+
+					beforeHiding={() => {
+						this.execute_event (this.props.beforeHidingEyecandy);
+						this.execute_event (this.props.beforeHiding);
+					}}
+
 					afterHiding={() => {
-						this.setState ({ contents_visible: true });
 						this.execute_event (this.props.afterHidingEyecandy);
+						this.execute_event (this.props.afterHiding);
+						this.setState ({ contents_visible: true });
 					}}>
 
 				</Eyecandy>
 
-				<FadeControl id={`${this.id}_contents`} className={`self-centered ${this.props.className ?? constants.empty}`.trim ()}
+				<FadeControl id={`${this.id}_contents`} className={this.props.className}
 					visible={this.state.contents_visible && !this.state.eyecandy_visible}
-					style={this.props.style} vanishing={this.props.vanishing ?? false}
+					vanishing={this.props.vanishing ?? false} reset_on_close={false}
 
-					beforeShowing={this.props.beforeShowingContents}
-					afterShowing={this.state.afterShowingContents}
-					beforeHiding={this.state.beforeHidingContents}
+					style={{
+						...this.props.style,
+						justifySelf: (this.props.justify ?? horizontal_alignment.center),
+						alignSelf: (this.props.align ?? vertical_alignment.middle)
+					}}
+
+					beforeShowing={() => {
+						this.execute_event (this.props.beforeShowingContents);
+						this.execute_event (this.props.beforeShowing);
+					}}
+
+					afterShowing={() => {
+						this.execute_event (this.props.afterShowingContents);
+						this.execute_event (this.props.afterShowing);
+					}}
+
+					beforeHiding={() => {
+						this.execute_event (this.props.beforeHidingContents);
+						this.execute_event (this.props.beforeHiding);
+					}}
+
 					afterHiding={() => {
-						this.setState ({ eyecandy_visible: true })
 						this.execute_event (this.props.afterHidingContents);
+						this.execute_event (this.props.afterHiding);
+						this.setState ({ eyecandy_visible: true });
 					}}>
 
-					{this.state.contents}
+					{this.props.children}
 				</FadeControl>
 
 			</div>
@@ -128,8 +159,6 @@ export default class EyecandyPanel extends BaseControl<eyecandyPanelInterface> {
 		);
 
 	}// render;
-
-
 
 
 }// EyecandyPanel;

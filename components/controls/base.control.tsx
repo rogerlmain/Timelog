@@ -1,6 +1,7 @@
 import { blank, underscore, debugging } from "components/types/constants";
 import * as common from "components/classes/common";
-import * as datatype from "components/types/datatypes";
+import * as constants from "components/types/constants";
+import * as datatypes from "components/types/datatypes";
 
 import ReferenceList from 'components/classes/reference.list';
 
@@ -28,81 +29,7 @@ export interface defaultInterface {
 export default class BaseControl<properties> extends React.Component<any> {
 
 
-	constructor (props: any) {
-		super (props);
-		this.references = {};
-	}// constructor;
-
-
-	/********/
-
-
-	public get_width () {
-		return common.isset (this.props.dom_control) ? this.props.dom_control.clientWidth : 0;
-	}// get_width;
-
-
-	public get_height () {
-		return common.isset (this.props.dom_control) ? this.props.dom_control.clientHeight : 0;
-	}// get_height;
-
-
-	public signed_in () {
-		return common.not_null (common.get_cookie ("current_account"));
-	}// signed_in;
-
-
-	public signed_out () {
-		return !this.signed_in ();
-	}// signed_out;
-
-
-	public load_logging_status () {
-		if (this.logged_in ()) return;
-
-		let data = new FormData ();
-		data.append ("action", "log_status");
-
-		fetch ("/logging", {
-			body: data,
-			method: "post"
-		}).then (response => response.json ()).then ((data) => {
-			common.set_cookie ("current_entry", JSON.stringify (data [0]));
-		});
-	}// load_logging_status;
-
-
-	public logged_in (callback: any = null) {
-		return common.not_null (common.get_cookie ("current_entry"));
-	}// logged_in;
-
-
-	public logged_out () {
-		return !this.logged_in ();
-	}// logged_out;
-
-
-	public mapping (array: Array<any>, callback: any) {
-		if (common.is_null (array)) return;
-		return array.map (callback);
-	}// mapping;
-
-
-	/********/
-
-
-	public componentDidUpdate () {
-		this.execute_event (this.props.afterRender);
-	}// componentDidUpdate;
-
-
-	public render () { return this.props.children; }
-
-
-	/********/
-
-
-	protected getState = (name: string, fieldname: string) => {
+	private getState (name: string, fieldname: string) {
 		let object = this.state [name];
 		if (common.is_null (object)) return null;
 		return object [fieldname];
@@ -121,13 +48,13 @@ export default class BaseControl<properties> extends React.Component<any> {
 	}// add_reference;
 
 
-	protected current_account (): datatype.account {
-		return datatype.account.parse (common.get_cookie ("current_account"));
+	protected current_account (): datatypes.account {
+		return datatypes.account.parse (common.get_cookie ("current_account"));
 	}// current_account;
 
 
-	protected current_entry (): datatype.entry {
-		return datatype.entry.parse (common.get_cookie ("current_entry"));
+	protected current_entry (): datatypes.entry {
+		return datatypes.entry.parse (common.get_cookie ("current_entry"));
 	}// current_entry;
 
 
@@ -182,6 +109,93 @@ export default class BaseControl<properties> extends React.Component<any> {
 	}// select_options;
 
 
+	protected state_value (state: string, field: string) {
+		return this.getState (state, field) ?? constants.empty;
+	}// state_value;
+
+
+	public add_class (value: string, class_name: string) {
+		let classes = value.split (constants.space);
+		for (let i = 0; i < classes.length; i++) {
+			if (classes [i].matches (class_name)) return; // already exists;
+		}// for;
+		classes.push (class_name);
+		return classes.join (constants.space);
+	}// add_class;
+
+
+	public remove_class (value: string, class_name: string) {
+		let classes = value.split (constants.space);
+		for (let i = 0; i < classes.length; i++) {
+			if (classes [i].matches (class_name)) {
+				classes.remove (i);
+				break;
+			}// if;
+		}// for;
+		classes.push (class_name);
+		return classes.join (constants.space);
+	}// remove_class;
+
+
+	public get_width () {
+		return common.isset (this.props.dom_control) ? this.props.dom_control.clientWidth : 0;
+	}// get_width;
+
+
+	public get_height () {
+		return common.isset (this.props.dom_control) ? this.props.dom_control.clientHeight : 0;
+	}// get_height;
+
+
+	public signed_in () {
+		return common.not_null (common.get_cookie ("current_account"));
+	}// signed_in;
+
+
+	public signed_out () {
+		return !this.signed_in ();
+	}// signed_out;
+
+
+	public load_logging_status () {
+		if (this.logged_in ()) return;
+
+		let data = new FormData ();
+		data.append ("action", "log_status");
+
+		fetch ("/logging", {
+			body: data,
+			method: "post"
+		}).then (response => response.json ()).then ((data) => {
+			common.set_cookie ("current_entry", JSON.stringify (data [0]));
+		});
+	}// load_logging_status;
+
+
+	public logged_in (callback: any = null) {
+		return common.not_null (common.get_cookie ("current_entry"));
+	}// logged_in;
+
+
+	public logged_out () {
+		return !this.logged_in ();
+	}// logged_out;
+
+
+	public mapping (array: Array<any>, callback: any) {
+		if (common.is_null (array)) return;
+		return array.map (callback);
+	}// mapping;
+
+
+	public componentDidUpdate () {
+		this.execute_event (this.props.afterRender);
+	}// componentDidUpdate;
+
+
+	public render () { return this.props.children; }
+
+
 	/**** Debugging ****/
 
 
@@ -219,6 +233,15 @@ export default class BaseControl<properties> extends React.Component<any> {
 		return result;
 
 	}// show_states;
+
+
+	/********/
+
+
+	constructor (props: any) {
+		super (props);
+		this.references = {};
+	}// constructor;
 
 
 }// BaseControl;

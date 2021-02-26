@@ -1,5 +1,40 @@
 import * as consts from "components/types/constants";
 
+import { SizeRecord } from "components/types/datatypes";
+
+
+export function scroll_sizes (control: HTMLElement): SizeRecord {
+	return {
+		width: control.scrollWidth,
+		height: control.scrollHeight
+	};
+}// scroll_sizes;
+
+
+export function computed_sizes (control: HTMLElement): SizeRecord {
+	let computed_styles = window.getComputedStyle (control);
+	return {
+		width: Math.ceil (parseFloat (computed_styles.width)),
+		height: Math.ceil (parseFloat (computed_styles.height))
+	};
+}// computed_sizes;
+
+
+export function styled_sizes (control: HTMLElement): SizeRecord {
+	let result = {
+		width: parseInt (control.style.width),
+		height: parseInt (control.style.height),
+	}// result;
+	if (isNaN (result.width)) result.width = 0;
+	if (isNaN (result.height)) result.height = 0;
+	return result;
+}// styled_sizes;
+
+
+export function html_encode (value: string) {
+	return value.replace ("<", "&lt;").replace (">", "&gt;");
+}// html_encode;
+
 
 export function is_empty (value: any) {
 	return (not_set (value, consts.blank) || (Array.isArray (value) && (value.length == 0)));

@@ -73,17 +73,6 @@
 }/* .two-column-panel */
 
 
-.two-column-panel > div:first-child {
-	padding-right: 2em;
-}/* .two-column-panel > div:first-child */
-
-
-.two-column-panel > div:last-child {
-	padding-left: 2em;
-	border-left: solid 1px black;
-}/* .two-column-panel > div:first-child */
-
-
 /********/
 
 

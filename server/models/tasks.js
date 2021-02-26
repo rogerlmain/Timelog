@@ -35,6 +35,13 @@ module.exports = function (request, response, account) {
 		}/* get_tasks */,
 
 
+		get_task: (task_id) => {
+			let procedure = "call get_task (?)";
+			let parameters = [task_id];
+			execute_query (procedure, parameters, data_response_handler);
+		}/* get_task */,
+
+
 		save: (fields) => {
 			let procedure = "call save_task (?, ?, ?, ?, ?, ?, ?)";
 			let parameters = [

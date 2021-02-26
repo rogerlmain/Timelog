@@ -17,8 +17,12 @@ app.initialize = (request, response) => {
 }// app.initialize;
 
 
-app.process = (request, response, handler) => {
+app.process = async (request, response, handler) => {
 	app.initialize (request, response);
+
+
+//await new Promise (resolve => setTimeout (resolve, 5000));
+
 
 	let request_data = request.body;
 	let formdata = request.headers ["content-type"].startsWith ("multipart/form-data");
@@ -99,6 +103,7 @@ app.post ("/tasks", function (request, response) {
 		let task_handler = require ("./server/models/tasks")(request, response, app.accounts.current_account ());
 		switch (fields.action) {
 			case "list": task_handler.get_tasks (fields.project_id); break;
+			case "details": task_handler.get_task (fields.task_id); break;
 			case "save": task_handler.save (fields); break;
 		}// switch;
 	})

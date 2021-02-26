@@ -1,4 +1,14 @@
 import * as common from "components/classes/common";
+import { admin_types } from "./constants";
+
+
+export interface SizeRecord {
+	width: number;
+	height: number;
+}// SizeRecord;
+
+
+/********/
 
 
 export class entry {
@@ -25,14 +35,27 @@ export class account {
 	email_address: string;
 	account_type: number;
 	company_id: number;
-	administrator: boolean;
+	admin_type: number;
 	teams: any;
 
 	public static parse (json_string: string): account {
-		let result: account = common.isset (json_string) ? JSON.parse (json_string) : null;
-		if (common.isset (result) && common.isset (result.teams)) result.teams = JSON.parse (result.teams as unknown as string);
+		if (common.not_set (json_string)) return null;
+
+		let result: account = new account ();
+		let values: any = JSON.parse (json_string);
+
+		Object.assign (result, values);
+		result.admin_type = values.administrator_type;
+		if (common.isset (result.teams)) result.teams = JSON.parse (result.teams as unknown as string);
 		return result;
 	}// parse;
+
+
+	public administrator () { return this.admin_type >= admin_types.corporate }
+
+
+	public programmer = () => { return this.admin_type >= admin_types.programmer }
+
 
 }// account;
 

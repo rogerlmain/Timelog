@@ -27,8 +27,19 @@ export const fade_zindex = 5;
 export const popup_zindex = 10;
 
 
+export enum vertical_alignment {
+	top = "flex-start",
+	middle = "center",
+	center = "center",
+	bottom = "flex-end"
+}// vertical_alignment;
 
-//export const animation_speed = 500;
+
+export enum horizontal_alignment {
+	left = "left",
+	center = "center",
+	right = "right"
+}// horizontal_alignment;
 
 
 export const account_types = {
@@ -36,6 +47,12 @@ export const account_types = {
 	freelance: {title: "Freelance", value: 2},
 	corporate: {title: "Corporate", value: 3}
 }// account_types;
+
+
+export const admin_types = {
+	corporate: 1,
+	programmer: 2
+}// admin_types;
 
 
 export const directions = {

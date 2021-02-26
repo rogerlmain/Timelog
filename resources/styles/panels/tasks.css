@@ -1,29 +1,42 @@
-#due_date {
-	text-align: right
-}/* #due_date */
+#due_date { text-align: right }
 
 
 #task_editor { margin-top: 2em }
 
 
-#task_editor_contents {/* border:  solid 1px red; */}
-
-
 #task_list {
-	display: flex;
-	flex-direction: column;
-	align-items: right;
+	display: grid;
+	grid-template-columns: repeat(2, min-content);
 	row-gap: 0.2em;
 	white-space: nowrap;
+	position: relative;
 }/* #task_list */
 
 
 #task_list .task-row {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	column-gap: 1em;
+	display: contents;
+	position: relative;
 }/* #task_list .task-row */
+
+
+#task_list .task-row .text-cell {
+	padding-right: 1em;
+}/* #task_list .task-row .text-cell */
+
+
+#task_list .task-row .status-cell {
+	text-align: right;
+}/* #task_list .task-row .status-cell */
+
+
+#task_list .task-row:hover {
+	cursor: pointer;
+}/* #task_list .task-row:hover */
+
+
+#task_list .task-row:hover * {
+	background-color: #FFA;
+}/* #task_list .task-row:hover */
 
 
 #task_list_panel {
@@ -31,9 +44,6 @@
 	flex-direction: column;
 	row-gap: 1em;
 }/* #task_list_panel */
-
-
-#task_list_panel button {}
 
 
 #task_form {
@@ -48,3 +58,8 @@
 	flex-direction: column;
 	row-gap: 0.2em;
 }/* task_form_panel */
+
+
+/********/
+
+

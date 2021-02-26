@@ -1,5 +1,5 @@
 import { directions } from "components/types/constants";
-
+import { SizeRecord } from "components/types/datatypes";
 
 declare global {
 
@@ -28,7 +28,7 @@ declare global {
 
 	interface String {
 		padded (length: number, character: any, direction?: any): string;
-		matches (comparison: string, case_sensitive: boolean): boolean;
+		matches (comparison: string, case_sensitive?: boolean): boolean;
 	}// String;
 
 
@@ -113,3 +113,27 @@ Number.prototype.padded = function (length: number) {
 }// if;
 
 
+/********/
+
+
+// declare module "react" {
+// 	interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+// 		onresize?: string;
+// 	}
+// }// react extension;
+
+
+// let observer = new MutationObserver ((mutations: MutationRecord [], observer: MutationObserver) => {
+// 	mutations.forEach ((mutation: MutationRecord) => {
+// 		let blah = mutation;
+// 	})// forEach;
+// });
+
+// observer.observe (document, {
+// 	attributes: true,
+// 	childList: true,
+// 	subtree: true,
+// 	characterData: true
+// });
+
+// let blah = observer;
