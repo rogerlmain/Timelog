@@ -36,7 +36,7 @@ export default class TasksPanel extends BaseControl<any> {
 	}// default_due_date;
 
 
-	private show_task_form (callback: any = null) {
+	private show_task_form (callback: Function = null) {
 		let task_form_panel: EyecandyPanel = this.reference ("task_form_panel");
 		if (common.not_set (task_form_panel)) return;
 		task_form_panel.show (callback ?? ((command: Function) => command ()));
@@ -175,10 +175,13 @@ export default class TasksPanel extends BaseControl<any> {
 						style={ get_editor_style () }>
 
 						<div id="task_list">{this.state.task_list}</div>
-						<button onClick={() => this.show_task_form (() => this.setState ({
-							task_data: null,
-							selected_project: null
-						}))}>New</button>
+						<button onClick={() => this.show_task_form ((callback: Function) => {
+							this.setState ({
+								task_data: null,
+								selected_project: null
+							});
+							this.execute_event (callback);
+						})}>New</button>
 					</div>
 
 					<FreezePanel id="task_editor_panel" className="centering-container">
@@ -189,7 +192,7 @@ export default class TasksPanel extends BaseControl<any> {
 
 								<div className="two-piece-form">
 									<label htmlFor="task_name">Name</label>
-									<input type="text" name="task_name" defaultValue={this.state_value ("task_data", "task_name")} onClick={() => alert (this.state_value ("task_data", "task_name"))} onBlur={this.save_task.bind (this)} />
+									<input type="text" name="task_name" defaultValue={this.state_value ("task_data", "task_name")} onBlur={this.save_task.bind (this)} />
 								</div>
 
 								<textarea id="task_description" name="task_description" placeholder="Description (optional)"
