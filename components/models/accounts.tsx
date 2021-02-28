@@ -19,6 +19,14 @@ export class AccountsModel {
 	}// fetch_by_project;
 
 
+	public fetch_by_task (task_id: number, callback: any) {
+		let parameters = new FormData ();
+		parameters.append ("action", "task");
+		parameters.append ("task_id", task_id.toString ());
+		Database.fetch_data ("accounts", parameters, callback);
+	}// fetch_by_task;
+
+
 	public save_account (data: FormData, callback: any) {
 		data.append ("action", "save");
 		Database.save_data ("accounts", data, callback);

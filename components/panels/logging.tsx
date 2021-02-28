@@ -12,6 +12,7 @@ import SelectButton from "components/controls/select.button";
 
 import LogHistoryGadget from "components/panels/gadgets/log.history.gadget";
 import ProjectSelecterGadget from "./gadgets/project.selecter.gadget";
+import { globals } from "components/types/globals";
 
 
 export default class LoggingPanel extends BaseControl<any> {
@@ -67,6 +68,11 @@ export default class LoggingPanel extends BaseControl<any> {
 	}// state;
 
 
+	public componentDidMount () {
+		globals.home_page.setState ({ eyecandy_visible: false });
+	}// componentDidMount;
+
+
 	public render () {
 
 		return (
@@ -91,6 +97,7 @@ Logged in to ...
 
 				</div>
 
+<br />
 
 				<div id="log_form_panel">
 
@@ -112,6 +119,7 @@ Logged in to ...
 									}, this.load_entries.bind (this))
 								}}>
 							</ProjectSelecterGadget>
+
 
 							<FadeControl visible={this.state.project_selected} vanishing={true}>
 

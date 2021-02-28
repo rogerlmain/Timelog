@@ -210,12 +210,14 @@ export default class FadeControl extends BaseControl<fadeControl> {
 				if (this.props.visible) {
 					this.execute_event (this.props.afterOpening);
 					this.setState ({ panel_states: {...this.state.panel_states, fade_panel: true } });
+					(event.target as HTMLDivElement).style.height = null;
 					return;
 				}// if;
 				this.dom_control.current.style.zIndex = hidden_zindex;
 				this.execute_event (this.props.afterClosing);
 				this.execute_event (this.props.afterHiding);
 			} break;
+			case "width": if (this.props.visible) (event.target as HTMLDivElement).style.width = null; break;
 		}// switch;
 
 	}// transition_end;

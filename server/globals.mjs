@@ -1,4 +1,4 @@
-const cookies = require("./cookies");
+import Cookies from "./cookies.mjs";
 
 
 /********/
@@ -11,7 +11,7 @@ global.blank = "";
 
 
 global.get_cookie = (name) => {
-	return cookies.get_cookie (name);
+	return new Cookies ().get_cookie (name);
 }// get_cookie;
 
 
@@ -32,7 +32,7 @@ global.isset = (value) => {
 
 
 global.signed_in = () => {
-	return global.not_null (cookies.get_cookie ("account"));
+	return global.not_null (new Cookies ().get_cookie ("account"));
 }// signed_in;
 
 

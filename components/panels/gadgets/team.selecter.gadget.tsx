@@ -13,8 +13,9 @@ import { globals } from "components/types/globals";
 
 
 interface teamSelectorGadgetInterface extends defaultInterface {
-	onchange?: any;
+	group: TeamGroup;
 	parent: any;
+	onchange?: any;
 }// teamSelectorGadgetInterface;
 
 
@@ -76,6 +77,13 @@ class MemberEntries extends BaseControl<any> {
 /********/
 
 
+export enum TeamGroup {
+	project = 1,
+	task	= 2,
+	team	= 3
+}// TeamGroup
+
+
 export default class TeamSelecterGadget extends BaseControl<teamSelectorGadgetInterface> {
 
 
@@ -123,7 +131,8 @@ export default class TeamSelecterGadget extends BaseControl<teamSelectorGadgetIn
 
 
 	public initial_state = {
-		project_id: null,
+		organization_id: null,
+		record_id: null,
 
 		available_accounts: null,
 		selected_accounts: null,
@@ -142,15 +151,33 @@ export default class TeamSelecterGadget extends BaseControl<teamSelectorGadgetIn
 
 	public componentDidUpdate () {
 
-		if (common.isset (this.state.available_accounts) || common.is_null (this.state.project_id)) return;
+		let pool_method = null;
+		let group_method = null;
+		let organization_id = null;
 
-		accounts_model.fetch_by_company (this.current_account ().company_id, (company_members: any) => {
+		if (common.isset (this.state.available_accounts) || common.is_null (this.state.record_id)) return;
 
-			accounts_model.fetch_by_project (this.state.project_id, (project_members: any) => {
+		switch (this.props.group) {
+			case TeamGroup.project:
+				pool_method = accounts_model.fetch_by_company;
+				group_method = accounts_model.fetch_by_project;
+				organization_id = this.current_account ().company_id;
+				break;
+			case TeamGroup.task:
+				pool_method = accounts_model.fetch_by_project;
+				group_method = accounts_model.fetch_by_task;
+				organization_id = this.state.organization_id;
+				break;
+			case TeamGroup.team: /* CONSTRUCTION ZONE - PART OF RTI(13) */
+		}// switch;
 
-				let candidates = (common.is_empty (project_members) ? company_members : company_members.filter ((member: any) => {
+		pool_method (organization_id, (pool: any) => {
+
+			group_method (this.state.record_id, (group: any) => {
+
+				let candidates = (common.is_empty (group) ? pool : pool.filter ((member: any) => {
 					let result = true;
-					project_members.forEach ((employee: any) => {
+					group.forEach ((employee: any) => {
 						if (employee.account_id == member.account_id) {
 							result = false;
 							return false;
@@ -160,7 +187,7 @@ export default class TeamSelecterGadget extends BaseControl<teamSelectorGadgetIn
 				}));
 
 				this.setState ({
-					selected_accounts: project_members,
+					selected_accounts: group,
 					available_accounts: candidates
 				});
 

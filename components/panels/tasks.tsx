@@ -15,6 +15,7 @@ import ProjectSelecterGadget from "components/panels/gadgets/project.selecter.ga
 import { globals } from "components/types/globals";
 import { TasksModel } from "components/models/tasks";
 import { vertical_alignment } from "components/types/constants";
+import TeamSelecterGadget, { TeamGroup } from "./gadgets/team.selecter.gadget";
 
 
 const default_task_duration: number = 14;
@@ -37,8 +38,8 @@ export default class TasksPanel extends BaseControl<any> {
 
 	private show_task_form (callback: any = null) {
 		let task_form_panel: EyecandyPanel = this.reference ("task_form_panel");
-		if (common.not_set (task_form_panel) || common.not_set (callback)) return;
-		task_form_panel.show (callback);
+		if (common.not_set (task_form_panel)) return;
+		task_form_panel.show (callback ?? ((command: Function) => command ()));
 	}// show_task_form;
 
 
@@ -46,8 +47,13 @@ export default class TasksPanel extends BaseControl<any> {
 
 		let selected_row = event.currentTarget;
 		let task_id = (selected_row.querySelector ("input[type=hidden][name=task_id]") as HTMLInputElement).value;
+		let project_selecter: ProjectSelecterGadget = this.reference ("project_selecter");
 
 		this.setState ({ task_data: {} }, () => {
+			this.reference ("team_panel").setState ({
+				organization_id: project_selecter.state.current_project.project_id,
+				record_id: task_id
+			});
 			this.forceUpdate (() => this.show_task_form ((callback: any) => TasksModel.fetch_task (parseInt (task_id), (result: any) => {
 				this.setState ({ task_data: result }, callback);
 			})));
@@ -59,6 +65,8 @@ export default class TasksPanel extends BaseControl<any> {
 	private load_tasks (event: any) {
 
 		let task_editor: EyecandyPanel = this.reference ("task_editor");
+
+		this.setState ({ selected_project: event.target.value });
 
 		task_editor.show ((callback: any) => TasksModel.fetch_tasks (event.target.value, (data: any) => {
 
@@ -123,11 +131,28 @@ export default class TasksPanel extends BaseControl<any> {
 	public state = {
 		task_list: null,
 		task_data: null,
+		selected_project: null,
+
 		editor_style: constants.empty,
 	}// state;
 
 
 	public render () {
+
+
+		const editor_style = {
+			paddingRight: "2em",
+			marginRight: "2em",
+			borderRight: "solid 1px black"
+		};
+
+
+		const get_editor_style = () => {
+			let task_editor: EyecandyPanel = this.reference ("task_editor");
+			if (common.not_set (task_editor) || (!(task_editor.state.contents_visible || task_editor.state.eyecandy_visible))) return null;
+			return editor_style;
+		}// get_editor_style
+
 
 		return (
 			<div id="tasks_panel" className="horizontal-centering-container">
@@ -146,13 +171,14 @@ export default class TasksPanel extends BaseControl<any> {
 				<EyecandyPanel id="task_editor" ref={this.create_reference} className="two-column-panel" align={vertical_alignment.top}>
 
 					<div id="task_list_panel" className="form-panel"
-						style={common.isset (this.state.task_data) ? {
-							paddingRight: "2em",
-							marginRight: "2em",
-							borderRight: "solid 1px black"
-						} : null}>
+
+						style={ get_editor_style () }>
+
 						<div id="task_list">{this.state.task_list}</div>
-						<button onClick={() => this.show_task_form ()}>New</button>
+						<button onClick={() => this.show_task_form (() => this.setState ({
+							task_data: null,
+							selected_project: null
+						}))}>New</button>
 					</div>
 
 					<FreezePanel id="task_editor_panel" className="centering-container">
@@ -192,6 +218,14 @@ export default class TasksPanel extends BaseControl<any> {
 									<input type="numeric" name="estimate" defaultValue={this.current_task ("estimate")} />
 								</div>
 
+								<div style={{ marginTop: "2em" }}>
+
+
+									<TeamSelecterGadget id="team_panel" ref={this.create_reference}
+										parent={this} group={TeamGroup.task} record_id={this.state.selected_project}>
+									</TeamSelecterGadget>
+
+								</div>
 							</div>
 						</EyecandyPanel>
 					</FreezePanel>

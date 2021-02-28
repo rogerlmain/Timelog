@@ -11,7 +11,7 @@ import SelectButton from "components/controls/select.button";
 import Eyecandy from "components/controls/eyecandy";
 
 import ProjectSelecterGadget from "components/panels/gadgets/project.selecter.gadget";
-import TeamSelecterGadget from "components/panels/gadgets/team.selecter.gadget";
+import TeamSelecterGadget, { TeamGroup } from "components/panels/gadgets/team.selecter.gadget";
 
 import { globals } from "components/types/globals";
 import { projects_model } from "components/models/projects";
@@ -34,7 +34,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 				eyecandy_visible: false,
 				project_data: data
 			}, () => {
-				this.reference ("team_panel").setState ({ project_id: this.state.project_id });
+				this.reference ("team_panel").setState ({ record_id: this.state.project_id });
 			});
 		});
 	}// fetch_project;
@@ -164,7 +164,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 						<form id="project_form">
 
-							<div className="two-column-panel">
+							<div className="two-column-panel" style={{ columnGap: "1em" }}>
 
 								<div>
 
@@ -191,7 +191,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 								</div>
 
-								<TeamSelecterGadget id="team_panel" ref={this.create_reference} onchange={this.save_project.bind (this)} parent={this} />
+								<TeamSelecterGadget id="team_panel" ref={this.create_reference} onchange={this.save_project.bind (this)} parent={this} group={TeamGroup.project} />
 
 							</div>
 

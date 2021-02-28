@@ -115,25 +115,3 @@ Number.prototype.padded = function (length: number) {
 
 /********/
 
-
-// declare module "react" {
-// 	interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-// 		onresize?: string;
-// 	}
-// }// react extension;
-
-
-// let observer = new MutationObserver ((mutations: MutationRecord [], observer: MutationObserver) => {
-// 	mutations.forEach ((mutation: MutationRecord) => {
-// 		let blah = mutation;
-// 	})// forEach;
-// });
-
-// observer.observe (document, {
-// 	attributes: true,
-// 	childList: true,
-// 	subtree: true,
-// 	characterData: true
-// });
-
-// let blah = observer;
