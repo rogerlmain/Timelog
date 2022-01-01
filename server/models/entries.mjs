@@ -1,22 +1,22 @@
-import DataModel from "../models.mjs";
+import Database from "../database.mjs";
 
 
-class EntryData extends DataModel {
+class EntryData extends Database {
 
 	get_entries (client_id, project_id) {
 		let procedure = "call get_entries (?, ?)";
 		let parameters = [ client_id, project_id ];
-		execute_query (procedure, parameters);
+		this.execute_query (procedure, parameters);
 	}// get_entries;
 
 
 	get_current_entry () {
 		let procedure = "call get_current_entry (?)";
-		if (global.is_null (account)) {
+		if (global.is_null (global.account)) {
 			response.send ();
 			return;
 		}// if;
-		execute_query (procedure, [account.account_id]);
+		this.execute_query (procedure, [account.account_id]);
 	}// get_current_entry;
 
 
@@ -28,7 +28,7 @@ class EntryData extends DataModel {
 			parseInt (project_id),
 			global.isset (entry_id) ? parseInt (entry_id) : null
 		];
-		execute_query (procedure, parameters);
+		this.execute_query (procedure, parameters);
 	}// save_entry;
 
 }// EntryData;

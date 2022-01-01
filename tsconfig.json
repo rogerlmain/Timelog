@@ -1,21 +1,36 @@
 {
 	"compilerOptions": {
 		"esModuleInterop": true,
-		"noImplicitAny": false,
-		"module": "commonjs",
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"suppressImplicitAnyIndexErrors": true,
+
+		"module": "es2015",
+		
+		"moduleResolution": "node",
 		"noEmitOnError": true,
+		"strict": false,
 		"removeComments": false,
 		"sourceMap": true,
+
 		"target": "es6",
+//		"lib": [ "es2019" ],
+
 		"jsx": "react",
-		"baseUrl": ".",
+
+		"outDir": "./dist/",
+
+		"baseUrl": "src",
+
+		"skipLibCheck": true,
+		"checkJs": false
 	},
 
 	"exclude": [
 		"node_modules"
 	],
 
-	"files": [ "main.tsx" ],
+	"files": [ "src/main.tsx" ],
 
 	"lib": [
 		"dom",

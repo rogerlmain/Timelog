@@ -1,0 +1,34 @@
+#team_list {
+	align-self: center;
+	display: flex;
+	flex-direction: column;
+	border: solid 1px black;
+	border-radius: 0.7em;
+	overflow: hidden;
+}/* #team_list */
+
+
+#team_list > div  {
+	border-bottom: solid 1px black;
+	white-space: nowrap;
+	padding: 0.2em 1em;
+}/* team_list > div */
+
+
+#team_list > div:hover { background-color: #FFF2CC }
+
+
+#team_list > div:last-child {
+	border-bottom: none;
+}/* #team_list > div:last-child */
+
+
+.team_list_panel {
+	display: flex;
+	flex-direction: row;
+	column-gap: 0.5em;
+	align-items: center;
+}/* .team_list_panel */
+
+
+

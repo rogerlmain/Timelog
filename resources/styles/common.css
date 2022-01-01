@@ -1,3 +1,24 @@
+/**** Global Variables ****/
+
+:root {
+
+	--border-color: black;
+	--highlight-color: #FFF2CC;
+
+	--double-margin: 2em;
+	--double-padding: 2em;
+
+	--standard-height: 1.5em;
+	--double-height: 2.5em;
+
+	--single-height: var(--standard-height);
+
+	--standard-column-gap: 0.5em;
+	--standard-row-gap: 0.2em;
+
+}/* root */
+
+
 /**** Containers ****/
 
 
@@ -11,8 +32,17 @@
 	display: inline-flex;
 	flex-direction: row;
 	justify-content: center;
+	justify-items: center;
+	align-content: center;
 	align-items: center;
 }/* .centering-container */
+
+.centering-container.h { flex-direction: row }
+.centering-container.v { flex-direction: column }
+
+
+.span-all, .span-all-columns { grid-column: 1 / -1 }
+.span-all, .span-all-rows { grid-row: 1 / -1 }
 
 
 .self-centered {
@@ -38,8 +68,10 @@
 .middle-right-container {
 	display: flex;
 	flex-direction: row;
-	justify-content: flex-end;
+	justify-items: flex-end;
 	align-items: center;
+	justify-content: flex-end;
+	align-content: center;
 }/* .middle-right-container */
 
 
@@ -49,6 +81,9 @@
 	justify-content: flex-start;
 	align-items: center;
 }/* .top-center-container */
+
+
+.row-spaced { row-gap: 2em }
 
 
 .overlay-container {
@@ -64,7 +99,7 @@
 }/* .overlay-container > * */
 
 
-/********/
+/**** DEPRECATED - USE TWO-PART-GRID ****/
 
 
 .two-column-panel {
@@ -76,14 +111,24 @@
 /********/
 
 
+.border-panel {
+	border-left: solid 1px var(--border-color);
+	margin-left: var(--double-margin);
+	padding-left: var(--double-padding);
+}/* .border-panel */
+
+
+/********/
+
+
 .form-panel input {
-	height: 1.5em;
+	height: var(--standard-height);
 }/* .form-panel input */
 
 
 .form-panel button {
 	display: flex;
-	height: 1.5em;
+	height: var(--standard-height);
 	align-items: center;
 	justify-content: center;
 }/* .form-panel */
@@ -112,3 +157,7 @@
 /**** Proving Ground ****/
 
 
+	#ucdebug {
+		display: inline-flex;
+	}
+				

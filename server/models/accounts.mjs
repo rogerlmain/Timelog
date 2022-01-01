@@ -1,8 +1,8 @@
-import DataModel from "../models.mjs";
+import Database from "../database.mjs";
 import Cookies from "../cookies.mjs";
 
 
-class AccountData extends DataModel {
+class AccountData extends Database {
 
 
 	current_account = () => {
@@ -55,16 +55,14 @@ class AccountData extends DataModel {
 	}// save_account;
 
 
-	signin = () => {
-		new multiparty.Form ().parse (request, (form_error, form_fields, files) => {
-			this.execute_query ("call get_account_by_credentials (?, ?)", [form_fields ["username"], form_fields ["password"]], (query_error, results, query_fields) => {
-				if ((results == null) || (results [0].length > 1)) throw "Invalid data response: models.signin";
-				if (results [0].length == 1) {
-					let response_string = JSON.stringify (results [0]).slice (1, -1);
-					response.cookie ("current_account", response_string, { encode: String });
-				}// if;
-				response.send ();
-			});
+	signin = (fields) => {
+		this.execute_query ("call get_account_by_credentials (?, ?)", [fields ["username"], fields ["password"]], (query_error, results, query_fields) => {
+			if ((results == null) || (results [0].length > 1)) throw "Invalid data response: models.signin";
+			if (results [0].length == 1) {
+				let response_string = JSON.stringify (results [0]).slice (1, -1);
+				response.cookie ("current_account", response_string, { encode: String });
+			}// if;
+			response.send ();
 		});
 	}// signin;
 

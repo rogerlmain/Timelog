@@ -15,6 +15,9 @@ global.get_cookie = (name) => {
 }// get_cookie;
 
 
+/********/
+
+
 global.is_null = (value) => {
 	return value == null;
 }// is_null;
@@ -29,6 +32,9 @@ global.isset = (value) => {
 	return value ? true : false;
 //	return value != null;
 }// not_null;
+
+
+/********/
 
 
 global.signed_in = () => {

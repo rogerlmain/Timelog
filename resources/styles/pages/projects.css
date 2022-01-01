@@ -1,0 +1,168 @@
+#projects_panel label { text-align: right }
+
+
+/* #new_project_button_panel {/* grid-column: 3/span 2; * /} */
+
+#new_project_button { width: 100% }
+
+#project_details_panel { width: 100% }
+
+
+#project_details_panel > * { display: relative }
+#project_details_panel form { z-index: 2 }
+
+
+#project_description {
+	height: 8em;
+	margin-top: 1em;
+	width: 100%;
+}/* #project_description */
+
+
+#project_page hr {
+	height: 0;
+	width: 100%;
+	border: none;
+	border-top: solid 1px black;
+	margin: 2em 0;
+}/* #project_page hr */
+
+
+#member_list_panel {
+	column-gap: 0;
+}/* member_list_panel */
+
+
+#member_list_panel label {
+	margin-right: 1em;
+}/* member_list_panel label */
+
+
+#member_list_panel button {
+	margin-left: 0.5em;
+}/* member_list_panel button */
+
+
+/********/
+
+
+#members_list {/* border: solid 1px red; */margin-top: 1.2em;display: flex;flex-direction: column;}/* members_list */
+
+
+#members_list label {
+	font-weight: bold;
+	margin-bottom: 0.75em;
+}/* members_list */
+
+
+#member_list_entries {
+	display: grid;
+	grid-template-columns: 1fr min-content;
+	white-space: nowrap;
+	justify-content: space-between;
+	align-items: center;
+	/* opacity: 0.3; */
+	row-gap: 0.25em;
+}/* member_list_entries */
+
+
+#member_list_entries:hover {
+	background-color: #FFE;
+	opacity: 1;
+	cursor: pointer;
+}/* member_list_entries:hover */
+
+
+#member_list_entries .member_list_entry {
+	display: contents;
+}/* member_list_entries .member_list_entry */
+
+
+#member_list_entries .member_list_entry .member_name {
+	opacity: 1 !important;
+}/* member_list_entries .member_list_entry .member_options */
+
+
+#member_list_entries .member_list_entry .member_options {
+	display: flex;
+	flex-direction: row;
+	column-gap: 0.25em;
+	opacity: inherit;
+}/* member_list_entries .member_list_entry .member_options */
+
+
+#member_list_entries .member_list_entry .member_options .xbutton {
+	width: var(--standard-height);
+	height: var(--standard-height);
+	background-color: red;
+	color: white;
+	padding: 0;
+}/* #member_list_entries .xbutton */
+
+
+#member_list_entries .select-list { width: 100% }
+
+
+
+/********/
+
+
+#project_selecter {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}/* #project_selecter */
+
+
+#project_list > div { display: block !important }
+
+
+/********/
+
+
+.project-select-form {
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(2, auto);
+	column-gap: 0.5em;
+}/* .project-select-form */
+
+
+.project-select-form .button-panel {
+	display: grid;
+	grid-template-rows: repeat(2, auto);
+	justify-items: stretch;
+	row-gap: 0.2em;
+}/* .project-select-form .button-panel */
+
+
+.project-select-form .button-cell {
+	display: grid;
+	grid-template-columns: repeat(2, min-content);
+	column-gap: 0.25em;
+	/* row-gap: 0.2em; */
+}/* project-select-form .button-panel */
+
+
+/********/
+
+
+.project-selecter-form {
+	display: grid;
+	grid-template-columns: repeat(4, max-content);
+	column-gap: var(--standard-column-gap);
+	row-gap: var(--standard-row-gap);
+}/* .project-selecter-form */
+
+
+.project-selecter-form button { height: var(--single-height) }
+.project-selecter-form label { text-align: right }
+
+
+/********/
+
+
+.team-option {
+	background: url("/resources/images/team.icon.png");
+}/* .team-option */
+

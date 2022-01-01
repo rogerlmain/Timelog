@@ -1,32 +1,24 @@
 const path = require ("path");
+const { jar } = require("request");
 
-const root_path = path.join (__dirname, "/");
-
-
-function root_pathed (file_path) {
-	return path.join (root_path, file_path);
-}// root_pathed;
-
+const root = __dirname;
+const root_pathed = (file_path) => { return path.resolve (root, file_path) }
 
 module.exports = {
-	devtool: 'source-map',
+	devtool: "source-map",
 	mode: "development",
 
 	entry: {
-		"main": "./main.tsx",
-		"aaatest": "./aaatest.tsx"
+		"main": "./src/main.tsx"
 	},
 
 	output: {
-		filename: "[name].js"
+		filename: "main.js"
 	},
 
 	resolve: {
-		extensions: ['.Webpack.js', '.web.js', '.ts', '.js', '.jsx', '.tsx'],
-		alias: {
-			root: root_path,
-			components: root_pathed ("components")
-		},
+		extensions: [".Webpack.js", ".web.js", ".ts", ".js", ".jsx", ".tsx"],
+		modules: [ root, root_pathed ("src"), "node_modules" ],
 		symlinks: false
 	},
 
@@ -36,7 +28,7 @@ module.exports = {
 				test: /\.js$|tsx/,
 				exclude: /(node_modules|bower_components)/,
 				use: {
-					loader: 'ts-loader'
+					loader: "ts-loader"
 				}
 			}
 		]

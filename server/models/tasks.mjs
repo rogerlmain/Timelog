@@ -1,13 +1,20 @@
-import DataModel from "../models.mjs";
+import Database from "../database.mjs";
 
 
-class TaskData extends DataModel {
+class TaskData extends Database {
 
-	get_tasks (project_id) {
-		let procedure = "call get_tasks (?)";
+	get_tasks_by_assignee (account_id) {
+		let procedure = "call get_tasks_by_assignee (?)";
+		let parameters = [account_id];
+		this.execute_query (procedure, parameters);
+	}// get_tasks_by_assignee;
+
+
+	get_tasks_by_project (project_id) {
+		let procedure = "call get_tasks_by_project (?)";
 		let parameters = [project_id];
 		this.execute_query (procedure, parameters);
-	}// get_tasks;
+	}// get_tasks_by_project;
 
 
 	get_task (task_id) {
@@ -18,11 +25,18 @@ class TaskData extends DataModel {
 
 
 	save (fields) {
-		let procedure = "call save_task (?, ?, ?, ?, ?, ?, ?)";
-		let parameters = [
-			parseInt (fields.task_id), parseInt (fields.project_id), null, fields.task_name,
-			fields.task_description, parseInt (fields.estimate), fields.deadline
-		];
+		let procedure = "call save_task (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		let parameters = {
+			task_id: this.parse_integer (fields.task_id), 
+			project_id: this.parse_integer (fields.project_id), 
+			task_type_id: null, 
+			assignee_id: this.parse_integer (fields.assignee_id),
+			status_id: this.parse_integer (fields.status_id),
+			name: fields.task_name,
+			description: fields.task_description, 
+			estimate: this.parse_integer (fields.estimate), 
+			deadline: fields.deadline
+		};
 		this.execute_query (procedure, parameters);
 	}// save;
 

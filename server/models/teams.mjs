@@ -1,7 +1,7 @@
-import DataModel from "../models.mjs";
+import Database from "../database.mjs";
 
 
-class TeamData extends DataModel {
+class TeamData extends Database {
 
 	get_teams (account_id) {
 		let procedure = "call get_teams (?)";

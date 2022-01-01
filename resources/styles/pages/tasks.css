@@ -1,0 +1,76 @@
+#due_date { text-align: right }
+
+
+#task_description {
+	margin: 1em 0;
+	width: 100%;
+	height: 12em;
+	resize: vertical;
+}/* #task_description */
+
+
+#task_editor_eyecandy {
+	align-self: flex-start;
+	justify-self: center;
+}/* #task_editor_eyecandy */
+
+
+#task_list {
+	display: grid;
+	grid-template-columns: repeat(2, min-content);
+	row-gap: 0.2em;
+	white-space: nowrap;
+	position: relative;
+}/* #task_list */
+
+
+#task_list .task-row {
+	display: contents;
+	position: relative;
+}/* #task_list .task-row */
+
+
+#task_list .task-row .text-cell {
+	padding-right: 1em;
+}/* #task_list .task-row .text-cell */
+
+
+#task_list .task-row .status-cell {
+	text-align: right;
+}/* #task_list .task-row .status-cell */
+
+
+#task_list .task-row:hover {
+	cursor: pointer;
+}/* #task_list .task-row:hover */
+
+
+#task_list .task-row:hover * {
+	background-color: #FFA;
+}/* #task_list .task-row:hover */
+
+
+#task_list_panel {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1em;
+}/* #task_list_panel */
+
+
+#task_form {
+	display: flex;
+	flex-direction: column;
+	row-gap: 0.2em;
+}/* #task_form */
+
+
+#task_form_panel {
+	display: flex;
+	flex-direction: column;
+	row-gap: 0.2em;
+}/* task_form_panel */
+
+
+/********/
+
+

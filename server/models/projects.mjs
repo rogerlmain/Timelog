@@ -1,7 +1,7 @@
-import DataModel from "../models.mjs";
+import Database from "../database.mjs";
 
 
-class ProjectData extends DataModel {
+class ProjectData extends Database {
 
 	save_project (fields) {
 
