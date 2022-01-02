@@ -73,11 +73,11 @@ export const signing_state = {
 
 export const menu_items = {
 	projects: "Projects",
-	team: "Team",
 	tasks: "Tasks",
 	logging: "Logging",
-	history: "History",
-	account: "Account",
+	team: "team",
+	history: "history",
+	account: "account",
 	map: map_method
 }// menu_items;
 

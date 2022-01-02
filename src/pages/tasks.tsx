@@ -8,7 +8,7 @@ import * as constants from "types/constants";
 import Database from "classes/database";
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
-import ProjectSelecterGadget from "pages/gadgets/project.selector.gadget";
+import ProjectSelectorGadget from "pages/gadgets/project.selector.gadget";
 import TasksModel from "models/tasks";
 
 import MiscModel from "models/misc";
@@ -38,7 +38,7 @@ interface TaskState extends DefaultState {
 export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 
 
-	private project_selecter: React.RefObject<ProjectSelecterGadget> = React.createRef<ProjectSelecterGadget> ();
+	private project_selector: React.RefObject<ProjectSelectorGadget> = React.createRef<ProjectSelectorGadget> ();
 
 	private task_editor: React.RefObject<EyecandyPanel> = React.createRef<EyecandyPanel> ();
 	private task_form_panel: React.RefObject<EyecandyPanel> = React.createRef<EyecandyPanel> ();
@@ -47,7 +47,7 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 	
 
 	private project_code () {
-		let project_control: ProjectSelecterGadget = this.project_selecter.current;
+		let project_control: ProjectSelectorGadget = this.project_selector.current;
 		return common.nested_value (project_control, "state", "current_project", "project_code");
 	}// project_code;
 
@@ -67,7 +67,7 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 
 	private load_task (event: SyntheticEvent) {
 
-		let project_selecter: ProjectSelecterGadget = this.project_selecter.current;
+		let project_selector: ProjectSelectorGadget = this.project_selector.current;
 		let selected_row = event.currentTarget;
 		let task_id = parseInt ((selected_row.querySelector ("input[type=hidden][name=task_id]") as HTMLInputElement).value);
 		let project_id = this.state.selected_project;
@@ -130,7 +130,7 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 
 	private save_task () {
 
-		let selecter: ProjectSelecterGadget = this.project_selecter.current;
+		let selector: ProjectSelectorGadget = this.project_selector.current;
 
 		let parameters: FormData = new FormData (this.task_form.current as HTMLFormElement);
 		let parameter_values = parameters.toObject ();
@@ -180,17 +180,17 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 				<link rel="stylesheet" href="resources/styles/pages/tasks.css" />
 
 
-				<ProjectSelecterGadget id="project_selecter" ref={this.project_selecter} parent={this}
+				<ProjectSelectorGadget id="project_selector" ref={this.project_selector} parent={this}
 					onProjectChange={(event: BaseSyntheticEvent) => {
 						this.setState ({ selected_project: event.target.value }, () => this.load_tasks.bind (this));
 					}}
 					onLoad={() => { globals.master_panel.setState ({ eyecandy_visible: false }) }}>
-				</ProjectSelecterGadget>
+				</ProjectSelectorGadget>
 
 
 				<EyecandyPanel ref={this.task_editor}>
 
-					<div className="two-column-panel outlined">
+					<div className="two-column-grid outlined">
 
 						<div id="task_list_panel" className="form-panel">
 							<div id="task_list">{this.state.task_list}</div>

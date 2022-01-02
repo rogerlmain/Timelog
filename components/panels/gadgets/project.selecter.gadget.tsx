@@ -14,13 +14,13 @@ interface projectsPanelInterface extends defaultInterface {
 }// projectsPanelInterface;
 
 
-export default class ProjectSelecterGadget extends BaseControl<projectsPanelInterface> {
+export default class ProjectSelectorGadget extends BaseControl<projectsPanelInterface> {
 
 
 	private id = null;
 
-	private client_selecter_id = null;
-	private project_selecter_id = null;
+	private client_selector_id = null;
+	private project_selector_id = null;
 
 
 	private load_clients () {
@@ -36,13 +36,13 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 	private load_projects () {
 		let parameters = new FormData ();
 		parameters.set ("action", "list");
-		parameters.set ("client_id", this.reference (this.client_selecter_id).value);
+		parameters.set ("client_id", this.reference (this.client_selector_id).value);
 
 		// TEMPORARY - TRANSPLANT TO projects MODEL CLASS
 		Database.fetch_rows ("projects", parameters, (data: any) => {
 			this.setState ({ projects: data }, () => {
 				this.setState ({ client_selected: true });
-				this.reference (this.project_selecter_id).disabled = false;
+				this.reference (this.project_selector_id).disabled = false;
 			});
 		});
 
@@ -53,7 +53,7 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 
 		this.execute_event (this.props.onClientChange);
 
-		this.reference (this.project_selecter_id).disabled = true;
+		this.reference (this.project_selector_id).disabled = true;
 
 		if (common.is_null (this.state.projects)) {
 			this.load_projects ();
@@ -63,7 +63,7 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 		this.setState ({
 			client_selected: false,
 			client_changed: () => {
-				this.reference (this.project_selecter_id).selectedIndex = 0;
+				this.reference (this.project_selector_id).selectedIndex = 0;
 				this.setState ({ projects: null }, () => {
 					this.load_projects ();
 				});
@@ -73,14 +73,14 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 	}// client_change_handler;
 
 
-	private client_selecter () {
+	private client_selector () {
 
 		return (
 			<div style={{ display: "contents" }}>
 				<div className="middle-right-container">
-					<label htmlFor={this.client_selecter_id}>Client</label>
+					<label htmlFor={this.client_selector_id}>Client</label>
 				</div>
-				<select id={this.client_selecter_id} ref={this.create_reference} name="client_id" defaultValue="placeholder"
+				<select id={this.client_selector_id} ref={this.create_reference} name="client_id" defaultValue="placeholder"
 
 					onChange={this.client_change_handler.bind (this)}>
 
@@ -91,20 +91,20 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 				</select>
 			</div>
 		);
-	}// client_selecter;
+	}// client_selector;
 
 
-	private project_selecter () {
+	private project_selector () {
 		return (
 			<div id="project_list" style={{ display: "contents" }}>
 
 				<FadeControl visible={this.state.client_selected} className="middle-right-container" vanishing={true}>
-					<label htmlFor={this.project_selecter_id}>Project</label>
+					<label htmlFor={this.project_selector_id}>Project</label>
 				</FadeControl>
 
 				<FadeControl visible={this.state.client_selected} vanishing={true} afterHiding={this.state.client_changed}>
 
-					<select id={this.project_selecter_id} ref={this.create_reference} name="project_id" className="form-item"
+					<select id={this.project_selector_id} ref={this.create_reference} name="project_id" className="form-item"
 						defaultValue="placeholder" style={{ margin: 0 }}
 
 						onChange={(event) => {
@@ -122,7 +122,7 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 
 			</div>
 		);
-	}// project_selecter;
+	}// project_selector;
 
 
 	/********/
@@ -157,8 +157,8 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 
 				<div className="two-piece-form" style={{ overflow: "hidden", alignItems: "flex-start" }}>
 
-					{this.client_selecter ()}
-					{this.project_selecter ()}
+					{this.client_selector ()}
+					{this.project_selector ()}
 
 				</div>
 
@@ -170,9 +170,9 @@ export default class ProjectSelecterGadget extends BaseControl<projectsPanelInte
 	public constructor (props: any) {
 		super (props);
 		this.id = this.id_badge (props.id);
-		this.client_selecter_id = `${this.id}_client_selecter`;
-		this.project_selecter_id = `${this.id}_project_selecter`;
+		this.client_selector_id = `${this.id}_client_selector`;
+		this.project_selector_id = `${this.id}_project_selector`;
 	}// constructor;
 
 
-}// ProjectSelecterGadget;
+}// ProjectSelectorGadget;

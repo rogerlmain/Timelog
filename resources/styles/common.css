@@ -88,9 +88,10 @@
 
 
 .overlay-container {
-	display: inline-grid;
+	display: grid;
 	grid-template-columns: auto;
 	grid-template-rows: auto;
+	justify-content: normal;
 }/* .overlay-container */
 
 
@@ -98,15 +99,6 @@
 	grid-column: 1;
 	grid-row: 1;
 }/* .overlay-container > * */
-
-
-/**** DEPRECATED - USE TWO-PART-GRID ****/
-
-
-.two-column-panel {
-	display: grid;
-	grid-template-columns: repeat(2, min-content);
-}/* .two-column-panel */
 
 
 /********/
@@ -155,10 +147,39 @@
 }/* .eyecandy-button-panel */
 
 
+/**** Grid Styles ****/
+
+
+div[class*="column-grid"] {
+	display: grid;
+	row-gap: 0.2em;
+}/* *-column-grid */
+
+
+.two-column-grid	{ grid-template-columns: repeat(2, min-content) }
+.three-column-grid	{ grid-template-columns: repeat(3, min-content) }
+
+
+/****/
+
+
+.double-column { grid-column: span 2 }
+
+
+/**** Image Styles ****/
+
+
+.progress-image { margin: 0 0.5em }
+
+
 /**** Proving Ground ****/
 
 
-	#ucdebug {
+#ucdebug {
 		display: inline-flex;
 	}
 				
+
+
+
+.project-selector-form div {display: contents;}	

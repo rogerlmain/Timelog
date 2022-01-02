@@ -1,49 +1,39 @@
 import * as common from "classes/common";
 import * as constants from "types/constants";
 
-import React, { SyntheticEvent } from "react";
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
-
+import { DefaultProps, DefaultState } from "controls/base.control";
 import { ClientData } from "types/datatypes";
+import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
+
+import React, { SyntheticEvent } from "react";
+import FormControl from "controls/form.control";
 
 import Database from "classes/database";
-import FadeButton from "controls/buttons/fade.button";
-import { resourceUsage } from "process";
+import ExplodingPanel from "controls/panels/exploding.panel";
 
 
 interface ClientFormProps extends DefaultProps {
-	client_data: ClientData;
+	clientData: ClientData;
 	onLoad?: any;
 	onSave?: any;
 }// ClientFormProps;
 
 
 interface ClientFormState extends DefaultState {
+	saving: boolean;
 	saved: boolean;
 }// ClientFormState;
 
 
-export default class ClientForm extends BaseControl<ClientFormProps, ClientFormState> {
+export default class ClientForm extends FormControl<ClientFormProps, ClientFormState> {
 
 	private client_form: React.RefObject<HTMLFormElement> = React.createRef ();
-
-
-	/**** Prototype validation - possibly export to other forms ****/
-
-
-	protected validate (form: React.RefObject<HTMLFormElement>): boolean {
-		for (let item of form.current) {
-			let field = item as HTMLInputElement;
-			if (field.required && common.is_empty (field.value)) return false;
-		};
-		return true;
-	}// validate;
 
 
 	/********/
 
 
-	private client_data (field: string) { return common.isset (this.props.client_data) ? this.props.client_data [field] : constants.blank }
+	private client_data (field: string) { return common.isset (this.props.clientData) ? this.props.clientData [field] : constants.blank }
 
 
 	private save_client (event: SyntheticEvent) {
@@ -54,7 +44,11 @@ export default class ClientForm extends BaseControl<ClientFormProps, ClientFormS
 		let form_data = new FormData (this.client_form.current);
 
 		form_data.append ("action", "save");
-		Database.save_data ("clients", form_data).then (this.props.onSave);
+
+		this.setState ({ saving: true }, () => Database.save_data ("clients", form_data).then (data => {
+			this.props.onSave (data);
+			this.setState ({ saving: false });
+		}));
 		
 	}// save_client;
 	
@@ -63,18 +57,19 @@ export default class ClientForm extends BaseControl<ClientFormProps, ClientFormS
 
 
 	public static defaultProps: ClientFormProps = {
-		client_data: null,
+		clientData: null,
 		onLoad: null
 	}// defaultProps;
 
 
 	public state: ClientFormState = { 
+		saving: false,
 		saved: false
 	}// ClientFormState;
 
 
 	public shouldComponentUpdate (next_props: Readonly<ClientFormProps>): boolean {
-		this.setState ({ saved: common.same_object (this.props.client_data, next_props.client_data) });
+		this.setState ({ saved: common.same_object (this.props.clientData, next_props.clientData) });
 		return true;
 	}// shouldComponentUpdate;
 
@@ -84,22 +79,30 @@ export default class ClientForm extends BaseControl<ClientFormProps, ClientFormS
 		let client_id = this.client_data ("client_id");
 
 		return (
-			<form id="client_form" ref={this.client_form}>
 
-				<div className="single-line-form">
+			<div style={{ border: "solid 1px green" }}>
+
+				<form id="client_form" ref={this.client_form}>
 
 					<input type="hidden" id="client_id" name="client_id" value={client_id} />
 
-					<label htmlFor="client_name">Client Name</label>
-					<input type="text" id="client_name" name="client_name" defaultValue={this.client_data ("name")} required={true} onBlur={this.save_client.bind (this)} />
+					<div className="three-column-grid">
 
-					<label htmlFor="client_description">Description</label>
-					<textarea />
+						<label htmlFor="client_name">Client Name</label>
+						<input type="text" id="client_name" name="client_name" defaultValue={this.client_data ("name")} required={true} onBlur={this.save_client.bind (this)} />
+						<ExplodingPanel visible={common.not_empty (client_id)}><button>Delete</button></ExplodingPanel>
 
-					{common.not_empty (client_id) && <FadeButton visible={true /* set to this.changed (form_data) */}>Delete</FadeButton>}
+						<label htmlFor="client_description">Description</label>
+						<textarea  id="client_description" name="client_description" defaultValue={this.client_data ("description")} className="double-column" onBlur={this.save_client.bind (this)} />
 
+					</div>
+				</form>
+
+				<div className="middle-right-container">
+					<SmallProgressMeter visible={this.state.saving} alignment={LeftHand}>Saving...</SmallProgressMeter>
 				</div>
-			</form>
+
+			</div>
 		);
 	}// render;
 

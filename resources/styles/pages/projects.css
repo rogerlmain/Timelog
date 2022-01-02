@@ -107,13 +107,6 @@
 /********/
 
 
-#project_selecter {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-}/* #project_selecter */
-
-
 #project_list > div { display: block !important }
 
 
@@ -144,19 +137,19 @@
 }/* project-select-form .button-panel */
 
 
-/********/
+/********
 
 
-.project-selecter-form {
+.project-selector-form {
 	display: grid;
 	grid-template-columns: repeat(4, max-content);
 	column-gap: var(--standard-column-gap);
 	row-gap: var(--standard-row-gap);
-}/* .project-selecter-form */
+}/* .project-selector-form * /
 
 
-.project-selecter-form button { height: var(--single-height) }
-.project-selecter-form label { text-align: right }
+.project-selector-form button { height: var(--single-height) }
+.project-selector-form label { text-align: right }
 
 
 /********/

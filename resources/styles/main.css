@@ -89,7 +89,7 @@ input {
 input[type=numeric] { text-align: right }
 
 
-label { 
+label {
 	margin-right: 1em;
 	white-space: nowrap;
 }/* label */
@@ -230,27 +230,6 @@ content-panel {
 	grid-template-columns: min-content 1fr;
 	row-gap: 0.2em;
 }/* one-piece-form */
-
-
-.single-line-form {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	column-gap: 0.2em;
-}/* single-line-form */
-
-
-/**** Grids ****/
-
-
-.two-piece-grid {
-	grid-template-columns: repeat(2, min-content);
-}/* two-piece-grid */
-
-
-.three-piece-grid {
-	grid-template-columns: repeat(3, auto);
-}/* three-piece-grid */
 
 
 /********/

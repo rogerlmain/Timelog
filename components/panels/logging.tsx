@@ -11,7 +11,7 @@ import FadeControl from "components/controls/fade.control";
 import SelectButton from "components/controls/select.button";
 
 import LogHistoryGadget from "components/panels/gadgets/log.history.gadget";
-import ProjectSelecterGadget from "./gadgets/project.selecter.gadget";
+import ProjectSelectorGadget from "./gadgets/project.selector.gadget";
 import { globals } from "components/types/globals";
 
 
@@ -105,7 +105,7 @@ Logged in to ...
 
 						<div className="project-select-form">
 
-							<ProjectSelecterGadget id="project_selecter" ref={this.create_reference} parent={this}
+							<ProjectSelectorGadget id="project_selector" ref={this.create_reference} parent={this}
 								onClientChange={() => {
 									this.setState ({
 										gadget_updated: false,
@@ -118,7 +118,7 @@ Logged in to ...
 										project_selected: true
 									}, this.load_entries.bind (this))
 								}}>
-							</ProjectSelecterGadget>
+							</ProjectSelectorGadget>
 
 
 							<FadeControl visible={this.state.project_selected} vanishing={true}>

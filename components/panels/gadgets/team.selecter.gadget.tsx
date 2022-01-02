@@ -84,7 +84,7 @@ export enum TeamGroup {
 }// TeamGroup
 
 
-export default class TeamSelecterGadget extends BaseControl<teamSelectorGadgetInterface> {
+export default class TeamSelectorGadget extends BaseControl<teamSelectorGadgetInterface> {
 
 
 	private find_account (arr: Array<any>, account_id: any) {
@@ -225,4 +225,4 @@ export default class TeamSelecterGadget extends BaseControl<teamSelectorGadgetIn
 
 	}// render;
 
-}// TeamSelecterGadget;
+}// TeamSelectorGadget;

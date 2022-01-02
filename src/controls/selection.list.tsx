@@ -35,7 +35,7 @@ export default class SelectionList extends BaseControl<selectionListProps> {
 			<div id="project_list" style={{ display: "contents" }}>
 
 				<ExplodingPanel visible={this.props.visible}>
-					<label htmlFor="project_selecter" className="form-item">{this.props.label}</label>
+					<label htmlFor="project_selector" className="form-item">{this.props.label}</label>
 				</ExplodingPanel>
 
 				<ExplodingPanel visible={this.props.visible}>

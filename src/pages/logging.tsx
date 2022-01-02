@@ -105,7 +105,7 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 				<link rel="stylesheet" href="resources/styles/pages/projects.css" />
 				<link rel="stylesheet" href="resources/styles/pages/logging.css" />
 				
-				<div id="log_information_panel" className="two-piece-grid">
+				<div id="log_information_panel" className="two-column-form">
 
 					<div>
 						<TaskTree accountID={this.current_account ().account_id} ref={this.task_tree} 
@@ -145,7 +145,7 @@ Logged in to ...
 
 						<div className="project-select-form">
 
-							<ProjectSelecterGadget id="project_selecter" parent={this}
+							<ProjectSelectorGadget id="project_selector" parent={this}
 								onClientChange={() => {
 									this.setState ({
 										gadget_updated: false,
@@ -158,7 +158,7 @@ Logged in to ...
 										project_selected: true
 									}, this.load_entries.bind (this))
 								}}>
-							</ProjectSelecterGadget>
+							</ProjectSelectorGadget>
 
 
 							<ExplodingPanel visible={this.state.project_selected} vanishing={true}>

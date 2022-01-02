@@ -247,7 +247,7 @@ export default class TeamSelectorGadget extends BaseControl<TeamSelectorGadgetPr
 
 		return (
 			<div>
-				<div id="member_list_panel" className="three-piece-grid form-panel" title={this.state.somevalue}>
+				<div id="member_list_panel" className="three-column-form form-panel" title={this.state.somevalue}>
 					<label htmlFor="available_members">Candidates</label>
 					<ModularSelectList id="available_members"
 						onChange={(event: any) => {

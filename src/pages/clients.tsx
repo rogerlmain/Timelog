@@ -1,6 +1,6 @@
 import React, { BaseSyntheticEvent } from "react";
 
-import ClientSelecterGadget from "pages/gadgets/client.selector.gadget";
+import ClientSelectorGadget from "pages/gadgets/client.selector.gadget";
 import TeamSelectorGadget from "pages/gadgets/team.selector.gadget";
 // import ClientsModel from "models/clients";
 import ClientForm from "pages/forms/client.form";
@@ -61,15 +61,18 @@ export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageSt
 
  			<div id="client_page" className="top-center-container row-spaced">
 
-				<ClientSelecterGadget id="client_selecter" parent={this}
+				<div className="two-column-grid">
+					<ClientSelectorGadget id="client_selector" parent={this}
 
-					onLoad={(event: BaseSyntheticEvent) => this.setState ({ client_list_loaded: true })}
+						onLoad={(event: BaseSyntheticEvent) => this.setState ({ client_list_loaded: true })}
 
-					onClientChange={(event: BaseSyntheticEvent) => this.setState ({ 
-						client_loading: true,
-						selected_client: event.target.value
-					})}>
-				</ClientSelecterGadget>
+						onClientChange={(event: BaseSyntheticEvent) => this.setState ({ 
+							client_loading: true,
+							selected_client: event.target.value
+						})}>
+							
+					</ClientSelectorGadget>
+				</div>
 
 				<EyecandyPanel visible={this.state.client_list_loaded} eyecandyActive={this.state.client_loading} 
 					afterShowingEyecandy={() => {
@@ -81,7 +84,7 @@ export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageSt
 							this.setState ({ client_data: data }, () => this.setState ({ client_loading: false }))
 						})
 					}}>
-					<ClientForm client_data={this.state.client_data} onSave={(data: Object) => this.setState ({ client_data: data })} />
+					<ClientForm clientData={this.state.client_data} onSave={(data: Object) => this.setState ({ client_data: data })} />
 				</EyecandyPanel>
 
 		 	</div>

@@ -27,7 +27,7 @@ export default class SelectionList extends BaseControl<selectionListInterface> {
 			<div id="project_list" style={{ display: "contents" }}>
 
 				<FadeControl visible={this.props.visible}>
-					<label htmlFor="project_selecter" className="form-item">{this.props.label}</label>
+					<label htmlFor="project_selector" className="form-item">{this.props.label}</label>
 				</FadeControl>
 
 				<FadeControl visible={this.props.visible}>

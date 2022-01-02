@@ -98,16 +98,7 @@ export function null_value (value: any, replacement: any, ...nullables: any): an
 export function same_object (first_object: any, second_object: any) {
 
 	if (is_undefined (first_object) || is_undefined (second_object)) return false;
-
-	if (is_object (first_object) && is_object (second_object)) {		
-		for (let key in first_object.keys) {
-			switch (is_object (first_object [key])) {
-				case true: if (!same_object (first_object [key], second_object [key])) return false;
-				default: if (first_object [key] != second_object [key]) return false;
-			}// switch;
-		}// for;
-		return true;
-	} // if;
+	if (is_object (first_object) && is_object (second_object)) return (JSON.stringify (first_object) == JSON.stringify (second_object));
 	
 	return (first_object == second_object);
 

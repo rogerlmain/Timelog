@@ -10,12 +10,12 @@ import Database from "components/classes/database";
 import BaseControl from "components/controls/base.control";
 import EyecandyPanel from "components/controls/eyecandy.panel";
 import FreezePanel from "components/controls/freeze.panel";
-import ProjectSelecterGadget from "components/panels/gadgets/project.selecter.gadget";
+import ProjectSelectorGadget from "components/panels/gadgets/project.selector.gadget";
 
 import { globals } from "components/types/globals";
 import { TasksModel } from "components/models/tasks";
 import { vertical_alignment } from "components/types/constants";
-import TeamSelecterGadget, { TeamGroup } from "./gadgets/team.selecter.gadget";
+import TeamSelectorGadget, { TeamGroup } from "./gadgets/team.selector.gadget";
 
 
 const default_task_duration: number = 14;
@@ -25,7 +25,7 @@ export default class TasksPanel extends BaseControl<any> {
 
 
 	private project_code () {
-		let project_control: ProjectSelecterGadget = this.reference ("project_selecter");
+		let project_control: ProjectSelectorGadget = this.reference ("project_selector");
 		return common.nested_value (project_control, "state", "current_project", "project_code");
 	}// project_code;
 
@@ -47,11 +47,11 @@ export default class TasksPanel extends BaseControl<any> {
 
 		let selected_row = event.currentTarget;
 		let task_id = (selected_row.querySelector ("input[type=hidden][name=task_id]") as HTMLInputElement).value;
-		let project_selecter: ProjectSelecterGadget = this.reference ("project_selecter");
+		let project_selector: ProjectSelectorGadget = this.reference ("project_selector");
 
 		this.setState ({ task_data: {} }, () => {
 			this.reference ("team_panel").setState ({
-				organization_id: project_selecter.state.current_project.project_id,
+				organization_id: project_selector.state.current_project.project_id,
 				record_id: task_id
 			});
 			this.forceUpdate (() => this.show_task_form ((callback: any) => TasksModel.fetch_task (parseInt (task_id), (result: any) => {
@@ -103,7 +103,7 @@ export default class TasksPanel extends BaseControl<any> {
 
 	private save_task () {
 
-		let selecter: ProjectSelecterGadget = this.reference ("project_selecter");
+		let selector: ProjectSelectorGadget = this.reference ("project_selector");
 
 		let parameters: FormData = new FormData (this.reference ("task_form") as HTMLFormElement);
 		let parameter_values = parameters.toObject ();
@@ -111,7 +111,7 @@ export default class TasksPanel extends BaseControl<any> {
 		if (common.is_empty (parameter_values.task_name)) return;
 
 		document.getElementById ("data_indicator").style.opacity = "1";
-		parameters.append ("project_id", selecter.state.current_project.project_id);
+		parameters.append ("project_id", selector.state.current_project.project_id);
 		parameters.append ("task_id", this.current_task ("task_id"));
 		parameters.append ("action", "save");
 
@@ -162,13 +162,13 @@ export default class TasksPanel extends BaseControl<any> {
 				<link rel="stylesheet" href="resources/styles/panels/tasks.css" />
 
 
-				<ProjectSelecterGadget id="project_selecter" ref={this.create_reference} parent={this}
+				<ProjectSelectorGadget id="project_selector" ref={this.create_reference} parent={this}
 					onProjectChange={this.load_tasks.bind (this)}
 					onLoad={() => { globals.home_page.setState ({ eyecandy_visible: false }) }}>
-				</ProjectSelecterGadget>
+				</ProjectSelectorGadget>
 
 
-				<EyecandyPanel id="task_editor" ref={this.create_reference} className="two-column-panel" align={vertical_alignment.top}>
+				<EyecandyPanel id="task_editor" ref={this.create_reference} className="two-column-grid" align={vertical_alignment.top}>
 
 					<div id="task_list_panel" className="form-panel"
 
@@ -224,9 +224,9 @@ export default class TasksPanel extends BaseControl<any> {
 								<div style={{ marginTop: "2em" }}>
 
 
-									<TeamSelecterGadget id="team_panel" ref={this.create_reference}
+									<TeamSelectorGadget id="team_panel" ref={this.create_reference}
 										parent={this} group={TeamGroup.task} record_id={this.state.selected_project}>
-									</TeamSelecterGadget>
+									</TeamSelectorGadget>
 
 								</div>
 							</div>

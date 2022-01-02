@@ -10,8 +10,8 @@ import SelectButton from "components/controls/select.button";
 
 import Eyecandy from "components/controls/eyecandy";
 
-import ProjectSelecterGadget from "components/panels/gadgets/project.selecter.gadget";
-import TeamSelecterGadget, { TeamGroup } from "components/panels/gadgets/team.selecter.gadget";
+import ProjectSelectorGadget from "components/panels/gadgets/project.selector.gadget";
+import TeamSelectorGadget, { TeamGroup } from "components/panels/gadgets/team.selector.gadget";
 
 import { globals } from "components/types/globals";
 import { projects_model } from "components/models/projects";
@@ -26,7 +26,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 	private fetch_project () {
 
-		this.dom ("project_selecter")
+		this.dom ("project_selector")
 
 		projects_model.fetch_by_id (this.state.project_id, (data) => {
 
@@ -72,7 +72,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 		document.getElementById ("data_indicator").style.opacity = "1";
 
 		let parameters = new FormData (this.dom ("project_form"));
-		parameters.append ("client_id", this.dom ("project_selecter_client_selecter").value);
+		parameters.append ("client_id", this.dom ("project_selector_client_selector").value);
 		parameters.append ("selected_team", JSON.stringify (this.reference ("team_panel").state.selected_accounts));
 		parameters.append ("action", "save");
 
@@ -119,7 +119,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 					<link rel="stylesheet" href="/resources/styles/panels/projects.css" />
 
-					<ProjectSelecterGadget id="project_selecter" ref={this.create_reference} parent={this}
+					<ProjectSelectorGadget id="project_selector" ref={this.create_reference} parent={this}
 
 						onClientChange={() => { this.reset_form (() => { this.setState ({ client_selected: true }) }) }}
 
@@ -129,7 +129,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 						}) }) }}
 
 						onLoad={() => { globals.home_page.setState ({ eyecandy_visible: false }) }}>
-					</ProjectSelecterGadget>
+					</ProjectSelectorGadget>
 
 					<div className="button-panel form-panel">
 						<div className="button-cell">
@@ -164,7 +164,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 						<form id="project_form">
 
-							<div className="two-column-panel" style={{ columnGap: "1em" }}>
+							<div className="two-column-grid" style={{ columnGap: "1em" }}>
 
 								<div>
 
@@ -191,7 +191,7 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 								</div>
 
-								<TeamSelecterGadget id="team_panel" ref={this.create_reference} onchange={this.save_project.bind (this)} parent={this} group={TeamGroup.project} />
+								<TeamSelectorGadget id="team_panel" ref={this.create_reference} onchange={this.save_project.bind (this)} parent={this} group={TeamGroup.project} />
 
 							</div>
 

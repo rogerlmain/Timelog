@@ -179,7 +179,7 @@ export default class MasterPanel extends BaseControl<DefaultProps, masterState> 
 				</div>
 
 				<div className="full-screen horizontal-centering-container overlay-container" style={{ marginTop: "2em" }}>
-					<FadePanel id="details_panel" visible={this.state.contents_loaded} static={true}>
+					<FadePanel id="details_panel" visible={this.state.contents_loaded} static={true} className="full-screen">
 						{(() => {
 							return this.state.contents
 						})()}

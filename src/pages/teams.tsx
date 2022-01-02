@@ -102,7 +102,7 @@ export default class TeamPanel extends BaseControl<TeamProps, DefaultState> {
 
 					<label htmlFor="client_selector">Team</label>
 
-					<select id="client_selecter" name="client_id" defaultValue="placeholder"
+					<select id="client_selector" name="client_id" defaultValue="placeholder"
 
 						onChange={event => this.fetch_team_list (event)}>
 

@@ -6,12 +6,15 @@ import BaseControl, { DefaultProps } from "controls/base.control";
 import Database from "classes/database";
 
 import SelectList from "controls/select.list";
-import FadePanel from "controls/panels/fade.panel";
 
 
-interface ClientSelectorProperties extends DefaultProps {
+interface ClientSelectorProps extends DefaultProps {
 
 	id: string;
+	header: string;
+
+	hasHeader: boolean;
+	headerSelectable: boolean;
 
 	onLoad?: Function;
 	onClientChange?: Function;
@@ -22,14 +25,12 @@ interface ClientSelectorProperties extends DefaultProps {
 interface ClientSelectorState {
 
 	clients: any;
-
-	client_list_loaded: boolean;
 	client_selected: boolean;
 
 }// ClientSelectorState;
 
 
-export default class ClientSelecterGadget extends BaseControl<ClientSelectorProperties, ClientSelectorState> {
+export default class ClientSelectorGadget extends BaseControl<ClientSelectorProps, ClientSelectorState> {
 
  	private client_list: React.RefObject<SelectList> = React.createRef ();
 
@@ -38,9 +39,7 @@ export default class ClientSelecterGadget extends BaseControl<ClientSelectorProp
 
 	private load_clients () {
 		Database.fetch_data ("clients", { action: "list" }).then ((data: any) => {
-			this.setState ({ clients: data }, () => {
-				this.setState ({ client_list_loaded: true }, () => this.execute (this.props.onLoad));
-			});
+			this.setState ({ clients: data }, () => this.execute (this.props.onLoad));
 		});
 	}// load_clients;
 
@@ -54,10 +53,16 @@ export default class ClientSelecterGadget extends BaseControl<ClientSelectorProp
  	/********/
 
 
-	public props: ClientSelectorProperties;
+	public static defaultProps: ClientSelectorProps = {
+		id: "client_selector",
+		header: null,
+		hasHeader: false,
+		headerSelectable: false,
+		onLoad: null,
+		onClientChange: null
+	}// defaultProps;
 
 	public state: ClientSelectorState = {
-		client_list_loaded: false,
 		client_selected: false,
 		clients: null
 	}// state;
@@ -69,7 +74,7 @@ export default class ClientSelecterGadget extends BaseControl<ClientSelectorProp
 	}// constructor;
 
 
-	public getSnapshotBeforeUpdate (old_props: ClientSelectorProperties, old_state: ClientSelectorState) {
+	public getSnapshotBeforeUpdate (old_props: ClientSelectorProps, old_state: ClientSelectorState) {
 		if (this.is_updated (this.state.clients, old_state.clients) || common.is_null (this.state.clients)) this.load_clients ();
 		return true;
 	}// componentDidMount;
@@ -77,24 +82,18 @@ export default class ClientSelecterGadget extends BaseControl<ClientSelectorProp
 
 	public render () {
 		return (
-			<form id={this.props.id}>
-				<div className="client-selecter-form">
-					<div style={{ display: "contents" }}>
-						<FadePanel visible={this.state.client_list_loaded}>
+			<div style={{ display: "contents" }}>
 
-							<label htmlFor={this.client_selector_id}>Client</label>
+				<label htmlFor={this.client_selector_id}>Client</label>
 
-							<SelectList id={this.client_selector_id} ref={this.client_list}
-								data={this.state.clients} id_field="client_id" text_field="name"
-								onChange={(event: BaseSyntheticEvent) => this.client_change_handler (event)}>
-								<option value={0} style={{ fontStyle: "italic" }}>New</option>
-							</SelectList>
+				<SelectList id={this.client_selector_id} ref={this.client_list} value={0}
+					data={this.state.clients} id_field="client_id" text_field="name"
+					onChange={(event: BaseSyntheticEvent) => this.client_change_handler (event)}>
+					{(this.props.header || this.props.hasHeader) && <option value={0} style={{ fontStyle: "italic" }} disabled={this.props.headerSelectable}>{this.props.header}</option>}
+				</SelectList>
 
-						</FadePanel>
-					</div>
-				</div>
-			</form>
+			</div>
 		);
 	}// render;
 
-}// ClientSelecterGadget;
+}// ClientSelectorGadget;
