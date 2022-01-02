@@ -35,11 +35,10 @@ export default class Database {
 	}// fetch_row;
 
 
-	public static save_data (name: string, data: FormData): Promise<number> {
+	public static save_data (name: string, data: FormData): Promise<Object> {
 		return new Promise ((resolve, reject) => {
-			Database.fetch_row (name, data).then (row => {
-				let result = ((Array.isArray (row) && (row.length > 0)) ? row [0] : null);
-				if (common.isset (result)) return resolve (result);
+			Database.fetch_row (name, data).then (response => {
+				if (common.isset (response)) return resolve (response);
 				reject ("save_data: no result returned");
 			}).catch (reject);
 		});

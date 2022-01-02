@@ -232,6 +232,14 @@ content-panel {
 }/* one-piece-form */
 
 
+.single-line-form {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	column-gap: 0.2em;
+}/* single-line-form */
+
+
 /**** Grids ****/
 
 

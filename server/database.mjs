@@ -16,7 +16,7 @@ class Database {
 	}// data_response_handler;
 
 
-	parse_integer = (value) => {
+	parse_integer (value) {
 		let parsed_value = parseInt (value);
 		return isNaN (parsed_value) ? null : parsed_value;
 	}// parse_integer;
@@ -24,7 +24,8 @@ class Database {
 	
 	execute_query (procedure, parameters = null, handler = this.data_response_handler) {
 		if (global.isset (parameters) && !Array.isArray (parameters)) parameters = Object.values (parameters);
-		this.connection.query (procedure, parameters, handler);
+		let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
+		this.connection.query (command, parameters, handler);
 	}// execute_query;
 
 

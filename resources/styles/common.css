@@ -9,7 +9,8 @@
 	--double-padding: 2em;
 
 	--standard-height: 1.5em;
-	--double-height: 2.5em;
+	--double-height: 2em;
+	--full-height: 3em;
 
 	--single-height: var(--standard-height);
 

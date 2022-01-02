@@ -23,9 +23,8 @@ interface ClientSelectorState {
 
 	clients: any;
 
+	client_list_loaded: boolean;
 	client_selected: boolean;
-
-	header_text: string;
 
 }// ClientSelectorState;
 
@@ -40,8 +39,7 @@ export default class ClientSelecterGadget extends BaseControl<ClientSelectorProp
 	private load_clients () {
 		Database.fetch_data ("clients", { action: "list" }).then ((data: any) => {
 			this.setState ({ clients: data }, () => {
-				this.setState ({ clients_loaded: true });
-				this.execute (this.props.onLoad);
+				this.setState ({ client_list_loaded: true }, () => this.execute (this.props.onLoad));
 			});
 		});
 	}// load_clients;
@@ -59,9 +57,9 @@ export default class ClientSelecterGadget extends BaseControl<ClientSelectorProp
 	public props: ClientSelectorProperties;
 
 	public state: ClientSelectorState = {
+		client_list_loaded: false,
 		client_selected: false,
-		clients: null,
-		header_text: null
+		clients: null
 	}// state;
 
 
@@ -82,17 +80,17 @@ export default class ClientSelecterGadget extends BaseControl<ClientSelectorProp
 			<form id={this.props.id}>
 				<div className="client-selecter-form">
 					<div style={{ display: "contents" }}>
+						<FadePanel visible={this.state.client_list_loaded}>
 
-						<label htmlFor={this.client_selector_id}>Client</label>
+							<label htmlFor={this.client_selector_id}>Client</label>
 
-						<SelectList id={this.client_selector_id} ref={this.client_list} use_header={true} header_text={this.state.header_text}
-							data={this.state.clients} id_field="client_id" text_field="name"
-							onChange={(event: BaseSyntheticEvent) => {
-								this.setState ({ header_text: "[ New ]" });
-								this.client_change_handler (event);
-							}}>
-						</SelectList>
+							<SelectList id={this.client_selector_id} ref={this.client_list}
+								data={this.state.clients} id_field="client_id" text_field="name"
+								onChange={(event: BaseSyntheticEvent) => this.client_change_handler (event)}>
+								<option value={0} style={{ fontStyle: "italic" }}>New</option>
+							</SelectList>
 
+						</FadePanel>
 					</div>
 				</div>
 			</form>

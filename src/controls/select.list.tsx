@@ -26,6 +26,7 @@ interface SelectListState extends DefaultState {
 
 
 const placeholder_value = 0;
+const header_value = -1;
 
 
 export default class SelectList extends BaseControl<SelectListProps, SelectListState> {
@@ -60,7 +61,7 @@ export default class SelectList extends BaseControl<SelectListProps, SelectListS
 
     public render () {
 
-		let selectedValue = common.coalesce (this.state.selected_value, this.props.value, placeholder_value);
+		let selectedValue = common.coalesce (this.state.selected_value, this.props.value, header_value);
 
         return (
             <select id={this.props.id} name={this.props.id} ref={this.list} value={selectedValue} className={this.props.className} style={this.props.style}
@@ -71,10 +72,9 @@ export default class SelectList extends BaseControl<SelectListProps, SelectListS
 					return true;
 				}}>
 
-				<option key="placeholder" value={0} disabled={true} hidden={!this.props.use_header || (selectedValue != placeholder_value)}>{this.props.header_text}</option>
-
-				{this.select_options (this.props.data, this.props.id_field, this.props.text_field)}
+				{this.props.use_header && <option key="placeholder" value={header_value} disabled={true} hidden={!this.props.use_header || (selectedValue != placeholder_value)}>{this.props.header_text}</option>}
 				{this.props.children}
+				{this.select_options (this.props.data, this.props.id_field, this.props.text_field)}
 
             </select>
         );

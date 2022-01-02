@@ -61,7 +61,7 @@ export default class SlideshowPanel extends BaseControl<SlideshowPanelProps, Sli
 
 	public render () {
 		return (
-			<ExplodingPanel visible={this.state.visible} speed={this.props.speed} style={{ border: "solid 1px red" }} static={true} pulsing={this.props.pulsing}
+			<ExplodingPanel visible={this.state.visible} speed={this.props.speed} static={true} pulsing={this.props.pulsing}
 			
 				beforeShowing={this.props.beforeShowing}
 				afterShowing={this.props.afterShowing}
