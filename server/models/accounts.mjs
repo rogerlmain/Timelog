@@ -56,7 +56,7 @@ class AccountData extends Database {
 
 
 	signin = (fields) => {
-		this.execute_query ("call get_account_by_credentials (?, ?)", [fields ["username"], fields ["password"]], (query_error, results, query_fields) => {
+		this.execute_query ("get_account_by_credentials", [fields ["username"], fields ["password"]], (query_error, results, query_fields) => {
 			if ((results == null) || (results [0].length > 1)) throw "Invalid data response: models.signin";
 			if (results [0].length == 1) {
 				let response_string = JSON.stringify (results [0]).slice (1, -1);

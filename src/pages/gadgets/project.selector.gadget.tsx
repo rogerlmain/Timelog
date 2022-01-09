@@ -1,28 +1,28 @@
 import React, { BaseSyntheticEvent } from "react";
 
-import * as common from "classes/common";
-
-import Database from "classes/database";
 import BaseControl, { DefaultProps } from "controls/base.control";
-import ExplodingPanel from "controls/panels/exploding.panel";
 import SelectList from "controls/select.list";
 import ProjectsModel from "models/projects";
 
 import ClientSelectorGadget from "pages/gadgets/client.selector.gadget";
 
 
-interface projectsPageProps extends DefaultProps {
+interface ProjectSelectorProps extends DefaultProps {
 
 	id: string;
 
-	onLoad?: Function;
-	onClientChange?: Function;
-	onProjectChange: Function;
+	onLoad?: any;
+	onClientChange?: any;
+	onProjectChange: any;
 
-}// projectsPageProps;
+	header?: string;
+	hasHeader?: boolean;
+	headerSelectable?: boolean;
+
+}// ProjectSelectorProps;
 
 
-interface projectsPageState {
+interface ProjectSelectorState {
 
 	clients: any;
 	projects: any;
@@ -30,14 +30,13 @@ interface projectsPageState {
 	client_id: number;
 	project_id: number;
 
-}// state;
+}// ProjectSelectorState;
 
 
-export default class ProjectSelectorGadget extends BaseControl<projectsPageProps, projectsPageState> {
+export default class ProjectSelectorGadget extends BaseControl<ProjectSelectorProps, ProjectSelectorState> {
 
 	private project_list: React.RefObject<SelectList> = React.createRef ();
 
-	private client_selector_id: any = null;
 	private project_selector_id: any = null;
 
 
@@ -53,13 +52,26 @@ export default class ProjectSelectorGadget extends BaseControl<projectsPageProps
 	/********/
 
 
-	public props: projectsPageProps;
-	public state: projectsPageState;
+	public static defaultProps: ProjectSelectorProps = {
+		id: null,
+		onLoad: null,
+		onClientChange: null,
+		onProjectChange: null,
+		hasHeader: false,
+		headerSelectable: false
+	}/* ProjectSelectorProps */;
+
+	public state: ProjectSelectorState = {
+		clients: null,
+		client_id: null,
+
+		projects: null,
+		project_id: null
+	}/* ProjectsPage State */;
 
 
 	public constructor (props: any) {
 		super (props);
-		this.client_selector_id = `${this.props.id}_client_selector`;
 		this.project_selector_id = `${this.props.id}_project_selector`;
 	}// constructor;
 
@@ -78,7 +90,7 @@ export default class ProjectSelectorGadget extends BaseControl<projectsPageProps
 
 				<SelectList id={this.project_selector_id} ref={this.project_list} className="form-item" style={{ width: "100%" }}
 					onChange={this.props.onProjectChange}>
-					<option value={0} style={{ fontStyle: "italic" }}>New</option>
+					{(this.props.header || this.props.hasHeader) && <option value={0} style={{ fontStyle: "italic" }} disabled={this.props.headerSelectable}>{this.props.header}</option>}
 					{this.select_options (this.state.projects, "project_id", "project_name")}
 				</SelectList>
 

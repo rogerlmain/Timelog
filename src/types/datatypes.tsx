@@ -83,6 +83,12 @@ export class ProjectData {
 }// ProjectData;
 
 
+export interface TaskData {
+	id: number;
+	name: string;
+}// TaskData;
+
+
 export class TeamData {
 	team_id: number;
 	name: string;

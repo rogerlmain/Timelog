@@ -83,11 +83,11 @@ export const menu_items = {
 
 	clients: "Clients",
 	projects: "Projects",
-	team: "Team",
+	// team: "Team",
 	tasks: "Tasks",
-	logging: "Logging",
-	history: "History",
-	account: "Account",
+	// logging: "Logging",
+	// history: "History",
+	// account: "Account",
 
 	map: function (method: any): any {
 		if (method == null) return null;

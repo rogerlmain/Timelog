@@ -1,20 +1,20 @@
 import React, { SyntheticEvent, BaseSyntheticEvent } from "react";
 
-import DatePicker from "react-datepicker";
-
 import * as common from "classes/common";
 import * as constants from "types/constants";
 
 import Database from "classes/database";
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
-import ProjectSelectorGadget from "pages/gadgets/project.selector.gadget";
+import TaskSelectorGadget from "pages/gadgets/task.selector.gadget";
 import TasksModel from "models/tasks";
 
 import MiscModel from "models/misc";
 import AccountsModel, { AccountsList } from "models/accounts";
 
-import { AccountData } from "types/datatypes";
+import TaskForm from "pages/forms/task.form";
+
+import { AccountData, TaskData } from "types/datatypes";
 import { globals } from "types/globals";
 
 import SelectList from "controls/select.list";
@@ -24,30 +24,35 @@ const default_task_duration: number = 14;
 
 
 interface TaskState extends DefaultState {
-	task_list: any;
+
 	task_data: any;
-	selected_project: any;
+	selected_task: any;
+
+	// deprecated ?
+
+	task_list: any;
 
 	project_members: any;
 	statuses: any;
 
 	editor_open: boolean,
+
+	task_loading: boolean;
+
 }// TaskState;
 
 
 export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 
 
-	private project_selector: React.RefObject<ProjectSelectorGadget> = React.createRef<ProjectSelectorGadget> ();
+	private project_selector: React.RefObject<TaskSelectorGadget> = React.createRef<TaskSelectorGadget> ();
 
 	private task_editor: React.RefObject<EyecandyPanel> = React.createRef<EyecandyPanel> ();
 	private task_form_panel: React.RefObject<EyecandyPanel> = React.createRef<EyecandyPanel> ();
 
-	private task_form: React.RefObject<HTMLFormElement> = React.createRef<HTMLFormElement> ();
-	
 
 	private project_code () {
-		let project_control: ProjectSelectorGadget = this.project_selector.current;
+		let project_control: TaskSelectorGadget = this.project_selector.current;
 		return common.nested_value (project_control, "state", "current_project", "project_code");
 	}// project_code;
 
@@ -65,12 +70,12 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 	}// show_task_form;
 
 
-	private load_task (event: SyntheticEvent) {
+	private fetch_task (event: BaseSyntheticEvent) {
 
-		let project_selector: ProjectSelectorGadget = this.project_selector.current;
+		let project_selector: TaskSelectorGadget = this.project_selector.current;
 		let selected_row = event.currentTarget;
 		let task_id = parseInt ((selected_row.querySelector ("input[type=hidden][name=task_id]") as HTMLInputElement).value);
-		let project_id = this.state.selected_project;
+		let project_id = this.state.selected_task;
 
 		this.setState ({ editor_open: true }, () => this.show_task_form ((callback: any) => {
 			TasksModel.fetch_task (task_id, (result: any) => this.setState ({ task_data: result }, () => {
@@ -80,7 +85,7 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 			}));
 		}));
 
-	}// load_task;
+	}// fetch_task;
 
 
 	private update_task_list (project_id: number, callback: any = null) {
@@ -93,7 +98,7 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 			if (common.not_empty (data)) {
 				response.length = 0;
 				(Array.isArray (data) ? data : [data]).forEach ((item: any) => {
-					let row = <div className="task-row" key={`task_${item.task_id}`} onClick={this.load_task.bind (this)}>
+					let row = <div className="task-row" key={`task_${item.task_id}`} onClick={this.fetch_task.bind (this)}>
 						<input type="hidden" name="task_id" value={item.task_id ?? constants.empty} />
 						<div className="text-cell">
 							{account.programmer () ? `(${item.task_id}) ` : null}
@@ -116,7 +121,7 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 
 		let task_editor: EyecandyPanel = this.task_editor.current;
 
-		this.setState ({ selected_project: event.target.value });
+		this.setState ({ selected_task: event.target.value });
 //		task_editor.show ((callback: Function) => { this.update_task_list (event.target.value, callback); });
 	}// load_tasks;
 
@@ -128,31 +133,6 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 	}// current_task;
 
 
-	private save_task () {
-
-		let selector: ProjectSelectorGadget = this.project_selector.current;
-
-		let parameters: FormData = new FormData (this.task_form.current as HTMLFormElement);
-		let parameter_values = parameters.toObject ();
-
-		if (common.is_empty (parameter_values.task_name)) return;
-
-		document.getElementById ("data_indicator").style.opacity = "1";
-		parameters.append ("project_id", this.state.selected_project);
-		parameters.append ("task_id", this.current_task ("task_id"));
-		parameters.append ("action", "save");
-
-		Database.save_data ("tasks", parameters).then ((data: any) => {
-			if (common.isset (parameter_values.task_id)) return;
-			this.setState ({ task_id: data.task_id }, (() => {
-				this.update_task_list (this.state.selected_project);
-				document.getElementById ("data_indicator").style.opacity = "0";
-			}).bind (this));
-		});
-
-	}// save_task;
-
-
 	/********/
 
 
@@ -160,7 +140,9 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 
 		task_list: null,
 		task_data: null,
-		selected_project: null,
+		selected_task: null,
+
+		task_loading: false,
 
 		project_members: null,
 		statuses: null,
@@ -180,95 +162,16 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 				<link rel="stylesheet" href="resources/styles/pages/tasks.css" />
 
 
-				<ProjectSelectorGadget id="project_selector" ref={this.project_selector} parent={this}
-					onProjectChange={(event: BaseSyntheticEvent) => {
-						this.setState ({ selected_project: event.target.value }, () => this.load_tasks.bind (this));
+				<TaskSelectorGadget id="project_selector" ref={this.project_selector} parent={this}
+					onTaskChange={(event: BaseSyntheticEvent) => {
+						this.setState ({ selected_task: event.target.value }, () => this.load_tasks.bind (this));
 					}}
 					onLoad={() => { globals.master_panel.setState ({ eyecandy_visible: false }) }}>
-				</ProjectSelectorGadget>
+				</TaskSelectorGadget>
 
 
-				<EyecandyPanel ref={this.task_editor}>
-
-					<div className="two-column-grid outlined">
-
-						<div id="task_list_panel" className="form-panel">
-							<div id="task_list">{this.state.task_list}</div>
-							<button onClick={() => this.show_task_form ((callback: Function) => {
-								this.setState ({
-									task_data: null,
-									selected_project: null
-								});
-								this.execute (callback);
-							})}>New</button>
-						</div>
-{/* 
-						<FreezePanel id="task_editor_panel" className="centering-container">
-*/}							
-							<EyecandyPanel ref={this.task_form_panel} /* shrinking={false}
-								 /* eyecandyClass="border-panel" contentsClass="border-panel" - Fix and reinstate? */>
-
-								<form id="task_form" ref={this.task_form}>
-
-									<div style={{ textAlign: "right", marginBottom: "1em" }}>{this.project_code ()}</div>
-
-									<div className="one-piece-form">
-										<label htmlFor="task_name">Name</label>
-										<input type="text" name="task_name" defaultValue={this.state_value ("task_data", "task_name")} 
-											onBlur={this.save_task.bind (this)} maxLength={45}>
-										</input>
-									</div>
-
-									<textarea id="task_description" name="task_description" placeholder="Description (optional)"
-										defaultValue={this.current_task ("task_description")} onBlur={this.save_task.bind (this)}>
-									</textarea>
-
-									<div className="one-piece-form">
-										<label htmlFor="due_date">Due Date (Deadline)</label>
-										<DatePicker id="due_date"
-											onChange={(date: Date) => {
-												this.setState ({ due_date: date }, () => {
-													this.forceUpdate ();
-												});
-											}}
-
-											// selected={this.default_due_date ()}
-											// defaultValue={this.current_task ("deadline")}
-											
-											>
-											
-										</DatePicker>
-									</div>
-
-									<div className="one-piece-form">
-
-										<label htmlFor="estimate">Estimate (hours)</label>
-										<input type="numeric" id="estimate" name="estimate" defaultValue={this.current_task ("estimate")} />
-
-										<break />
-
-										<label htmlFor="assignee">Assigned to</label>
-										<SelectList id="assignee_id" data={this.state.project_members} id_field="account_id" text_field="username"
-											value={this.current_task ("assignee_id")} onChange={this.save_task.bind (this)}>
-										</SelectList>
-
-										<break />
-
-										<label htmlFor="status">Status</label>
-										<SelectList id="status_id" data={this.state.statuses} id_field="status_id" text_field="name" 
-											value={this.current_task ("status_id")} onChange={this.save_task.bind (this)}>
-										</SelectList>
-
-									</div>
-
-								</form>
-
-							</EyecandyPanel>
-{/* 
-						</FreezePanel>
-*/}
-					</div>
-
+				<EyecandyPanel visible={true} eyecandyActive={this.state.task_loading} afterShowingEyecandy={(event: BaseSyntheticEvent) => this.fetch_task (event)}>
+					<TaskForm taskData={this.state.task_data} onSave={(data: TaskData) => this.setState ({ project_data: data })} />
 				</EyecandyPanel>
 
 			</div>
