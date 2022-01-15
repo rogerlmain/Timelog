@@ -138,7 +138,7 @@ export default class SignupPage extends BaseControl<DefaultProps, SignupPageStat
 
 					<div className="overlay-container middle-right-container">
 
-						<EyecandyPanel eyecandyActive={this.state.eyecandy_visible}>
+						<EyecandyPanel>
 							<button onClick={() => {
 								parent.setState ({ signing_status: signing_state.pending });
 								this.setState ({ button_visible: false });

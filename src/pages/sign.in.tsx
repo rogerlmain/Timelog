@@ -46,7 +46,7 @@ export default class SigninPage extends BaseControl<DefaultProps> {
 
 			<div style={{ alignSelf: "center", border: "solid 2px green" }}>
 
-				<ExplodingPanel id="login_error" ref={this.exploding_panel} visible={this.state.report_error}>
+				<ExplodingPanel id="login_error" ref={this.exploding_panel}>
 					<div className="login-error">
 						That doesn't sound right. Check your username<br />
 						(email) and password and try again.
@@ -81,9 +81,9 @@ export default class SigninPage extends BaseControl<DefaultProps> {
 
 					<div className="overlay-container middle-right-container" style={{ paddingLeft: "1em" }}>
 
-						<EyecandyPanel id="signin_eyecandy" ref={this.signin_page} eyecandyText="Signing you in." eyecandyActive={this.state.eyecandy_visible} visible={true}
+						<EyecandyPanel id="signin_eyecandy" ref={this.signin_page} eyecandyText="Signing you in."
 						
-							afterShowingEyecandy={() => fetch ("/signin", {
+							afterEyecandy={() => fetch ("/signin", {
 								method: "post",
 								body: new FormData (document.getElementById ("signin_form") as HTMLFormElement),
 								credentials: "same-origin"

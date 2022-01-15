@@ -3,10 +3,13 @@ import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
 import { globals } from "types/globals";
 
+import * as common from "classes/common";
 import * as constants from "types/constants";
 
 
 export interface BaseFadePanelProps extends DefaultProps {
+
+	id: string;
 
 	visible: boolean;	// Default = false
 	static?: boolean;	// If false animates on initial display. Default = false;
@@ -29,6 +32,7 @@ export default class BaseFadePanel<Props, State> extends BaseControl<BaseFadePan
 
 
 	public static defaultProps: BaseFadePanelProps = {
+		id: null,
 		visible: false,
 		speed: globals.settings.animation_speed
 	}// defaultProps;
@@ -81,6 +85,9 @@ export default class BaseFadePanel<Props, State> extends BaseControl<BaseFadePan
 
 
 	public render () {
+
+		if (common.is_null (this.props.id)) throw "BaseFadePanel requires an ID";
+
 		return (
 			<div id={this.props.id} ref={this.dom_control} style={{
 				...this.props.style,

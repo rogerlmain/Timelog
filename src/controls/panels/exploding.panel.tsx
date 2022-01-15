@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as common from "classes/common";
 
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import BaseFadePanel from "controls/panels/base.fade.panel";
@@ -7,16 +8,20 @@ import ResizePanel from "controls/panels/resize.panel";
 import { globals } from "types/globals";
 
 
+import ReactDOMServer from "react-dom/server";
+
+
 interface ExplodingPanelProps extends DefaultProps {
 
-	visible: boolean;
+	id: string;
+
 	static?: boolean;
-	pulsing?: boolean;	// Determines if 
 
 	speed?: number;
 
 	beforeShowing?: Function;
 	beforeHiding?: Function;
+
 	afterShowing?: Function;
 	afterHiding?: Function;
 
@@ -24,71 +29,88 @@ interface ExplodingPanelProps extends DefaultProps {
 
 
 interface ExplodingPanelState extends DefaultState {
-	resize_open: boolean;
+
+	resizing: boolean;
+
 	fade_visible: boolean;
+
+	children: any;
+
 }// ExplodingPanelState;
 
 
 export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, ExplodingPanelState> {
 
+
+	private initializing: boolean = false;
+
+
+	/********/
+
+
 	public static defaultProps: ExplodingPanelProps = {
 
-		visible: false,
+		id: null,
+
 		static: true,
 
 		speed: globals.settings.animation_speed,
 
 		beforeShowing: null,
 		beforeHiding: null,
+
 		afterShowing: null,
-		afterHiding: (callback: Function) => callback ()
+		afterHiding: null
 
 	}// ExplodingPanelProps;
 
 
 	public state: ExplodingPanelState = {
-		resize_open: false,
-		fade_visible: false
+		resizing: false,
+		fade_visible: true,
+		children: null
 	}// state;
 
 
-	public componentDidMount(): void {
-		if (this.props.visible && this.props.static) this.setState ({
-			resize_open: true,
-			fade_visible: true
-		});
+	public componentDidMount (): void {
+		this.state.children = this.props.children;
+		this.initializing = true;
 	}// componentDidMount;
 
 
 	public componentDidUpdate (): void {
-		if (this.props.visible && !this.state.resize_open) this.setState ({ resize_open: true });
-		if (!this.props.visible && this.state.fade_visible) this.setState ({ fade_visible: false });
+		if (!this.initializing && !this.compare_elements (this.state.children, this.props.children)) this.setState ({ fade_visible: false });
+		this.initializing = false;
 	}// componentDidUpdate;
 
 
 	public render () {
+
+		if (common.is_null (this.props.id)) throw "Exploding panel requires an ID";
+
 		return (
-			<div {...this.controlStyleClass ()}>
-				<ResizePanel visible={this.state.resize_open} speed={Math.floor (this.props.speed / 2)} static={this.props.static}
-					beforeOpening={() => this.execute (this.props.beforeShowing)}
-					afterOpening={() => this.setState ({ fade_visible: true })}
-					afterClosing={() => this.execute (this.props.afterHiding)}>
+			<ResizePanel id={`${this.props.id}_exploding_panel`} speed={Math.floor (this.props.speed / 2)} resizing={this.state.resizing} outerStyle={{ border: "solid 1px red" }}
 
-					<BaseFadePanel visible={this.state.fade_visible} speed={Math.floor (this.props.speed / 2)} static={this.props.static}
-						beforeHiding={() => this.execute (this.props.beforeHiding)}
-						afterHiding={() => (this.props.pulsing ? this.setState ({ resize_open: false }) : this.execute (this.props.afterHiding, () => this.setState ({ resize_open: false })))}
-						afterShowing={() => this.execute (this.props.afterShowing)}>
+				afterResizing={() => this.setState ({ 
+					resizing: false,
+					fade_visible: true
+				})}>
 
-						{this.children ()}
+				<BaseFadePanel id={`${this.props.id}_exploding_panel`} visible={this.state.fade_visible} speed={Math.floor (this.props.speed / 2)} static={this.props.static} 
 
-					</BaseFadePanel>
+					beforeHiding={() => this.execute.bind (this) (this.props.beforeHiding)}
+					afterHiding={() => this.setState ({ children: this.props.children }, () => this.setState ({ resizing: true }, () => this.execute.bind (this) (this.props.afterHiding)))}
 
-				</ResizePanel>
-			</div>
+					beforeShowing={() => this.execute.bind (this) (this.props.beforeShowing)}
+					afterShowing={() => this.execute.bind (this) (this.props.afterShowing)}>
 
+					{this.state.children}
+
+				</BaseFadePanel>
+
+			</ResizePanel>
 		);
 	}// render;
 
-	
 
 }// ExplodingPanel;

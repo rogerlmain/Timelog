@@ -13,9 +13,12 @@ import ExplodingPanel from "controls/panels/exploding.panel";
 
 
 interface ClientFormProps extends DefaultProps {
+
 	clientData: ClientData;
+
 	onLoad?: any;
 	onSave?: any;
+
 }// ClientFormProps;
 
 
@@ -36,7 +39,7 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 	private client_data (field: string) { return common.isset (this.props.clientData) ? this.props.clientData [field] : constants.blank }
 
 
-	private save_client (event: SyntheticEvent) {
+	private save_client () {
 
 		if (this.state.saved) return;
 		if (!this.validate (this.client_form)) return;
@@ -46,10 +49,9 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 		form_data.append ("action", "save");
 
 		this.setState ({ saving: true }, () => Database.save_data ("clients", form_data).then (data => {
-			this.props.onSave (data);
-			this.setState ({ saving: false });
+			this.execute (this.props.onSave, data).then (() => this.setState ({ saving: false }));
 		}));
-		
+
 	}// save_client;
 	
 
@@ -57,8 +59,12 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 
 
 	public static defaultProps: ClientFormProps = {
+
 		clientData: null,
-		onLoad: null
+		
+		onLoad: null,
+		onSave: null
+
 	}// defaultProps;
 
 
@@ -90,7 +96,7 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 
 						<label htmlFor="client_name">Client Name</label>
 						<input type="text" id="client_name" name="client_name" defaultValue={this.client_data ("name")} required={true} onBlur={this.save_client.bind (this)} />
-						<ExplodingPanel visible={common.not_empty (client_id)}><button>Delete</button></ExplodingPanel>
+						<ExplodingPanel id="delete_button_panel"><button>Delete</button></ExplodingPanel>
 
 						<label htmlFor="client_description">Description</label>
 						<textarea  id="client_description" name="client_description" defaultValue={this.client_data ("description")} className="double-column" onBlur={this.save_client.bind (this)} />

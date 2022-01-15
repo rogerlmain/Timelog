@@ -1,5 +1,7 @@
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
+import * as common from "classes/common";
+
 import { globals } from "types/globals";
 
 import React from "react";
@@ -7,55 +9,61 @@ import Eyecandy from "controls/eyecandy";
 import SlideshowPanel from "./slideshow.panel";
 
 
+const eyecandy_index = 1;
+const contents_index = 2;
+
+
 interface EyecandyPanelProps extends DefaultProps {
+
+	id: string;
 
 	eyecandyText?: string;
 	eyecandySubtext?: string;
 
-	visible?: boolean;
+	eyecandyVisible?: boolean;
+
 	static?: boolean;			//  (only relevant if visible on mount) do not animate on startup.
-	eyecandyActive?: boolean;	// determines whether or not the eyecandy is showing: true = eyecandy is visible
 
 	speed?: number;
 
-	beforeShowingEyecandy?: Function;
-	beforeShowingContents?: Function;
-
-	afterShowingEyecandy?: Function;
-	afterShowingContents?: Function;
-
-	beforeHidingEyecandy?: Function;
-	beforeHidingContents?: Function;
-
-	afterHidingEyecandy?: Function;
-	afterHidingContents?: Function;
+	afterEyecandy?: Function;
 
 }// EyecandyPanelProps;
 
 
-export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, DefaultState> {
+interface EyecandyPanelState extends DefaultState { eyecandy_ready: boolean }
 
 
-	public static defaultProps: EyecandyPanelProps = { speed: globals.settings.animation_speed };
+export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, EyecandyPanelState> {
+
+
+	public static defaultProps: EyecandyPanelProps = { 
+		id: null,
+		speed: globals.settings.animation_speed 
+	};
 	
-	public state: DefaultState;
-
+	public state: EyecandyPanelState = { eyecandy_ready: false };
 
 	public render () {
 
+		if (common.is_null (this.props.id)) throw ("Eyecandy requires an ID");
+
+		let index = (/* this.state.eyecandy_ready && */this.props.eyecandyVisible) ? eyecandy_index : contents_index;
+
 		return (
-			<SlideshowPanel id={`${this.props.id}_exploding_panel`}
-				index={this.props.visible ? (this.props.eyecandyActive ? 1 : 2) : 0} pulsing={false}
-				visible={true} static={this.props.static} speed={this.props.speed}
+			<SlideshowPanel id={`${this.props.id}_eyecandy_panel`} index={index} speed={this.props.speed}
 
-				beforeShowing={() => this.execute (this.props.eyecandyActive ? this.props.beforeShowingContents : this.props.beforeShowingEyecandy)}
-				afterShowing={() => this.execute (this.props.eyecandyActive ? this.props.afterShowingEyecandy : this.props.afterShowingContents)}
-				beforeHiding={() => this.execute (this.props.eyecandyActive ? this.props.beforeHidingEyecandy : this.props.beforeHidingContents)}
-				afterHiding={() => this.execute (this.props.eyecandyActive ? this.props.afterHidingContents : this.props.afterHidingEyecandy)}>
+				afterShowing={() => this.execute ((index == eyecandy_index) ? this.props.afterEyecandy : null)}>
 
-				<Eyecandy text={this.props.eyecandyText} subtext={this.props.eyecandySubtext} />
+				<Eyecandy text={this.props.eyecandyText} subtext={this.props.eyecandySubtext} onLoad={() => {
+					
+				
+					this.setState ({ eyecandy_ready: true });
+					
+					
+				}} />
 
-				{this.return (this.props.children)}
+				<div>{this.props.children}</div>
 
 			</SlideshowPanel>
 		);

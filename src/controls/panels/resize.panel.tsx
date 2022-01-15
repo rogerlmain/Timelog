@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React from "react";
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
 import { globals } from "types/globals";
@@ -9,61 +9,36 @@ import * as common from "classes/common";
 
 interface ResizePanelProps extends DefaultProps {
 
-	visible: boolean;
-	static?: boolean;		//  (only relevant if visible on mount) do not animate on startup.
+	id: string;
 
-	shrinking?: boolean;	// the control is allowed to shrink
-	growing?: boolean;		// the control is allowed to grow
-
-	fill?: boolean;			// grows to fill the parent rather than to accommodate the children
-	size?: Dimensions;		// exact dimensions for growth - overrides intrinsic and fill options
+	resizing?: boolean;
 
 	stretch?: boolean; 		// determines if the control naturally fills the parent (block vs inline-block)
 	speed?: number;			// overrides globals.settings.animation_speed
-	
-	beforeOpening?: any;
-	afterOpening?: any;
 
-	beforeClosing?: any;
-	afterClosing?: any;
+	innerStyle?: any;
+	outerStyle?: any;
+
+	beforeResizing?: any;
+	afterResizing?: any;
 
 }// ResizePanelProps;
 
 
 interface ResizePanelState extends DefaultState {
-
 	width: number;
 	height: number;
-
-	growing: boolean;
-	shrinking: boolean;
-
-	contents: any;
-
-	transition: string;	
-
 }// ResizePanelState;
 
 
 export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 	public static defaultProps: ResizePanelProps = {
-		visible: false,
-		speed: globals.settings.animation_speed
+		id: null,
+		stretch: false,
+		speed: globals.settings.animation_speed,
+		innerStyle: {}
 	}// defaultProps;
-
-
-	private initialized: boolean = false;
-	private updated: boolean = false;
-
-	private visible: boolean = false;	// requested condition
-	private open: boolean = false;		// actual condition
-
-	private static: boolean = null;
-	private fill: boolean = null;
-
-	private stretch: boolean = false;
-
 
 	private outer_control: React.RefObject<HTMLDivElement> = React.createRef ();
 	private inner_control: React.RefObject<HTMLDivElement> = React.createRef ();
@@ -71,100 +46,34 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 	private inner_size: Dimensions = null;
 	private outer_size: Dimensions = null;
 
-
-	private execute_open_handler () {
-		if (this.updated) return this.updated = false;
-		this.execute (this.props.afterOpening); 
-	}// execute_open_handler;
+	private initializing: boolean;
 
 
-	private initialize (control: HTMLElement) {
-		control.style.width = (this.state.width = 0) + "px";
-		control.style.height = (this.state.height = 0) + "px";
-	}// initialize;
+	private load_sizes () {
+
+		this.inner_size = common.isset (this.inner_control.current) ? {
+			width: this.inner_control.current.offsetWidth,
+			height: this.inner_control.current.offsetHeight
+		} : null;
+	
+		this.outer_size = common.isset (this.outer_control.current) ? {
+			width: this.outer_control.current.offsetWidth,
+			height: this.outer_control.current.offsetHeight
+		} : null;
+
+	}// load_sizes;
 
 
 	private transition_start (event: TransitionEvent) {
 		if (!["width", "height"].includes (event.propertyName)) return;
-		switch (this.open) {
-			case true: this.execute (this.props.beforeOpening); break;
-			default: this.execute (this.props.beforeClosing); break;
-		}// if;
+		this.execute (this.props.beforeResizing ? this.props.beforeResizing.bind (this) : null);
 	}//transition_start;
 
 
 	private transition_end (event: TransitionEvent) {
 		if (!["width", "height"].includes (event.propertyName)) return;
-		let opened = (((event.currentTarget as HTMLDivElement).clientWidth > 0) || ((event.currentTarget as HTMLDivElement).clientHeight > 0)) && this.open;
-		switch (opened) {
-			case true: this.execute_open_handler (); break;
-			default: this.execute (this.props.afterClosing); break;
-		}// if;
-		this.forceUpdate ();
+		this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null);
 	}// transition_end;
-
-
-	private update_transition (callback: any = null) {
-		if (common.isset (this.state.transition)) return this.execute (callback);
-		this.forceUpdate (() => this.setState ({ transition: `width ${this.props.speed}ms ease-in-out, height ${this.props.speed}ms ease-in-out` }, callback));
-	}// update_transition;
-
-
-	private show () {
-
-		let child_size = (dimension: string) => {
-
-			let increased = this.outer_size [dimension] < this.inner_size [dimension];
-			let decreased = this.outer_size [dimension] > this.inner_size [dimension];
-
-			if ((increased && this.state.growing) || (decreased && this.state.shrinking)) return this.inner_size [dimension];
-			return this.outer_size [dimension];
-
-		}// child_size;
-
-
-		let calculate_size = (dimension: string) => {
-			if (this.props.size && this.props.size [dimension]) return this.props.size [dimension];
-			if (this.fill) switch (dimension) {
-				case "width": return this.outer_control.current.availableWidth ();
-				default: return this.outer_control.current.availableHeight ();
-			}// if;
-			return child_size (dimension);
-		}/* new_size */;
-
-
-		let new_size: Dimensions = {
-			width: calculate_size ("width"),
-			height: calculate_size ("height")
-		}// new_size;
-
-		let resized = ((new_size.width != this.state.width) || (new_size.height != this.state.height));
-				
-		this.open = true;
-
-		if (common.not_set (this.outer_size) || common.not_set (this.inner_size)) return;
-
-		if (this.static) {
-			this.static = false;
-			this.setState (this.inner_size, this.update_transition);
-			return;
-		}// if;
-
-		this.update_transition (() => { 
-			switch (resized) {
-				case true: return this.setState (new_size); 
-				default:  this.execute_open_handler ();
-			}// switch;
-		});
-
-	}// show;
-
-
-	private hide () {
-		this.open = false;
-		this.setState ({ width: 0, height: 0 });
-	}// hide;
-
 
 	/********/
 
@@ -173,100 +82,56 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 	public state: ResizePanelState;
 
 
-	public constructor (props: ResizePanelProps) {
-		super (props);
-		this.state.growing = (props.growing !== false);		// default true
-		this.state.shrinking = (props.shrinking !== false);	// default true
-		this.fill = (props.fill === true);					// default false
-		this.stretch = (props.stretch === true);			// default false
-	}// constructor;
-
-
 	public componentDidMount () {
-		this.outer_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
-		this.outer_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
 
-		this.setState ({
-			growing: true,
-			shrinking: true,
+		if (this.props.beforeResizing) this.outer_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
+		if (this.props.afterResizing) this.outer_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
 
-			width: null,
-			height: null,
-			contents: null, 
-			transition: null		
-		});
+		this.initializing = true;
+
 	}// componentDidMount;
-
-
-	public getSnapshotBeforeUpdate (props: ResizePanelProps, state: ResizePanelState): any {
-
-		this.visible = (this.props.visible !== false);
-		this.static = ((this.static !== false) && (this.visible) && (this.props.static === true));
-
-		this.initialized = common.isset (this.state.contents);
-		this.updated = (this.initialized && common.isset (state.contents) && (this.state.contents != state.contents));
-
-		return null;
-
-	}// getSnapshotBeforeUpdate;
 
 
 	public componentDidUpdate () {
 
-		this.inner_size = common.isset (this.inner_control.current) ? {
-			width: this.inner_control.current.scrollWidth,
-			height: this.inner_control.current.scrollHeight
-		} : null;
-	
-		this.outer_size = common.isset (this.outer_control.current) ? {
-			width: this.outer_control.current.offsetWidth,
-			height: this.outer_control.current.offsetHeight
-		} : null;
+		this.load_sizes ();
 
-		this.setState ({ contents: this.children () });
-	
-		if (this.visible) {
-			if (this.initialized) {
-				if (this.open) {
-					if (this.updated) this.hide ();
-				} else {
-					this.show ();
-				}// if;
-			} else {
-				if (!this.open) this.initialize (this.outer_control.current);
-			}// if;
-		} else {
-			if ((this.initialized) && (!this.updated) && (this.open)) this.hide ();
-		}// if;
+		if (!(this.props.resizing || this.initializing)) return;
+		if ((this.inner_size.width == this.outer_size.width) && (this.inner_size.height == this.outer_size.height)) return;
+
+		this.initializing = false;
+		this.setState ({ ...this.inner_size });
 
 	}// componentDidUpdate;
 
 
 	public render () {
 
+		let speed = this.props.speed ?? globals.settings.animation_speed;
+
+		if (common.is_null (this.props.id)) throw "Resize panel requires an ID";
+
 		return (
-			<div id={this.props.id} ref={this.outer_control} 
+			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} 
 				style={{
-					...this.props.style,
 					margin: 0, padding: 0, border: "none",
-					display: this.stretch ? "block" : "inline-block",
+					display: this.props.stretch ? "block" : "inline-block",
+					transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`,
 					overflow: "hidden",
-					transition: this.state.transition,					
-					width: this.state.width ?? 0,
-					height: this.state.height ?? 0
+					width: this.state.width,
+					height: this.state.height,
+					...this.props.outerStyle
 				}}>
 					
-				<div ref={this.inner_control} 
-					style={{ 
-						display: this.stretch ? "block" : "inline-block",
-						border: "none",
-						margin: "none",
-						padding: "none"
-					}}>
-						
-					{this.state.contents}
+				<div id={`${this.props.id}_inner_control`} ref={this.inner_control} style={{ 
+					display: this.props.stretch ? "block" : "inline-block",
+					border: "none",
+					margin: "none",
+					padding: "none",
+					boxSizing: "content-box",
+					...this.props.innerStyle
+				}}>{this.props.children}</div>
 
-				</div>
 			</div>
 		);
 

@@ -263,7 +263,7 @@ export default class TeamSelectorGadget extends BaseControl<TeamSelectorGadgetPr
 					</SelectButton>
 				</div>
 
-				<ExplodingPanel id="members_list" visible={common.not_empty (this.state.selected_accounts)}>
+				<ExplodingPanel id="members_list">
 					<label>Project Members</label>
 					<div id="member_list_entries"><MemberEntries parent={this} /></div>
 				</ExplodingPanel>

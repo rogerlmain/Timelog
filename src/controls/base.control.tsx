@@ -7,7 +7,7 @@ import * as React from "react";
 
 import { AccountData, EntryData } from "types/datatypes";
 
-import { renderToString } from "react-dom/server";
+import ReactDOMServer, { renderToString } from "react-dom/server";
 import { globals } from "types/globals";
 
 
@@ -54,6 +54,11 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 			backgroundColor: "transparent"
 		}} />;
 	}// children;
+
+
+	protected compare_elements (first_element: React.ReactElement, second_element: React.ReactElement) {
+		return ReactDOMServer.renderToString (first_element) == ReactDOMServer.renderToString (second_element);
+	}// compare_elements;
 
 
 	protected controlStyleClass (): any {

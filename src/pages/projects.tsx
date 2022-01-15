@@ -90,7 +90,7 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 				</div>
 
 				<div style={{ marginTop: "2em" }}>
-					<EyecandyPanel visible={true} eyecandyActive={this.state.project_loading} afterShowingEyecandy={() => this.fetch_project ()}>
+					<EyecandyPanel afterEyecandy={() => this.fetch_project ()}>
 						<ProjectForm projectData={this.state.project_data} onSave={(data: ProjectData) => this.setState ({ project_data: data })} />
 					</EyecandyPanel>
 				</div>

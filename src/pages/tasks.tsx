@@ -170,7 +170,7 @@ export default class TasksPanel extends BaseControl<DefaultProps, TaskState> {
 				</TaskSelectorGadget>
 
 
-				<EyecandyPanel visible={true} eyecandyActive={this.state.task_loading} afterShowingEyecandy={(event: BaseSyntheticEvent) => this.fetch_task (event)}>
+				<EyecandyPanel afterEyecandy={(event: BaseSyntheticEvent) => this.fetch_task (event)}>
 					<TaskForm taskData={this.state.task_data} onSave={(data: TaskData) => this.setState ({ project_data: data })} />
 				</EyecandyPanel>
 

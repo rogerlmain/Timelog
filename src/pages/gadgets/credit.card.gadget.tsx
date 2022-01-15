@@ -48,7 +48,7 @@ export default class CreditCardGadget extends BaseControl<creditCardGadgetInterf
 				<label htmlFor="cc_cvv">CVV</label>
 				<div className="cc-details subpanel">
 					<input type="text" name="cc_cvv" />
-					<ExplodingPanel id="license_panel" visible={this.props.corporate}>
+					<ExplodingPanel id="license_panel">
 						<label htmlFor="licence_count">Licences</label>
 						<input type="text" name="licence_count" placeholder="1" />
 					</ExplodingPanel>

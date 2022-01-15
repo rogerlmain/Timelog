@@ -44,7 +44,7 @@ export default class EyecandyButton extends BaseControl<eyecandyButtonInterface>
 					afterHiding={() => { this.setState ({ button_visible: true }) }}>
 				</Eyecandy>
 
-				<ExplodingPanel visible={this.state.button_visible} className="middle-right-container"
+				<ExplodingPanel className="middle-right-container"
 					afterHiding={() => { this.setState ({ eyecandy_visible: true }) }}>
 					<SelectButton sticky={false} onClick={() => { this.setState ({ button_visible: false }) }}>{this.props.children}</SelectButton>
 				</ExplodingPanel>

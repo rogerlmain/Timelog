@@ -5,7 +5,6 @@ import ExplodingPanel from "controls/panels/exploding.panel";
 import SelectButton from "controls/buttons/select.button";
 
 import { globals } from "types/globals";
-import { popup_zindex } from "types/constants";
 
 
 interface popupWindowInterface extends DefaultProps {
@@ -37,7 +36,7 @@ export default class PopupWindow extends BaseControl<popupWindowInterface> {
 
 	public render () {
 		return (
-			<ExplodingPanel visible={this.props.open} className="full-size" /* zIndex={popup_zindex} - probably redundant (use css?) */
+			<ExplodingPanel className="full-size" /* zIndex={popup_zindex} - probably redundant (use css?) */
 
 				beforeShowing={() => this.execute (this.props.beforeOpening)}
 				afterHiding={() => this.execute (this.props.afterClosing)}>

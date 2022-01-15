@@ -119,7 +119,7 @@ export class TreeView extends BaseControl<TreeViewProperties> {
 				<div>{this.props.text}</div>
 
 				<div />
-				<ExplodingPanel id={`${this.props.id}_explode_panel`} visible={this.state.open}>
+				<ExplodingPanel id={`${this.props.id}_explode_panel`}>
 					<ul id={this.props.id} className="treeview">{this.props.children}</ul>
 				</ExplodingPanel>
 
