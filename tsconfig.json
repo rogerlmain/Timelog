@@ -14,13 +14,21 @@
 		"sourceMap": true,
 
 		"target": "es6",
-//		"lib": [ "es2019" ],
 
 		"jsx": "react",
 
 		"outDir": "./dist/",
 
 		"baseUrl": "src",
+//		"baseUrl": "./",
+		"paths": {
+			"source/*": ["source/*"],
+			"classes/*": ["source/classes/*"],
+			"controls/*": ["source/controls/*"],
+			"types/*": ["source/types/*"],
+			"pages/*": ["source/pages/*"],
+			"/*": ["/*"]
+		}/* paths */,
 
 		"skipLibCheck": true,
 		"checkJs": false

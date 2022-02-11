@@ -1,5 +1,5 @@
-import { directions } from "components/types/constants";
-import { SizeRecord } from "components/types/datatypes";
+import { directions } from "constants";
+
 
 declare global {
 

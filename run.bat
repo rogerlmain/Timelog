@@ -1,2 +1,3 @@
 @echo off
-node server.mjs
+cls
+"C:\Program Files\NPM\nodemon" server.mjs

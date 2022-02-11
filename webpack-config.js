@@ -7,6 +7,7 @@ const root_pathed = (file_path) => { return path.resolve (root, file_path) }
 module.exports = {
 	devtool: "source-map",
 	mode: "development",
+	watch: true,
 
 	entry: {
 		"main": "./src/main.tsx"

@@ -1,3 +1,5 @@
+import "../../src/common/common.js"
+
 import Database from "../database.mjs";
 
 
@@ -18,10 +20,11 @@ class ClientData extends Database {
 
 	save_client (data) {
 		let parameters = {
-			client_id: global.isset (data.client_id) ? data.client_id : null,
+			client_id: global.isset (data.client_id) ? parseInt (data.client_id) : null,
 			company_id: global.account.company_id,
 			client_name: data.client_name,
 			client_description: data.client_description,
+			deleted: Boolean (data.deleted && data.deleted.matches ("true"))
 		}// parameters;
 		this.execute_query ("save_client", parameters);
 	}// save_client;

@@ -21,7 +21,9 @@ export default class Database {
 
 		return fetch (`/${name}`, fetch_parameters).then (response => {
 			return response.json ()
-		});
+		}).catch (error => {
+			alert (error);
+ 		});
 
 	}// fetch_data;
 
@@ -40,7 +42,11 @@ export default class Database {
 			Database.fetch_row (name, data).then (response => {
 				if (common.isset (response)) return resolve (response);
 				reject ("save_data: no result returned");
-			}).catch (reject);
+			}).catch (reject => {
+
+				alert (reject);
+
+			});
 		});
 	}// save_data;
 

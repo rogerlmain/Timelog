@@ -7,10 +7,7 @@ class Database {
 
 
 	data_response_handler (error, results, fields) {
-		if (global.is_null (results)) throw "Invalid data response";
-		if (response.response_sent) {
-			return;
-		}
+		if (global.is_null (results) || response.response_sent) return;
 		response.send (results [0]);
 		response.response_sent = true;
 	}// data_response_handler;

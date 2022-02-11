@@ -37,7 +37,7 @@ interface GlobalsInterface {
 
 const default_settings: SettingsInterface = {
 	animation_delay: 500,
-	animation_speed: 1750
+	animation_speed: 500, //1750
 }// default_settings;
 
 
