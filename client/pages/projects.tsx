@@ -1,3 +1,5 @@
+import * as common from "classes/common";
+
 import React, { BaseSyntheticEvent } from "react";
 
 import { is_object } from "classes/common";
@@ -6,21 +8,23 @@ import ProjectSelectorGadget from "pages/gadgets/project.selector.gadget";
 import TeamSelectorGadget from "pages/gadgets/team.selector.gadget";
 import ProjectsModel from "models/projects";
 import ProjectForm from "pages/forms/project.form";
-import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import { globals } from "types/globals";
 import { ProjectData } from "types/datatypes";
+import Database from "client/classes/database";
 
 
 interface ProjectsPageState extends DefaultState {
 
-	client_selected: boolean;
+	client_list: any;
+	project_list: any;
+
+	selected_client: number;
+	selected_project: number;
 
 	project_loading: boolean;
 	project_data: ProjectData;
-
-	selected_project: number;
 
 }// ProjectsPageState;
 
@@ -34,14 +38,36 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 	private project_loaded = () => is_object (this.state.selected_project);
 
 
-	private fetch_project () {
+	private load_clients () {
+		return new Promise ((resolve, reject) => {
+			try {
+				Database.fetch_data ("clients", { action: "list" }).then ((data: any) => this.setState ({ client_list: data }, resolve));
+			} catch (except) {
+				reject (except.getMessage ());
+			}// try;
+		});
+	}// load_clients;
+
+	private load_projects (callback: Function = null) {
+		ProjectsModel.fetch_by_client (this.state.selected_client, (data: Object) => {
+			this.setState ({ projects: data }, () => {
+				this.setState ({ projects_loaded: true }, callback);
+			});
+		});
+	}// load_projects;
+
+
+	private load_project () {
 		ProjectsModel.fetch_by_id (this.state.selected_project, (data: any) => {
 			this.setState ({ 
 				project_loading: false,
 				project_data: data 
 			});
 		});
-	}// fetch_project;
+	}// load_project;
+
+
+	/********/
 
 
 	private reset_form (callback: any) {
@@ -57,10 +83,16 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 
 
 	public state: ProjectsPageState = {
-		client_selected: false,
+
+		client_list: null,
+		project_list: null,
+
+		selected_client: null,
+		selected_project: null,
+
 		project_loading: false,
 		project_data: null,
-		selected_project: null
+
 	}// state;
 
 
@@ -68,6 +100,13 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 		super (props);
 		globals.projects_page = this;
 	}// constructor;
+
+
+	public async getSnapshotBeforeUpdate (old_props: DefaultProps, old_state: ProjectsPageState) {
+		if (common.is_null (this.state.client_list)) {
+			await this.load_clients ();
+		}
+	}// getSnapshotBeforeUpdate;
 
 
 	public render () {
@@ -79,7 +118,14 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 
 					<link rel="stylesheet" href="/resources/styles/pages/projects.css" />
 
-					<ProjectSelectorGadget id="project_selector" parent={this}
+					<ProjectSelectorGadget id="project_selector" parent={this} 
+
+						clients={this.state.client_list} 
+						projects={this.state.project_list}
+						
+						selectedClient={this.state.selected_client}
+						selectedProject={this.state.selected_project}
+
 						onClientChange={() => { this.reset_form (() => { this.setState ({ client_selected: true }) }) }}
 						onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ 
 							project_loading: true,
@@ -89,11 +135,9 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 
 				</div>
 
-				<div style={{ marginTop: "2em" }}>
-					<EyecandyPanel afterEyecandy={() => this.fetch_project ()}>
-						<ProjectForm projectData={this.state.project_data} onSave={(data: ProjectData) => this.setState ({ project_data: data })} />
-					</EyecandyPanel>
-				</div>
+				{common.isset (this.state.selected_client) && <div style={{ marginTop: "2em" }}>
+					<ProjectForm projectData={this.state.project_data} onSave={(data: ProjectData) => this.setState ({ project_data: data })} />
+				</div>}
 
 			</div>
 
