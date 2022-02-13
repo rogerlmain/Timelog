@@ -7,12 +7,13 @@ import * as common from "classes/common";
 interface SelectListProps extends DefaultProps {
 
 	data?: Array<any>;
-	id_field?: string;
-    text_field?: string;
+	idField?: string;
+    textField?: string;
 
-	header_text?: string;
-	
-	use_header?: boolean;
+	headerText?: string;
+	headerSelectable?: boolean;
+	useHeader?: boolean;
+
 	value?: number;
 
 	onChange?: Function;
@@ -32,6 +33,9 @@ const header_value = -1;
 export default class SelectList extends BaseControl<SelectListProps, SelectListState> {
 
 
+	private header_visible () { return (common.isset ((this.props.headerText) || (this.props.useHeader)) && ((this.state.selected_value == 0) || (this.props.headerSelectable))) }
+
+
 	public list: React.RefObject<HTMLSelectElement> = React.createRef ();
 
 
@@ -39,13 +43,20 @@ export default class SelectList extends BaseControl<SelectListProps, SelectListS
 
 
 	public static defaultProps: SelectListProps = {
+
 		data: null,
-		id_field: null,
-		text_field: null,
-		header_text: null,
-		use_header: false,
+
+		idField: null,
+		textField: null,
+
+		headerText: null,
+		headerSelectable: false,
+		useHeader: false,
+
 		value: null,
+
 		onChange: null
+
 	}// defaultProps;
 
     
@@ -72,9 +83,17 @@ export default class SelectList extends BaseControl<SelectListProps, SelectListS
 					return true;
 				}}>
 
-				{this.props.use_header && <option key="placeholder" value={header_value} disabled={true} hidden={!this.props.use_header || (selectedValue != placeholder_value)}>{this.props.header_text}</option>}
+
+				{this.header_visible () &&
+				
+					<option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.headerText}</option>}
+
+
+
+
+
 				{this.props.children}
-				{this.select_options (this.props.data, this.props.id_field, this.props.text_field)}
+				{this.select_options (this.props.data, this.props.idField, this.props.textField)}
 
             </select>
         );
@@ -82,3 +101,5 @@ export default class SelectList extends BaseControl<SelectListProps, SelectListS
     }// render;
 
 }// SelectList;
+
+

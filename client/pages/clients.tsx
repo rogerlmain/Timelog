@@ -61,9 +61,15 @@ export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageSt
 			<div id="client_page" className="top-center-container row-spaced">
 
 				<div className="two-column-grid">
-					<ClientSelectorGadget id="client_selector" parent={this} hasHeader={true} 
+					<ClientSelectorGadget id="client_selector" parent={this} 
+					
+						hasHeader={true} 
+						headerSelectable={true}
+						headerText="New client"
+
 						clients={this.state.client_list} selectedClient={this.state.selected_client}
 						onClientChange={(event: BaseSyntheticEvent) => this.setState ({ selected_client: event.target.value })}>
+
 					</ClientSelectorGadget>
 				</div>
 

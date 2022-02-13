@@ -119,6 +119,9 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 
 					<ProjectSelectorGadget id="project_selector" parent={this} 
 
+						hasHeader={true}
+						headerSelectable={true}
+
 						clients={this.state.client_list} 
 						projects={this.state.project_list}
 						
@@ -130,8 +133,10 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 						onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ 
 							project_loading: true,
 							selected_project: event.target.value
-					})} />
+						})}>
 
+					</ProjectSelectorGadget>
+							
 				</div>
 
 				{common.isset (this.state.selected_client) && <div style={{ marginTop: "2em" }}>

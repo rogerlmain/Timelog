@@ -81,11 +81,17 @@ export default class ProjectSelectorGadget extends BaseControl<ProjectSelectorPr
 				{common.isset (this.props.selectedClient) && <div style={{ display: "contents" }}>
 					<label htmlFor={this.project_selector_id}>Project</label>
 
-					<SelectList id={this.project_selector_id} data={this.props.projects} className="form-item" style={{ width: "100%" }}
+					<SelectList id={this.project_selector_id} data={this.props.projects} value={this.state.selected_project}
+					
+						headerText="New project" headerSelectable={true}
+						idField="project_id" textField="name" 
+
+						className="form-item" style={{ width: "100%" }}
 						onChange={this.props.onProjectChange}>
-						{(this.props.header || this.props.hasHeader) && <option value={0} style={{ fontStyle: "italic" }} disabled={this.props.headerSelectable}>{this.props.header}</option>}
-						{this.select_options (this.props.projects, "project_id", "project_name")}
+
 					</SelectList>
+
+
 				</div>}
 
 			</div>
