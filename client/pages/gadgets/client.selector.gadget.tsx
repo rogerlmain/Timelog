@@ -34,7 +34,6 @@ interface ClientSelectorState {
 
 export default class ClientSelectorGadget extends BaseControl<ClientSelectorProps, ClientSelectorState> {
 
- 	private client_list: React.RefObject<SelectList> = React.createRef ();
 
  	private client_selector_id: string = null;
 
@@ -81,8 +80,7 @@ export default class ClientSelectorGadget extends BaseControl<ClientSelectorProp
 
 				<label htmlFor={this.client_selector_id}>Client</label>
 
-				<SelectList id={this.client_selector_id} ref={this.client_list} value={this.state.selected_client}
-					data={this.props.clients} id_field="client_id" text_field="name"
+				<SelectList id={this.client_selector_id} data={this.props.clients} value={this.state.selected_client} id_field="client_id" text_field="name"
 					onChange={(event: BaseSyntheticEvent) => this.client_change_handler (event)}>
 					{(this.props.header || this.props.hasHeader) && <option value={0} style={{ fontStyle: "italic" }} disabled={this.props.headerSelectable}>{this.props.header}</option>}
 				</SelectList>
