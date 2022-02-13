@@ -78,7 +78,7 @@ export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageSt
 					<ClientForm onDelete={async () => {
 						this.setState ({ selected_client: null });
 						await this.load_clients ();
-					}} />
+					}} onSave={async () => await this.load_clients () } />
 				</EyecandyForm>
 
 			</div>
