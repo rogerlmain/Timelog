@@ -35,9 +35,6 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 	private team_selector: React.RefObject<TeamSelectorGadget> = React.createRef ();
 
 
-	private project_loaded = () => is_object (this.state.selected_project);
-
-
 	private load_clients () {
 		return new Promise ((resolve, reject) => {
 			try {
@@ -48,11 +45,14 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 		});
 	}// load_clients;
 
-	private load_projects (callback: Function = null) {
-		ProjectsModel.fetch_by_client (this.state.selected_client, (data: Object) => {
-			this.setState ({ projects: data }, () => {
-				this.setState ({ projects_loaded: true }, callback);
-			});
+
+	private load_projects () {
+		return new Promise ((resolve, reject) => {
+			try {
+				ProjectsModel.fetch_by_client (this.state.selected_client, (data: Object) => this.setState ({ project_list: data }, resolve));
+			} catch (except) {
+				reject (except.getMessage ());
+			}// try;
 		});
 	}// load_projects;
 
@@ -67,7 +67,7 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 	}// load_project;
 
 
-	/********/
+	/********
 
 
 	private reset_form (callback: any) {
@@ -103,9 +103,8 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 
 
 	public async getSnapshotBeforeUpdate (old_props: DefaultProps, old_state: ProjectsPageState) {
-		if (common.is_null (this.state.client_list)) {
-			await this.load_clients ();
-		}
+		if (common.is_null (this.state.client_list)) await this.load_clients ();
+		if (common.isset (this.state.selected_client) && (common.is_null (this.state.project_list) || (this.state.selected_client != old_state.selected_client))) await this.load_projects ();
 	}// getSnapshotBeforeUpdate;
 
 
@@ -126,12 +125,12 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 						selectedClient={this.state.selected_client}
 						selectedProject={this.state.selected_project}
 
-						onClientChange={() => { this.reset_form (() => { this.setState ({ client_selected: true }) }) }}
+						onClientChange={(event: BaseSyntheticEvent) => this.setState ({ selected_client: event.target.value }) }
+
 						onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ 
 							project_loading: true,
 							selected_project: event.target.value
-						})}>
-					</ProjectSelectorGadget>
+					})} />
 
 				</div>
 

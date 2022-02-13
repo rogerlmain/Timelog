@@ -37,7 +37,6 @@ interface ProjectSelectorState {
 
 export default class ProjectSelectorGadget extends BaseControl<ProjectSelectorProps, ProjectSelectorState> {
 
-	private project_list: React.RefObject<SelectList> = React.createRef ();
 
 	private project_selector_id: any = null;
 
@@ -82,7 +81,7 @@ export default class ProjectSelectorGadget extends BaseControl<ProjectSelectorPr
 				{common.isset (this.props.selectedClient) && <div style={{ display: "contents" }}>
 					<label htmlFor={this.project_selector_id}>Project</label>
 
-					<SelectList id={this.project_selector_id} ref={this.project_list} className="form-item" style={{ width: "100%" }}
+					<SelectList id={this.project_selector_id} data={this.props.projects} className="form-item" style={{ width: "100%" }}
 						onChange={this.props.onProjectChange}>
 						{(this.props.header || this.props.hasHeader) && <option value={0} style={{ fontStyle: "italic" }} disabled={this.props.headerSelectable}>{this.props.header}</option>}
 						{this.select_options (this.props.projects, "project_id", "project_name")}
