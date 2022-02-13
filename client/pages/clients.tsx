@@ -9,16 +9,12 @@ import { globals } from "types/globals";
 
 import EyecandyForm from "controls/forms/eyecandy.form";
 import ClientSelectorGadget from "./gadgets/client.selector.gadget";
-import { NoEmitOnErrorsPlugin } from "webpack";
 import Database from "client/classes/database";
 
 
 interface ClientsPageState extends DefaultState {
 	client_list: any,
 	selected_client: number
-
-, eyecandy_text: string
-
 }// ClientsPageState;
 
 
@@ -45,9 +41,6 @@ export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageSt
 	public state: ClientsPageState = {
 		client_list: null,
 		selected_client: null
-
-, eyecandy_text: "waiting..."
-
 	}// state;
 
 

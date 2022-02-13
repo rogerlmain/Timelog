@@ -24,7 +24,10 @@ class ClientData extends Database {
 			client_description: data.client_description,
 			deleted: Boolean (data.deleted)
 		}// parameters;
-		this.execute_query ("save_client", parameters);
+
+setTimeout (() => this.execute_query ("save_client", parameters), 3000);
+//		this.execute_query ("save_client", parameters);
+
 	}// save_client;
 
 

@@ -23,7 +23,7 @@ interface ClientFormProps extends FormControlProps {
 
 
 interface ClientFormState extends DefaultState {
-	saving: boolean;
+	status: string;
 	saved: boolean;
 }// ClientFormState;
 
@@ -48,8 +48,8 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 
 		form_data.append ("action", "save");
 
-		this.setState ({ saving: true }, () => Database.save_data ("clients", form_data).then (data => {
-			this.execute (this.props.onSave, data).then (() => this.setState ({ saving: false }));
+		this.setState ({ status: "Saving..." }, () => Database.save_data ("clients", form_data).then (data => {
+			this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
 		}));
 
 	}// save_client;
@@ -67,8 +67,8 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 		form_data.append ("deleted", "true");
 		form_data.append ("client_id", this.client_data ("client_id"));
 
-		this.setState ({ saving: true }, () => Database.save_data ("clients", form_data).then (data => {
-			this.execute (this.props.onDelete, data).then (() => this.setState ({ saving: false }));
+		this.setState ({ status: `Deleting ${this.client_data ("name")}...` }, () => Database.save_data ("clients", form_data).then (data => {
+			this.execute (this.props.onDelete, data).then (() => this.setState ({ status: null }));
 		}));
 
 		return false;
@@ -88,7 +88,7 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 
 
 	public state: ClientFormState = { 
-		saving: false,
+		status: null,
 		saved: false
 	}// ClientFormState;
 
@@ -106,13 +106,13 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 
 		return (
 
-			<div style={{ border: "solid 1px green" }}>
+			<div>
 
 				<form id="client_form" ref={this.client_form}>
 
 					<input type="hidden" id="client_id" name="client_id" value={client_id || constants.blank} />
 
-					<div className={"two-column-grid outlined"}>
+					<div className={"two-column-grid"}>
 
 						<label htmlFor="client_name">Client Name</label>
 						<input type="text" id="client_name" name="client_name" defaultValue={this.client_data ("name") || constants.blank} required={true} 
@@ -127,8 +127,8 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 					</div>
 				</form>
 
-				<div className="middle-right-container">
-					<SmallProgressMeter visible={this.state.saving} alignment={LeftHand}>Saving...</SmallProgressMeter>
+				<div className="button-bar">
+					<SmallProgressMeter visible={common.isset (this.state.status)} alignment={LeftHand}>{this.state.status}</SmallProgressMeter>
 				</div>
 
 			</div>
