@@ -1,4 +1,3 @@
 @echo off
 cls
-tsc -p tsconfig.json
-
+npm run watch-build

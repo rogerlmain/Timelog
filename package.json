@@ -2,15 +2,21 @@
 	"name": "timelog",
 	"version": "0.0.0",
 	"description": "Timelog",
-	"main": "server.js",
+	"main": "server.mjs",
 	"author": {
-		"name": ""
+		"name": "Roger L. (Rex) Main (the Strange)"
+	},
+	"keywords": [],
+	"license": "ISC",
+	"scripts": {
+		"server": "webpack-dev-server --mode development --open --hot",
+		"start": "node server.mjs",
+		"build": "webpack --mode production",
+		"watch-start": "watch \"npm run start\" publish",
+		"watch-build": "watch \"npm run build\" client",
+		"check-types": "tsc"
 	},
 	"dependencies": {
-		"@types/node": "^14.17.33",
-		"@types/react": "^17.0.34",
-		"@types/react-dom": "^17.0.11",
-		"@types/react-transition-group": "^4.4.4",
 		"core-js": "^3.9.1",
 		"crypto": "^1.0.1",
 		"express": "^4.17.1",
@@ -27,10 +33,12 @@
 		"react-transition-group": "^4.4.2",
 		"react-universal": "^0.0.5",
 		"react-universal-component": "^4.5.0",
+		"regenerator-runtime": "^0.13.9",
 		"request": "^2.88.2",
 		"ts-loader": "^8.3.0",
-		"typescript": "^4.4.4",
-		"util": "^0.12.4"
+		"typescript": "^4.5.5",
+		"util": "^0.12.4",
+		"watch": "^0.13.0"
 	},
 	"-vs-binding": {
 		"AfterBuild": [
@@ -38,7 +46,19 @@
 		]
 	},
 	"devDependencies": {
+		"@babel/core": "^7.16.12",
+		"@babel/preset-env": "^7.16.11",
+		"@babel/preset-react": "^7.16.7",
+		"@babel/preset-typescript": "^7.16.7",
+		"@types/react": "^17.0.39",
 		"@types/react-datepicker": "^4.3.2",
-		"webpack-cli": "^4.9.1"
+		"@types/react-dom": "^17.0.11",
+		"babel-loader": "^8.2.3",
+		"css-loader": "^6.5.1",
+		"html-webpack-plugin": "^5.5.0",
+		"style-loader": "^3.3.1",
+		"webpack": "^5.67.0",
+		"webpack-cli": "^4.9.2",
+		"webpack-dev-server": "^4.7.3"
 	}
 }

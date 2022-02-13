@@ -1,5 +1,3 @@
-import "../../src/common/common.js"
-
 import Database from "../database.mjs";
 
 
@@ -24,7 +22,7 @@ class ClientData extends Database {
 			company_id: global.account.company_id,
 			client_name: data.client_name,
 			client_description: data.client_description,
-			deleted: Boolean (data.deleted && data.deleted.matches ("true"))
+			deleted: Boolean (data.deleted)
 		}// parameters;
 		this.execute_query ("save_client", parameters);
 	}// save_client;

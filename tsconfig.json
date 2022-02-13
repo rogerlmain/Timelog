@@ -5,28 +5,31 @@
 		"noImplicitThis": true,
 		"suppressImplicitAnyIndexErrors": true,
 
-		"module": "es2015",
-		
+		"module": "es2015", /* same as es6 */
+		"target": "es2015",
+
 		"moduleResolution": "node",
 		"noEmitOnError": true,
 		"strict": false,
 		"removeComments": false,
 		"sourceMap": true,
 
-		"target": "es6",
-
 		"jsx": "react",
 
-		"outDir": "./dist/",
+		"outDir": "./publish/",
 
-		"baseUrl": "src",
-//		"baseUrl": "./",
+		"baseUrl": "./",
+
 		"paths": {
-			"source/*": ["source/*"],
-			"classes/*": ["source/classes/*"],
-			"controls/*": ["source/controls/*"],
-			"types/*": ["source/types/*"],
-			"pages/*": ["source/pages/*"],
+			"client/*": ["client/*"],
+
+			"classes/*": ["client/classes/*"],
+			"controls/*": ["client/controls/*"],
+			"models/*": ["client/models/*"],
+			"pages/*": ["client/pages/*"],
+			"panels/*": ["client/panels/*"],
+			"types/*": ["client/types/*"],
+			
 			"/*": ["/*"]
 		}/* paths */,
 
@@ -34,11 +37,9 @@
 		"checkJs": false
 	},
 
-	"exclude": [
-		"node_modules"
-	],
+	"exclude": ["node_modules", "publish"],
 
-	"files": [ "src/main.tsx" ],
+	"files": [ "client/main.tsx" ],
 
 	"lib": [
 		"dom",
