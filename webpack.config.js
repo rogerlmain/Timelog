@@ -17,19 +17,19 @@ module.exports = {
 		alias: {
 
 
-tests: path.resolve (__dirname, "tests"),
+tests: path.resolve (__dirname, "client/tests"),
 
 
 			client: path.resolve (__dirname, "client"),
 
-			classes: path.resolve (__dirname, "client/classes/"),
-			controls: path.resolve (__dirname, "client/controls/"),
-			models: path.resolve (__dirname, "client/models/"),
-			pages: path.resolve (__dirname, "client/pages/"),
-			panels: path.resolve (__dirname, "client/panels/"),
-			types: path.resolve (__dirname, "client/types/"),
+			classes: path.resolve (__dirname, "client/classes"),
+			controls: path.resolve (__dirname, "client/controls"),
+			models: path.resolve (__dirname, "client/models"),
+			pages: path.resolve (__dirname, "client/pages"),
+			panels: path.resolve (__dirname, "client/panels"),
+			types: path.resolve (__dirname, "client/types"),
 
-			resources: path.resolve (__dirname, "resources/")
+			resources: path.resolve (__dirname, "resources")
 
 		}/* alias */
 	},

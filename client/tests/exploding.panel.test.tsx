@@ -50,7 +50,7 @@ export default class ExplodingPanelTest extends BaseControl<explodingPanelTestPr
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ExplodingPanel id="test_panel" ref={this.exploding_panel} visible={this.state.visible} static={this.props.static}>
+						<ExplodingPanel id="test_panel" ref={this.exploding_panel} static={this.props.static}>
 
 							<div style={{ border: "solid 1px green", ...this.set_visibility (this.state.item, 1) }}>Small Item</div>
 
