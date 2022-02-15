@@ -95,14 +95,14 @@ export function null_value (value: any, replacement: any, ...nullables: any): an
 }// null_value;
 
 
-export function same_object (first_object: any, second_object: any) {
+export function matching_objects (first_object: any, second_object: any) {
 
 	if (is_undefined (first_object) || is_undefined (second_object)) return false;
 	if (is_object (first_object) && is_object (second_object)) return (JSON.stringify (first_object) == JSON.stringify (second_object));
 	
 	return (first_object == second_object);
 
-}// same_object;
+}// matching_objects;
 
 
 /********/

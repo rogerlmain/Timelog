@@ -1,9 +1,11 @@
 {
 	"compilerOptions": {
 		"esModuleInterop": true,
-		"noImplicitAny": true,
+
 		"noImplicitThis": true,
-		"suppressImplicitAnyIndexErrors": true,
+
+		"noImplicitAny": false,
+		"suppressImplicitAnyIndexErrors": false,
 
 		"module": "es2015", /* same as es6 */
 		"target": "es2015",
@@ -21,6 +23,11 @@
 		"baseUrl": "./",
 
 		"paths": {
+
+
+"tests/*": ["tests/*"],
+
+
 			"client/*": ["client/*"],
 
 			"classes/*": ["client/classes/*"],

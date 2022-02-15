@@ -95,7 +95,7 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 
 
 	public shouldComponentUpdate (next_props: Readonly<ClientFormProps>): boolean {
-		this.setState ({ saved: common.same_object (this.props.formData, next_props.formData) });
+		this.setState ({ saved: common.matching_objects (this.props.formData, next_props.formData) });
 		return true;
 	}// shouldComponentUpdate;
 

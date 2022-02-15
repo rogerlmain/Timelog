@@ -185,6 +185,15 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 	}// select_options;
 
 
+	protected state_size (control: any = null) {
+		if (common.is_null (control)) control = this;
+		return {
+			width: control.state.width,
+			height: control.state.height
+		}// return;
+	}// state_size;
+
+
 	protected state_value (state: string, field: string) {
 		return this.getState (state, field) ?? constants.empty;
 	}// state_value;

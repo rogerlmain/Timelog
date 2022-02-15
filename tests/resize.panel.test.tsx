@@ -1,22 +1,21 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
-import ResizePanel from "controls/panels/resize.panel";
+import ResizePanel, { iResizable, resizableProps } from "controls/panels/resize.panel";
 
 
 interface resizePanelTestProps extends DefaultProps { 
-	visible?: boolean;
 	static?: boolean;
 }// resizePanelTestProps;
 
 
 interface resizePanelTestState extends DefaultState {
 	selected_index: number;
-	visible: boolean;
+	resize: boolean;
 }// resizePanelTestState;
 
 
-export default class ResizePanelTest extends BaseControl<resizePanelTestProps, resizePanelTestState> {
+export default class ResizePanelTest extends BaseControl<resizePanelTestProps, resizePanelTestState> implements iResizable {
 
 
 	private resize_panel: React.RefObject<ResizePanel> = React.createRef ();
@@ -27,19 +26,12 @@ export default class ResizePanelTest extends BaseControl<resizePanelTestProps, r
 
 	public state: resizePanelTestState = { 
 		selected_index: 1,
-		visible: false 
+		resize: false
 	}// state;
 
 
-	public props: resizePanelTestProps;
+	public props: resizePanelTestProps & resizableProps;
 	
-
-	public constructor (props: resizePanelTestProps) {
-		super (props);
-		this.state.visible = this.props.visible ?? this.state.visible;
-//		this.state.selected_index = 0;
-	}// constructor;
-
 
 	public render () {
 		return (
@@ -48,7 +40,7 @@ export default class ResizePanelTest extends BaseControl<resizePanelTestProps, r
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ResizePanel ref={this.resize_panel} visible={this.state.visible} static={this.props.static}>
+						<ResizePanel ref={this.resize_panel} resize={this.state.resize} parent={this}>
 
 							<div style={this.set_visibility (this.state.selected_index, 1)}>
 								This is the test content<br />
@@ -56,7 +48,8 @@ export default class ResizePanelTest extends BaseControl<resizePanelTestProps, r
 							</div>
 
 							<div style={this.set_visibility (this.state.selected_index, 2)}>
-								This is the new content.<br />
+								This is the new content in a longer line.<br />
+								With even more rows<br />
 								This line is also different
 							</div>
 
@@ -65,14 +58,13 @@ export default class ResizePanelTest extends BaseControl<resizePanelTestProps, r
 
 				</div>
 
-				<button onClick={() => this.setState ({ visible: true })}>Show</button>
-				<button onClick={() => this.setState ({ visible: false })}>Hide</button>
-
-				<br />
-
 				<button onClick={() => this.setState ({ selected_index: 1 })}>Original contents</button>
 				<button onClick={() => this.setState ({ selected_index: 2 })}>New contents</button>
 				<button onClick={() => this.setState ({ selected_index: 0 })}>Clear contents</button>
+
+				<br /><br />
+
+				<button onClick={() => this.setState ({ resize: true })}>Resize</button>
 
 			</div>
 		);

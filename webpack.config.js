@@ -16,6 +16,10 @@ module.exports = {
 		extensions: [".ts", ".tsx", ".js"],
 		alias: {
 
+
+tests: path.resolve (__dirname, "tests"),
+
+
 			client: path.resolve (__dirname, "client"),
 
 			classes: path.resolve (__dirname, "client/classes/"),

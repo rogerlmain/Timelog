@@ -10,6 +10,7 @@ import * as common from "classes/common";
 interface ResizePanelProps extends DefaultProps {
 
 	id: string;
+	parent: iResizable;
 
 	resize?: boolean;
 
@@ -25,8 +26,11 @@ interface ResizePanelProps extends DefaultProps {
 interface ResizePanelState extends DefaultState {
 	width: number;
 	height: number;
-	resizing: boolean;
 }// ResizePanelState;
+
+
+export interface resizableProps extends DefaultProps { resize: boolean }
+export interface iResizable extends BaseControl { props: resizableProps }
 
 
 export default class ResizePanel extends BaseControl<ResizePanelProps> {
@@ -36,33 +40,17 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 	private inner_control: React.RefObject<HTMLDivElement> = React.createRef ();
 
 
-	private inner_size = () => {
-		return common.isset (this.inner_control.current) ? {
-			width: this.inner_control.current.offsetWidth,
-			height: this.inner_control.current.offsetHeight
+	private get_size = (control) => {
+		return common.isset (control.current) ? {
+			width: control.current.scrollWidth,
+			height: control.current.scrollHeight
 		} : null;
 	}/* inner_size */;
 
 	
-	private outer_size = () => {
-		return common.isset (this.outer_control.current) ? {
-			width: this.outer_control.current.offsetWidth,
-			height: this.outer_control.current.offsetHeight
-		} : null;
-	}/* outer_size */;
-
-
-	private sizes = () => {
-		return {
-			inner_size: this.inner_size (),
-			outer_size: this.outer_size ()
-		}
-	}/* sizes */;
-
-
 	private transition_start (event: TransitionEvent) {
 
-		let size = this.inner_size ();
+		let size = this.get_size (this.inner_control);
 
 		if (!["width", "height"].includes (event.propertyName)) return;
 
@@ -70,20 +58,20 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		if ((size.width >= size.height) && event.propertyName.matches ("height")) return;
 
 		this.execute (this.props.beforeResizing ? this.props.beforeResizing.bind (this) : null);
+
 	}//transition_start;
 
 
 	private transition_end (event: TransitionEvent) {
 
-		let size = this.inner_size ();
+		let size = this.get_size (this.inner_control);
 
 		if (!["width", "height"].includes (event.propertyName)) return;
 
 		if ((size.width < size.height) && event.propertyName.matches ("width")) return;
 		if ((size.width >= size.height) && event.propertyName.matches ("height")) return;
 
-		this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null);
-		this.forceUpdate ();
+		this.props.parent.setState ({ resize: false }, () => this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null));
 
 	}// transition_end;
 
@@ -96,13 +84,13 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 	public state: ResizePanelState = {
 		width: null,
-		height: null,
-		resizing: false
+		height: null
 	}// state;
 
 	
 	public static defaultProps: ResizePanelProps = {
 		id: null,
+		parent: null,
 		stretch: false,
 		speed: globals.settings.animation_speed
 	}// defaultProps;
@@ -110,55 +98,56 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 	public componentDidMount () {
 		if (this.props.beforeResizing) this.outer_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
-		if (this.props.afterResizing) this.outer_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
+		this.outer_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
 	}// componentDidMount;
 
 
-	public componentDidUpdate () {
+	public shouldComponentUpdate (next_props: Readonly<ResizePanelProps>, next_state: Readonly<ResizePanelState>): boolean {
 
-		let sizes = this.sizes ();
+		let outer_size = this.state_size ();
+		let inner_size = this.get_size (this.inner_control);
 
-		const handle_resizing = () => {
-			if ((sizes.inner_size.width == sizes.outer_size.width) && (sizes.inner_size.height == sizes.outer_size.height)) {
-				if (this.state.resizing) this.setState ({ resizing: false });
-				return;
-			}// if;
-			
-			if ((this.props.resize) && (!this.state.resizing)) this.setState ({ resizing: true, ...sizes.inner_size });
-	
-		}/* handle_resizing */;
+		if ((next_props.resize) && (!common.matching_objects (inner_size, outer_size))) {
+			this.setState (inner_size);
+			return false;
+		}// if;
 
-		if (common.not_set (this.state.width) || common.not_set (this.state.height)) return this.setState (sizes.inner_size, handle_resizing);
-		handle_resizing ();
+		if (common.not_set (next_state.width) || common.not_set (next_state.height)) {
+			this.setState (this.get_size (this.outer_control));
+			return false;
+		}// if;
 
-	}// componentDidUpdate;
+		return true;
+
+	}// shouldComponentUpdate;
 
 
 	public render () {
 
-		let speed = globals.settings.animation_speed; //this.props.speed ?? globals.settings.animation_speed;
+		let speed = this.props.speed ?? globals.settings.animation_speed;
 
-		if (common.is_null (this.props.id)) throw "Resize panel requires an ID";
+		let style: any = {
+			margin: 0, padding: 0,
+			overflow: "hidden",
+		}// style;
+
+		if (common.isset (this.state.width)) style = { ...style,
+			width: this.state.width, 
+			transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`
+		}// if;
+
+		if (common.isset (this.state.height)) style = { ...style,
+			height: this.state.height,
+			transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`
+		}// if;
 
 		return (
-			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} 
-				style={{
-					margin: 0, padding: 0, border: "none",
-					display: this.props.stretch ? "block" : "inline-block",
-					transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`,
-					overflow: "hidden",
-					width: this.state.width,
-					height: this.state.height
-				}}>
-					
+			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={style}>
 				<div id={`${this.props.id}_inner_control`} ref={this.inner_control} style={{ 
-					display: this.props.stretch ? "block" : "inline-block",
-					border: "none",
 					margin: "none",
 					padding: "none",
-					boxSizing: "content-box"
+					display: "inline-block"
 				}}>{this.props.children}</div>
-
 			</div>
 		);
 
