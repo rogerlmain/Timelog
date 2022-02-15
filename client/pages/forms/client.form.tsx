@@ -28,6 +28,7 @@ interface ClientFormState extends DefaultState {
 }// ClientFormState;
 
 
+
 export default class ClientForm extends FormControl<ClientFormProps, ClientFormState> {
 
 	private client_form: React.RefObject<HTMLFormElement> = React.createRef ();
@@ -48,7 +49,7 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 
 		form_data.append ("action", "save");
 
-		this.setState ({ status: "Saving..." }, () => Database.save_data ("clients", form_data).then (data => {
+		this.setState ({ status: "Saving..." }, () => Database.save_data ("clients", form_data).then ((data: any) => {
 			this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
 		}));
 
@@ -105,8 +106,7 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 		let editing = common.isset (client_id);
 
 		return (
-
-			<div>
+			<div style={{ display: "contents" }}>
 
 				<form id="client_form" ref={this.client_form}>
 
@@ -120,11 +120,14 @@ export default class ClientForm extends FormControl<ClientFormProps, ClientFormS
 						</input>
 
 						<label htmlFor="client_description">Description</label>
-						<textarea  id="client_description" name="client_description" defaultValue={this.client_data ("description")} onBlur={this.save_client.bind (this)} />
+						<textarea  id="client_description" name="client_description" defaultValue={this.client_data ("description")}  placeholder="(optional)" 
+							onBlur={this.save_client.bind (this)}>
+						</textarea>
 
 						{editing && <button className="double-column" onClick={this.delete_client.bind (this)} style={{ marginTop: "1em" }}>Delete</button>}
 
 					</div>
+					
 				</form>
 
 				<div className="button-bar">

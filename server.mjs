@@ -89,28 +89,6 @@ app.post ("/clients", function (request, response) {
 });
 
 
-app.post ("/logging", function (request, response) {
-	app.process (request, response, (fields) => {
-		let entry_data = new EntryData ();
-		switch (fields.action) {
-			case "entries": entry_data.get_entries (fields.client_id, fields.project_id); break;
-			case "logging": entry_data.save_entry (fields.client_id, fields.project_id, fields.entry_id); break;
-			case "log_status": entry_data.get_current_entry (); break;
-		}// switch;
-	});
-});
-
-
-app.post ("/misc", function (request, response) {
-	app.process (request, response, (fields) => {
-		let misc_data = new MiscData ();
-		switch (fields.action) {
-			case "status": misc_data.get_statuses (); break;
-		}// switch;
-	});
-});
-
-
 app.post ("/projects", function (request, response) {
 	app.process (request, response, (fields) => {
 		let project_data = new ProjectData ();
@@ -131,6 +109,28 @@ app.post ("/tasks", function (request, response) {
 			case "project": task_data.get_tasks_by_project (fields.project_id); break;
 			case "details": task_data.get_task (fields.task_id); break;
 			case "save": task_data.save (fields); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/logging", function (request, response) {
+	app.process (request, response, (fields) => {
+		let entry_data = new EntryData ();
+		switch (fields.action) {
+			case "entries": entry_data.get_entries (fields.client_id, fields.project_id); break;
+			case "logging": entry_data.save_entry (fields.client_id, fields.project_id, fields.entry_id); break;
+			case "log_status": entry_data.get_current_entry (); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/misc", function (request, response) {
+	app.process (request, response, (fields) => {
+		let misc_data = new MiscData ();
+		switch (fields.action) {
+			case "status": misc_data.get_statuses (); break;
 		}// switch;
 	});
 });

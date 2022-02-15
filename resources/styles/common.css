@@ -153,7 +153,14 @@
 div[class*="column-grid"] {
 	display: grid;
 	row-gap: 0.2em;
-}/* *-column-grid */
+}/* div[class*="column-grid"] */
+
+
+div[class*="column-grid"] label {
+	display: inline-flex;
+	flex-direction: row;
+	align-items: center;
+}/* div[class*="column-grid"] label */
 
 
 .two-column-grid	{ grid-template-columns: repeat(2, min-content) }

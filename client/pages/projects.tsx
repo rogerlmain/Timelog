@@ -13,6 +13,7 @@ import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import { globals } from "types/globals";
 import { ProjectData } from "types/datatypes";
 import Database from "client/classes/database";
+import EyecandyForm from "client/controls/forms/eyecandy.form";
 
 
 interface ProjectsPageState extends DefaultState {
@@ -111,12 +112,11 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 	public render () {
 		return (
 
-			<div id="project_page" className="top-center-container">
+			<div id="project_page" className="top-center-container row-spaced">
+
+				<link rel="stylesheet" href="/resources/styles/pages/projects.css" />
 
 				<div className="project-select-form">
-
-					<link rel="stylesheet" href="/resources/styles/pages/projects.css" />
-
 					<ProjectSelectorGadget id="project_selector" parent={this} 
 
 						hasHeader={true}
@@ -136,12 +136,11 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 						})}>
 
 					</ProjectSelectorGadget>
-							
 				</div>
 
-				{common.isset (this.state.selected_client) && <div style={{ marginTop: "2em" }}>
-					<ProjectForm projectData={this.state.project_data} onSave={(data: ProjectData) => this.setState ({ project_data: data })} />
-				</div>}
+				{common.isset (this.state.selected_client) && <EyecandyForm table="projects" action="details" idField="project_id" idValue={this.state.selected_project}>
+					<ProjectForm clientId={this.state.selected_client} onSave={(data: ProjectData) => this.setState ({ project_data: data })} />
+				</EyecandyForm>}
 
 			</div>
 

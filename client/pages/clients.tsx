@@ -21,9 +21,6 @@ interface ClientsPageState extends DefaultState {
 export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageState> {
 
 
-	private client_selected () { return common.not_null (this.state.selected_client) }
-
-
 	private load_clients () {
 		return new Promise ((resolve, reject) => {
 			try {
@@ -56,7 +53,6 @@ export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageSt
 
 
 	public render () {
-
  		return (
 			<div id="client_page" className="top-center-container row-spaced">
 

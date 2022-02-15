@@ -84,7 +84,7 @@ export default class ProjectSelectorGadget extends BaseControl<ProjectSelectorPr
 					<SelectList id={this.project_selector_id} data={this.props.projects} value={this.state.selected_project}
 					
 						headerText="New project" headerSelectable={true}
-						idField="project_id" textField="name" 
+						idField="project_id" textField="project_name" 
 
 						className="form-item" style={{ width: "100%" }}
 						onChange={this.props.onProjectChange}>
