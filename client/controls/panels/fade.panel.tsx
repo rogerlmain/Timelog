@@ -27,7 +27,7 @@ interface FadePanelProps extends DefaultProps {
 
 interface FadePanelState extends DefaultState {
 	visible: boolean;
-	loading: boolean;
+	timeout: any;
 }// FadePanelState;
 
 
@@ -38,19 +38,7 @@ export interface iFadeable extends BaseControl { state: fadeableState }
 export default class FadePanel<Props, State> extends BaseControl<FadePanelProps, FadePanelState> implements iFadeable {
 
 
-	public state: FadePanelState = { 
-		visible: true,
-		loading: true
-	}// state;
-
-
-	public static defaultProps: FadePanelProps = {
-		id: null,
-		parent: null,
-		visible: false,
-		static: false,
-		speed: globals.settings.animation_speed
-	}// defaultProps;
+	private loading: boolean = false;
 
 
 	/********/
@@ -81,6 +69,21 @@ export default class FadePanel<Props, State> extends BaseControl<FadePanelProps,
 	/********/
 
 
+	public state: FadePanelState = { 
+		visible: false,
+		timeout: null
+	}// state;
+
+
+	public static defaultProps: FadePanelProps = {
+		id: null,
+		parent: null,
+		visible: false,
+		static: false,
+		speed: globals.settings.animation_speed
+	}// defaultProps;
+
+
 	public constructor (props: FadePanelProps) {
 		super (props);
 		if (common.is_null (this.props.id)) throw "FadePanel requires an ID";
@@ -89,30 +92,45 @@ export default class FadePanel<Props, State> extends BaseControl<FadePanelProps,
 
 
 	public componentDidMount () {
-		if ((!this.props.static) && (this.props.visible)) {
-			this.setState ({ visible: false });
-			this.props.parent.setState ({ visible: false });
+		if (this.props.visible) {
+			this.setState ({ visible: this.props.static });
+			if (!this.props.static) {
+				this.props.parent.setState ({ visible: false });
+				this.loading = true;
+			}// if;
 		}// if;
 		this.dom_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
 		this.dom_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
 	}// componentDidMount;
 
 
+//	public shouldComponentUpdate(nextProps: Readonly<FadePanelProps>, nextState: Readonly<FadePanelState>, nextContext: any): boolean {
+		
 	public componentDidUpdate (): void {
-		if ((this.state.loading) && (!this.props.static)) {
-			setTimeout (() => this.setState ({ loading: false }, () => this.props.parent.setState ({ visible: true })));
-			return; // lag required and you can't return a Timeout From void
+
+		if ((this.loading) && (this.props.visible))  {
+			if (common.is_null (this.state.timeout)) setTimeout (() => {
+				this.loading = false;
+				this.props.parent.setState ({ visible: true }, () => this.setState ({ timeout: null }));
+			})// if;
+			return;// false; // lag required and you can't return a Timeout From void
 		}// if;
+
 		this.setState ({ visible: this.props.visible });
+
+//		return true;
+
 	}// componentDidUpdate;
 
 
 	public render () {
+
+		let style = { ...this.props.style, opacity: (this.state.visible === true ? 1 : 0) }
+		
+		if (!this.loading) style = { ...style, transition: `opacity ${this.props.speed}ms ease-in-out` }
+
 		return (
-			<div id={this.props.id} ref={this.dom_control} style={{ ...this.props.style,
-				opacity: (this.state.visible === true ? 1 : 0),
-				transition: `opacity ${this.props.speed}ms ease-in-out`
-			}} className={this.props.className}>{this.props.children}</div>
+			<div id={this.props.id} ref={this.dom_control} style={style} className={this.props.className}>{this.props.children}</div>
 		);
 	}// render;
 

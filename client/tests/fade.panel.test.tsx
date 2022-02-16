@@ -1,18 +1,18 @@
 import React from "react";
 
-import BaseControl, { DefaultState } from "controls/base.control";
+import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import FadePanel, { iFadeable } from "controls/panels/fade.panel";
 
 
-interface fadePanelTestState extends DefaultState { 
+interface FadePanelTestState extends DefaultState { 
 	visible: boolean;
-}// fadePanelTestState;
+}// FadePanelTestState;
 
 
-export default class FadePanelTest extends BaseControl implements iFadeable {
+export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTestState> implements iFadeable {
 
 
-	public state: fadePanelTestState = { visible: true }
+	public state: FadePanelTestState = { visible: true }
 
 
 	public render () {
@@ -21,7 +21,7 @@ export default class FadePanelTest extends BaseControl implements iFadeable {
 
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<FadePanel id="test_panel" visible={this.state.visible} static={false} parent={this}>
+						<FadePanel id="test_panel" visible={false} static={true} parent={this} speed={2000}>
 							<div style={{ border: "solid 1px green" }}>
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br />
 								Proin placerat faucibus dictum. Nam egestas, purus et<br />
