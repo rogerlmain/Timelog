@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as common from "client/classes/common";
 
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 
 import { SizeRecord } from "client/types/datatypes";
 

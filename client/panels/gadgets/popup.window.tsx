@@ -1,6 +1,6 @@
 import React from "react";
 
-import BaseControl, { DefaultProps } from "client/controls/base.control";
+import BaseControl, { DefaultProps } from "controls/base.control";
 import FadeControl from "client/controls/fade.control";
 import SelectButton from "client/controls/select.button";
 

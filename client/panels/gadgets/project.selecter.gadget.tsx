@@ -3,7 +3,7 @@ import React from "react";
 import * as common from "client/classes/common";
 
 import Database from "client/classes/database";
-import BaseControl, { DefaultProps } from "client/controls/base.control";
+import BaseControl, { DefaultProps } from "controls/base.control";
 import FadeControl from "client/controls/fade.control";
 
 

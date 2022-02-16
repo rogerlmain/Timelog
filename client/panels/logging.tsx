@@ -4,7 +4,7 @@ import * as common from "client/classes/common";
 import * as datatype from "client/types/datatypes";
 
 import Database from "client/classes/database";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 import OverflowControl from "client/controls/overflow.control";
 import FadeControl from "client/controls/fade.control";
 

@@ -7,7 +7,7 @@ import * as constants from "client/types/constants";
 import * as datatypes from "client/types/datatypes";
 
 import Database from "client/classes/database";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 import EyecandyPanel from "client/controls/eyecandy.panel";
 import FreezePanel from "client/controls/freeze.panel";
 import ProjectSelectorGadget from "client/panels/gadgets/project.selector.gadget";

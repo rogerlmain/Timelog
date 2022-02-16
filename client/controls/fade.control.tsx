@@ -4,7 +4,7 @@ import * as common from "client/classes/common";
 import { Transition } from "react-transition-group";
 import { globals } from "client/types/globals";
 
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
+import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import { fade_zindex, hidden_zindex, popup_zindex } from "client/types/constants";
 
 

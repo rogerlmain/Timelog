@@ -3,7 +3,7 @@ import React from "react";
 import { account, team } from "client/types/datatypes";
 
 import Database from "client/classes/database";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 import FadeControl from "client/controls/fade.control";
 import SelectButton from "client/controls/select.button";
 

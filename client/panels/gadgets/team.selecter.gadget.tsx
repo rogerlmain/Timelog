@@ -2,7 +2,7 @@ import React, { SyntheticEvent } from "react";
 
 import * as common from "client/classes/common";
 
-import BaseControl, { DefaultProps } from "client/controls/base.control";
+import BaseControl, { DefaultProps } from "controls/base.control";
 
 import SelectList from "client/controls/select.list";
 import SelectButton from "client/controls/select.button";

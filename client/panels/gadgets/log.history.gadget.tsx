@@ -1,6 +1,6 @@
 import * as common from "client/classes/common";
 
-import BaseControl, { DefaultProps } from "client/controls/base.control";
+import BaseControl, { DefaultProps } from "controls/base.control";
 import { text_highlights } from "client/types/constants";
 import TimeFormatter from "client/types/time.format";
 import React from "react";

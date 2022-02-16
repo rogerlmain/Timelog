@@ -2,7 +2,7 @@ import React from "react";
 
 import { globals } from "client/types/globals";
 
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 
 
 export default class SettingsPanel extends BaseControl<any> {

@@ -4,7 +4,7 @@ import * as constants from "client/types/constants";
 import * as common from "client/classes/common";
 
 import Database from "client/classes/database";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 import FadeControl from "client/controls/fade.control";
 import SelectButton from "client/controls/select.button";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 
 import { globals } from "client/types/globals";
 
