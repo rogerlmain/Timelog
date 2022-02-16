@@ -1,42 +1,18 @@
-import React, { Fragment } from "react";
+import React from "react";
 
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
-import FadePanel from "controls/panels/fade.panel";
-
-
-interface fadePanelTestProps extends DefaultProps { 
-	visible?: boolean;
-	static?: boolean;
-}// fadePanelTestProps;
+import BaseControl, { DefaultState } from "controls/base.control";
+import FadePanel, { iFadeable } from "controls/panels/fade.panel";
 
 
 interface fadePanelTestState extends DefaultState { 
 	visible: boolean;
-	selected_item: number;
 }// fadePanelTestState;
 
 
-export default class FadePanelTest extends BaseControl<fadePanelTestProps> {
+export default class FadePanelTest extends BaseControl implements iFadeable {
 
 
-	private fade_panel: React.RefObject<FadePanel> = React.createRef ();
-
-
-	/********/
-
-
-	public state: fadePanelTestState = { 
-		visible: false, 
-		selected_item: 1
-	}// state;
-
-	public props: fadePanelTestProps;
-	
-
-	public constructor (props: fadePanelTestProps) {
-		super (props);
-		this.state.visible = this.props.visible ?? this.state.visible;
-	}// constructor;
+	public state: fadePanelTestState = { visible: true }
 
 
 	public render () {
@@ -44,42 +20,26 @@ export default class FadePanelTest extends BaseControl<fadePanelTestProps> {
 			<div className="centering-container v" style={{ border: "solid 1px blue", padding: "2em" }}>
 
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<FadePanel ref={this.fade_panel} visible={this.state.visible} static={this.props.static}>
-
-							<div style={{ display: (this.state.selected_item == 1) ? null : "none", border: "solid 1px green" }}>Initial text</div>
-
-							<div style={{ display: (this.state.selected_item == 2) ? null : "none", border: "solid 1px green" }}>
-								New value<br />
-								Second line
+						<FadePanel id="test_panel" visible={this.state.visible} static={false} parent={this}>
+							<div style={{ border: "solid 1px green" }}>
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br />
+								Proin placerat faucibus dictum. Nam egestas, purus et<br />
+								fermentum dui. Etiam vehicula suscipit<br />
 							</div>
-
-							<div style={{ display: (this.state.selected_item == 3) ? null : "none", border: "solid 1px green" }}>
-								Newer bigger value - extra wide<br />
-								Second line<br />
-								Third line<br />
-							</div>
-
 						</FadePanel>
 					</div>
-
 				</div>
+
+				<br />
 
 				<div>
 					<button onClick={() => this.setState ({ visible: true })}>Fade In</button>
-
-					&nbsp;
-
 					<button onClick={() => this.setState ({ visible: false })}>Fade Out</button>
 				</div>
 
-				<button onClick={() => this.setState ({ selected_item: 2 }) }>Smaller</button>
-				<button onClick={() => this.setState ({ selected_item: 3 }) }>Bigger</button>
-				<button onClick={() => this.setState ({ selected_item: 1 }) }>Restore</button>
-
 			</div>
-		)
-	}
+		);
+	}// render;
 
 }// FadePanelTest;

@@ -13,8 +13,8 @@ interface ResizePanelProps extends DefaultProps {
 	parent: iResizable;
 
 	resize?: boolean;
+	static?: boolean;
 
-	stretch?: boolean; 		// determines if the control naturally fills the parent (block vs inline-block)
 	speed?: number;			// overrides globals.settings.animation_speed
 
 	beforeResizing?: any;
@@ -29,8 +29,8 @@ interface ResizePanelState extends DefaultState {
 }// ResizePanelState;
 
 
-export interface resizableProps extends DefaultProps { resize: boolean }
-export interface iResizable extends BaseControl { props: resizableProps }
+export interface resizableState extends DefaultState { resize: boolean }
+export interface iResizable extends BaseControl { state: resizableState }
 
 
 export default class ResizePanel extends BaseControl<ResizePanelProps> {
@@ -79,6 +79,13 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 	/********/
 
 
+	public constructor (props: ResizePanelProps) {
+		super (props);
+		if (common.is_null (this.props.id)) throw "ResizePanel requires an ID";
+		if (common.is_null (props.parent)) throw "ResizePanel requires a parent of type iResizable";
+	}// constructor;
+
+
 	public props: ResizePanelProps;
 
 
@@ -91,15 +98,28 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 	public static defaultProps: ResizePanelProps = {
 		id: null,
 		parent: null,
-		stretch: false,
+		resize: false,
+		static: false,
 		speed: globals.settings.animation_speed
 	}// defaultProps;
 
 
 	public componentDidMount () {
+
+		if (!this.props.static) this.setState ({ width: 0, height: 0 });
 		if (this.props.beforeResizing) this.outer_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
+
 		this.outer_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
+
 	}// componentDidMount;
+
+
+	public componentDidUpdate () {
+		if ((this.state.width == 0) || (this.state.height == 0)) {
+			this.props.parent.setState ({ resize: true });
+			return false;
+		}// if;
+	}// componentDidUpdate;
 
 
 	public shouldComponentUpdate (next_props: Readonly<ResizePanelProps>, next_state: Readonly<ResizePanelState>): boolean {
