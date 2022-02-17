@@ -166,7 +166,7 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 					</div>
 
 	{/* 			// Reinstate for teams - phase 2
-					<TeamSelectorGadget ref={this.references.team_selector} record_id={this.return (this.get_data ("project_id"))}
+					<TeamSelectorGadget ref={this.references.team_selector} record_id={this.return_value (this.get_data ("project_id"))}
 
 						onLoad={() => { 
 							
