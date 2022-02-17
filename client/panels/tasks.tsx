@@ -192,7 +192,7 @@ export default class TasksPanel extends BaseControl<any> {
 
 								<div className="two-piece-form">
 									<label htmlFor="task_name">Name</label>
-									<input type="text" name="task_name" defaultValue={this.state_value ("task_data", "task_name")} onBlur={this.save_task.bind (this)} />
+									<input type="text" name="task_name" defaultValue={this.state_object_field ("task_data", "task_name")} onBlur={this.save_task.bind (this)} />
 								</div>
 
 								<textarea id="task_description" name="task_description" placeholder="Description (optional)"

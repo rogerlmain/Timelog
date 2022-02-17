@@ -173,20 +173,20 @@ export default class ProjectsPanel extends BaseControl<any> {
 
 										<label htmlFor="project_name">Project Name</label>
 										<input type="text" id="project_name" name="project_name" ref={this.create_reference}
-											defaultValue={this.state_value ("project_data", "name")}
+											defaultValue={this.state_object_field ("project_data", "name")}
 											onBlur={this.save_project.bind (this)}>
 										</input>
 
 										<label htmlFor="project_code">Project Code</label>
 										<input type="text" id="project_code" name="project_code" ref={this.create_reference}
-											defaultValue={this.state_value ("project_data", "code")} maxLength={max_code_length}
+											defaultValue={this.state_object_field ("project_data", "code")} maxLength={max_code_length}
 											onBlur={this.save_project.bind (this)} style={{ textAlign: "right" }}>
 										</input>
 
 									</div>
 
 									<textarea id="project_description" name="project_description" placeholder="Description (optional)"
-										defaultValue={this.state_value ("project_data", "description")} onBlur={this.save_project.bind (this)}>
+										defaultValue={this.state_object_field ("project_data", "description")} onBlur={this.save_project.bind (this)}>
 									</textarea>
 
 								</div>

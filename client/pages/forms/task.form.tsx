@@ -78,7 +78,7 @@ export default class TaskForm extends FormControl<TaskFormProps, TaskFormState> 
 
 					<div className="one-piece-form">
 						<label htmlFor="task_name">Name</label>
-						<input type="text" name="task_name" defaultValue={this.state_value ("task_data", "task_name")} 
+						<input type="text" name="task_name" defaultValue={this.state_object_field ("task_data", "task_name")} 
 							onBlur={this.save_task.bind (this)} maxLength={45}>
 						</input>
 					</div>

@@ -2,6 +2,7 @@ import React from "react";
 
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
+import { iResizable } from "client/controls/panels/resize.panel";
 
 
 interface explodingPanelTestState extends DefaultState {
@@ -32,16 +33,16 @@ export default class ExplodingPanelTest extends BaseControl<DefaultProps, explod
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ExplodingPanel id="test_panel" speed={3000}>
+						<ExplodingPanel id="test_panel" speed={2000}>
 
-							{this.state.item.matches ("small") && <div style={{ border: "solid 1px green" }}>Small Item</div>}
+							{this.state_equals ("item", "small") && <div style={{ border: "solid 1px green" }}>Small Item</div>}
 
-							{this.state.item.matches ("medium") && <div style={{ border: "solid 1px green" }}>
+							{this.state_equals ("item", "medium") && <div style={{ border: "solid 1px green" }}>
 								This is extra test content<br />
 								With a second line...
 							</div>}
 
-							{this.state.item.matches ("large") && <div style={{ border: "solid 1px green" }}>
+							{this.state_equals ("item", "large") && <div style={{ border: "solid 1px green" }}>
 								blah blah blah blahy blah<br />
 								blllaaahhh blah blah blah blahy blah<br />
 								blah blah blahby blahy blah blech

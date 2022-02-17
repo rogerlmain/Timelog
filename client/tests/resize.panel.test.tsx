@@ -10,6 +10,9 @@ interface ResizePanelTestProps extends DefaultProps {
 
 
 interface ResizePanelTestState extends DefaultState {
+
+contents: any;
+
 	selected_index: number;
 	resize: resize_state;
 }// ResizePanelTestState;
@@ -25,9 +28,21 @@ export default class ResizePanelTest extends BaseControl<ResizePanelTestProps, R
 
 
 	public state: ResizePanelTestState = { 
+
+contents: null,
+
 		selected_index: 1,
 		resize: resize_state.false
 	}// state;
+
+
+	public shouldComponentUpdate(nextProps: Readonly<ResizePanelTestProps>, nextState: Readonly<ResizePanelTestState>, nextContext: any): boolean {
+		if (this.state.contents == null) {
+			this.setState ({ contents: <div>some stuff</div>});
+			return false;
+		}
+		return true;
+	}
 
 
 	public render () {
@@ -38,7 +53,7 @@ export default class ResizePanelTest extends BaseControl<ResizePanelTestProps, R
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
 						<ResizePanel id="test" ref={this.resize_panel} resize={this.state.resize} parent={this}>
-
+{/* 
 							<div style={this.set_visibility (this.state.selected_index, 1)}>
 								Teeny line
 							</div>
@@ -53,6 +68,9 @@ export default class ResizePanelTest extends BaseControl<ResizePanelTestProps, R
 								With even more rows<br />
 								This line is also different
 							</div>
+ */}
+
+{this.state.contents}
 
 						</ResizePanel>
 					</div>

@@ -38,16 +38,6 @@ export interface DefaultState {}
 
 export default abstract class BaseControl<iprops extends DefaultProps = DefaultProps, istate extends DefaultState = DefaultState> extends React.Component<iprops, istate> {
 
-	private getState (name: string, fieldname: string) {
-		let object = this.state [name];
-		if (common.is_null (object)) return null;
-		return object [fieldname];
-	}// getState;
-
-
-	/********/
-
-
 	protected children () {
 		return common.isset (this.props.children) ? this.props.children : <div style={{ 
 			width: "1px",
@@ -194,9 +184,16 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 	}// state_size;
 
 
-	protected state_value (state: string, field: string) {
-		return this.getState (state, field) ?? constants.empty;
-	}// state_value;
+	protected state_equals (state: string, value: string): boolean {
+		return (common.isset (value) && value.matches (this.state [state]));
+	}// state_equals;
+
+
+	protected state_object_field (state: string, field: string): any {
+		let object = this.state [state];
+		if (common.is_null (object)) return null;
+		return object [field] ?? constants.empty;
+	}// state_object_field;
 
 
 	/********/
