@@ -26,13 +26,6 @@ interface FadePanelProps extends DefaultProps {
 export default class FadePanel<Props, State> extends BaseControl<FadePanelProps, DefaultState> {
 
 
-	private loading: boolean = false;
-	private initializing: boolean = false;
-
-
-	/********/
-
-
 	protected dom_control: React.RefObject<HTMLDivElement> = React.createRef ();
 
 
@@ -68,7 +61,6 @@ export default class FadePanel<Props, State> extends BaseControl<FadePanelProps,
 	public constructor (props: FadePanelProps) {
 		super (props);
 		if (common.is_null (this.props.id)) throw "FadePanel requires an ID";
-		if (common.is_null (this.props.parent)) throw "FadePanel requires a parent of type iFadeable";
 	}// constructor;
 
 

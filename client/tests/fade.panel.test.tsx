@@ -15,16 +15,13 @@ export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTe
 	public state: FadePanelTestState = { visible: false }
 
 
-	public componentDidMount () { setTimeout (() => this.setState ({ visible: true })) }
-
-
 	public render () {
 		return (
 			<div className="centering-container v" style={{ border: "solid 1px blue", padding: "2em" }}>
 
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" /*, visibility: (this.state.splash ? "visible" : "hidden")*/ }}>
-						<FadePanel id="test_panel" visible={this.state.visible} parent={this} speed={2000}>
+					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
+						<FadePanel id="test_panel" visible={this.state.visible} speed={2000}>
 							<div style={{ border: "solid 1px green" }}>
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br />
 								Proin placerat faucibus dictum. Nam egestas, purus et<br />
