@@ -334,9 +334,9 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 
 	// Used in conjunction with a breakpoint to examine a value
 	// without having to create an anonymous function
-	public return (value: any) {
+	public return_value (value: any) {
 		return value;
-	}// return;
+	}// return_value;
 
 
 	public show_states (cascade: boolean) {
