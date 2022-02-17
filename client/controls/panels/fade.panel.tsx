@@ -86,6 +86,7 @@ export default class FadePanel<Props, State> extends BaseControl<FadePanelProps,
 
 	public constructor (props: FadePanelProps) {
 		super (props);
+		this.loading = true;
 		if (common.is_null (this.props.id)) throw "FadePanel requires an ID";
 		if (common.is_null (this.props.parent)) throw "FadePanel requires a parent of type iFadeable";
 	}// constructor;
@@ -94,10 +95,7 @@ export default class FadePanel<Props, State> extends BaseControl<FadePanelProps,
 	public componentDidMount () {
 		if (this.props.visible) {
 			this.setState ({ visible: this.props.static });
-			if (!this.props.static) {
-				this.props.parent.setState ({ visible: false });
-				this.loading = true;
-			}// if;
+			if (!this.props.static) this.props.parent.setState ({ visible: false });
 		}// if;
 		this.dom_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
 		this.dom_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
