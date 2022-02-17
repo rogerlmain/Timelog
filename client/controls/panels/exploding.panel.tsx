@@ -3,8 +3,8 @@ import React from "react";
 import * as common from "classes/common";
 
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
+import ResizePanel, { iResizable, resize_state } from "controls/panels/resize.panel";
 import FadePanel from "controls/panels/fade.panel";
-import ResizePanel from "controls/panels/resize.panel";
 
 import { globals } from "types/globals";
 
@@ -25,13 +25,18 @@ interface ExplodingPanelProps extends DefaultProps {
 
 
 interface ExplodingPanelState extends DefaultState {
+
 	children: any;
-	resize: boolean;
+
+	resize: resize_state;
+
+	animate: boolean;
 	visible: boolean;	
+
 }// ExplodingPanelState;
 
 
-export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, ExplodingPanelState> {
+export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, ExplodingPanelState> implements iResizable {
 
 
 	public static defaultProps: ExplodingPanelProps = {
@@ -50,34 +55,33 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 
 	public state: ExplodingPanelState = {
+
 		children: null,
-		resize: false,
+
+		resize: resize_state.false,
+
+		animate: false,
 		visible: false
+
 	}// state;
 
 
-	public componentDidMount(): void {
-		if (common.isset (this.props.children)) this.setState ({ visible: true });
-	}// componentDidMount;
+	public constructor (props: ExplodingPanelProps) {
+		super (props);
+		this.state.children = this.props.children;
+		this.state.visible = common.isset (this.props.children);
+	}// constructor;
 
 
-  	public shouldComponentUpdate (next_props: Readonly<ExplodingPanelProps>, next_state: Readonly<ExplodingPanelState>, next_context: any): boolean {
+	public componentDidMount = () => this.setState ({ animate: true });
 
-		// let updated = common.isset (next_state.children) && (!this.same_element (next_state.children, next_props.children));
 
-		// if (updated) {
-		// 	switch (next_state.visible) {
-		// 		case true: this.setState ({ visible: false }); break;
-		// 		default: 
+	public shouldComponentUpdate (next_props: Readonly<ExplodingPanelProps>, next_state: Readonly<ExplodingPanelState>, next_context: any): boolean {
 
-		this.setState ({ children: next_props.children });  // break;
+		let updated = !this.same_element (next_state.children, next_props.children);
 
-		// 	}// switch;
- 		// 	return false;
-		// }// if;
-
- 		// return updated; 
-		return true;
+		if (updated && next_state.visible) this.setState ({ visible: false });
+ 		return true; 
 
   	}// shouldComponentUpdate;
 
@@ -88,38 +92,21 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 		if (common.is_null (this.props.id)) throw "Exploding panel requires an ID";
 
-
 		return (
 
 			<div style={{ border: "solid 1px red"}}>
 
-			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed}
-				visible={(() => {
-					
-					return this.state.visible
-				
-				})()} 
-				
-				>
+			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} visible={this.state.visible}
+				afterHiding={() => this.setState ({ children: this.props.children }, () => this.setState ({ resize: resize_state.animate }))}>
 
-				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} speed={target_speed} resize={this.state.resize}
+				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} 
+					speed={target_speed} resize={this.state.resize} parent={this}
 					afterResizing={() => this.setState ({ visible: true })}>
-
-{/*
-					beforeHiding={() => this.execute.bind (this) (this.props.beforeHiding)}
-
-					afterHiding={() => this.setState ({ children: this.props.children }, () => {
-						this.execute.bind (this) (this.props.afterHiding);
-						this.setState ({ resizing: true });
-					})}
-
-					beforeShowing={() => this.execute.bind (this) (this.props.beforeShowing)}
-					afterShowing={() => this.execute.bind (this) (this.props.afterShowing)}>
-*/}
 
 					{this.state.children}
 
 				</ResizePanel>
+				
 			</FadePanel>
 
 			</div>
