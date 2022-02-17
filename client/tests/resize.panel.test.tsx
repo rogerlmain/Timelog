@@ -36,15 +36,6 @@ contents: null,
 	}// state;
 
 
-	public shouldComponentUpdate(nextProps: Readonly<ResizePanelTestProps>, nextState: Readonly<ResizePanelTestState>, nextContext: any): boolean {
-		if (this.state.contents == null) {
-			this.setState ({ contents: <div>some stuff</div>});
-			return false;
-		}
-		return true;
-	}
-
-
 	public render () {
 		return (
 			<div style={{ border: "solid 1px blue", padding: "2em"}}>
@@ -53,24 +44,22 @@ contents: null,
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
 						<ResizePanel id="test" ref={this.resize_panel} resize={this.state.resize} parent={this}>
-{/* 
-							<div style={this.set_visibility (this.state.selected_index, 1)}>
-								Teeny line
-							</div>
 
-							<div style={this.set_visibility (this.state.selected_index, 2)}>
+							{(this.state.selected_index == 1) && <div>
+								Teeny line<br />
+								<textarea></textarea>
+							</div>}
+
+							{(this.state.selected_index == 2) && <div>
 								This is the test content<br />
 								With a second line...
-							</div>
+							</div>}
 
-							<div style={this.set_visibility (this.state.selected_index, 3)}>
+							{(this.state.selected_index == 3) && <div>
 								This is the new content in a longer line.<br />
 								With even more rows<br />
 								This line is also different
-							</div>
- */}
-
-{this.state.contents}
+							</div>}
 
 						</ResizePanel>
 					</div>

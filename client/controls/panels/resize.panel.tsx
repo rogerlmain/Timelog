@@ -48,6 +48,12 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		} : null;
 	}/* inner_size */;
 
+
+	private end_resizing () {
+		this.props.parent.setState ({ resize: resize_state.false });
+		this.setState ({ width: null, height: null });
+	}// end_resizing;
+
 	
 	private transition_start (event: TransitionEvent) {
 
@@ -74,7 +80,7 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 		this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null);
 
-		this.props.parent.setState ({ resize: resize_state.false });
+		this.end_resizing ();
 
 	}// transition_end;
 
@@ -117,13 +123,15 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		let outer_size = this.state_size ();
 		let inner_size = this.get_size (this.inner_control);
 
-		if ((next_props.resize) && (!common.matching_objects (inner_size, outer_size))) {
-			this.setState (inner_size);
+		let updated = !this.same_element (this.props.children, next_props.children);
+
+		if (updated) {
+			this.setState (this.get_size (this.outer_control));
 			return false;
 		}// if;
-
-		if (common.not_set (next_state.width) || common.not_set (next_state.height)) {
-			this.setState (this.get_size (this.outer_control));
+	
+		if ((next_props.resize) && (!common.matching_objects (inner_size, outer_size))) {
+			this.setState (inner_size);
 			return false;
 		}// if;
 
@@ -133,7 +141,7 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 
 	public componentDidUpdate () {
-		if (this.props.resize == resize_state.true) this.props.parent.setState ({ resize: resize_state.false });
+		if (this.props.resize == resize_state.true) this.end_resizing ();
 	}// componentDidUpdate;
 
 
