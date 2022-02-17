@@ -10,10 +10,8 @@ import * as common from "classes/common";
 interface ResizePanelProps extends DefaultProps {
 
 	id: string;
-	parent: iResizable;
 
 	resize?: boolean;
-	static?: boolean;
 
 	speed?: number;			// overrides globals.settings.animation_speed
 
@@ -27,10 +25,6 @@ interface ResizePanelState extends DefaultState {
 	width: number;
 	height: number;
 }// ResizePanelState;
-
-
-export interface resizableState extends DefaultState { resize: boolean }
-export interface iResizable extends BaseControl { state: resizableState }
 
 
 export default class ResizePanel extends BaseControl<ResizePanelProps> {
@@ -71,19 +65,12 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		if ((size.width < size.height) && event.propertyName.matches ("width")) return;
 		if ((size.width >= size.height) && event.propertyName.matches ("height")) return;
 
-		this.props.parent.setState ({ resize: false }, () => this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null));
+		this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null);
 
 	}// transition_end;
 
 	
 	/********/
-
-
-	public constructor (props: ResizePanelProps) {
-		super (props);
-		if (common.is_null (this.props.id)) throw "ResizePanel requires an ID";
-		if (common.is_null (props.parent)) throw "ResizePanel requires a parent of type iResizable";
-	}// constructor;
 
 
 	public props: ResizePanelProps;
@@ -99,27 +86,21 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		id: null,
 		parent: null,
 		resize: false,
-		static: false,
 		speed: globals.settings.animation_speed
 	}// defaultProps;
 
 
+	public constructor (props: ResizePanelProps) {
+		super (props);
+		if (common.is_null (this.props.id)) throw "ResizePanel requires an ID";
+		if (common.is_null (props.parent)) throw "ResizePanel requires a parent of type iResizable";
+	}// constructor;
+
+
 	public componentDidMount () {
-
-		if (!this.props.static) this.setState ({ width: 0, height: 0 });
 		if (this.props.beforeResizing) this.outer_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
-
 		this.outer_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
-
 	}// componentDidMount;
-
-
-	public componentDidUpdate () {
-		if ((this.state.width == 0) || (this.state.height == 0)) {
-			this.props.parent.setState ({ resize: true });
-			return false;
-		}// if;
-	}// componentDidUpdate;
 
 
 	public shouldComponentUpdate (next_props: Readonly<ResizePanelProps>, next_state: Readonly<ResizePanelState>): boolean {
@@ -149,17 +130,11 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		let style: any = {
 			margin: 0, padding: 0,
 			overflow: "hidden",
+			transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`
 		}// style;
 
-		if (common.isset (this.state.width)) style = { ...style,
-			width: this.state.width, 
-			transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`
-		}// if;
-
-		if (common.isset (this.state.height)) style = { ...style,
-			height: this.state.height,
-			transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`
-		}// if;
+		if (common.isset (this.state.width)) style = { ...style, width: this.state.width  };
+		if (common.isset (this.state.height)) style = { ...style, height: this.state.height };
 
 		return (
 			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={style}>
