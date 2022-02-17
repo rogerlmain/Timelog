@@ -10,9 +10,10 @@ interface FadePanelProps extends DefaultProps {
 
 	id: string;
 
-	visible: boolean;	// Default = false
+	animate: boolean;
+	visible: boolean;
 
-	speed?: number;		// overrides globals.settings.animation_speed
+	speed?: number;
 
 	beforeShowing?: Function;
 	afterShowing?: Function;
@@ -21,6 +22,9 @@ interface FadePanelProps extends DefaultProps {
 	afterHiding?: Function;
 
 }// FadePanelProps;
+
+
+/**** Exported Items ****/
 
 
 export default class FadePanel<Props, State> extends BaseControl<FadePanelProps, DefaultState> {
@@ -53,6 +57,8 @@ export default class FadePanel<Props, State> extends BaseControl<FadePanelProps,
 
 	public static defaultProps: FadePanelProps = {
 		id: null,
+		parent: null,
+		animate: false,
 		visible: false,
 		speed: globals.settings.animation_speed
 	}// defaultProps;
@@ -72,10 +78,9 @@ export default class FadePanel<Props, State> extends BaseControl<FadePanelProps,
 
 	public render () {
 
-		let style = { ...this.props.style, 
-			opacity: ((this.props.visible === true) ? 1 : 0),
-			transition: `opacity ${this.props.speed}ms ease-in-out` 
-		};
+		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0)};
+
+		if (this.props.animate) style = { ...style, transition: `opacity ${this.props.speed}ms ease-in-out` }
 
 		return (<div id={this.props.id} ref={this.dom_control} style={style} className={this.props.className}>{this.props.children}</div>);
 

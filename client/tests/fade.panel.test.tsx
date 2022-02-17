@@ -5,6 +5,7 @@ import FadePanel from "controls/panels/fade.panel";
 
 
 interface FadePanelTestState extends DefaultState { 
+	animate: boolean;
 	visible: boolean;
 }// FadePanelTestState;
 
@@ -12,7 +13,10 @@ interface FadePanelTestState extends DefaultState {
 export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTestState> {
 
 
-	public state: FadePanelTestState = { visible: false }
+	public state: FadePanelTestState = { 
+		visible: false,
+		animate: false
+	}
 
 
 	public render () {
@@ -21,7 +25,7 @@ export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTe
 
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<FadePanel id="test_panel" visible={this.state.visible} speed={2000}>
+						<FadePanel id="test_panel" visible={this.state.visible} animate={this.state.animate} speed={2000}>
 							<div style={{ border: "solid 1px green" }}>
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br />
 								Proin placerat faucibus dictum. Nam egestas, purus et<br />
@@ -37,6 +41,13 @@ export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTe
 					<button onClick={() => this.setState ({ visible: true })}>Fade In</button>
 					<button onClick={() => this.setState ({ visible: false })}>Fade Out</button>
 				</div>
+
+				<div>
+					<button onClick={() => this.setState ({ animate: false })}>Snap</button>
+					<button onClick={() => this.setState ({ animate: true })}>Animate</button>
+				</div>
+
+				<div>{this.state.animate ? "animating" : "snapping"}</div>
 
 			</div>
 		);
