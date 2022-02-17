@@ -2,7 +2,6 @@ import React from "react";
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
 import { globals } from "types/globals";
-import { Dimensions } from "types/datatypes";
 
 import * as common from "classes/common";
 
@@ -10,9 +9,9 @@ import * as common from "classes/common";
 interface ResizePanelProps extends DefaultProps {
 
 	id: string;
+	parent: iResizable;
 
-	resize?: boolean;
-
+	resize?: resize_state;
 	speed?: number;			// overrides globals.settings.animation_speed
 
 	beforeResizing?: any;
@@ -25,6 +24,16 @@ interface ResizePanelState extends DefaultState {
 	width: number;
 	height: number;
 }// ResizePanelState;
+
+
+/**** Exported Items ****/
+
+
+export interface iResizableState extends DefaultState { resize: resize_state }
+export interface iResizable extends BaseControl { state: iResizableState }
+
+
+export enum resize_state { false, true, animate }
 
 
 export default class ResizePanel extends BaseControl<ResizePanelProps> {
@@ -67,6 +76,8 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 		this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null);
 
+		this.props.parent.setState ({ resize: resize_state.false });
+
 	}// transition_end;
 
 	
@@ -85,7 +96,7 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 	public static defaultProps: ResizePanelProps = {
 		id: null,
 		parent: null,
-		resize: false,
+		resize: resize_state.false,
 		speed: globals.settings.animation_speed
 	}// defaultProps;
 
@@ -123,15 +134,22 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 	}// shouldComponentUpdate;
 
 
-	public render () {
+	public componentDidUpdate () {
+		if (this.props.resize == resize_state.true) this.props.parent.setState ({ resize: resize_state.false });
+	}// componentDidUpdate;
 
-		let speed = this.props.speed ?? globals.settings.animation_speed;
+
+	public render () {
 
 		let style: any = {
 			margin: 0, padding: 0,
-			overflow: "hidden",
-			transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`
+			overflow: "hidden"
 		}// style;
+
+		if (this.props.resize == resize_state.animate) {
+			let speed = this.props.speed ?? globals.settings.animation_speed;
+			style = { ...style, transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out` };
+		}// if;
 
 		if (common.isset (this.state.width)) style = { ...style, width: this.state.width  };
 		if (common.isset (this.state.height)) style = { ...style, height: this.state.height };
