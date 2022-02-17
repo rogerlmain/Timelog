@@ -29,12 +29,10 @@ interface ResizePanelState extends DefaultState {
 /**** Exported Items ****/
 
 
-export interface iResizableState extends DefaultState { resize: resize_state }
-export interface iResizable extends BaseControl { state: iResizableState }
-
-
 export enum resize_state { false, true, animate }
 
+export interface iResizableState extends DefaultState { resize: resize_state }
+export interface iResizable extends BaseControl { state: iResizableState }
 
 export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
