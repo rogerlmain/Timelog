@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
-import ResizePanel, { iResizable, resizableState } from "controls/panels/resize.panel";
+import ResizePanel from "controls/panels/resize.panel";
 
 
 interface resizePanelTestProps extends DefaultProps { 
@@ -11,10 +11,11 @@ interface resizePanelTestProps extends DefaultProps {
 
 interface resizePanelTestState extends DefaultState {
 	selected_index: number;
+	resize: boolean;
 }// resizePanelTestState;
 
 
-export default class ResizePanelTest extends BaseControl<resizePanelTestProps, resizePanelTestState> implements iResizable {
+export default class ResizePanelTest extends BaseControl<resizePanelTestProps, resizePanelTestState> {
 
 
 	private resize_panel: React.RefObject<ResizePanel> = React.createRef ();
@@ -23,7 +24,7 @@ export default class ResizePanelTest extends BaseControl<resizePanelTestProps, r
 	/********/
 
 
-	public state: resizePanelTestState & resizableState = { 
+	public state: resizePanelTestState = { 
 		selected_index: 1,
 		resize: false
 	}// state;
@@ -36,7 +37,7 @@ export default class ResizePanelTest extends BaseControl<resizePanelTestProps, r
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ResizePanel ref={this.resize_panel} resize={this.state.resize} parent={this} static={true}>
+						<ResizePanel id="test" ref={this.resize_panel} resize={this.state.resize} parent={this} afterResizing={() => this.setState ({ resize: false })}>
 
 							<div style={this.set_visibility (this.state.selected_index, 1)}>
 								This is the test content<br />

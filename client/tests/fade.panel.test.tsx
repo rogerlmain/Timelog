@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
-import FadePanel, { iFadeable } from "controls/panels/fade.panel";
+import FadePanel from "controls/panels/fade.panel";
 
 
 interface FadePanelTestState extends DefaultState { 
@@ -9,10 +9,13 @@ interface FadePanelTestState extends DefaultState {
 }// FadePanelTestState;
 
 
-export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTestState> implements iFadeable {
+export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTestState> {
 
 
-	public state: FadePanelTestState = { visible: true }
+	public state: FadePanelTestState = { visible: false }
+
+
+	public componentDidMount () { setTimeout (() => this.setState ({ visible: true })) }
 
 
 	public render () {
@@ -20,8 +23,8 @@ export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTe
 			<div className="centering-container v" style={{ border: "solid 1px blue", padding: "2em" }}>
 
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<FadePanel id="test_panel" visible={false} static={true} parent={this} speed={2000}>
+					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" /*, visibility: (this.state.splash ? "visible" : "hidden")*/ }}>
+						<FadePanel id="test_panel" visible={this.state.visible} parent={this} speed={2000}>
 							<div style={{ border: "solid 1px green" }}>
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br />
 								Proin placerat faucibus dictum. Nam egestas, purus et<br />

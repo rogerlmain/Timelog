@@ -4,41 +4,23 @@ import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
 
-interface explodingPanelTestProps extends DefaultProps { 
-	visible?: boolean;
-	static?: boolean;
-}// explodingPanelTestProps;
-
-
 interface explodingPanelTestState extends DefaultState {
-	visible: boolean;
 	contents: any;
-	item: number;
+	item: string;
 }// explodingPanelTestState;
 
 
-export default class ExplodingPanelTest extends BaseControl<explodingPanelTestProps, explodingPanelTestState> {
+export default class ExplodingPanelTest extends BaseControl<DefaultProps, explodingPanelTestState> {
 
-
-	private exploding_panel: React.RefObject<ExplodingPanel> = React.createRef ();
-
-
-	/********/
-
-
-	public state: explodingPanelTestState = { 
-		visible: null, 
+	public state: explodingPanelTestState = {
 		contents: null,
 		item: null
 	}// state;
 
-	public props: explodingPanelTestProps;
-	
 
-	public constructor (props: explodingPanelTestProps) {
+	public constructor (props: DefaultProps) {
 		super (props);
-		this.state.visible = this.state.visible ?? this.props.visible;
-		this.state.item = 0;
+		this.state.item = "small";
 	}// constructor;
 
 
@@ -50,43 +32,38 @@ export default class ExplodingPanelTest extends BaseControl<explodingPanelTestPr
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ExplodingPanel id="test_panel" ref={this.exploding_panel} static={this.props.static}>
+						<ExplodingPanel id="test_panel" speed={3000}>
 
-							<div style={{ border: "solid 1px green", ...this.set_visibility (this.state.item, 1) }}>Small Item</div>
+							{this.state.item.matches ("small") && <div style={{ border: "solid 1px green" }}>Small Item</div>}
 
-							<div style={{ border: "solid 1px green", ...this.set_visibility (this.state.item, 2) }}>
+							{this.state.item.matches ("medium") && <div style={{ border: "solid 1px green" }}>
+								This is extra test content<br />
+								With a second line...
+							</div>}
+
+							{this.state.item.matches ("large") && <div style={{ border: "solid 1px green" }}>
 								blah blah blah blahy blah<br />
 								blllaaahhh blah blah blah blahy blah<br />
 								blah blah blahby blahy blah blech
-							</div>
+							</div>}
 
-							<div style={{ border: "solid 1px green", ...this.set_visibility (this.state.item, 3) }}>
-								This is extra test content<br />
-								With a second line...
-							</div>
-
-						</ExplodingPanel>                                       
+						</ExplodingPanel>
 					</div>
 
 				</div>
 
 				<br />
 
-				<button onClick={() => this.setState ({ visible: false })}>Implode</button>
-				<button onClick={() => this.setState ({ visible: true })}>Explode</button>
+				<button onClick={() => this.setState ({ item: "small" })}>Small contents</button>
+				<button onClick={() => this.setState ({ item: "medium" })}>Mediocre contents</button>
+				<button onClick={() => this.setState ({ item: "large" })}>Big contents</button>
 
 				<br />
 
-				<button onClick={() => this.setState ({ item: 1 })}>Small contents</button>
-				<button onClick={() => this.setState ({ item: 2 })}>Big contents</button>
-				<button onClick={() => this.setState ({ item: 3 })}>Mediocre contents</button>
-
-				<br />
-
-				<button onClick={() => this.setState ({ item: 0 })}>Clear contents</button>
+				<button onClick={() => this.setState ({ item: null })}>Clear contents</button>
 
 			</div>
 		)
-	}
+	}// render;
 
 }// ExplodingPanelTest;

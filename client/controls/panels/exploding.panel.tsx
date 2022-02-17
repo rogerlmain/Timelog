@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOMServer from "react-dom/server";
 
 import * as common from "classes/common";
 
@@ -14,8 +13,6 @@ interface ExplodingPanelProps extends DefaultProps {
 
 	id: string;
 
-	static?: boolean;
-
 	speed?: number;
 
 	beforeShowing?: Function;
@@ -28,9 +25,9 @@ interface ExplodingPanelProps extends DefaultProps {
 
 
 interface ExplodingPanelState extends DefaultState {
-	resizing: boolean;
-	fade_visible: boolean;
 	children: any;
+	resize: boolean;
+	visible: boolean;	
 }// ExplodingPanelState;
 
 
@@ -40,8 +37,6 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 	public static defaultProps: ExplodingPanelProps = {
 
 		id: null,
-
-		static: true,
 
 		speed: globals.settings.animation_speed,
 
@@ -55,38 +50,62 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 
 	public state: ExplodingPanelState = {
-		resizing: false,
-		fade_visible: true,
-		children: null
+		children: null,
+		resize: false,
+		visible: false
 	}// state;
 
 
-	public componentDidMount (): void {
-		this.setState ({ children: this.props.children });
+	public componentDidMount(): void {
+		if (common.isset (this.props.children)) this.setState ({ visible: true });
 	}// componentDidMount;
 
 
-	public componentDidUpdate (): any {
-		if (this.same_element (this.state.children, this.props.children)) return;
-		if (this.state.fade_visible) this.setState ({ fade_visible: false });
-	}// componentDidUpdate;
+  	public shouldComponentUpdate (next_props: Readonly<ExplodingPanelProps>, next_state: Readonly<ExplodingPanelState>, next_context: any): boolean {
+
+		// let updated = common.isset (next_state.children) && (!this.same_element (next_state.children, next_props.children));
+
+		// if (updated) {
+		// 	switch (next_state.visible) {
+		// 		case true: this.setState ({ visible: false }); break;
+		// 		default: 
+
+		this.setState ({ children: next_props.children });  // break;
+
+		// 	}// switch;
+ 		// 	return false;
+		// }// if;
+
+ 		// return updated; 
+		return true;
+
+  	}// shouldComponentUpdate;
 
 
 	public render () {
 
+		let target_speed = Math.floor (this.props.speed / 2);
+
 		if (common.is_null (this.props.id)) throw "Exploding panel requires an ID";
+
 
 		return (
 
-			<ResizePanel id={`${this.props.id}_exploding_panel`} speed={Math.floor (this.props.speed / 2)} resize={this.state.resizing}
+			<div style={{ border: "solid 1px red"}}>
 
-				afterResizing={() => this.setState ({ 
-					resizing: false,
-					fade_visible: true
-				})}>
+			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed}
+				visible={(() => {
+					
+					return this.state.visible
+				
+				})()} 
+				
+				>
 
-				<FadePanel id={`${this.props.id}_exploding_panel`} visible={this.state.fade_visible} speed={Math.floor (this.props.speed / 2)} static={this.props.static} 
+				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} speed={target_speed} resize={this.state.resize}
+					afterResizing={() => this.setState ({ visible: true })}>
 
+{/*
 					beforeHiding={() => this.execute.bind (this) (this.props.beforeHiding)}
 
 					afterHiding={() => this.setState ({ children: this.props.children }, () => {
@@ -96,14 +115,16 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 					beforeShowing={() => this.execute.bind (this) (this.props.beforeShowing)}
 					afterShowing={() => this.execute.bind (this) (this.props.afterShowing)}>
+*/}
 
 					{this.state.children}
 
-				</FadePanel>
+				</ResizePanel>
+			</FadePanel>
 
-			</ResizePanel>
+			</div>
 		);
 	}// render;
 
 
-}// ExplodingPanel;
+}// ExplodingPanel

@@ -17,6 +17,11 @@ import FadePanel from "controls/panels/fade.panel";
 import React from "react";
 
 
+import ResizePanelTest from "tests/resize.panel.test";
+import FadePanelTest from "tests/fade.panel.test";
+import ExplodingPanelTest from "tests/exploding.panel.test";
+
+
 interface MainProps extends DefaultProps {}
 
 
@@ -108,7 +113,7 @@ export class Main extends BaseControl<MainProps, MainState> {
 
  				{/* LIVE CODE */}
 
- 				<FadePanel id="main_panel" static={false} visible={isset (this.state.contents)} 
+ 				<FadePanel id="main_panel" visible={isset (this.state.contents)} 
 
  					style={{ 
  						display: "flex", 
@@ -129,5 +134,10 @@ export class Main extends BaseControl<MainProps, MainState> {
 
 
 document.onreadystatechange = () => {
-	ReactDOM.render (<Main id="main_page" />, document.getElementById ("main_page"));
+//	ReactDOM.render (<Main id="main_page" />, document.getElementById ("main_page"));
+
+//ReactDOM.render (<ResizePanelTest id="main_page" />, document.getElementById ("main_page"));
+//ReactDOM.render (<FadePanelTest id="main_page" />, document.getElementById ("main_page"));
+ReactDOM.render (<ExplodingPanelTest id="main_page" />, document.getElementById ("main_page"));
+
 }// document.ready;
