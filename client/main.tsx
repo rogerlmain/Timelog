@@ -20,6 +20,7 @@ import React from "react";
 import ResizePanelTest from "tests/resize.panel.test";
 import FadePanelTest from "tests/fade.panel.test";
 import ExplodingPanelTest from "tests/exploding.panel.test";
+import SlideshowPanelTest from "tests/slideshow.panel.test";
 
 
 interface MainProps extends DefaultProps {}
@@ -136,8 +137,9 @@ export class Main extends BaseControl<MainProps, MainState> {
 document.onreadystatechange = () => {
 ReactDOM.render (<Main id="main_page" />, document.getElementById ("main_page"));
 
-//ReactDOM.render (<ResizePanelTest id="main_page" />, document.getElementById ("main_page"));
-//ReactDOM.render (<FadePanelTest id="main_page" />, document.getElementById ("main_page"));
-//ReactDOM.render (<ExplodingPanelTest id="main_page" />, document.getElementById ("main_page"));
+ReactDOM.render (<ResizePanelTest id="resize_panel_test" />, document.getElementById ("resize_panel_test"));
+ReactDOM.render (<FadePanelTest id="fade_panel_test" />, document.getElementById ("fade_panel_test"));
+ReactDOM.render (<ExplodingPanelTest id="exploding_panel_test" />, document.getElementById ("exploding_panel_test"));
+ReactDOM.render (<SlideshowPanelTest id="slideshow_panel_test" />,  document.getElementById ("slideshow_panel_test"));
 
 }// document.ready;
