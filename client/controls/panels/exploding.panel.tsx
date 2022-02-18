@@ -120,8 +120,6 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 		return (
 
-			<div style={{ border: "solid 1px red"}}>
-
 			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} visible={this.state.visible}
 
 				afterShowing={() => this.setState ({ transitioning: false }, () => this.execute (this.props.afterShowing))}
@@ -137,7 +135,6 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 				
 			</FadePanel>
 
-			</div>
 		);
 	}// render;
 
