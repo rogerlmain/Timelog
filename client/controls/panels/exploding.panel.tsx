@@ -122,7 +122,11 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} visible={this.state.visible}
 
-				afterShowing={() => this.setState ({ transitioning: false }, () => this.execute (this.props.afterShowing))}
+				afterShowing={() => {
+					this.transitioning = false;
+					this.execute (this.props.afterShowing)
+				}}// afterShowing;
+
 				afterHiding={() => this.load_contents (this.props.children)}>
 
 				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} 
