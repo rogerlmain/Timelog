@@ -45,7 +45,9 @@ export default class SigninPage extends BaseControl<DefaultProps> {
 
 		return (
 
-			<div style={{ alignSelf: "center", border: "solid 2px green" }}>
+			<div className="shadow-box" style={{ alignSelf: "center" }}>
+
+				<link rel="stylesheet" href="resources/styles/pages/signing.css" />
 
 				<ExplodingPanel id="login_error">{this.state.error_message}</ExplodingPanel>
 
@@ -92,7 +94,10 @@ export default class SigninPage extends BaseControl<DefaultProps> {
 							})}>
 
 							<div className="middle-right-container">
-								<button onClick={() => this.setState ({ eyecandy_visible: true })}>Sign in</button>
+								<button onClick={() => this.setState ({ 
+									error_message: null,
+									eyecandy_visible: true 
+								})}>Sign in</button>
 							</div>
 							
 						</EyecandyPanel>

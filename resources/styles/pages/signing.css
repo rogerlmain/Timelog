@@ -1,3 +1,5 @@
-#signin_panel {
-	height: 100%;
-}
+.shadow-box {
+	border: "solid 1px black";
+	box-shadow: 2px 2px 10px #333;
+	padding: 2em;
+}/* .shadow-box */
