@@ -45,7 +45,9 @@ export default class ExplodingPanelTest extends BaseControl<DefaultProps, explod
 							{this.state_equals ("item", "large") && <div style={{ border: "solid 1px green" }}>
 								blah blah blah blahy blah<br />
 								blllaaahhh blah blah blah blahy blah<br />
-								blah blah blahby blahy blah blech
+								blah blah blahby blahy blah blech<br />
+								<br />
+								<textarea></textarea>
 							</div>}
 
 						</ExplodingPanel>

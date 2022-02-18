@@ -39,6 +39,9 @@ interface ExplodingPanelState extends DefaultState {
 export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, ExplodingPanelState> implements iResizable {
 
 
+	private transitioning: boolean = false;
+
+
 	public static defaultProps: ExplodingPanelProps = {
 
 		id: null,
@@ -80,8 +83,10 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 		let updated = !this.same_element (next_state.children, next_props.children);
 
+		if (this.transitioning) return common.is_null (setTimeout (() => this.forceUpdate ()));
+
 		if (updated) switch (next_state.visible) {
-			case true: this.setState ({ visible: false }); break;
+			case true: this.transitioning = true; this.setState ({ visible: false }); return false;
 			default: this.setState ({ children: next_props.children }, () => this.setState ({ resize: resize_state.animate })); break;
 		}// if / switch;
 
@@ -101,8 +106,13 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 			<div style={{ border: "solid 1px red"}}>
 
 			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} visible={this.state.visible}
-				afterHiding={() => this.setState ({ children: this.props.children }, () => this.setState ({ resize: resize_state.animate }))}
-				afterShowing={() => this.execute (this.props.afterShowing)}>
+
+				afterHiding={() => this.setState ({ children: this.props.children }, () => {
+					this.setState ({ resize: resize_state.animate });
+					this.transitioning = false;
+				})}
+
+				afterShowing={() => this.setState ({ transitioning: false }, () => this.execute (this.props.afterShowing))}>
 
 				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} 
 					speed={target_speed} resize={this.state.resize} parent={this}
