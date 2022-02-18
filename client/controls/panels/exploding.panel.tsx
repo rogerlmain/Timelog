@@ -42,6 +42,23 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 	private transitioning: boolean = false;
 
 
+	private load_contents = (new_children: any) => {
+
+		const run_animation = () => {
+			if (this.state.children != new_children) return setTimeout (run_animation);
+			this.forceUpdate (() => this.setState ({ resize: resize_state.animate }));
+		}// run_animation;
+
+		this.transitioning = false;
+
+		this.setState ({ children: new_children }, run_animation);
+
+	}// load_contents;
+
+
+	/********/
+
+
 	public static defaultProps: ExplodingPanelProps = {
 
 		id: null,
@@ -85,9 +102,9 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 		if (this.transitioning) return common.is_null (setTimeout (() => this.forceUpdate ()));
 
-		if (updated) switch (next_state.visible) {
+		if (updated) switch (this.state.visible) {
 			case true: this.transitioning = true; this.setState ({ visible: false }); return false;
-			default: this.setState ({ children: next_props.children }, () => this.setState ({ resize: resize_state.animate })); break;
+			default: this.load_contents (next_props.children); break; 
 		}// if / switch;
 
  		return true; 
@@ -107,16 +124,12 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} visible={this.state.visible}
 
-				afterHiding={() => this.setState ({ children: this.props.children }, () => {
-					this.setState ({ resize: resize_state.animate });
-					this.transitioning = false;
-				})}
-
-				afterShowing={() => this.setState ({ transitioning: false }, () => this.execute (this.props.afterShowing))}>
+				afterShowing={() => this.setState ({ transitioning: false }, () => this.execute (this.props.afterShowing))}
+				afterHiding={() => this.load_contents (this.props.children)}>
 
 				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} 
 					speed={target_speed} resize={this.state.resize} parent={this}
-					afterResizing={() => this.setState ({ visible: true })}>
+					afterResizing={() => this.setState ({ visible: common.isset (this.state.children) })}>
 
 					{this.state.children}
 

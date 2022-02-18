@@ -47,7 +47,7 @@ export default class SlideshowPanel extends BaseControl<SlideshowPanelProps, Def
 		if (common.is_null (this.props.id)) throw "Slideshow panel requires an ID";
 
 		return (
-			<ExplodingPanel speed={this.props.speed} id={`${this.props.id}_slideshow_panel`}
+			<ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed}
 			
 				beforeShowing={this.props.beforeShowing}
 				afterShowing={this.props.afterShowing}
