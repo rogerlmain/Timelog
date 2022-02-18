@@ -21,7 +21,7 @@ export default class ExplodingPanelTest extends BaseControl<DefaultProps, explod
 
 	public constructor (props: DefaultProps) {
 		super (props);
-		this.state.item = "small";
+		this.state.item = "none";
 	}// constructor;
 
 

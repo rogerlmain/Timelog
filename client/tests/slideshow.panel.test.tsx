@@ -5,14 +5,14 @@ import SlideshowPanel from "controls/panels/slideshow.panel";
 
 
 interface explodingPanelTestState extends DefaultState {
-	contents: any;
+	index: number;
 }// explodingPanelTestState;
 
 
 export default class ExplodingPanelTest extends BaseControl<DefaultProps, explodingPanelTestState> {
 
 	public state: explodingPanelTestState = {
-		contents: null
+		index: 0
 	}// state;
 
 
@@ -29,31 +29,34 @@ export default class ExplodingPanelTest extends BaseControl<DefaultProps, explod
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<SlideshowPanel id="test">
+						<SlideshowPanel id="the_test_thingy" index={this.state.index}>
 
-							{this.state.contents}
+							<div>
+								Lorem ipsum dolor sit amet
+							</div>
+
+							<div>
+								consectetur adipiscing elit. Nullam at dictum mi.<br />
+								Proin cursus neque vel accumsan molestie. Suspendisse
+							</div>
+
+							<div>
+								volutpat lacinia ligula non egestas. Morbi ante dui, eleifend faucibus<br />
+								facilisis finibus, aliquet eu neque. Nulla dignissim vel tellus vitae<br />
+								lacinia. Duis sit amet luctus quam. Curabitur et rutrum orci. Aliquam<br />
+								volutpat maximus ornare. Sed imperdiet felis felis, nec lacinia nulla 
+							</div>
 
 						</SlideshowPanel>
 					</div>
 
 				</div>
 
-				<button onClick={() => this.setState ({ contents: <div>
-					Lorem ipsum dolor sit amet
-				</div> })}>Small contents</button>
-
-				<button onClick={() => this.setState ({ contents: <div>
-					consectetur adipiscing elit. Nullam at dictum mi.<br />
-					Proin cursus neque vel accumsan molestie. Suspendisse
-				</div> })}>Medium contents</button>
-
-				<button onClick={() => this.setState ({ contents: <div>
-					volutpat lacinia ligula non egestas. Morbi ante dui, eleifend faucibus<br />
-					facilisis finibus, aliquet eu neque. Nulla dignissim vel tellus vitae<br />
-					lacinia. Duis sit amet luctus quam. Curabitur et rutrum orci. Aliquam<br />
-					volutpat maximus ornare. Sed imperdiet felis felis, nec lacinia nulla 
-				</div> })}>large contents</button>
-
+				<button onClick={() => this.setState ({ index: 1 })}>Small contents</button>
+				<button onClick={() => this.setState ({ index: 2 })}>Medium contents</button>
+				<br />
+				<button onClick={() => this.setState ({ index: 3 })}>large contents</button>
+				<button onClick={() => this.setState ({ index: 0 })}>No contents</button>
 
 			</div>
 		)
