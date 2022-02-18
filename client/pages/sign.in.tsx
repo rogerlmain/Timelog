@@ -27,9 +27,6 @@ const bad_credentials = <div className="login-error">
 export default class SigninPage extends BaseControl<DefaultProps> {
 
 
-	private signin_page: React.RefObject<EyecandyPanel> = React.createRef ();
-	private exploding_panel: React.RefObject<ExplodingPanel> = React.createRef ();
-
 
 	public state: SigninPageState = { 
 
@@ -97,6 +94,7 @@ export default class SigninPage extends BaseControl<DefaultProps> {
 							<div className="middle-right-container">
 								<button onClick={() => this.setState ({ eyecandy_visible: true })}>Sign in</button>
 							</div>
+							
 						</EyecandyPanel>
 
 
