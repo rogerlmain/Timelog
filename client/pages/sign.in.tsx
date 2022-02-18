@@ -47,9 +47,7 @@ export default class SigninPage extends BaseControl<DefaultProps> {
 
 			<div className="shadow-box" style={{ alignSelf: "center" }}>
 
-				<link rel="stylesheet" href="resources/styles/pages/signing.css" />
-
-				<ExplodingPanel id="login_error">{this.state.error_message}</ExplodingPanel>
+				<ExplodingPanel id="signin_error">{this.state.error_message}</ExplodingPanel>
 
 				<div style={{marginBottom: '1em'}}>
 
@@ -57,7 +55,7 @@ export default class SigninPage extends BaseControl<DefaultProps> {
 
 						<div className="one-piece-form form-table">
 							<label htmlFor="username">Username or email</label>
-							<input name="username" type="text" defaultValue="rex@rogerlmain.comm" />
+							<input name="username" type="text" defaultValue="rex@rogerlmain.com" />
 							<label htmlFor="password">Password</label>
 							<div style={{display: 'flex', flexDirection: 'row'}}>
 								<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue="stranger" style={{ width: "100%" }} />
