@@ -18,21 +18,11 @@ global.get_cookie = (name) => {
 /********/
 
 
-global.is_null = (value) => {
-	return value == null;
-}// is_null;
+global.is_null = (value) => { return value == null }
+global.not_null = (value) => { return !global.is_null (value) }
 
-
-global.not_null = (value) => {
-	return value != null;
-}// not_null;
-
-
-global.isset = (value) => {
-	return value ? true : false;
-//	return value != null;
-}// not_null;
-
+global.isset = (value) => { return value ? true : false }
+global.not_set = (value) => { return !global.isset (value) }
 
 
 /********/

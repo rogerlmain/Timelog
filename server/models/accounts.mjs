@@ -31,27 +31,37 @@ class AccountData extends Database {
 	}// get_accounts_by_task;
 
 
-	save_account = () => {
-		new multiparty.Form ().parse (request, (form_error, form_fields, files) => {
-			let procedure = "call save_account (?, ?, ?, ?, ?, ?, ?)";
+	save_account = (fields) => {
+		
+		const numeric_value = (fieldname) => {
+			try {
+				let value = parseInt (fields [fieldname]);
+				return (isNaN (value) ? null : value);
+			} catch (except) { return null } // value doesn't exist
+		}/* numeric_value */;
 
-			let parameters = [
-				form_fields ["first_name"][0],
-				form_fields ["last_name"][0],
-				form_fields ["username"][0],
-				form_fields ["email_address"][0],
-				form_fields ["password"][0],
-				parseInt (form_fields ["account_type"][0]),
-				(accounts.signed_in (request) ? form_fields ["account_id"][0] : null)
-			];
+		let procedure = "save_account";
 
-			this.execute_query (procedure, parameters, (query_error, results, query_fields) => {
-				if ((results == null) || (results [0].length != 1)) throw "Invalid data response: models.save_account";
-				let response_string = JSON.stringify (results [0]).slice (1, -1);
-				response.cookie ("current_account", response_string, { encode: String });
-				response.send ({ account_id: results[0][0].account_id});
-			});
+		let parameters = [
+
+			fields ["first_name"],
+			fields ["last_name"],
+			fields ["username"],
+			fields ["email_address"],
+			fields ["password"],
+
+			numeric_value ("account_type"),
+			numeric_value ("account_id")
+
+		];
+
+		this.execute_query (procedure, parameters, (query_error, results, query_fields) => {
+			if ((results == null) || (results [0].length != 1)) throw "Invalid data response: models.save_account";
+			let response_string = JSON.stringify (results [0]).slice (1, -1);
+			response.cookie ("current_account", response_string, { encode: String });
+			response.send ({ account_id: results[0][0].account_id});
 		});
+
 	}// save_account;
 
 

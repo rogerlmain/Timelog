@@ -22,6 +22,8 @@ interface SignupPageState extends DefaultState {
 	eyecandy_visible: boolean;
 	button_visible: boolean;
 
+	error_message: string;
+
 }// SignupPageState;
 
 
@@ -48,23 +50,17 @@ export default class SignupPage extends BaseControl<DefaultProps, SignupPageStat
 	/********/
 
 
-	public state: SignupPageState;
+	public state: SignupPageState = {
 
+		account_type: account_types.free,
+		payment_required: false,
+		corporate: false,
 
-	constructor (props: DefaultProps) {
-		super (props);
-	}// constructor;
+		eyecandy_visible: false,
+		button_visible: true,
 
-
-	public componentDidMount () {
-		this.setState ({
-			button_visible: true,
-			corporate: false,
-			eyecandy_visible: false,
-			payment_required: false,
-	
-			account_type: account_types.free
-		});
+		error_message: null
+		
 	}// componentDidUpdate;
 
 
@@ -73,13 +69,15 @@ export default class SignupPage extends BaseControl<DefaultProps, SignupPageStat
 		let parent = this.props.parent;
 
 		if (common.is_null (this.account)) this.account = this.current_account ();
-		let account_id = common.isset (this.account) ? this.account.account_id : null;
+		let account_id = common.isset (this.account) ? this.account.account_id : undefined;
 
 		return (
 
-			<div>
+			<div className="shadow-box" style={{ alignSelf: "center" }}>
 
 				<link rel="stylesheet" href="/resources/styles/pages/accounts.css" />
+
+				<ExplodingPanel id="signup_error">{this.state.error_message}</ExplodingPanel>
 
 				<form id="account_form" encType="multipart/form-data">
 
@@ -88,15 +86,15 @@ export default class SignupPage extends BaseControl<DefaultProps, SignupPageStat
 						<input name="account_id" type="hidden" defaultValue={account_id} />
 
 						<label htmlFor="first_name">First name</label>
-						<input type="text" name="first_name" />
+						<input type="text" id="first_name" name="first_name" required={true} />
 						<label htmlFor="last_name">Last name</label>
-						<input type="text" name="last_name" />
+						<input type="text" id="last_name" name="last_name" />
 
-						<label>Username (optional)</label>
-						<input type="text" name="username" />
-						<label>Account Type</label>
+						<label htmlFor="username">Username (optional)</label>
+						<input type="text" id="username" name="username" />
+						<label htmlFor="account_type">Account Type</label>
 
-						<select name="account_type" defaultValue={1}
+						<select id="account_type" name="account_type" defaultValue={1}
 							onChange={(event) => {
 								let account_type = parseInt (event.target.value);
 								this.setState ({
@@ -105,17 +103,17 @@ export default class SignupPage extends BaseControl<DefaultProps, SignupPageStat
 									corporate: account_type == 3
 								});
 							}}>
-{/* 
+
 							{Object.entries (account_types).map (item => { return (
 								<option key={item [1].title} value={item [1].value} style={{ textTransform: "capitalize" }}>{item [1].title}</option>
 							)} )}
-*/}							
+
 						</select>
 
 						<label htmlFor="password">Password</label>
-						<input type="password" name="password" />
+						<input type="password" id="password" name="password" />
 						<label htmlFor="confirm_password">Confirm password</label>
-						<input type="password" />
+						<input type="password" id="confirm_password" name="confirm_password" />
 
 						<label htmlFor="email_address">Email address</label>
 						<input type="text" name="email_address" style={{ gridColumn: "span 3", width: "100%" }} />
@@ -133,40 +131,38 @@ export default class SignupPage extends BaseControl<DefaultProps, SignupPageStat
 
 				</form>
 
+				<br />
+
 				<div className="tagline" style={{ gridColumn: "1/5" }}>
 					<div>{this.signed_out () ? this.tagline () : null}</div>
 
 					<div className="overlay-container middle-right-container">
 
-						<EyecandyPanel>
-							<button onClick={() => {
-								parent.setState ({ signing_status: signing_state.pending });
-								this.setState ({ button_visible: false });
-							}}>{this.signed_out () ? "Sign up" : "Save changes"}</button>
+						<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible}
+						
+							eyecandyText={this.signed_in () ? "Saving your information" : "Creating your account"}
+
+							afterEyecandy = {() => AccountsModel.save_account (new FormData (document.getElementById ("account_form") as HTMLFormElement)).then ((data: any) => {
+								if (this.signed_in ()) {
+									parent.active_panel = parent.pages.home_panel;
+									parent.setState ({ panel_states: { ...parent.state.panel_states, signup_panel: false } });
+									this.setState ({ eyecandy_visible: false });
+								}// if;
+								throw "Cannot create account.";
+							}).catch ((error: Error) => this.setState ({ 
+								error_message: error,
+								eyecandy_visible: true 
+							}))}>
+
+							<div className="middle-right-container">
+								<button onClick={() => this.setState ({ 
+									error_message: null,
+									eyecandy_visible: true 
+								})}>{this.signed_out () ? "Sign up" : "Save changes"}</button>
+							</div>
+							
 						</EyecandyPanel>
 
-{/* 
-						<Eyecandy visible={this.state.eyecandy_visible}
-							text={this.signed_in () ? "Saving your information" : "Creating your account"}
-							subtext="One moment, please"
-							afterShowing={() => {
-
-								AccountsModel.save_account (new FormData (document.getElementById ("account_form") as HTMLFormElement), (data: any) => {
-									if (this.signed_in ()) {
-										parent.active_panel = parent.pages.home_panel;
-										parent.setState ({ panel_states: { ...parent.state.panel_states, signup_panel: false } });
-										this.setState ({ eyecandy_visible: false });
-									}// if;
-								})
-
-							}}
-							afterHiding={() => { this.setState ({ button_visible: true }) }}>
-						</Eyecandy>
-
-						<ExplodingPanel id="button_panel" visible={this.state.button_visible} className="middle-right-container"
-							afterHiding={() => { this.setState ({ eyecandy_visible: true }) }}>
-						</ExplodingPanel>
-*/}
 					</div>
 
  				</div>

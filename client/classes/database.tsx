@@ -41,11 +41,10 @@ export default class Database {
 		return new Promise ((resolve, reject) => {
 			Database.fetch_row (name, data).then (response => {
 				if (common.isset (response)) return resolve (response);
-				reject ("save_data: no result returned");
-			}).catch (reject => {
-
-				alert (reject);
-
+				throw "save_data: no result returned";
+			}).catch (error => {
+				alert (error);	
+				reject (error);
 			});
 		});
 	}// save_data;

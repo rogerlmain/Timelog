@@ -47,9 +47,9 @@ export default class AccountsModel extends DataModel {
 	}// fetch_by_task;
 
 
-	public static save_account (data: FormData, callback: any) {
+	public static save_account (data: FormData): Promise<Object> {
 		data.append ("action", "save");
-		Database.save_data ("accounts", data).then (callback);
+		return Database.save_data ("accounts", data);
 	}// save_account;
 
 

@@ -19,7 +19,10 @@ interface SettingsInterface {
 
 interface GlobalsInterface {
 
+	debugging: boolean
+
 	main: Main,
+
 	master_panel: MasterPanel,
 	clients_page: ClientsPage,
 	projects_page: ProjectsPage,
@@ -27,7 +30,7 @@ interface GlobalsInterface {
 	current_account: AccountData,
 
 	settings: SettingsInterface,
-	set_setting: Function
+	set_setting: Function,
 
 }// GlobalsInterface;
 
@@ -49,6 +52,8 @@ const settings_cookie = (): SettingsInterface => {
 
 
 export const globals: GlobalsInterface = {
+
+	debugging: true,
 
 	main: null,
 	master_panel: null,

@@ -149,11 +149,11 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 		let result: string = null;
 		if (typeof object == "string") return object;
 		try {
-			result = renderToString (object);
+			result = React.isValidElement (object) ? renderToString (object) : JSON.stringify (object);
 		} catch (except) {
-			try {
-				result = JSON.stringify (object);
-			} catch (except) {}
+			let message = `Error on object_string: ${except}`;
+			if (globals.debugging) alert (message);
+			console.log (message);
 		}// try;
 		return result;
 	}// object_string;

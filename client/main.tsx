@@ -79,7 +79,8 @@ export class Main extends BaseControl<MainProps, MainState> {
 
 
 	public componentDidUpdate (): void {
-		this.setState ({ contents: this.get_contents () });
+		let contents = this.get_contents ();
+		this.setState ({ contents: contents });
 	}// componentDidUpdate;
 
 

@@ -95,7 +95,7 @@ label {
 
 
 select:not([multiple]) {
-	height: var(--standard-height);
+	height: var(--double-height);
 }/* select:not(multiple) */
 
 

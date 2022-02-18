@@ -25,7 +25,9 @@ export interface account_type_object {
 export interface account_type {
 	free: account_type_object;
 	freelance: account_type_object;
+	company: account_type_object;
 	corporate: account_type_object;
+	enterprise: account_type_object;
 }// account_type;
 
 
@@ -51,9 +53,11 @@ export const popup_zindex = 10;
 
 
 export const account_types: account_type = {
-	free: {title: "Free", value: 1},
-	freelance: {title: "Freelance", value: 2},
-	corporate: {title: "Corporate", value: 3}
+	free		: {value: 10, title: "Free"},
+	freelance	: {value: 20, title: "Freelance"},
+	company		: {value: 30, title: "Company"},
+	corporate	: {value: 40, title: "Corporate"},
+	enterprise	: {value: 50, title: "Enterprise"}
 }// account_types;
 
 
