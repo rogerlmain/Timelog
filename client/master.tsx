@@ -22,6 +22,7 @@ import BaseControl, { DefaultProps } from "controls/base.control";
 
 import { menu_items } from "types/constants";
 import { globals } from "types/globals";
+import ExplodingPanel from "./controls/panels/exploding.panel";
 
 
 
@@ -163,7 +164,7 @@ export default class MasterPanel extends BaseControl<DefaultProps, masterState> 
 
 	public render () {
 		return (
-			<div id="home_page_panel" className="full-screen" style={{ border: "solid 1px blue" }}>
+			<div id="home_page_panel" className="full-screen">
 
 				<link rel="stylesheet" href="resources/styles/home.page.css" />
 
@@ -180,12 +181,17 @@ export default class MasterPanel extends BaseControl<DefaultProps, masterState> 
 
 				</div>
 
-				<div className="full-screen horizontal-centering-container overlay-container" style={{ marginTop: "2em" }}>
-					<FadePanel id="details_panel" visible={this.state.contents_loaded} static={true} className="full-screen">
-						{(() => {
-							return this.state.contents
-						})()}
-					</FadePanel>
+				<div className="full-screen horizontal-centering-container overlay-container" style={{ 
+					
+						marginTop: "1em",
+						border: "solid 1px blue"
+
+					}}>
+
+					{/* <FadePanel id="details_panel" visible={this.state.contents_loaded} className="full-screen">{this.state.contents}</FadePanel> */}
+
+					<ExplodingPanel id="details_panel" className="full-screen">{this.state.contents}</ExplodingPanel>
+
 				</div>
 
 			</div>

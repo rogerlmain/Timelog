@@ -93,7 +93,10 @@ export class Main extends BaseControl<MainProps, MainState> {
 
 		return (
 
-			<div style={{ display: "flex" }}>
+			<div style={{ display: "flex", flexDirection: "column" }}>
+
+				<link rel="stylesheet" href="resources/styles/main.css" />
+
 
  				{/* DEBUG CODE */}
 
@@ -114,6 +117,11 @@ export class Main extends BaseControl<MainProps, MainState> {
 
 
  				{/* LIVE CODE */}
+
+				<div className="page-header">
+					<div className="title">RMPC Timelog</div>
+					<div className="tagline">Make every second count</div>
+				</div>
 
  				<FadePanel id="main_panel" visible={isset (this.state.contents)} 
 
