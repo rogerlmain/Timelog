@@ -33,13 +33,22 @@
 	display: inline-flex;
 	flex-direction: row;
 	justify-content: center;
-	justify-items: center;
-	align-content: center;
 	align-items: center;
 }/* .centering-container */
 
-.centering-container.h { flex-direction: row }
-.centering-container.v { flex-direction: column }
+
+.horizontal-centering-container {
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: center;
+}/* .horizontal-centering-container */
+
+
+.vertical-centering-container {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+}/* .vertical-centering-container */
 
 
 .span-all, .span-all-columns { grid-column: 1 / -1 }
@@ -50,20 +59,6 @@
 	justify-self: center;
 	align-self: center;
 }/* self-centered */
-
-
-.horizontal-centering-container {
-	display: inline-flex;
-	flex-direction: column;
-	justify-content: center;
-}/* .horizontal-centering-container */
-
-
-.vertical-centering-container {
-	display: inline-flex;
-	flex-direction: row;
-	justify-content: center;
-}/* .vertical-centering-container */
 
 
 .middle-right-container {
@@ -196,9 +191,3 @@ div[class*="column-grid"] label {
 		display: inline-flex;
 	}
 				
-
-
-
-.project-selector-form div {display: contents;}	
-
-
