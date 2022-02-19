@@ -173,25 +173,16 @@ export default class MasterPanel extends BaseControl<DefaultProps, masterState> 
 					{this.settings_button ()}
 					{this.signout_button ()}
 
-<br /><br />
-<SelectButton onClick={() => {
-	alert ("setting contents");
-	this.setState ({ contents: <div>New Content</div>});
-}}>TEST</SelectButton>
+					<br /><br />
+					<SelectButton onClick={() => {
+						alert ("setting contents");
+						this.setState ({ contents: <div>New Content</div>});
+					}}>TEST</SelectButton>
 
 				</div>
 
-				<div className="full-screen horizontal-centering-container overlay-container" style={{ 
-					
-						marginTop: "1em",
-						border: "solid 1px blue"
-
-					}}>
-
-					{/* <FadePanel id="details_panel" visible={this.state.contents_loaded} className="full-screen">{this.state.contents}</FadePanel> */}
-
-					<ExplodingPanel id="details_panel" className="full-screen">{this.state.contents}</ExplodingPanel>
-
+				<div className="full-screen horizontal-centering-container" style={{ marginTop: "1em" }}>
+					<ExplodingPanel id="details_panel">{this.state.contents}</ExplodingPanel>
 				</div>
 
 			</div>
@@ -199,4 +190,3 @@ export default class MasterPanel extends BaseControl<DefaultProps, masterState> 
 	}// render;
 
 }// MasterPanel;
-
