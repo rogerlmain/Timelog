@@ -4,7 +4,7 @@ import BaseControl, { DefaultProps } from "controls/base.control";
 import SelectList from "controls/select.list";
 import TasksModel from "models/tasks";
 
-import ProjectSelectorGadget from "pages/gadgets/project.selector.gadget";
+import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 
 
 interface TasksPageProps extends DefaultProps {
