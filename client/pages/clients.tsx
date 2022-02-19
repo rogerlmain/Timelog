@@ -8,7 +8,7 @@ import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import { globals } from "types/globals";
 
 import EyecandyForm from "controls/forms/eyecandy.form";
-import ClientSelectorGadget from "./gadgets/client.selector.gadget";
+import ClientSelectorGadget from "./gadgets/selectors/client.selector.gadget";
 import Database from "client/classes/database";
 
 

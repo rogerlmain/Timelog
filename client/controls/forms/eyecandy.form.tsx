@@ -2,7 +2,7 @@ import * as common from "classes/common";
 
 import React, { BaseSyntheticEvent } from "react";
 
-import ClientSelectorGadget from "pages/gadgets/client.selector.gadget";
+import ClientSelectorGadget from "client/pages/gadgets/selectors/client.selector.gadget";
 
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 import EyecandyControl, { DefaultProps, DefaultState } from "controls/base.control";

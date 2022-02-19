@@ -6,7 +6,7 @@ import * as constants from "types/constants";
 import Database from "classes/database";
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
-import TaskSelectorGadget from "pages/gadgets/task.selector.gadget";
+import TaskSelectorGadget from "client/pages/gadgets/selectors/task.selector.gadget";
 import TasksModel from "models/tasks";
 
 import MiscModel from "models/misc";
