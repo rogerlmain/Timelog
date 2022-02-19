@@ -6,10 +6,11 @@ class Database {
 	connection = null;
 
 
-	data_response_handler (error, results, fields) {
+	data_response_handler = (error, results, fields) => {
 		if (global.is_null (results) || response.response_sent) return;
 		response.send (results [0]);
 		response.response_sent = true;
+		this.connection.end ();
 	}// data_response_handler;
 
 
