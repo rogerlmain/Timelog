@@ -88,8 +88,8 @@ export const menu_items = {
 	clients: "Clients",
 	projects: "Projects",
 	// team: "Team",
-	tasks: "Tasks",
-	// logging: "Logging",
+	// tasks: "Tasks",
+	logging: "Logging",
 	// history: "History",
 	// account: "Account",
 
