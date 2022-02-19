@@ -5,7 +5,7 @@ import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
 import SelectList from "controls/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
-import Database from "client/classes/database";
+import ClientsModel from "client/models/clients";
 
 
 interface ClientSelectorProps extends DefaultProps {
@@ -63,7 +63,7 @@ export default class ClientSelectorGadget extends BaseControl<ClientSelectorProp
 
 
 	public componentDidMount (): void {
-		Database.fetch_data ("clients", { action: "list" }).then ((data: any) => this.setState ({ clients: data }));
+		ClientsModel.fetch_all ((data: any) => this.setState ({ clients: data }));
 	}// componentDidMount;
 
 
@@ -74,15 +74,18 @@ export default class ClientSelectorGadget extends BaseControl<ClientSelectorProp
 				<label htmlFor={this.client_selector_id}>Client</label>
 
 				<EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} eyecandyText="Loading..." eyecandyVisible={common.is_null (this.state.clients)}>
-				
 					<SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient} 
 					
-						headerText={this.props.hasHeader ? this.props.headerText : null} headerSelectable={this.props.headerSelectable}
+						useHeader={this.props.hasHeader}
+
+						headerText={this.props.hasHeader ? this.props.headerText : null} 
+						headerSelectable={this.props.headerSelectable}
+
 						idField="client_id" textField="name"
 
 						onChange={(event: BaseSyntheticEvent) => this.client_change_handler (event)}>
-					</SelectList>
 
+					</SelectList>
 				</EyecandyPanel>
 
 			</div>
