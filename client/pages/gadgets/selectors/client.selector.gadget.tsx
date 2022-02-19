@@ -1,7 +1,11 @@
+import * as common from "classes/common";
+
 import React, { BaseSyntheticEvent } from "react";
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
 import SelectList from "controls/select.list";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
+import Database from "client/classes/database";
 
 
 interface ClientSelectorProps extends DefaultProps {
@@ -12,8 +16,6 @@ interface ClientSelectorProps extends DefaultProps {
 	headerSelectable: boolean;
 	headerText: string;
 
-	clients: any;
-
 	selectedClient: number;
 
 	onClientChange?: Function;
@@ -21,7 +23,10 @@ interface ClientSelectorProps extends DefaultProps {
 }// ClientSelectorProps;
 
 
-export default class ClientSelectorGadget extends BaseControl<ClientSelectorProps, DefaultState> {
+interface ClientSelectorState extends DefaultState { clients: any }
+
+
+export default class ClientSelectorGadget extends BaseControl<ClientSelectorProps, ClientSelectorState> {
 
 
  	private client_selector_id: string = null;
@@ -43,10 +48,12 @@ export default class ClientSelectorGadget extends BaseControl<ClientSelectorProp
 		headerSelectable: false,
 		headerText: null,
 
-		clients: null,
 		selectedClient: null,
 		onClientChange: null
 	}// defaultProps;
+
+
+	public state: ClientSelectorState = { clients: null }
 
 
 	public constructor (props: any) {
@@ -55,19 +62,28 @@ export default class ClientSelectorGadget extends BaseControl<ClientSelectorProp
 	}// constructor;
 
 
+	public componentDidMount (): void {
+		Database.fetch_data ("clients", { action: "list" }).then ((data: any) => this.setState ({ clients: data }));
+	}// componentDidMount;
+
+
 	public render () {
 		return (
 			<div style={{ display: "contents" }}>
 
 				<label htmlFor={this.client_selector_id}>Client</label>
 
-				<SelectList id={this.client_selector_id} data={this.props.clients} value={this.props.selectedClient} 
+				<EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} eyecandyText="Loading..." eyecandyVisible={common.is_null (this.state.clients)}>
 				
-					headerText={this.props.hasHeader ? this.props.headerText : null} headerSelectable={this.props.headerSelectable}
-					idField="client_id" textField="name"
+					<SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient} 
+					
+						headerText={this.props.hasHeader ? this.props.headerText : null} headerSelectable={this.props.headerSelectable}
+						idField="client_id" textField="name"
 
-					onChange={(event: BaseSyntheticEvent) => this.client_change_handler (event)}>
-				</SelectList>
+						onChange={(event: BaseSyntheticEvent) => this.client_change_handler (event)}>
+					</SelectList>
+
+				</EyecandyPanel>
 
 			</div>
 		);
