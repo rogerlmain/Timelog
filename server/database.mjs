@@ -10,7 +10,6 @@ class Database {
 		if (global.is_null (results) || response.response_sent) return;
 		response.send (results [0]);
 		response.response_sent = true;
-		this.connection.end ();
 	}// data_response_handler;
 
 
@@ -24,6 +23,7 @@ class Database {
 		if (global.isset (parameters) && !Array.isArray (parameters)) parameters = Object.values (parameters);
 		let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
 		this.connection.query (command, parameters, handler);
+		this.connection.end ();
 	}// execute_query;
 
 
