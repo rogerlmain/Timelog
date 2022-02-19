@@ -1,3 +1,5 @@
+
+
 #team_list {
 	align-self: center;
 	display: flex;
@@ -29,6 +31,85 @@
 	column-gap: 0.5em;
 	align-items: center;
 }/* .team_list_panel */
+
+
+
+/********/
+
+
+#member_list_panel {
+	column-gap: 0;
+}/* member_list_panel */
+
+
+#member_list_panel label {
+	margin-right: 1em;
+}/* member_list_panel label */
+
+
+#member_list_panel button {
+	margin-left: 0.5em;
+}/* member_list_panel button */
+
+
+/********/
+
+
+#members_list {/* border: solid 1px red; */margin-top: 1.2em;display: flex;flex-direction: column;}/* members_list */
+
+
+#members_list label {
+	font-weight: bold;
+	margin-bottom: 0.75em;
+}/* members_list */
+
+
+#member_list_entries {
+	display: grid;
+	grid-template-columns: 1fr min-content;
+	white-space: nowrap;
+	justify-content: space-between;
+	align-items: center;
+	/* opacity: 0.3; */
+	row-gap: 0.25em;
+}/* member_list_entries */
+
+
+#member_list_entries:hover {
+	background-color: #FFE;
+	opacity: 1;
+	cursor: pointer;
+}/* member_list_entries:hover */
+
+
+#member_list_entries .member_list_entry {
+	display: contents;
+}/* member_list_entries .member_list_entry */
+
+
+#member_list_entries .member_list_entry .member_name {
+	opacity: 1 !important;
+}/* member_list_entries .member_list_entry .member_options */
+
+
+#member_list_entries .member_list_entry .member_options {
+	display: flex;
+	flex-direction: row;
+	column-gap: 0.25em;
+	opacity: inherit;
+}/* member_list_entries .member_list_entry .member_options */
+
+
+#member_list_entries .member_list_entry .member_options .xbutton {
+	width: var(--standard-height);
+	height: var(--standard-height);
+	background-color: red;
+	color: white;
+	padding: 0;
+}/* #member_list_entries .xbutton */
+
+
+#member_list_entries .select-list { width: 100% }
 
 
 
