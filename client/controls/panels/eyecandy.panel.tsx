@@ -5,7 +5,6 @@ import * as common from "classes/common";
 import { globals } from "types/globals";
 
 import React from "react";
-import Eyecandy from "controls/eyecandy";
 import SlideshowPanel from "./slideshow.panel";
 
 
@@ -22,8 +21,6 @@ interface EyecandyPanelProps extends DefaultProps {
 
 	eyecandyVisible?: boolean;
 
-	static?: boolean;			//  (only relevant if visible on mount) do not animate on startup.
-
 	speed?: number;
 
 	afterEyecandy?: Function;
@@ -31,7 +28,7 @@ interface EyecandyPanelProps extends DefaultProps {
 }// EyecandyPanelProps;
 
 
-interface EyecandyPanelState extends DefaultState { eyecandy_ready: boolean }
+interface EyecandyPanelState extends DefaultState { eyecandy_image_name: string }
 
 
 export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, EyecandyPanelState> {
@@ -42,27 +39,29 @@ export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, Eyeca
 		speed: globals.settings.animation_speed 
 	};
 	
-	public state: EyecandyPanelState = { eyecandy_ready: false };
+	public state: EyecandyPanelState = { eyecandy_image_name: "resources/images/data.indicator.gif" };
 
 	public render () {
 
 		if (common.is_null (this.props.id)) throw ("Eyecandy requires an ID");
 
-		let index = (/* this.state.eyecandy_ready && */this.props.eyecandyVisible) ? eyecandy_index : contents_index;
+		let index = (this.props.eyecandyVisible) ? eyecandy_index : contents_index;
+		let id = `${this.props.id}_eyecandy_panel`;
 
 		return (
-			<SlideshowPanel id={`${this.props.id}_eyecandy_panel`} index={index} speed={this.props.speed}
+			<SlideshowPanel id={id} index={index} speed={this.props.speed}
 				afterShowing={() => this.execute ((index == eyecandy_index) ? this.props.afterEyecandy : null)}>
-{/* 
-				<Eyecandy text={this.props.eyecandyText} subtext={this.props.eyecandySubtext} onLoad={() => { this.setState ({ eyecandy_ready: true }); }} />
- */}
 
 				<div style={{
 					display: "flex",
-					flexDirection: "row"
-				}}>{}One moment...</div>
+					flexDirection: "row",
+					gap: "1em"
+				}}>
+					<img src={this.state.eyecandy_image_name} />
+					{this.props.eyecandyText}
+				</div>
 
-				<div>{this.props.children}</div>
+				<div id={`${id}_container`}>{this.props.children}</div>
 
 			</SlideshowPanel>
 		);

@@ -33,7 +33,18 @@ const header_value = -1;
 export default class SelectList extends BaseControl<SelectListProps, SelectListState> {
 
 
-	private header_visible () { return (common.isset ((this.props.headerText) || (this.props.useHeader)) && ((this.state.selected_value == 0) || (this.props.headerSelectable))) }
+	private header_visible () {
+
+		let result = (
+		
+			(common.isset (this.props.headerText) || (this.props.useHeader)) && 
+			((this.state.selected_value == 0) || (this.props.headerSelectable))
+		
+		) 
+
+		return result;
+	
+	}
 
 
 	public list: React.RefObject<HTMLSelectElement> = React.createRef ();
@@ -60,9 +71,7 @@ export default class SelectList extends BaseControl<SelectListProps, SelectListS
 	}// defaultProps;
 
     
-	public state: SelectListState = {
-		selected_value: null
-	}// state;
+	public state: SelectListState = { selected_value: 0 }
 
 
 	public componentDidUpdate () {
@@ -87,10 +96,6 @@ export default class SelectList extends BaseControl<SelectListProps, SelectListS
 				{this.header_visible () &&
 				
 					<option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.headerText}</option>}
-
-
-
-
 
 				{this.props.children}
 				{this.select_options (this.props.data, this.props.idField, this.props.textField)}

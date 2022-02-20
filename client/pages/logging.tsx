@@ -10,6 +10,7 @@ import TaskTree from "pages/gadgets/task.tree";
 import { EntryData } from "types/datatypes";
 import { globals } from "types/globals";
 import { TaskItem } from "models/tasks";
+import ProjectSelectorGadget from "./gadgets/selectors/project.selector.gadget";
 
 
 interface LoggingPageState extends DefaultState {
@@ -107,14 +108,9 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 				
 				<div id="log_information_panel" className="two-column-form">
 
-					<div>
-						<TaskTree accountID={this.current_account ().account_id} ref={this.task_tree} 
-							onClick={(event: BaseSyntheticEvent) => { this.setState ({ current_task: this.current_task () }) }}>
-						</TaskTree>
-					</div>
+					<ProjectSelectorGadget id="logging_project_selector" parent={this} />
 
-					<EyecandyPanel id="login_eyecandy"> {/* /*vanishing={true} /* visible={common.isset (this.state.current_task)} - Fix and reinstate * /
-						eyecandyClass="border-panel" contentsClass="border-panel"> */}
+					<EyecandyPanel id="login_eyecandy">
 
 						<div>
 							Task details go here<br />
@@ -123,68 +119,6 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 
 					</EyecandyPanel>
 
-
-{/* 					style={{ display: this.logged_in () ? null : "none" }}>
-
-Logged in to ...
-
-{(() => {
-
-	let current_entry = common.get_cookie ("current_entry");
-	return current_entry;
-
-})()}
- 
-				</div>
-
-<br />
-
-				<div id="log_form_panel">
-
-					<form id="log_form" encType="multipart/form-data">
-
-						<div className="project-select-form">
-
-							<ProjectSelectorGadget id="project_selector" parent={this}
-								onClientChange={() => {
-									this.setState ({
-										gadget_updated: false,
-										project_selected: false
-									})
-								}}
-								onProjectChange={() => {
-									this.setState ({
-										gadget_updated: false,
-										project_selected: true
-									}, this.load_entries.bind (this))
-								}}>
-							</ProjectSelectorGadget>
-
-
-							<ExplodingPanel visible={this.state.project_selected} vanishing={true}>
-
-								<SelectButton id="log_button" sticky={false} style={{ whiteSpace: "nowrap" }}
-
-									onClick={() => {
-										let current_entry = this.current_entry ();
-										let parameters = common.isset (current_entry) ? { entry_id: current_entry.entry_id } : null;
-										this.log_and_fetch (parameters);
-									}// onClick;
-
-								}>Log {this.logged_in () ? "out" : "in"}</SelectButton>
-
-							</ExplodingPanel>
-
-						</div>
-
-					</form>
-
-					<OverflowControl control_panel={this.reference ("history_panel")} main_panel={document.getElementById ("program_panel")}>
-						<ExplodingPanel visible={this.state.gadget_updated && (this.state.entries.length > 0)} dom_control={this.reference ("history_panel")}>
-							<LogHistoryGadget id="history_panel" parent={this} entries={this.state.entries} />
-						</ExplodingPanel>
-					</OverflowControl>
-*/}
 				</div>
 
 			</div>
