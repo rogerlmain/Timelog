@@ -7,6 +7,7 @@ import ResizePanel, { iResizable, resize_state } from "controls/panels/resize.pa
 import FadePanel from "controls/panels/fade.panel";
 
 import { globals } from "types/globals";
+import { renderToString } from "react-dom/server";
 
 
 interface ExplodingPanelProps extends DefaultProps {
@@ -89,7 +90,7 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 	public constructor (props: ExplodingPanelProps) {
 		super (props);
 		this.state.children = this.props.children;
-		this.state.visible = common.isset (this.props.children);
+		this.state.visible = common.not_empty (renderToString (this.props.children));
 	}// constructor;
 
 
@@ -122,15 +123,23 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} visible={this.state.visible}
 
+				beforeHiding={this.props.beforeHiding}
+
 				afterShowing={() => {
 					this.transitioning = false;
 					this.execute (this.props.afterShowing)
 				}}// afterShowing;
 
-				afterHiding={() => this.load_contents (this.props.children)}>
+				afterHiding={() => {
+					this.load_contents (this.props.children);
+					this.execute (this.props.afterHiding);
+				}}>
+
 
 				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} 
 					speed={target_speed} resize={this.state.resize} parent={this}
+
+					beforeResizing={this.props.beforeShowing}
 					afterResizing={() => this.setState ({ visible: common.isset (this.state.children) })}>
 
 					{this.state.children}
