@@ -68,7 +68,7 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 		speed: globals.settings.animation_speed,
 
-		stretchOnly: true,
+		stretchOnly: false,
 
 		beforeShowing: null,
 		beforeHiding: null,
