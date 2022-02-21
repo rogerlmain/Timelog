@@ -105,18 +105,20 @@ export default class ProjectSelectorGadget extends BaseControl<ProjectSelectorPr
 				</FadePanel>
 
 				<FadePanel id={`${this.props.id}_projects_list`} visible={client_loaded} animate={true}>
-					<EyecandyPanel id={`${this.props.id}_select_list`} eyecandyText="Loading..." eyecandyVisible={!projects_loaded}>
-						<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}
-						
-							useHeader={this.props.hasHeader || isset (this.props.headerText)}
-							headerText={this.props.headerText}
-							headerSelectable={this.props.headerSelectable}
-							idField="project_id" textField="project_name"
+					<EyecandyPanel id={`${this.props.id}_select_list`} eyecandyText="Loading..." eyecandyVisible={!projects_loaded} stretchOnly={true}>
+						<div style={{ display: "flex" }}>
+							<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}
+							
+								useHeader={this.props.hasHeader || isset (this.props.headerText)}
+								headerText={this.props.headerText}
+								headerSelectable={this.props.headerSelectable}
+								idField="project_id" textField="project_name"
 
-							className="form-item" style={{ width: "100%" }}
-							onChange={this.props.onProjectChange}>
+								className="form-item" style={{ flex: 1 }}
+								onChange={this.props.onProjectChange}>
 
-						</SelectList>
+							</SelectList>
+						</div>
 					</EyecandyPanel>
 				</FadePanel>
 

@@ -79,16 +79,15 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 	private transition_end (event: TransitionEvent) {
 
-		let size = this.get_size (this.inner_control);
-
 		if (!["width", "height"].includes (event.propertyName)) return;
 
-		if ((size.width < size.height) && event.propertyName.matches ("width")) return;
-		if ((size.width >= size.height) && event.propertyName.matches ("height")) return;
+		let outer_size = this.get_size (this.outer_control);		
+		let inner_size = this.get_size (this.inner_control);
 
-		this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null);
-
-		this.end_resizing ();
+		if (common.matching_objects (inner_size, outer_size)) {
+			this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null);
+			this.end_resizing ();
+		}// if;
 
 	}// transition_end;
 

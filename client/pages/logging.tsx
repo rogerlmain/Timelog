@@ -52,14 +52,14 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 					onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ project_id: event.target.value })}>
 				</ProjectSelectorGadget>
 
-				<div id="eyecandy_cell" style={{ marginTop: "1em", border: "solid 1px red" }}>
-					<EyecandyPanel id="login_eyecandy" eyecandyVisible={this.state.updating} style={{ marginTop: "1em" }} shrink={false}
+				<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
+					<EyecandyPanel id="login_eyecandy" eyecandyVisible={this.state.updating} style={{ marginTop: "1em" }} stretchOnly={true}
 						onEyecandy={() => { LoggingModel.fetch_current_entry ().then (data => this.setState ({ latest_entry: data })) }}>
-						{this.logged_out () && <FadePanel id="login_button" visible={this.project_selected ()}>
-							<button onClick={() => alert ("TO DO: ACTUAL LOGGING")} style={{ 
-								width: "100%"
-							}}>Log in</button>
+
+						{this.logged_out () && <FadePanel id="login_button" visible={this.project_selected ()} style={{ display: "flex" }}>
+							<button onClick={() => alert ("TO DO: ACTUAL LOGGING")} style={{ flex: 1 }}>Log in</button>
 						</FadePanel>}
+
 					</EyecandyPanel>
 				</div>
 
