@@ -76,7 +76,7 @@ Array.prototype.remove = function (element: any) {
 
 
 FormData.prototype.toObject = function () {
-	let result = {}
+	let result: any = {}
 	this.forEach ((value: any, key: string) => result [key] = value);
 	return result;
 }// toObject;

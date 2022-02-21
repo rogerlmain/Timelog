@@ -9,6 +9,7 @@ import ClientSelectorGadget from "client/pages/gadgets/selectors/client.selector
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import FadePanel from "client/controls/panels/fade.panel";
 import ProjectsModel from "client/models/projects";
+import { isset } from "classes/common";
 
 
 interface ProjectSelectorProps extends DefaultProps {
@@ -22,7 +23,7 @@ interface ProjectSelectorProps extends DefaultProps {
 	onClientChange?: any;
 	onProjectChange: any;
 
-	header?: string;
+	headerText?: string;
 	hasHeader?: boolean;
 	headerSelectable?: boolean;
 
@@ -58,8 +59,9 @@ export default class ProjectSelectorGadget extends BaseControl<ProjectSelectorPr
 		onClientChange: null,
 		onProjectChange: null,
 
+		headerText: null,
 		hasHeader: false,
-		headerSelectable: false
+		headerSelectable: true
 
 	}// defaultProps;
 
@@ -106,7 +108,9 @@ export default class ProjectSelectorGadget extends BaseControl<ProjectSelectorPr
 					<EyecandyPanel id={`${this.props.id}_select_list`} eyecandyText="Loading..." eyecandyVisible={!projects_loaded}>
 						<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}
 						
-							headerText="New project" headerSelectable={true}
+							useHeader={this.props.hasHeader || isset (this.props.headerText)}
+							headerText={this.props.headerText}
+							headerSelectable={this.props.headerSelectable}
 							idField="project_id" textField="project_name"
 
 							className="form-item" style={{ width: "100%" }}

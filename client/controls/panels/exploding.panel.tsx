@@ -16,6 +16,8 @@ interface ExplodingPanelProps extends DefaultProps {
 
 	speed?: number;
 
+	stretchOnly?: boolean;
+
 	beforeShowing?: Function;
 	beforeHiding?: Function;
 
@@ -45,7 +47,7 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 	private load_contents = (new_children: any) => {
 
-		const run_animation = () => {
+		const run_animation = (): any => {
 			if (this.state.children != new_children) return setTimeout (run_animation);
 			this.forceUpdate (() => this.setState ({ resize: resize_state.animate }));
 		}// run_animation;
@@ -65,6 +67,8 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 		id: null,
 
 		speed: globals.settings.animation_speed,
+
+		stretchOnly: true,
 
 		beforeShowing: null,
 		beforeHiding: null,
@@ -137,7 +141,7 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 
 
 				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} 
-					speed={target_speed} resize={this.state.resize} parent={this}
+					speed={target_speed} resize={this.state.resize} parent={this} stretchOnly={this.props.stretchOnly}
 
 					beforeResizing={() => this.execute (this.props.beforeShowing)}
 					afterResizing={() => this.setState ({ visible: common.isset (this.state.children) })}>

@@ -14,6 +14,8 @@ interface ResizePanelProps extends DefaultProps {
 	resize?: resize_state;
 	speed?: number;			// overrides globals.settings.animation_speed
 
+	stretchOnly?: boolean;	// prevents the control from shrinking
+
 	beforeResizing?: any;
 	afterResizing?: any;
 
@@ -41,7 +43,7 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 	private inner_control: React.RefObject<HTMLDivElement> = React.createRef ();
 
 
-	private get_size = (control) => {
+	private get_size = (control: React.RefObject<HTMLDivElement>) => {
 		return common.isset (control.current) ? {
 			width: control.current.scrollWidth,
 			height: control.current.scrollHeight
@@ -101,7 +103,8 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		id: null,
 		parent: null,
 		resize: resize_state.false,
-		speed: globals.settings.animation_speed
+		speed: globals.settings.animation_speed,
+		stretchOnly: false
 	}// defaultProps;
 
 
@@ -131,8 +134,24 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		}// if;
 	
 		if ((next_props.resize) && (!common.matching_objects (inner_size, outer_size))) {
+
+			if (this.props.stretchOnly) {
+
+				let new_size = {
+					width: (inner_size.width > outer_size.width) ? inner_size.width : outer_size.width,
+					height: (inner_size.height > outer_size.height) ? inner_size.height : outer_size.height
+				}// new_size;
+
+				if ((new_size.width == outer_size.width) && (new_size.height == outer_size.height)) {
+					this.props.parent.setState ({ resize: resize_state.false }, () => this.execute (this.props.afterResizing));
+					return false;
+				}// if;
+
+			}// if;
+
 			this.setState (inner_size);
 			return false;
+
 		}// if;
 
 		return true;
@@ -147,26 +166,37 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 	public render () {
 
-		let style: any = {
+		let outer_style: Object = {
 			margin: 0, padding: 0,
 			overflow: "hidden"
 		}// style;
 
+		let inner_style: Object = {
+			margin: "none",
+			padding: "none",
+			display: this.props.stretchOnly ? "block" : "inline-block"
+		}// inner_style;
+
 		if (this.props.resize == resize_state.animate) {
 			let speed = this.props.speed ?? globals.settings.animation_speed;
-			style = { ...style, transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out` };
+			outer_style = { ...outer_style, transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out` };
 		}// if;
 
-		if (common.isset (this.state.width)) style = { ...style, width: this.state.width  };
-		if (common.isset (this.state.height)) style = { ...style, height: this.state.height };
+
+		if (this.props.stretchOnly) {
+			outer_style = { ...outer_style, display: "flex" },
+			inner_style = { ...inner_style, flex: "1"}
+		}
+
+
+		if (common.isset (this.state.width)) outer_style = { ...outer_style, width: this.state.width  };
+		if (common.isset (this.state.height)) outer_style = { ...outer_style, height: this.state.height };
 
 		return (
-			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={style}>
-				<div id={`${this.props.id}_inner_control`} ref={this.inner_control} style={{ 
-					margin: "none",
-					padding: "none",
-					display: "inline-block"
-				}}>{this.props.children}</div>
+			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={outer_style}>
+				<div id={`${this.props.id}_inner_control`} ref={this.inner_control} style={inner_style}>
+					{this.props.children}
+				</div>
 			</div>
 		);
 

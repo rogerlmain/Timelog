@@ -107,8 +107,8 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 
 		if (object instanceof Array) {
 			for (item of object) {
-				if (common.is_null (item)) continue;
-				if (!React.isValidElement (item)) return false;
+				if (common.is_null (item) || (item === false)) continue;
+				if (!this.react_element (item)) return false;
 			}// for;
 			return true;
 		}// if;
@@ -122,7 +122,7 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 		let result: string = null;
 		if (typeof object == "string") return object;
 		try {
-			result = React.isValidElement (object) ? renderToString (object) : JSON.stringify (object);
+			result = this.react_element (object) ? renderToString (object) : JSON.stringify (object);
 		} catch (except) {
 			let message = `Error on object_string: ${except}`;
 			if (globals.debugging) alert (message);
@@ -158,12 +158,12 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 
 
 	protected state_equals (state: string, value: string): boolean {
-		return (common.isset (value) && value.matches (this.state [state]));
+		return (common.isset (value) && value.matches (this.state [state as keyof DefaultState]));
 	}// state_equals;
 
 
 	protected state_object_field (state: string, field: string): any {
-		let object = this.state [state];
+		let object = this.state [state as keyof DefaultState];
 		if (common.is_null (object)) return null;
 		return object [field] ?? constants.empty;
 	}// state_object_field;
@@ -280,7 +280,7 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 		if (common.is_null (values)) return super.setState (this.state, callback);
 
 		Object.keys (values).forEach (key => {
-			if (string_value (this.state [key]).matches (string_value (values [key]))) return null;
+			if (string_value (this.state [key as keyof DefaultState]).matches (string_value (values [key]))) return null;
 			if (common.is_null (state_list)) state_list = {}
 			state_list [key] = values [key];
 		});
@@ -320,8 +320,8 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 
 		if (common.isset (this.state)) {
 			Object.keys (this.state).forEach (key => {
-				if (common.is_null (this.state [key])) return;
-				control_states = append (control_states, `\n${key}: ${this.state [key]}`);
+				if (common.is_null (this.state [key as keyof DefaultState])) return;
+				control_states = append (control_states, `\n${key}: ${this.state [key as keyof DefaultState]}`);
 			});
 		}// if;
 

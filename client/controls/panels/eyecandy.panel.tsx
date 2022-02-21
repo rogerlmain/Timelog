@@ -20,6 +20,7 @@ interface EyecandyPanelProps extends DefaultProps {
 	eyecandySubtext?: string;
 
 	eyecandyVisible?: boolean;
+	stretchOnly?: boolean;
 
 	speed?: number;
 
@@ -39,7 +40,8 @@ export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, Eyeca
 
 	public static defaultProps: EyecandyPanelProps = { 
 		id: null,
-		speed: globals.settings.animation_speed 
+		speed: globals.settings.animation_speed,
+		stretchOnly: false
 	};
 	
 
@@ -54,7 +56,7 @@ export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, Eyeca
 		let id = `${this.props.id}_eyecandy_panel`;
 
 		return (
-			<SlideshowPanel id={id} index={index} speed={this.props.speed}
+			<SlideshowPanel id={id} index={index} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
 
 				beforeChanging={() => this.execute (this.props.beforeChanging)}
 

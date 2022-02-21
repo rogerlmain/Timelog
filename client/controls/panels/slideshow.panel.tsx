@@ -14,11 +14,10 @@ interface SlideshowPanelProps extends DefaultProps {
 
 	speed?: number;
 
+	stretchOnly?: boolean;
+
 	beforeChanging?: Function;
 	afterChanging?: Function;
-
-	// beforeShowing?: Function;
-	// afterHiding?: Function;
 
 }// SlideshowPanelProps;
 
@@ -39,6 +38,8 @@ export default class SlideshowPanel extends BaseControl<SlideshowPanelProps, Sli
 
 		speed: globals.settings.animation_speed,
 
+		stretchOnly: false,
+
 		beforeChanging: null,
 		afterChanging: null
 
@@ -50,7 +51,7 @@ export default class SlideshowPanel extends BaseControl<SlideshowPanelProps, Sli
 		if (common.is_null (this.props.id)) throw "Slideshow panel requires an ID";
 
 		return (
-			<ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed}
+			<ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
 			
 				beforeShowing={() => {
 					if (this.props.index == 0) this.execute (this.props.beforeChanging);

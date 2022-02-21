@@ -61,6 +61,7 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 					<ProjectSelectorGadget id="project_selector" parent={this} 
 
 						hasHeader={true}
+						headerText="New project"
 						headerSelectable={true}
 
 						selectedClient={this.state.selected_client}

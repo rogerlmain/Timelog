@@ -5,18 +5,24 @@ import ExplodingPanel from "controls/panels/exploding.panel";
 import { iResizable } from "client/controls/panels/resize.panel";
 
 
-interface explodingPanelTestState extends DefaultState {
+interface ExplodingPanelProps extends DefaultProps { stretchOnly?: boolean }
+
+
+interface ExplodingPanelTestState extends DefaultState {
 	contents: any;
 	item: string;
-}// explodingPanelTestState;
+}// ExplodingPanelTestState;
 
 
-export default class ExplodingPanelTest extends BaseControl<DefaultProps, explodingPanelTestState> {
+export default class ExplodingPanelTest extends BaseControl<ExplodingPanelProps, ExplodingPanelTestState> {
 
-	public state: explodingPanelTestState = {
+	public state: ExplodingPanelTestState = {
 		contents: null,
 		item: null
 	}// state;
+
+
+	public defaultProps: ExplodingPanelProps = { stretchOnly: false }
 
 
 	public constructor (props: DefaultProps) {
@@ -33,7 +39,7 @@ export default class ExplodingPanelTest extends BaseControl<DefaultProps, explod
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ExplodingPanel id="test_panel" speed={2000}>
+						<ExplodingPanel id="test_panel" speed={1000} stretchOnly={this.props.stretchOnly}>
 
 							{this.state_equals ("item", "small") && <div style={{ border: "solid 1px green" }}>Small Item</div>}
 
