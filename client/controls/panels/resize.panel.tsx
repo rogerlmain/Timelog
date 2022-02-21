@@ -39,8 +39,14 @@ export interface iResizable extends BaseControl { state: iResizableState }
 export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 
+	private transitioning: boolean = false;
+
+
 	private outer_control: React.RefObject<HTMLDivElement> = React.createRef ();
 	private inner_control: React.RefObject<HTMLDivElement> = React.createRef ();
+
+
+	private null_if = (value: any, threshold: any) => { return (value == threshold ? null : value) }
 
 
 	private get_size = (control: React.RefObject<HTMLDivElement>) => {
@@ -53,10 +59,10 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 
 	private end_resizing () {
 		this.props.parent.setState ({ resize: resize_state.false });
-		this.setState ({ width: null, height: null });
+		this.setState ({ width: null, height: null }, () => this.transitioning = false);
 	}// end_resizing;
 
-	
+
 	private transition_start (event: TransitionEvent) {
 
 		let size = this.get_size (this.inner_control);
@@ -133,20 +139,27 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 			return false;
 		}// if;
 	
-		if ((next_props.resize) && (!common.matching_objects (inner_size, outer_size))) {
+		if (next_props.resize) {
 
-			if (this.props.stretchOnly) {
+			let new_size = {
+				width: (inner_size.width > outer_size.width) ? inner_size.width : outer_size.width,
+				height: (inner_size.height > outer_size.height) ? inner_size.height : outer_size.height
+			}// new_size;
 
-				let new_size = {
-					width: (inner_size.width > outer_size.width) ? inner_size.width : outer_size.width,
-					height: (inner_size.height > outer_size.height) ? inner_size.height : outer_size.height
-				}// new_size;
+			let stretch = this.props.stretchOnly && common.matching_objects (outer_size, new_size);
 
-				if ((new_size.width == outer_size.width) && (new_size.height == outer_size.height)) {
-					this.props.parent.setState ({ resize: resize_state.false }, () => this.execute (this.props.afterResizing));
-					return false;
-				}// if;
+			if (this.transitioning) return true;
+			
+			if (common.matching_objects (inner_size, outer_size)) {
+				this.props.parent.setState ({ resize: resize_state.false }, () => this.execute (this.props.afterResizing));
+				return true;
+			}// if;
 
+			this.transitioning = true;
+
+			if ((this.props.stretchOnly) && (!common.matching_objects (inner_size, new_size))) {
+				this.props.parent.setState ({ resize: resize_state.false }, () => this.execute (this.props.afterResizing));
+				return false;
 			}// if;
 
 			this.setState (inner_size);
@@ -186,7 +199,7 @@ export default class ResizePanel extends BaseControl<ResizePanelProps> {
 		if (this.props.stretchOnly) {
 			outer_style = { ...outer_style, display: "flex" },
 			inner_style = { ...inner_style, flex: "1"}
-		}
+		}// if;
 
 
 		if (common.isset (this.state.width)) outer_style = { ...outer_style, width: this.state.width  };

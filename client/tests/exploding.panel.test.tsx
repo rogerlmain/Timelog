@@ -22,9 +22,6 @@ export default class ExplodingPanelTest extends BaseControl<ExplodingPanelProps,
 	}// state;
 
 
-	public defaultProps: ExplodingPanelProps = { stretchOnly: false }
-
-
 	public constructor (props: DefaultProps) {
 		super (props);
 		this.state.item = "none";
@@ -39,7 +36,7 @@ export default class ExplodingPanelTest extends BaseControl<ExplodingPanelProps,
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ExplodingPanel id="test_panel" speed={1000} stretchOnly={this.props.stretchOnly}>
+						<ExplodingPanel id="test_panel" speed={1000} stretchOnly={false}>
 
 							{this.state_equals ("item", "small") && <div style={{ border: "solid 1px green" }}>Small Item</div>}
 
