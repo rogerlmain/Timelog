@@ -148,7 +148,7 @@ document.onreadystatechange = () => {
 
 // ReactDOM.render (<ResizePanelTest id="resize_panel_test" />, document.getElementById ("resize_panel_test"));
 // ReactDOM.render (<FadePanelTest id="fade_panel_test" />, document.getElementById ("fade_panel_test"));
-ReactDOM.render (<ExplodingPanelTest id="exploding_panel_test" />, document.getElementById ("exploding_panel_test"));
+// ReactDOM.render (<ExplodingPanelTest id="exploding_panel_test" />, document.getElementById ("exploding_panel_test"));
 // ReactDOM.render (<SlideshowPanelTest id="slideshow_panel_test" />,  document.getElementById ("slideshow_panel_test"));
 
 }// document.ready;
