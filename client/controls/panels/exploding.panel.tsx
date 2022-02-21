@@ -139,7 +139,7 @@ export default class ExplodingPanel extends BaseControl<ExplodingPanelProps, Exp
 				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} 
 					speed={target_speed} resize={this.state.resize} parent={this}
 
-					beforeResizing={this.props.beforeShowing}
+					beforeResizing={() => this.execute (this.props.beforeShowing)}
 					afterResizing={() => this.setState ({ visible: common.isset (this.state.children) })}>
 
 					{this.state.children}

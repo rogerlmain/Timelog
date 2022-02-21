@@ -23,7 +23,10 @@ interface EyecandyPanelProps extends DefaultProps {
 
 	speed?: number;
 
-	afterEyecandy?: Function;
+	beforeChanging?: Function;
+	afterChanging?: Function;
+
+	onEyecandy?: Function;
 
 }// EyecandyPanelProps;
 
@@ -39,7 +42,9 @@ export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, Eyeca
 		speed: globals.settings.animation_speed 
 	};
 	
+
 	public state: EyecandyPanelState = { eyecandy_image_name: "resources/images/data.indicator.gif" };
+
 
 	public render () {
 
@@ -50,7 +55,13 @@ export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, Eyeca
 
 		return (
 			<SlideshowPanel id={id} index={index} speed={this.props.speed}
-				afterShowing={() => this.execute ((index == eyecandy_index) ? this.props.afterEyecandy : null)}>
+
+				beforeChanging={() => this.execute (this.props.beforeChanging)}
+
+				afterChanging={() => {
+					this.execute ((index == eyecandy_index) ? this.props.onEyecandy : null);
+					this.execute (this.props.afterChanging);
+				}}>
 
 				<div style={{
 					display: "flex",

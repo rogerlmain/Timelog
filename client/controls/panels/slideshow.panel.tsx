@@ -14,15 +14,21 @@ interface SlideshowPanelProps extends DefaultProps {
 
 	speed?: number;
 
-	beforeShowing?: Function;
-	afterShowing?: Function;
+	beforeChanging?: Function;
+	afterChanging?: Function;
 
-	beforeHiding?: Function;
-	afterHiding?: Function;
+	// beforeShowing?: Function;
+	// afterHiding?: Function;
+
 }// SlideshowPanelProps;
 
 
-export default class SlideshowPanel extends BaseControl<SlideshowPanelProps, DefaultState> {
+interface SlideshowPanelState extends DefaultState { index: number }
+
+
+export default class SlideshowPanel extends BaseControl<SlideshowPanelProps, SlideshowPanelState> {
+
+	public state: SlideshowPanelState = { index: 0 }
 
 
 	public static defaultProps: SlideshowPanelProps = {
@@ -33,11 +39,8 @@ export default class SlideshowPanel extends BaseControl<SlideshowPanelProps, Def
 
 		speed: globals.settings.animation_speed,
 
-		beforeShowing: null,
-		afterShowing: null,
-
-		beforeHiding: null,
-		afterHiding: null
+		beforeChanging: null,
+		afterChanging: null
 
 	}// defaultProps;
 
@@ -49,11 +52,12 @@ export default class SlideshowPanel extends BaseControl<SlideshowPanelProps, Def
 		return (
 			<ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed}
 			
-				beforeShowing={this.props.beforeShowing}
-				afterShowing={this.props.afterShowing}
+				beforeShowing={() => {
+					if (this.props.index == 0) this.execute (this.props.beforeChanging);
+				}}
 
-				beforeHiding={this.props.beforeHiding}
-				afterHiding={() => this.setState ({ active_index: this.props.index }, () => this.execute (this.props.afterHiding))}>
+				beforeHiding={this.props.beforeChanging}
+				afterShowing={this.props.afterChanging}>
 
 				{(this.props.index == 0) ? null : this.props.children [this.props.index - 1]}
 
