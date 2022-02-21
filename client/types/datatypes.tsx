@@ -1,5 +1,5 @@
 import * as common from "classes/common";
-import { admin_types } from "types/constants";
+import { admin_types, space } from "types/constants";
 
 
 /**** Dimensions ****/
@@ -14,7 +14,13 @@ export interface Dimensions {
 /********/
 
 
-export class AccountData {
+export interface iData {}
+
+
+/********/
+
+
+export class AccountData implements iData {
 
 	account_id: number;
 	first_name: string;
@@ -40,10 +46,10 @@ export class AccountData {
 		return result;
 	}// parse;
 
-	public administrator () { return this.admin_type >= admin_types.corporate }
+	public administrator = () => { return this.admin_type >= admin_types.corporate }
 
 	public programmer = () => { return this.admin_type >= admin_types.programmer }
-
+	
 }// AccountData;
 
 
@@ -64,12 +70,21 @@ export class EntryData {
 }// EntryData;
 
 
-export interface ClientData {
-	id: number;
-	name: string;
-	address_id?: number;			// To be created and hooked
-	primary_contact_id?: number;	// To be created and hooked
+export class ClientData implements iData {
+	client_id: number;
+	client_name: string;
+	description: string;
 }// ClientData;
+
+
+export class LogData implements iData {
+	log_entry_id: number;
+	project_id: number;
+	client_name: string;
+	project_name: string;
+	start_time: Date;
+	end_time: Date;
+}// LogData;
 
 
 export class ProjectData {

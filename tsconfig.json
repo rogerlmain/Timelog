@@ -4,7 +4,7 @@
 
 		"noImplicitThis": true,
 
-		"noImplicitAny": false,
+		"noImplicitAny": true,
 		"suppressImplicitAnyIndexErrors": false,
 
 		"module": "es2015", /* same as es6 */

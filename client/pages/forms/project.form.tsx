@@ -40,7 +40,7 @@ export default class ProjectForm extends FormControl<ProjectFormProps, ProjectFo
 	/********/
 
 
-	private project_data (field: string) { return common.isset (this.props.formData) ? this.props.formData [field] : null }
+	private project_data (field: string) { return common.isset (this.props.formData) ? this.props.formData [field] : constants.blank }
 
 
 	private save_project () {
@@ -139,7 +139,6 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 
 		return (
 			<div style={{ display: "contents" }}>
-
 				<form id="project_form" ref={this.project_form}>
 
 					<input type="hidden" id="project_id" name="project_id" value={project_id || constants.blank} />
@@ -165,7 +164,7 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 
 					</div>
 
-	{/* 			// Reinstate for teams - phase 2
+{/* 				// Reinstate for teams - phase 2
 					<TeamSelectorGadget ref={this.references.team_selector} record_id={this.return_value (this.get_data ("project_id"))}
 
 						onLoad={() => { 
@@ -181,8 +180,8 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 						parent={this} group={TeamGroup.project}>
 
 					</TeamSelectorGadget>
-	*/}
 
+*/}
 				</form>
 
 				<div className="middle-right-container">

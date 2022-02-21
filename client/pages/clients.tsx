@@ -2,42 +2,32 @@ import * as common from "classes/common";
 
 import React, { BaseSyntheticEvent } from "react";
 
-import ClientForm from "pages/forms/client.form";
-
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
-import { globals } from "types/globals";
 
-import EyecandyForm from "controls/forms/eyecandy.form";
-import ClientSelectorGadget from "./gadgets/selectors/client.selector.gadget";
 import Database from "client/classes/database";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
+
+import ClientSelectorGadget from "./gadgets/selectors/client.selector.gadget";
+import ClientForm from "pages/forms/client.form";
+import ClientModel from "models/clients";
+
+import { globals } from "types/globals";
+import { ClientData } from "client/types/datatypes";
 
 
 interface ClientsPageState extends DefaultState {
-	client_list: any,
-	selected_client: number
+	client_data: ClientData;
+	selected_client: number;
+	updating: boolean;
 }// ClientsPageState;
 
 
 export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageState> {
 
-
-	private load_clients () {
-		return new Promise ((resolve, reject) => {
-			try {
-				Database.fetch_data ("clients", { action: "list" }).then ((data: any) => this.setState ({ client_list: data }, resolve));
-			} catch (except) {
-				reject (except.getMessage ());
-			}// try;
-		});
-	}// load_clients;
-
-
-	/********/
-
-
 	public state: ClientsPageState = {
-		client_list: null,
-		selected_client: null
+		client_data: null,
+		selected_client: null,
+		updating: false
 	}// state;
 
 
@@ -45,11 +35,6 @@ export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageSt
 		super (props);
 		globals.clients_page = this;
 	}// constructor;
-
-
-	public async getSnapshotBeforeUpdate (old_props: DefaultProps, old_state: ClientsPageState) {
-		if (common.is_null (this.state.client_list)) await this.load_clients ();
-	}// getSnapshotBeforeUpdate;
 
 
 	public render () {
@@ -63,18 +48,36 @@ export default class ClientsPage extends BaseControl<DefaultProps, ClientsPageSt
 						headerSelectable={true}
 						headerText="New client"
 
-						clients={this.state.client_list} selectedClient={this.state.selected_client}
-						onClientChange={(event: BaseSyntheticEvent) => this.setState ({ selected_client: event.target.value })}>
+						selectedClient={this.state.selected_client}
+
+						onClientChange={(event: BaseSyntheticEvent) => this.setState ({ 
+							selected_client: event.target.value,
+							updating: true 
+						})}>
 
 					</ClientSelectorGadget>
 				</div>
 
-				<EyecandyForm table="clients" action="details" idField="client_id" idValue={this.state.selected_client}>
-					<ClientForm onDelete={async () => {
-						this.setState ({ selected_client: null });
-						await this.load_clients ();
-					}} onSave={async () => await this.load_clients () } />
-				</EyecandyForm>
+				<EyecandyPanel id="edit_client_panel" eyecandyText="Loading..." eyecandyVisible={this.state.updating} 
+				
+					onEyecandy={() => { 
+						if (this.state.updating) ClientModel.fetch_by_id (this.state.selected_client).then ((data: ClientData) => this.setState ({
+							client_data: data,
+							updating: false
+						}));
+					}}>
+
+					<ClientForm formData={this.state.client_data}
+
+					// onDelete={async () => {
+					// 	this.setState ({ selected_client: null });
+					// 	await this.load_clients ();
+					// }} 
+					
+					// onSave={async () => await this.load_clients () } 
+					
+					/>
+				</EyecandyPanel>
 
 			</div>
 		);

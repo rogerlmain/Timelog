@@ -1,12 +1,14 @@
+import * as common from "classes/common";
+
 import React, { SyntheticEvent } from "react";
 import BaseControl, { DefaultProps, DefaultState } from "./base.control"
 
-import * as common from "classes/common";
+import { iData } from "client/types/datatypes";
 
 
 interface SelectListProps extends DefaultProps {
 
-	data?: Array<any>;
+	data?: Array<iData>;
 	idField?: string;
     textField?: string;
 

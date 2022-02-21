@@ -122,9 +122,8 @@ app.post ("/logging", function (request, response) {
 	app.process (request, response, (fields) => {
 		let entry_data = new EntryData ();
 		switch (fields.action) {
-			case "entries": entry_data.get_entries (fields.client_id, fields.project_id); break;
+			case "latest": entry_data.get_current_entry (); break;
 			case "logging": entry_data.save_entry (fields.client_id, fields.project_id, fields.entry_id); break;
-			case "log_status": entry_data.get_current_entry (); break;
 		}// switch;
 	});
 });

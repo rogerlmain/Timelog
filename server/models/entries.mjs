@@ -11,7 +11,7 @@ class EntryData extends Database {
 
 
 	get_current_entry () {
-		let procedure = "call get_current_entry (?)";
+		let procedure = "call get_current_entry";
 		if (global.is_null (global.account)) {
 			response.send ();
 			return;

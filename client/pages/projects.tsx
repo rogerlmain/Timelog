@@ -1,19 +1,15 @@
-import * as common from "classes/common";
 
 import React, { BaseSyntheticEvent } from "react";
-
-import { is_object } from "classes/common";
+import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
-import TeamSelectorGadget from "client/pages/gadgets/selectors/team.selector.gadget";
 import ProjectsModel from "models/projects";
 import ProjectForm from "pages/forms/project.form";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import { globals } from "types/globals";
 import { ProjectData } from "types/datatypes";
-import Database from "client/classes/database";
-import EyecandyForm from "client/controls/forms/eyecandy.form";
+import { isset } from "client/classes/common";
 
 
 interface ProjectsPageState extends DefaultState {
@@ -26,47 +22,12 @@ interface ProjectsPageState extends DefaultState {
 
 	project_data: ProjectData;
 
+	updating: boolean;
+
 }// ProjectsPageState;
 
 
 export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPageState> {
-
-	private project_form: React.RefObject<ProjectForm> = React.createRef ();
-	private team_selector: React.RefObject<TeamSelectorGadget> = React.createRef ();
-
-
-	private load_projects () {
-		return new Promise ((resolve, reject) => {
-			try {
-				ProjectsModel.fetch_by_client (this.state.selected_client, (data: Object) => this.setState ({ project_list: data }, resolve));
-			} catch (except) {
-				reject (except.getMessage ());
-			}// try;
-		});
-	}// load_projects;
-
-
-	private load_project () {
-		ProjectsModel.fetch_by_id (this.state.selected_project, (data: any) => {
-			this.setState ({ project_data: data });
-		});
-	}// load_project;
-
-
-	/********
-
-
-	private reset_form (callback: any) {
-		if (this.project_loaded ()) return this.setState ({ project_loaded: false }, () => {
-			this.team_selector.current.reset ();
-			callback ();
-		});
-		callback ();
-	}// reset_form;
-
-
-	/********/
-
 
 	public state: ProjectsPageState = {
 
@@ -77,6 +38,8 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 		selected_project: null,
 
 		project_data: null,
+
+		updating: false
 
 	}// state;
 
@@ -103,15 +66,32 @@ export default class ProjectsPage extends BaseControl<DefaultProps, ProjectsPage
 						selectedClient={this.state.selected_client}
 						selectedProject={this.state.selected_project}
 
-						onClientChange={(event: BaseSyntheticEvent) => this.setState ({ selected_client: event.target.value }) }
-						onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ selected_project: event.target.value })}>
+						onClientChange={(event: BaseSyntheticEvent) => this.setState ({ 
+							selected_client: event.target.value,
+							selected_project: 0,
+							project_data: null
+						})}
+
+						onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ 
+							updating: true,
+							selected_project: parseInt (event.target.value)
+						})}>
 
 					</ProjectSelectorGadget>
-				</div>
+				</div>	
 
-				{common.isset (this.state.selected_client) && <EyecandyForm table="projects" action="details" idField="project_id" idValue={this.state.selected_project}>
-					<ProjectForm clientId={this.state.selected_client} onSave={(data: ProjectData) => this.setState ({ project_data: data })} />
-				</EyecandyForm>}
+				{isset (this.state.selected_client) && <EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} eyecandyText="Loading..." 
+
+					onEyecandy={() => {
+						if (this.state.updating) ProjectsModel.fetch_by_id (this.state.selected_project).then ((data: ProjectData) => this.setState ({
+							project_data: data,
+							updating: false
+						}));
+					}}>
+
+					<ProjectForm clientId={this.state.selected_client} formData={this.state.project_data} onSave={(data: ProjectData) => this.setState ({ project_data: data })} />
+					
+				</EyecandyPanel>}
 
 			</div>
 

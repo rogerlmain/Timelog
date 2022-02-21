@@ -12,11 +12,11 @@ export default class ProjectsModel {
 	}// fetch_by_client;
 
 
-	public static fetch_by_id (project_id: number, callback: any) {
+	public static fetch_by_id (project_id: number) {
 		let parameters = new FormData ();
 		parameters.append ("project_id", project_id.toString ());
 		parameters.append ("action", "details");
-		Database.fetch_row ("projects", parameters).then (callback)
+		return Database.fetch_row ("projects", parameters);
 	}// fetch_by_id;
 
 	

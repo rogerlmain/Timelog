@@ -29,7 +29,7 @@ export default class ExplodingPanelTest extends BaseControl<DefaultProps, explod
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<SlideshowPanel id="the_test_thingy" index={this.state.index}>
+						<SlideshowPanel id="the_test_thingy" index={this.state.index} speed={3000}>
 
 							<div>
 								Lorem ipsum dolor sit amet
@@ -52,7 +52,7 @@ export default class ExplodingPanelTest extends BaseControl<DefaultProps, explod
 
 				</div>
 
-				<button onClick={() => this.setState ({ index: 1 })}>Small contents</button>
+				<button onClick={() => this.setState ({ index: 1 }, () => setTimeout (() => this.setState ({ index: 2 }), 2000))}>Small contents</button>
 				<button onClick={() => this.setState ({ index: 2 })}>Medium contents</button>
 				<br />
 				<button onClick={() => this.setState ({ index: 3 })}>large contents</button>

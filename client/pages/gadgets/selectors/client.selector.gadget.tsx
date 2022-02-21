@@ -6,6 +6,7 @@ import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 import SelectList from "controls/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import ClientsModel from "client/models/clients";
+import { ClientData } from "client/types/datatypes";
 
 
 interface ClientSelectorProps extends DefaultProps {
@@ -23,7 +24,10 @@ interface ClientSelectorProps extends DefaultProps {
 }// ClientSelectorProps;
 
 
-interface ClientSelectorState extends DefaultState { clients: any }
+interface ClientSelectorState extends DefaultState { 
+	clients: ClientData [],
+	client_selected: boolean
+}// ClientSelectorState;
 
 
 export default class ClientSelectorGadget extends BaseControl<ClientSelectorProps, ClientSelectorState> {
@@ -53,7 +57,10 @@ export default class ClientSelectorGadget extends BaseControl<ClientSelectorProp
 	}// defaultProps;
 
 
-	public state: ClientSelectorState = { clients: null }
+	public state: ClientSelectorState = { 
+		clients: null ,
+		client_selected: false
+	}// ClientSelectorState;
 
 
 	public constructor (props: any) {
@@ -63,7 +70,7 @@ export default class ClientSelectorGadget extends BaseControl<ClientSelectorProp
 
 
 	public componentDidMount (): void {
-		ClientsModel.fetch_all ((data: any) => this.setState ({ clients: data }));
+		ClientsModel.fetch_all ().then ((data: ClientData []) => this.setState ({ clients: data }));
 	}// componentDidMount;
 
 

@@ -79,7 +79,7 @@ export default class SigninPage extends BaseControl<DefaultProps> {
 
 						<EyecandyPanel id="signin_eyecandy" eyecandyText="Signing you in." eyecandyVisible={this.state.eyecandy_visible}
 						
-							afterEyecandy={() => fetch ("/signin", {
+							onEyecandy={() => fetch ("/signin", {
 								method: "post",
 								body: new FormData (document.getElementById ("signin_form") as HTMLFormElement),
 								credentials: "same-origin"

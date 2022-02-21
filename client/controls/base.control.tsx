@@ -89,41 +89,14 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 	}// execute;
 
 
+	// Like forceUpdate except calls shouldComponentUpdate
+	protected forceRefresh = () => { this.setState (this.state) }
+
+
 	protected id_badge (stub: any = null) {
 		if (common.is_null (stub)) stub = this.constructor.name;
 		return this.props.id ?? stub + underscore + Date.now ();
 	}// id_badge;
-
-
-	// Deprecated - use same_element instead
-
-	// protected is_updated (...objects: any): boolean {
-	// 	for (let i = 0; i < objects.length; i++) {
-	// 		if (common.not_set (objects [i])) return false;
-	// 		if (i == 0) continue;
-	// 		switch (typeof objects [i]) {
-	// 			case "object": if (!this.object_string (objects [i]).matches (this.object_string (objects [i - 1]))) return true; break;
-	// 			default: if (objects [i] != objects [i-1]) return true;
-	// 		}// switch;
-	// 	}// for;
-	// 	return false;
-	// }// is_updated;
-
-
-	// Deprecated - use same_element instead
-
-	// protected changed (...objects: any): boolean {
-	// 	for (let i = 0; i < objects.length; i++) {
-	// 		if (i == 0) continue;
-	// 		if (common.is_null (objects [i]) != common.is_null (objects [i - 1])) return true;
-	// 		return this.is_updated (...objects);
-	// 		// switch (typeof objects [i]) {
-	// 		// 	case "object": if (!this.object_string (objects [i]).matches (this.object_string (objects [i - 1]))) return true; break;
-	// 		// 	default: if (objects [i] != objects [i-1]) return true;
-	// 		// }// switch;
-	// 	}// for;
-	// 	return false;
-	// }// changed;
 
 
 	protected react_element (object: any) {
@@ -331,7 +304,7 @@ export default abstract class BaseControl<iprops extends DefaultProps = DefaultP
 
 	// Used in conjunction with a breakpoint to examine a value
 	// without having to create an anonymous function
-	public return_value (value: any) {
+		public return_value (value: any) {
 		return value;
 	}// return_value;
 
