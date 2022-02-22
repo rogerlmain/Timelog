@@ -7,7 +7,7 @@ import LoggingModel from "models/logging";
 
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
-import { LogData } from "types/datatypes";
+import { EntryData, LogData } from "types/datatypes";
 import FadePanel from "client/controls/panels/fade.panel";
 
 
@@ -35,7 +35,7 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 
 
 	public componentDidMount () {
-		if (this.state.project_id) LoggingModel.fetch_current_entry ();
+		LoggingModel.fetch_latest_entry ().then ((data: LogData) => this.setState ({ current_entry: data }));
 	}// componentDidMount;
 
 
@@ -47,18 +47,25 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 				<link rel="stylesheet" href="resources/styles/pages/projects.css" />
 				<link rel="stylesheet" href="resources/styles/pages/logging.css" />
 
-				<ProjectSelectorGadget id="logging_project_selector" parent={this} 
+				{this.logged_in () ? <div>[LOG DETAILS GO HERE]</div> : <ProjectSelectorGadget id="logging_project_selector" parent={this} 
 					hasHeader={true} headerSelectable={false}
 					onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ project_id: event.target.value })}>
-				</ProjectSelectorGadget>
+				</ProjectSelectorGadget>}
 
 				<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
-					<EyecandyPanel id="login_eyecandy" eyecandyVisible={this.state.updating} style={{ marginTop: "1em" }} stretchOnly={true}
-						onEyecandy={() => { LoggingModel.fetch_current_entry ().then (data => this.setState ({ latest_entry: data })) }}>
+					<EyecandyPanel id="login_eyecandy" eyecandyText="Logging you in..." eyecandyVisible={this.state.updating} style={{ marginTop: "1em" }} stretchOnly={true}
 
-						{this.logged_out () && <FadePanel id="login_button" visible={this.project_selected ()} style={{ display: "flex" }}>
-							<button onClick={() => alert ("TO DO: ACTUAL LOGGING")} style={{ flex: 1 }}>Log in</button>
-						</FadePanel>}
+						eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
+
+						onEyecandy={() => { LoggingModel.log (this.state.project_id).then ((data: EntryData) => this.setState ({ latest_entry: data })) }}>
+
+						<FadePanel id="login_button" visible={this.project_selected ()} style={{ display: "flex" }}>
+							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }}>
+								
+								{this.logged_out () ? "Log in" : "Log out"}
+								
+							</button>
+						</FadePanel>
 
 					</EyecandyPanel>
 				</div>

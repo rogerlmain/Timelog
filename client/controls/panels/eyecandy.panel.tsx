@@ -19,6 +19,8 @@ interface EyecandyPanelProps extends DefaultProps {
 	eyecandyText?: string;
 	eyecandySubtext?: string;
 
+	eyecandyStyle?: Object;
+
 	eyecandyVisible?: boolean;
 	stretchOnly?: boolean;
 
@@ -52,6 +54,12 @@ export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, Eyeca
 
 		if (common.is_null (this.props.id)) throw ("Eyecandy requires an ID");
 
+		let eyecandy_style: Object = {
+			display: "flex",
+			flexDirection: "row", 
+			...this.props.eyecandyStyle
+		}// eyecandy_style;
+
 		let index = (this.props.eyecandyVisible) ? eyecandy_index : contents_index;
 		let id = `${this.props.id}_eyecandy_panel`;
 
@@ -65,11 +73,7 @@ export default class EyecandyPanel extends BaseControl<EyecandyPanelProps, Eyeca
 					this.execute (this.props.afterChanging);
 				}}>
 
-				<div style={{
-					display: "flex",
-					flexDirection: "row",
-					gap: "1em"
-				}}>
+				<div style={eyecandy_style}>
 					<img src={this.state.eyecandy_image_name} />
 					{this.props.eyecandyText}
 				</div>
