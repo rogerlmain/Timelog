@@ -20,12 +20,10 @@ class Database {
 			if (global.isset (parameters) && !Array.isArray (parameters)) parameters = Object.values (parameters);
 			let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
 			this.connection.query (command, parameters, async (error, results, fields) => {
-				if (global.is_null (results)) {
-					if (global.isset (error)) return reject (error);
-					if (response.response_sent) return;
-				}// if;
+				if (response.response_sent) return;
+				if (isset (error)) return reject (error);
 				await Promise.resolve (resolve (results [0]));
-				response.send (results [0]);
+				response.send (not_empty (results [0]) ? results [0] : null);
 				response.response_sent = true;
 			});
 			this.connection.end ();

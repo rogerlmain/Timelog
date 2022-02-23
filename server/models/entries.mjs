@@ -11,7 +11,7 @@ class EntryData extends Database {
 	// }// get_entries;
 
 
-	get_latest_entry = async () => {
+	get_latest_entry () {
 		let procedure = "get_latest_entry";
 		if (global.is_null (global.account)) return response.send ();
 		this.execute_query (procedure, [account.account_id]);
@@ -23,6 +23,7 @@ class EntryData extends Database {
 
 // 			if (results.length == 1) response.cookie ("current_entry", this.cookie_string (results), { encode: String });
 // 		});
+
 	}// get_latest_entry;
 
 

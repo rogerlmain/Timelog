@@ -9,7 +9,7 @@ import TimeTool from "types/timetool";
 import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
 
 import { EntryData, LogData } from "types/datatypes";
-import { isset, is_null } from "client/classes/common";
+import { isset, is_null, is_undefined, not_empty } from "client/classes/common";
 
 
 interface LoggingPageState extends DefaultState {
@@ -24,24 +24,7 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 
 	private project_selected = () => { return this.state.project_id > 0 }
 
-	public logged_in = () => { return isset (this.state.current_entry) }
-
-
-	/********/
-
-
-	public state: LoggingPageState = {
-		project_id: 0,
-		current_entry: null,
-		updating: false
-	}// state;
-
-
-	public componentDidMount () {
-		LoggingModel.fetch_latest_entry ().then ((data: LogData) => this.setState ({ current_entry: data }));
-	}// componentDidMount;
-
-
+	
 	private elapsed_time () {
 		let start: Date = this.state.current_entry.start_time;
 		return new Date ().getTime () - new Date (start).getTime ();
@@ -69,6 +52,30 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 	}// start_time;
 
 
+	public logged_in = () => { return not_empty (this.state.current_entry) } // convert to private if overriding basecontrol.logged_in
+
+
+	/********/
+
+
+	public state: LoggingPageState = {
+		project_id: 0,
+		current_entry: undefined,
+		updating: false
+	}// state;
+
+
+	public constructor (props: DefaultProps) {
+		super (props);
+		LoggingModel.fetch_latest_entry ().then ((data: LogData) => this.setState ({ current_entry: data }));
+	}// constructor;
+
+	
+	public shouldComponentUpdate (): boolean {
+		return (this.state.current_entry != undefined);
+	}// componentDidMount;
+
+
 	public render () {
 		return (
 			<div id="log_panel">
@@ -76,10 +83,11 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 				<link rel="stylesheet" href="resources/styles/controls/treeview.css" />
 				<link rel="stylesheet" href="resources/styles/pages/projects.css" />
 				<link rel="stylesheet" href="resources/styles/pages/logging.css" />
+{/* 
+				<EyecandyPanel id="log_form_eyecandy" eyecandyText="Loading..." eyecandyVisible={this.state.current_entry == undefined}>
 
-				<EyecandyPanel id="log_panel" eyecandyVisible={is_null (this.state.current_entry)} eyecandyText="Loading...">
+					{this.logged_in () ? <div className="two-column-grid">
 
-					{isset (this.state.current_entry) ? <div className="two-column-grid">
 
 						<div>Client</div>
 						<div>: {this.state.current_entry.client_name}</div>
@@ -98,29 +106,41 @@ export default class LoggingPage extends BaseControl<DefaultProps, LoggingPageSt
 						<div style={{ gridColumn: "1 / -1", height: "0.5em" }}></div>
 
 						<div>Billable</div>
-						<div>: {this.billable_time ()}</div>
+						<div>: {this.billable_time ()}</div> 
 
-					</div> : <ProjectSelectorGadget id="logging_project_selector" parent={this} 
-						hasHeader={true} headerSelectable={false}
-						onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ project_id: event.target.value })}>
-					</ProjectSelectorGadget>}
+					</div> : <div>
 
-					<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
-						<EyecandyPanel id="login_eyecandy" eyecandyText="Logging you in..." eyecandyVisible={this.state.updating} style={{ marginTop: "1em" }} stretchOnly={true}
-							eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
-							onEyecandy={() => { LoggingModel.log (this.state.project_id).then ((data: EntryData) => this.setState ({ latest_entry: data })) }}>
-
-							<FadePanel id="login_button" visible={this.project_selected () || this.logged_in ()} style={{ display: "flex" }}>
-								<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }}>
-									{this.logged_in () ? "Log out" : "Log in"}
-								</button>
-							</FadePanel>
-
-						</EyecandyPanel>
-					</div>
+						<ProjectSelectorGadget id="logging_project_selector" parent={this} 
+							hasHeader={true} headerSelectable={false}
+							onProjectChange={(event: BaseSyntheticEvent) => this.setState ({ project_id: event.target.value })}>
+						</ProjectSelectorGadget>
+					
+					</div>}
 
 				</EyecandyPanel>
 
+
+				<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
+					<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
+					
+						eyecandyText={`Logging you ${this.logged_in () ? "out" : "in"}...`} 
+						eyecandyVisible={this.state.updating}
+						eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
+
+						onEyecandy={() => { LoggingModel.log (this.state.project_id).then ((data: EntryData) => this.setState ({ 
+							current_entry: data,
+							updating: false
+						})) }}>
+
+						<FadePanel id="login_button" visible={this.project_selected () || this.logged_in ()} style={{ display: "flex" }}>
+							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }}>
+								{this.logged_in () ? "Log out" : "Log in"}
+							</button>
+						</FadePanel>
+
+					</EyecandyPanel>
+				</div>
+*/}
 			</div>
 		);
 	}// render;

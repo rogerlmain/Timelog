@@ -33,60 +33,25 @@ interface MainState extends DefaultState {
 	signing_up: boolean;
 
 	popup_contents: any;
-	contents: any;
 
 }// mainState;
 
 
 export class Main extends BaseControl<MainProps, MainState> {
 
-	private panels = {
-		master_panel: <MasterPanel parent={this} />,
-		signin_page: <SigninPage parent={this} />,
-		signup_page: <SignupPage parent={this} />
-	}// panels;
-
-
-	private get_contents () {
-		return this.signed_in () ? this.panels.master_panel : (this.state.signing_up ? this.panels.signup_page : this.panels.signin_page);	
-	}// get_contents;
-
-
- 	/********/
-
-
  	public state: MainState = {
 		popup: false,
 		popup_visible: false,
 		signing_up: false,
 
-		popup_contents: null,
-		contents: null
+		popup_contents: null
 	 }// state;
-
-
-	public pages = {
-		signin_panel: "signin_panel",
-		signup_panel: "signup_panel",
-		home_panel: "home_panel"
-	}// pages;
 
 
 	public constructor (props: MainProps) {
 		super (props);
 		globals.main = this;
 	}// constructor;
-
-
-	public componentDidUpdate (): void {
-		let contents = this.get_contents ();
-		this.setState ({ contents: contents });
-	}// componentDidUpdate;
-
-
-	public componentDidMount (): void {
-		this.componentDidUpdate ();
-	}// componentDidMount
 
 
     public render () {
@@ -123,15 +88,15 @@ export class Main extends BaseControl<MainProps, MainState> {
 					<div className="tagline">Make every second count</div>
 				</div>
 
- 				<FadePanel id="main_panel" visible={isset (this.state.contents)} 
+ 				<FadePanel id="main_panel" visible={true} 
 
  					style={{ 
  						display: "flex", 
  						flexDirection: "row",
  					}}>
 
- 					{this.state.contents}
-						
+					{this.signed_in () ? <MasterPanel parent={this} /> : (this.state.signing_up ? <SignupPage parent={this} /> : <SigninPage parent={this} />)}
+
  				</FadePanel>
 
 			</div>

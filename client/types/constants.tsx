@@ -83,29 +83,6 @@ export const signing_state = {
 }// signing_state;
 
 
-export const menu_items = {
-
-	clients: "Clients",
-	projects: "Projects",
-	// team: "Team",
-	// tasks: "Tasks",
-	logging: "Logging",
-	// history: "History",
-	// account: "Account",
-
-	map: function (method: any): any {
-		if (method == null) return null;
-		return Object.entries (this).map ((item) => {
-			let key = (item.length >= 1) ? item [0] : null;
-			let value = (item.length >=2) ? item [1] : null;
-			if ((key == null) || (value == null) || (value instanceof Function)) return null;
-			return method (key, value);
-		});
-	}// map;
-	
-}// menu_items;
-
-
 /********/
 
 

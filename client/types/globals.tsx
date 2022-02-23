@@ -23,7 +23,6 @@ interface GlobalsInterface {
 
 	main: Main,
 
-	master_panel: MasterPanel,
 	clients_page: ClientsPage,
 	projects_page: ProjectsPage,
 
@@ -56,7 +55,6 @@ export const globals: GlobalsInterface = {
 	debugging: true,
 
 	main: null,
-	master_panel: null,
 	clients_page: null,
 	projects_page: null,
 
@@ -74,7 +72,6 @@ export const globals: GlobalsInterface = {
 	})())/* settings */,
 
 	set_setting: (name: string, value: any) => {
-		globals.settings [name] = value;
 		common.set_cookie ("settings", JSON.stringify (globals.settings));
 
 		// fetch (to set user preferences in the database - later)

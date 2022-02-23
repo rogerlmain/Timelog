@@ -1,4 +1,4 @@
-import * as common from "classes/common";
+import { isset, is_empty } from "classes/common";
 
 
 export default class Database {
@@ -19,10 +19,13 @@ export default class Database {
 			"Content-Type": "application/json"
 		}// if;
 
-		return fetch (`/${name}`, fetch_parameters).then (response => {
-			return response.json ()
+		return fetch (`/${name}`, fetch_parameters).then (async response => {
+			let text = await response.text ();
+			if (is_empty (text)) return null;
+			return JSON.parse (text);
 		}).catch (error => {
 			alert (error);
+			return null;
  		});
 
 	}// fetch_data;
@@ -40,7 +43,7 @@ export default class Database {
 	public static save_data (name: string, data: FormData): Promise<Object> {
 		return new Promise ((resolve, reject) => {
 			Database.fetch_row (name, data).then (response => {
-				if (common.isset (response)) return resolve (response);
+				if (isset (response)) return resolve (response);
 				throw "save_data: no result returned";
 			}).catch (error => {
 				alert (error);	

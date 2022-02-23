@@ -1,7 +1,5 @@
 import "pages/initialize";
 
-import * as common from "classes/common";
-
 import React from "react";
 
 import SelectButton from "controls/buttons/select.button";
@@ -12,127 +10,69 @@ import ProjectsPage from "pages/projects";
 import LoggingPage from "pages/logging";
 
 import AccountPanel from "pages/sign.up";
-import TeamPanel from "pages/teams";
-import TasksPanel from "pages/tasks";
 import SettingsPanel from "pages/settings";
-
-import FadePanel from "controls/panels/fade.panel";
+import ExplodingPanel from "./controls/panels/exploding.panel";
 
 import BaseControl, { DefaultProps } from "controls/base.control";
 
-import { menu_items } from "types/constants";
 import { globals } from "types/globals";
-import ExplodingPanel from "./controls/panels/exploding.panel";
+import { delete_cookie, is_null } from "classes/common";
 
 
-
-class ButtonReference implements React.RefObject<SelectButton> { current: SelectButton }
+const master_pages = { 
+	home: "Home", 
+	clients: "Clients", 
+	account: "Account", 
+	projects: "Projects", 
+	logging: "Logging", 
+	settings: "Settings" 
+}// master_pages;
 
 
 interface masterState {
-
-	button_list: Array<SelectButton>;
-	buttons_loaded: boolean;
-
 	eyecandy_visible: boolean;
 	eyecandy_callback: Function;
-
-	contents: any;
-	contents_loaded: boolean;
-
+	page: string;
 }// state;
 
 
 export default class MasterPanel extends BaseControl<DefaultProps, masterState> {
 
-	private button_list: ButtonReference [] = null;
-	private reflist: Array<React.RefObject<any>> = null; // overrides deprecated basecontrol references
-
-
-	private panel_list = {
-		home: <HomePage ref={this.create_reference ("home")} />,
-		clients: <ClientsPage ref={this.create_reference ("clients")} />,
-		account: <AccountPanel ref={this.create_reference ("account")} parent={this.props.parent} />,
-		projects: <ProjectsPage ref={this.create_reference ("projects")} />,
-		team: <TeamPanel ref={this.create_reference ("team")} />,
-		tasks: <TasksPanel ref={this.create_reference ("tasks")} />,
-		logging: <LoggingPage ref={this.create_reference ("logging")} />,
-		history: <div ref={this.create_reference ("history")} onLoad={() => { globals.master_panel.setState ({ eyecandy_visible: false }) }}>placeholder for history</div>
-	}// panel_list;
-
-
-	// Make private when deprecated parent function removed
-	protected create_reference (name: string): React.RefObject<any> {
-		if (common.is_null (this.reflist)) this.reflist = [];
-		if (common.isset (this.reflist [name])) return this.reflist [name];
-		let ref = React.createRef ();
-		this.reflist [name] = ref;
-		return ref;
-	}// create_reference;
-
-
-	private get_button_list () {
-
-		let update_reference = (name: string) => {
-			if (common.isset (this.reflist [name].current)) {
-				return this.reflist [name].current.forceUpdate ();
-			}// if;
-			setTimeout (() => update_reference (name));
-		}// update_reference;
-
-
-		return menu_items.map ((name: string, value: string) => {
-			let reference: ButtonReference = React.createRef ();
-			this.add_button_reference (reference);
-			return (
-				<SelectButton id={value} name={name} key={name} ref={reference} sticky={true}
-					beforeClick={() => { 
-						this.state.contents_loaded = false;
-						this.select_button (reference.current); 
-					}}
-					onClick={() => {
-						this.setState ({ contents: this.panel_list [name] }, () => {
-							this.setState ({ contents_loaded: true }, () => update_reference (name));
-						});
-					}}>
-					{value}
-				</SelectButton>
-			);
-		});
-
-	}// get_button_list;
-
-
-	private add_button_reference (button: ButtonReference) {
-		if (common.is_null (this.button_list)) this.button_list = [];
-		this.button_list.push (button);
-	}/* add_button_reference */;
-
-
-	private select_button (selected_button: SelectButton) {
-		for (let button of this.button_list) {
-			if (button.current == selected_button) continue;
-			button.current.setState ({ selected: false });
+	private button_list () {
+		let result: Array<Object> = null;
+		for (let key in master_pages) {
+			let name = `${key}_button`;
+			let value = master_pages [key as keyof typeof master_pages];
+			if (is_null (result)) result = [];
+			result.push (<SelectButton id={name} name={name} key={name} sticky={true}
+				onClick={() => this.setState ({ page: value })}>
+				{value}
+			</SelectButton>);
 		}// for;
-		this.setState ({ content_loaded: false });
-	}/* select_button */;
+		return result;
+	}// button_list;
 
 
-	private settings_button () {
-		return (<SelectButton sticky={false} onClick={() => {
-			globals.master_panel.setState ({
-				popup_contents: <SettingsPanel />,
-				popup_visible: true
-			});
-		}}>Settings</SelectButton>)
-	}/* settings_button */
+	private page_list () {
+		switch (this.state.page) {
+			case master_pages.clients: return <ClientsPage />;
+			case master_pages.account: return <AccountPanel parent={this.props.parent} />;
+			case master_pages.projects: return <ProjectsPage />;
+			// case master_pages.team: return <TeamPanel />;
+			// case master_pages.tasks: return <TasksPanel />;
+			case master_pages.logging: return <LoggingPage />;
+			case master_pages.settings: return <SettingsPanel />;
+			// case master_pages.history: return <div>Placeholder for History</div>;
+			default: return <HomePage />;
+		}// switch;
+	}// page_list;
 
 
 	private signout_button () {
 		return (
 			<SelectButton sticky={false}
 				onClick={() => {
-					common.delete_cookie ("current_account");
+					delete_cookie ("current_account");
 					globals.main.forceUpdate ();
 				}}>
 				Sign out
@@ -144,21 +84,16 @@ export default class MasterPanel extends BaseControl<DefaultProps, masterState> 
 	/********/
 
 
-	public state: masterState;
+	public state: masterState = {
+		eyecandy_visible: false,
+		eyecandy_callback: null,
+		page: master_pages.home
+	};
 
 
-	public componentDidMount () {
-		this.setState ({
-			buttons_loaded: false,
-			contents_loaded: false,
-			eyecandy_visible: false,
-
-			eyecandy_callback: null,
-			
-			button_list: this.get_button_list (),
-			contents: this.panel_list.home
-		});
-		globals.master_panel = this;
+	public constructor (props: DefaultProps) {
+		super (props);
+		this.state.page = master_pages.home;
 	}// componentDidMount;
 
 
@@ -169,8 +104,8 @@ export default class MasterPanel extends BaseControl<DefaultProps, masterState> 
 				<link rel="stylesheet" href="resources/styles/home.page.css" />
 
 				<div className="home_button_panel">
-					{this.state.button_list}
-					{this.settings_button ()}
+
+					{this.button_list ()}
 					{this.signout_button ()}
 
 					<br /><br />
@@ -182,7 +117,7 @@ export default class MasterPanel extends BaseControl<DefaultProps, masterState> 
 				</div>
 
 				<div className="full-screen horizontal-centering-container" style={{ marginTop: "1em" }}>
-					<ExplodingPanel id="details_panel">{this.state.contents}</ExplodingPanel>
+					<ExplodingPanel id="details_panel">{this.page_list ()}</ExplodingPanel>
 				</div>
 
 			</div>
