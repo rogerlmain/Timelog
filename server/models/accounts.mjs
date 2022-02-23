@@ -55,24 +55,22 @@ class AccountData extends Database {
 
 		];
 
-		this.execute_query (procedure, parameters, (query_error, results, query_fields) => {
+		this.execute_query (procedure, parameters).then  (results => {
 			if ((results == null) || (results [0].length != 1)) throw "Invalid data response: models.save_account";
-			let response_string = JSON.stringify (results [0]).slice (1, -1);
-			response.cookie ("current_account", response_string, { encode: String });
-			response.send ({ account_id: results[0][0].account_id});
+			response.cookie ("current_account", this.cookie_string (results [0]));
+			response.send ({ account_id: results[0][0].account_id });
 		});
 
 	}// save_account;
 
 
-	signin = (fields) => {
-		this.execute_query ("get_account_by_credentials", [fields ["username"], fields ["password"]], (query_error, results, query_fields) => {
-			if ((results == null) || (results [0].length > 1)) throw "Invalid data response: models.signin";
-			if (results [0].length == 1) {
-				let response_string = JSON.stringify (results [0]).slice (1, -1);
-				response.cookie ("current_account", response_string, { encode: String });
-			}// if;
-			response.send ();
+	signin = async (fields) => {
+		this.execute_query ("get_account_by_credentials", [fields ["username"], fields ["password"]]).then (results => {
+			if ((results == null) || (results.length > 1)) throw "Invalid data response: models.signin";
+
+let str = this.cookie_string (results);
+
+			if (results.length == 1) response.cookie ("current_account", this.cookie_string (results), { encode: String });
 		});
 	}// signin;
 

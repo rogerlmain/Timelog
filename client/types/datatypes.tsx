@@ -34,6 +34,9 @@ export class AccountData implements iData {
 	date_created: Date;
 	last_updated: Date;
 
+	granularity: number = 15;  // MAKE DYNAMIC - DEPENDS ON SUBSCRIPTION - SEE FEATURES.XLSX FOR DETAILS
+
+
 	public static parse (json_string: string): AccountData {
 		if (common.not_set (json_string)) return null;
 

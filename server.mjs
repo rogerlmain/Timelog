@@ -1,8 +1,10 @@
 import "./server/globals.mjs";
 
 import express from "express";
-import path, { join } from "path";
 import multiparty from "multiparty";
+import cookieParser from "cookie-parser";
+
+import path, { join } from "path";
 
 import AccountData from "./server/models/accounts.mjs";
 import ClientData from "./server/models/clients.mjs";
@@ -46,6 +48,8 @@ app.process = async (request, response, handler) => {
 
 app.set ("port", process.env.PORT || 3000);
 
+
+app.use (cookieParser ()); 
 
 app.use (express.static (root_path));
 app.use (express.urlencoded ({ extended: false }));

@@ -6,12 +6,8 @@ class Database {
 	connection = null;
 
 
-	data_response_handler = (error, results, fields) => {
-		if (global.is_null (results) || response.response_sent) return;
-		response.send (results [0]);
-		response.response_sent = true;
-	}// data_response_handler;
-
+	cookie_string = (value) => JSON.stringify (value).slice (1, -1);
+	
 
 	parse_integer (value) {
 		let parsed_value = parseInt (value);
@@ -19,11 +15,21 @@ class Database {
 	}// parse_integer;
 	
 	
-	execute_query (procedure, parameters = null, handler = this.data_response_handler) {
-		if (global.isset (parameters) && !Array.isArray (parameters)) parameters = Object.values (parameters);
-		let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
-		this.connection.query (command, parameters, handler);
-		this.connection.end ();
+	execute_query (procedure, parameters = null) {
+		return new Promise ((resolve, reject) => {
+			if (global.isset (parameters) && !Array.isArray (parameters)) parameters = Object.values (parameters);
+			let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
+			this.connection.query (command, parameters, async (error, results, fields) => {
+				if (global.is_null (results)) {
+					if (global.isset (error)) return reject (error);
+					if (response.response_sent) return;
+				}// if;
+				await Promise.resolve (resolve (results [0]));
+				response.send (results [0]);
+				response.response_sent = true;
+			});
+			this.connection.end ();
+		});
 	}// execute_query;
 
 

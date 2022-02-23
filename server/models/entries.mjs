@@ -1,3 +1,4 @@
+import { response } from "express";
 import Database from "../database.mjs";
 
 
@@ -10,13 +11,18 @@ class EntryData extends Database {
 	// }// get_entries;
 
 
-	get_latest_entry () {
+	get_latest_entry = async () => {
 		let procedure = "get_latest_entry";
-		if (global.is_null (global.account)) {
-			response.send ();
-			return;
-		}// if;
+		if (global.is_null (global.account)) return response.send ();
 		this.execute_query (procedure, [account.account_id]);
+		
+// 		.then (results => {
+// 			if ((results == null) || (results.length > 1)) throw "Invalid data response: models.signin";
+			
+// let str = this.cookie_string (results);
+
+// 			if (results.length == 1) response.cookie ("current_entry", this.cookie_string (results), { encode: String });
+// 		});
 	}// get_latest_entry;
 
 

@@ -17,6 +17,7 @@
 		"check-types": "tsc"
 	},
 	"dependencies": {
+		"cookie-parser": "^1.4.6",
 		"core-js": "^3.9.1",
 		"crypto": "^1.0.1",
 		"express": "^4.17.1",
