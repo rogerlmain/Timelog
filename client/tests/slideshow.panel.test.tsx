@@ -1,6 +1,6 @@
 import React from "react";
 
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
+import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
 import SlideshowPanel from "controls/panels/slideshow.panel";
 
 
@@ -29,7 +29,7 @@ export default class ExplodingPanelTest extends BaseControl<DefaultProps, explod
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<SlideshowPanel id="the_test_thingy" index={this.state.index} speed={3000}>
+						<SlideshoswPanel id="the_test_thingy" index={this.state.index} speed={3000}>
 
 							<div>
 								Lorem ipsum dolor sit amet

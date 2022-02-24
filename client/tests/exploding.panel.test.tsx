@@ -1,6 +1,6 @@
 import React from "react";
 
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
+import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import { iResizable } from "client/controls/panels/resize.panel";
 

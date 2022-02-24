@@ -1,7 +1,7 @@
 import React from "react";
 
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
-import FadePanel from "controls/panels/fade.panel";
+import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
+import FadePanel from "client/controls/panels/fade.panel";
 
 
 interface FadePanelTestState extends DefaultState { 

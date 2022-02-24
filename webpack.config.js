@@ -13,15 +13,12 @@ module.exports = {
 	},
 
 	resolve: {
-		extensions: [".ts", ".tsx", ".js"],
+		extensions: [".js", ".jsx"],
 		alias: {
-
 
 tests: path.resolve (__dirname, "client/tests"),
 
-
 			client: path.resolve (__dirname, "client"),
-
 			classes: path.resolve (__dirname, "client/classes"),
 			controls: path.resolve (__dirname, "client/controls"),
 			models: path.resolve (__dirname, "client/models"),
@@ -53,7 +50,7 @@ tests: path.resolve (__dirname, "client/tests"),
 				}// use;
 			},
 			{
-				test: /\.(tsx)?$/,
+				test: /\.(jsx)?$/,
 				use: {
 					loader: "babel-loader",
 					options: {
@@ -66,7 +63,6 @@ tests: path.resolve (__dirname, "client/tests"),
 									"corejs": 3
 								}
 							],
-							"@babel/preset-typescript",
 							"@babel/preset-react"
 						]
 					}/* options */,
