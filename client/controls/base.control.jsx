@@ -1,15 +1,14 @@
-import "types/prototypes";
-
-import * as constants from "types/constants";
-import * as common from "classes/common";
-
 import React from "react";
-
 import ReactDOMServer, { renderToString } from "react-dom/server";
 
 import { AccountData, EntryData } from "types/datatypes";
 import { globals } from "types/globals";
 import { underscore } from "types/constants";
+
+import * as constants from "types/constants";
+import * as common from "classes/common";
+
+import "types/prototypes";
 
 
 export default class BaseControl extends React.Component {

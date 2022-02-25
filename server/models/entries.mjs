@@ -14,7 +14,9 @@ class EntryData extends Database {
 	get_latest_entry () {
 		let procedure = "get_latest_entry";
 		if (global.is_null (global.account)) return response.send ();
-		this.execute_query (procedure, [account.account_id]);
+		this.execute_query (procedure, [account.account_id], data => {
+			let x = data;
+		});
 		
 // 		.then (results => {
 // 			if ((results == null) || (results.length > 1)) throw "Invalid data response: models.signin";

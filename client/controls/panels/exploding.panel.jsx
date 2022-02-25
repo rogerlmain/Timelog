@@ -2,8 +2,8 @@ import React from "react";
 
 import * as common from "classes/common";
 
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
-import ResizePanel, { iResizable, resize_state } from "controls/panels/resize.panel";
+import BaseControl from "client/controls/base.control";
+import ResizePanel, { resize_state } from "controls/panels/resize.panel";
 import FadePanel from "controls/panels/fade.panel";
 
 import { globals } from "types/globals";
@@ -74,7 +74,12 @@ export default class ExplodingPanel extends BaseControl {
 
 	shouldComponentUpdate (next_props, next_state) {
 
-		let updated = !this.same_element (next_state.children, next_props.children);
+let updated = false;		
+try {		
+		updated = !this.same_element (next_state.children, next_props.children);
+} catch	(except) {
+	alert (except);
+}
 
 		if (this.transitioning) return common.is_null (setTimeout (() => this.forceUpdate ()));
 

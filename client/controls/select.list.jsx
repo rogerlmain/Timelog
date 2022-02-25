@@ -1,9 +1,7 @@
 import * as common from "classes/common";
 
-import React, { SyntheticEvent } from "react";
-import BaseControl, { DefaultProps, DefaultState } from "./base.control"
-
-import { iData } from "client/types/datatypes";
+import React from "react";
+import BaseControl from "./base.control"
 
 
 const placeholder_value = 0;

@@ -29,6 +29,23 @@ const master_pages = {
 
 export default class MasterPanel extends BaseControl {
 
+
+	/********/
+
+
+	state = {
+		eyecandy_visible: false,
+		eyecandy_callback: null,
+		page: master_pages.home
+	};
+
+
+	constructor (props) {
+		super (props);
+		this.state.page = master_pages.home;
+	}// componentDidMount;
+
+
 	button_list () {
 		let result = null;
 		for (let key in master_pages) {
@@ -70,22 +87,6 @@ export default class MasterPanel extends BaseControl {
 			</SelectButton>
 		);
 	}// signout_button;
-
-
-	/********/
-
-
-	state = {
-		eyecandy_visible: false,
-		eyecandy_callback: null,
-		page: master_pages.home
-	};
-
-
-	constructor (props) {
-		super (props);
-		this.state.page = master_pages.home;
-	}// componentDidMount;
 
 
 	render () {

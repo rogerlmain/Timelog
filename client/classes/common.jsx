@@ -64,8 +64,9 @@ export function is_null (value) {
 }// is_null;
 
 
+
 export function is_undefined (value) {
-	return (is_null (value) || (value == undefined));
+	return (value == undefined) && not_null (value);
 }// is_undefined;
 
 
@@ -89,15 +90,26 @@ export function not_null (value) {
 }// not_null;
 
 
+export function not_undefined (value) {
+	return !is_undefined (value);
+}// not_undefined;
+
+
 export function null_value (value, replacement, ...nullables) {
 	let result = isset (value, ...nullables) ? value : replacement;
 	return result;
 }// null_value;
 
 
+
+export function null_or_undefined (value) {
+	return (is_null (value) || (value == undefined));
+}// null_or_undefined;
+
+
 export function matching_objects (first_object, second_object) {
 
-	if (is_undefined (first_object) || is_undefined (second_object)) return false;
+	if (null_or_undefined (first_object) || null_or_undefined (second_object)) return false;
 	if (is_object (first_object) && is_object (second_object)) return (JSON.stringify (first_object) == JSON.stringify (second_object));
 	
 	return (first_object == second_object);

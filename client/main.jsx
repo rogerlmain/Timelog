@@ -14,6 +14,13 @@ import SignupPage from "pages/sign.up";
 
 export class Main extends BaseControl {
 
+
+	constructor (props) {
+		super (props);
+		this.state.popup_contents = null;
+	}
+
+
  	state = {
 		popup: false,
 		popup_visible: false,

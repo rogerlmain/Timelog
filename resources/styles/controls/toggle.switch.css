@@ -1,0 +1,25 @@
+div.toggle-switch { 
+	display: inline-flex;
+	flex-direction: row;
+	position: relative;
+	border-radius: 100px;
+	border: solid 1px black;
+}/* div.toggle-switch */
+
+
+div.toggle-switch div.item {
+	width: 26px;
+	height: 26px;
+	cursor: pointer;
+}/* div.toggle-switch div.item */
+
+
+div.toggle-switch div.switch {
+	width: 26px;
+	height: 26px;
+	border-radius: 100px;
+	border: solid 3px white;
+	background-color: black;
+	position: absolute;
+	box-sizing: border-box;
+}/* div.toggle-switch div.switch */

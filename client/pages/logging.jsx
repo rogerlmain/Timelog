@@ -8,7 +8,7 @@ import TimeTool from "types/timetool";
 
 import BaseControl from "controls/base.control";
 
-import { isset, not_empty, not_set } from "client/classes/common";
+import { isset, not_empty, not_undefined } from "client/classes/common";
 
 
 export default class LoggingPage extends BaseControl {
@@ -17,8 +17,15 @@ export default class LoggingPage extends BaseControl {
 	state = {
 		project_id: 0,
 		current_entry: undefined,
+		initialized: false,
 		updating: false
 	}// state;
+
+
+	constructor (props) {
+		super (props);
+		this.state.project_id = 0;
+	}// constructor;
 
 
 	project_selected = () => { return this.state.project_id > 0 }
@@ -51,11 +58,11 @@ export default class LoggingPage extends BaseControl {
 	}// start_time;
 
 
-	logged_in = () => { return not_empty (this.state.current_entry) && isset (this.state.current_entry.item) }
+	logged_in = () => { return isset (this.state.current_entry) }
 
 
 	componentDidMount () {
-		LoggingModel.fetch_latest_entry ().then (data => this.setState ({ current_entry: data }));
+		LoggingModel.fetch_latest_entry ().then (data => this.setState ({ current_entry: data, initialized: true }));
 	}// componentDidMount;
 
 	
@@ -67,7 +74,7 @@ export default class LoggingPage extends BaseControl {
 				<link rel="stylesheet" href="resources/styles/pages/projects.css" />
 				<link rel="stylesheet" href="resources/styles/pages/logging.css" />
 
-				<EyecandyPanel id="log_form_eyecandy" eyecandyText="Loading..." eyecandyVisible={not_set (this.state.current_entry)}>
+				<EyecandyPanel id="log_form_eyecandy" eyecandyText="Loading..." eyecandyVisible={!this.state.initialized}>
 
 
 					{this.logged_in () ? <div className="two-column-grid">

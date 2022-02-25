@@ -1,5 +1,7 @@
 import React from "react";
-import BaseControl from "client/controls/base.control";
+
+import BaseControl from "controls/base.control";
+import ToggleSwitch from "controls/toggle.switch";
 
 import { globals } from "types/globals";
 
@@ -10,7 +12,6 @@ export default class SettingsPanel extends BaseControl {
 	render () {
 		return (
 			<div className="one-piece-form popup-window-form">
-
 
 				{/*  DEPRECATED - NOT CURRENTLY IN USE  */}
 
@@ -32,6 +33,17 @@ export default class SettingsPanel extends BaseControl {
 						globals.master_panel.forceUpdate ();
 					}}>
 				</input>
+
+
+				<label htmlFor="granularity_setting">Granularity</label>
+
+
+				<ToggleSwitch id="granularity" speed={200}>
+					<option>1 Hr</option>
+					<option>15 Mins</option>
+					<option>1 Min</option>
+					<option>Truetime</option>
+				</ToggleSwitch>
 
 			</div>
 		);
