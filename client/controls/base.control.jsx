@@ -57,8 +57,7 @@ export default class BaseControl extends React.Component {
 	execute (method, ...parameters) {
 		return new Promise ((resolve, reject) => {
 			try {
-				if (common.is_function (method)) method (...parameters);
-				resolve (null);
+				if (common.is_function (method)) resolve (method (...parameters));
 			} catch (error) { reject (error) };
 		});
 	}// execute;

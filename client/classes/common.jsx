@@ -179,6 +179,7 @@ export function get_cookie (name) {
 
 
 export function set_cookie (name, value) {
+	if (is_object (value)) value = JSON.stringify (value);
 	document.cookie = `${name}=${value}`;
 }// set_cookie;
 

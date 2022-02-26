@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import path, { join } from "path";
 
 import AccountData from "./server/models/accounts.mjs";
+import AccountOptionsData from "./server/models/account.options.mjs";
 import ClientData from "./server/models/clients.mjs";
 import EntryData from "./server/models/entries.mjs";
 import ProjectData from "./server/models/projects.mjs";
@@ -77,6 +78,22 @@ app.post ("/accounts", function (request, response) {
 				case "company": account_data.get_accounts_by_company (fields.company_id); break;
 				case "project": account_data.get_accounts_by_project (fields.project_id); break;
 				case "task": account_data.get_accounts_by_task (fields.task_id); break;
+				default: break;
+			}// switch;
+		});
+	} catch (except) { console.log (except) }
+
+});
+
+
+app.post ("/account_options", function (request, response) {
+
+	try {
+		app.process (request, response, (fields) => {
+			let account_option_data = new AccountOptionsData ();
+			switch (fields.action) {
+				case "get": account_option_data.get_options (); break;	
+				case "save": account_option_data.save_option (fields.option_id, fields.value); break;
 				default: break;
 			}// switch;
 		});
