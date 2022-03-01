@@ -54,14 +54,13 @@ export function is_function (value) {
 }// is_function;
 
 
-export function is_object (value) {
-	return value instanceof Object;
-}// is_object;
-
-
 export function is_null (value) {
 	return value == null;
 }// is_null;
+
+
+export function is_object (value) { return value instanceof Object }
+export function is_string (value) { return typeof value == "string" }
 
 
 

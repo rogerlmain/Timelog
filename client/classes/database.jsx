@@ -20,9 +20,11 @@ export default class Database {
 		}// if;
 
 		return fetch (`/${name}`, fetch_parameters).then (async response => {
+			let result = null;
 			let text = await response.text ();
 			if (is_empty (text)) return null;
-			return JSON.parse (text);
+			result = JSON.parse (text);
+			return result;
 		}).catch (error => {
 			alert (error);
 			return null;

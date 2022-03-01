@@ -1,14 +1,14 @@
 import React from "react";
 
 import EyecandyPanel from "controls/panels/eyecandy.panel";
-import ProjectSelectorGadget from "./gadgets/selectors/project.selector.gadget";
+import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 import LoggingModel from "models/logging";
 import FadePanel from "client/controls/panels/fade.panel";
-import TimeTool from "types/timetool";
+import TimeTool from "classes/timetool";
 
 import BaseControl from "controls/base.control";
 
-import { isset, not_empty, not_undefined } from "client/classes/common";
+import { isset } from "client/classes/common";
 
 
 export default class LoggingPage extends BaseControl {

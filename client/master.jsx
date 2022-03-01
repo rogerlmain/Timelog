@@ -3,15 +3,16 @@ import React from "react";
 import SelectButton from "controls/buttons/select.button";
 
 import HomePage from "pages/home";
-import ClientsPage from "client/pages/clients";
+import ClientsPage from "pages/clients";
 import ProjectsPage from "pages/projects";
-import LoggingPage from "client/pages/logging";
+import LoggingPage from "pages/logging";
+import ReportsPage from "pages/reports";
 
 import AccountPanel from "pages/sign.up";
 import SettingsPanel from "pages/settings";
 import ExplodingPanel from "./controls/panels/exploding.panel";
 
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 
 import { globals } from "types/globals";
 import { delete_cookie, is_null } from "classes/common";
@@ -23,7 +24,8 @@ const master_pages = {
 	account: "Account", 
 	projects: "Projects", 
 	logging: "Logging", 
-	settings: "Settings" 
+	settings: "Settings",
+	reports: "Reports"
 }// master_pages;
 
 
@@ -70,6 +72,7 @@ export default class MasterPanel extends BaseControl {
 			// case master_pages.tasks: return <TasksPanel />;
 			case master_pages.logging: return <LoggingPage />;
 			case master_pages.settings: return <SettingsPanel />;
+			case master_pages.reports: return <ReportsPage />;
 			// case master_pages.history: return <div>Placeholder for History</div>;
 			default: return <HomePage />;
 		}// switch;

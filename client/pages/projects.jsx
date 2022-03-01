@@ -1,14 +1,12 @@
 
-import React, { BaseSyntheticEvent } from "react";
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
+import React from "react";
+import BaseControl from "client/controls/base.control";
 
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 import ProjectsModel from "models/projects";
 import ProjectForm from "pages/forms/project.form";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import { globals } from "types/globals";
-import { ProjectData } from "types/datatypes";
 import { isset } from "client/classes/common";
 
 

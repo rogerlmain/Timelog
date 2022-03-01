@@ -2,9 +2,9 @@ import React from "react";
 import BaseControl from "controls/base.control";
 
 import { globals } from "types/globals";
-import { not_set } from "classes/common";
 
 import "resources/styles/controls/toggle.switch.css";
+
 
 const item_width = 24;
 

@@ -115,4 +115,3 @@ String.prototype.matches = function (comparison, case_sensitive = false) {
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
 }// matches;
 
-

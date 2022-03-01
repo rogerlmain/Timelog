@@ -1,12 +1,12 @@
 import * as common from "classes/common";
 
-import React, { BaseSyntheticEvent } from "react";
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
+import React from "react";
+import BaseControl from "client/controls/base.control";
+import Container from "controls/container";
 
 import SelectList from "controls/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import ClientsModel from "client/models/clients";
-import { ClientData } from "client/types/datatypes";
 
 
 export default class ClientSelectorGadget extends BaseControl {
@@ -55,7 +55,7 @@ export default class ClientSelectorGadget extends BaseControl {
 
 	render () {
 		return (
-			<div style={{ display: "contents" }}>
+			<Container>
 
 				<label htmlFor={this.client_selector_id}>Client</label>
 
@@ -74,7 +74,7 @@ export default class ClientSelectorGadget extends BaseControl {
 					</SelectList>
 				</EyecandyPanel>
 
-			</div>
+			</Container>
 		);
 	}// render;
 

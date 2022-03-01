@@ -1,0 +1,12 @@
+#report_panel hr {
+	margin: 1em 0;
+	grid-column: 1 / -1;
+}/* #report_panel hr */
+
+div.report-grid div.entry {
+	padding: 0 1em;
+}/* div.report-grid div.entry */
+
+div.report-grid div.entry:not(:first-child) {
+	text-align: right;
+}/* div.report-grid div.entry:not(:first-child) */

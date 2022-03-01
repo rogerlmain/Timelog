@@ -5,7 +5,6 @@
 		"module": "es2015", /* same as es6 */
 		"target": "es2015",
 
-		"moduleResolution": "node",
 		"noEmitOnError": true,
 		"strict": false,
 		"removeComments": false,

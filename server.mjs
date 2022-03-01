@@ -11,6 +11,7 @@ import AccountOptionsData from "./server/models/account.options.mjs";
 import ClientData from "./server/models/clients.mjs";
 import EntryData from "./server/models/entries.mjs";
 import ProjectData from "./server/models/projects.mjs";
+import ReportData from "./server/models/reports.mjs";
 import TaskData from "./server/models/tasks.mjs";
 import MiscData from "./server/models/misc.mjs";
 
@@ -121,6 +122,16 @@ app.post ("/projects", function (request, response) {
 			case "list": project_data.get_projects_by_client (fields.client_id); break;
 			case "details": project_data.get_project (fields.project_id); break;
 			case "save": project_data.save_project (fields); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/reports", function (request, response) {
+	app.process (request, response, (fields) => {
+		let report_data = new ReportData ();
+		switch (fields.action) {
+			case "by_project": report_data.report_by_project (fields.project_id); break;
 		}// switch;
 	});
 });

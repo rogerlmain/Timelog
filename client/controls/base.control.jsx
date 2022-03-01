@@ -319,6 +319,5 @@ export default class BaseControl extends React.Component {
 }// BaseControl;
 
 
-export class Container extends BaseControl {}
 
 

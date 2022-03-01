@@ -1,14 +1,13 @@
 import * as common from "classes/common";
 import * as constants from "types/constants";
 
-import { DefaultState } from "client/controls/base.control";
-import { ClientData } from "types/datatypes";
-import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
-
-import React, { BaseSyntheticEvent } from "react";
-import FormControl, { FormControlProps } from "controls/form.control";
+import React from "react";
+import FormControl from "controls/form.control";
+import Container from "client/controls/container";
 
 import Database from "classes/database";
+
+import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
 
 
 export default class ClientForm extends FormControl {
@@ -88,7 +87,7 @@ export default class ClientForm extends FormControl {
 		let editing = common.isset (client_id);
 
 		return (
-			<div style={{ display: "contents" }}>
+			<Container>
 
 				<form id="client_form" ref={this.client_form}>
 
@@ -116,7 +115,7 @@ export default class ClientForm extends FormControl {
 					<SmallProgressMeter visible={common.isset (this.state.status)} alignment={LeftHand}>{this.state.status}</SmallProgressMeter>
 				</div>
 
-			</div>
+			</Container>
 		);
 	}// render;
 

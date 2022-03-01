@@ -170,6 +170,7 @@ div[class*="column-grid"] label {
 
 .two-column-grid	{ grid-template-columns: repeat(2, min-content) }
 .three-column-grid	{ grid-template-columns: repeat(3, min-content) }
+.four-column-grid	{ grid-template-columns: repeat(4, auto) }
 
 
 /****/

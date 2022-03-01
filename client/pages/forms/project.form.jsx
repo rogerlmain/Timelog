@@ -1,14 +1,13 @@
 import * as constants from "types/constants";
 import * as common from "classes/common";
 
-import { DefaultProps, DefaultState } from "client/controls/base.control";
-import { ProjectData } from "types/datatypes";
-import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
-
-import React, { BaseSyntheticEvent } from "react";
+import React from "react";
 import FormControl from "controls/form.control";
+import Container from "client/controls/container";
 
 import Database from "classes/database";
+
+import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
 
 
 const max_code_length = 5;
@@ -120,7 +119,7 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 		let editing = common.isset (project_id);
 
 		return (
-			<div style={{ display: "contents" }}>
+			<Container>
 				<form id="project_form" ref={this.project_form}>
 
 					<input type="hidden" id="project_id" name="project_id" value={project_id || constants.blank} />
@@ -170,7 +169,7 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 					<SmallProgressMeter visible={common.isset (this.state.status)} alignment={LeftHand}>{this.state.status}</SmallProgressMeter>
 				</div>
 
-			</div>
+			</Container>
 
 		);
 	}// render;
