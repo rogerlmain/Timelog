@@ -10,7 +10,7 @@ create procedure report_by_project (project_id int) begin
 		ent.id as entry_id,
 		ent.start_time,
         ent.end_time,
-        timestampdiff (microsecond, ent.start_time, ent.end_time) as total_time
+        timestampdiff (second, ent.start_time, ent.end_time) as total_time
 	from
 		entries as ent
 	where
