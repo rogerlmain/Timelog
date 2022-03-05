@@ -20,6 +20,16 @@
 }/* root */
 
 
+button, *.unselectable {
+    -webkit-user-select: none;	/* Apple */
+    -ms-user-select: none;		/* Microsoft */
+    user-select: none;			/* Everyone else */
+}/* button, unselectable */
+
+
+*.unselectable * { user-select: inherit }
+
+
 /**** Containers ****/
 
 
@@ -122,6 +132,148 @@
 }/* .form-panel */
 
 
+/**** Class Definitions ****/
+
+
+.full-size {
+	position: absolute;
+	left: 0;
+	top: 0;
+}/* full_size */
+
+
+.header {
+	font-size: 12pt !important;
+	font-weight: bold !important;
+}/* header */
+
+
+.subheader {
+	font-weight: bold;
+	font-style: italic;
+}/* subheader */
+
+
+.scroll-list {
+	border: solid 1px black;
+	border-radius: 0.1em;
+}/* scroll-list */
+
+
+.list-header {
+	margin-bottom: 1em;
+}/* list-title */
+
+
+.list-header > div {
+	font-weight: bold;
+}/* .list-header > div */
+
+
+/**** Debugging ****/
+
+
+.outlined, .outlined * {
+	border: solid 1px red;
+}/* outlined */
+
+
+.gray-outlined {
+	border: none;
+	row-gap: 0.25em;
+}/* .gray-outlined */
+
+
+
+.unsigned-signin {
+	display: flex;
+	flex-direction: column;
+}/* unsigned-signin */
+
+
+.banner-signin {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1em;
+	width: 100%;
+}/* banner-signin */
+
+
+/**** Forms ****/
+
+
+.one-piece-form {
+	grid-template-columns: min-content 1fr;
+	row-gap: 0.2em;
+}/* one-piece-form */
+
+
+/********/
+
+
+.popup-window-form {
+	margin-bottom: 1em;
+	justify-content: center;
+	align-items: center;
+}/* .popup-window-form */
+
+
+.popup-window-form label {
+	text-align: right;
+}/* .popup-window-form label */
+
+
+.flex-aligned-right {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}/* flex-aligned-right */
+
+
+.flex-row-spaced {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.5em;
+}/* flex-row-spaced */
+
+
+.flex-grid {
+	display: inline-grid;
+	flex-direction: row;
+	grid-template-columns: repeat(4, auto);
+	row-gap: 0.2em;
+	column-gap: 1em;
+}/* flex-grid */
+
+
+.form-table label {
+	text-align: right;
+	align-self: center;
+}/* form-table */
+
+
+.tagline {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}/* tagline */
+
+
+.eyecandy-cell {
+	display: inline-flex;
+	flex-direction: row;
+	align-items: center;
+}/* eyecandy-cell */
+
+
+.eyecandy-cell > div { display: inline-block }
+
+.eyecandy-cell > div:first-child { margin-right: 1em }
+
+
 /**** Button Panels ****/
 
 
@@ -146,9 +298,10 @@
 
 
 .shadow-box {
-	border: "solid 1px black";
+	border: solid 1px black;
 	box-shadow: 2px 2px 10px #333;
 	padding: 2em;
+	margin: 2em;
 }/* .shadow-box */
 
 
@@ -177,6 +330,7 @@ div[class*="column-grid"] label {
 
 
 .double-column { grid-column: span 2 }
+.full-row { grid-column: 1 / -1 }
 
 
 /**** Image Styles ****/

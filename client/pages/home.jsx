@@ -1,14 +1,15 @@
 import React from "react";
 import BaseControl from "client/controls/base.control";
+import Credentials from "classes/credentials";
 
-import { globals } from "types/globals";
+import { isset } from "classes/common";
 
 
 export default class HomePage extends BaseControl {
 
 	render () {
-		let name = globals.current_account ? globals.current_account.first_name : "person with money";
-		return (<div>Welcome {name}</div>);
+		let name = Credentials.username ();
+		return (<div>Welcome {isset (name) ? name : "person with money"}</div>);
 	}// render;
 
 }// HomePage;

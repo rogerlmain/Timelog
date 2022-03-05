@@ -5,39 +5,39 @@ export default class ProjectData extends Database {
 
 	save_project (data) {
 
-		let project_response = null;
+		let procedure = "save_project";
 
-		let save_project_details = () => {
-			let procedure = "save_project";
-			let parameters = [
-				parseInt (data.client_id),
-				global.isset (data.project_id) ? parseInt (data.project_id) : null,
-				data.project_name, 
-				data.project_code, 
-				data.project_description,
-				false
-			];
-			this.execute_query (procedure, parameters);//, project_handler);
-		}/* save_project_details */;
+		let parameters = {
+			client_id: data.client_id,
+			project_id: data.project_Id,
+			project_name: data.project_name, 
+			project_code: data.project_code, 
+			derscription: data.project_description,
+			deleted: false
+		}// parameters;
 
-
-		save_project_details ();
-
+		this.execute_query (procedure, parameters);
 
 	}/* save_project */;
 
 
 	get_project (project_id) {
+
 		let procedure = "get_project";
 		let parameters = [project_id];
+
 		this.execute_query (procedure, parameters);
+
 	}/* get_project */;
 
 
 	get_projects_by_client (client_id) {
+
 		let procedure = "get_projects_by_client";
 		let parameters = [client_id];
+
 		this.execute_query (procedure, parameters);
+		
 	}/* get_projects_by_client */;
 
 

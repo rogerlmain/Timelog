@@ -1,3 +1,4 @@
+import Credentials from "classes/credentials";
 import { isset, is_empty } from "classes/common";
 
 
@@ -6,26 +7,19 @@ export default class Database {
 
 	static async fetch_data (name, parameters) {
 
-		let form_data = (parameters instanceof FormData);
+		let fetch_parameters = null;
 
-		let fetch_parameters = {
+		if (!(parameters instanceof FormData)) throw "Invalid data passed to Database.fetch_data";
+
+		parameters.append ("account_id", Credentials.account_id ());
+		
+		fetch_parameters = {
 			method: "post",
 			credentials: "same-origin",
-			body: form_data ? parameters : JSON.stringify (parameters)
+			body: parameters
 		}// fetch_parameters;
 
-		if (!form_data) fetch_parameters ["headers"] = {
-			"Accept": "application/json",
-			"Content-Type": "application/json"
-		}// if;
-
-		return fetch (`/${name}`, fetch_parameters).then (async response => {
-			let result = null;
-			let text = await response.text ();
-			if (is_empty (text)) return null;
-			result = JSON.parse (text);
-			return result;
-		}).catch (error => {
+		return fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (response => { return response }).catch (error => {
 			alert (error);
 			return null;
  		});

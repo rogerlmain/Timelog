@@ -1,10 +1,6 @@
 import { directions } from "types/constants";
 
-import * as common from "classes/common";
-import { Dimensions } from "./datatypes";
-import { Component } from "react";
-
-
+import { is_null } from "classes/common";
 
 
 Array.prototype.insert = function (item, index) {
@@ -111,7 +107,7 @@ String.prototype.padded = function (length, character, direction = null) {
 
 
 String.prototype.matches = function (comparison, case_sensitive = false) {
-	if (common.is_null (comparison)) return false;
+	if (is_null (comparison)) return false;
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
 }// matches;
 

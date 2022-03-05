@@ -1,10 +1,7 @@
-import * as common from "classes/common";
+import React from "react";
 
-import React, { BaseSyntheticEvent } from "react";
+import BaseControl from "client/controls/base.control";
 
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
-
-import Database from "client/classes/database";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import ClientSelectorGadget from "./gadgets/selectors/client.selector.gadget";
@@ -12,7 +9,6 @@ import ClientForm from "pages/forms/client.form";
 import ClientModel from "models/clients";
 
 import { globals } from "types/globals";
-import { ClientData } from "client/types/datatypes";
 
 
 export default class ClientsPage extends BaseControl {

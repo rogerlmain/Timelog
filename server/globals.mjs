@@ -27,12 +27,15 @@ global.not_set = value => { return !global.isset (value) }
 global.is_empty = value => { return not_set (value) || (Array.isArray (value) && (value.length == 0))}
 global.not_empty = value => { return !is_empty (value) }
 
+global.is_boolean = value => { return typeof value == "boolean" }
+global.not_boolean = value => { return !is_boolean (value) }
+
 
 /********/
 
 
 global.signed_in = () => {
-	return global.not_null (new Cookies ().get_cookie ("account"));
+	return global.not_null (new Cookies ().get_cookie ("current_account"));
 }// signed_in;
 
 

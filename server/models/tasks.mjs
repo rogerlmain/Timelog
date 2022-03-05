@@ -6,21 +6,21 @@ class TaskData extends Database {
 	get_tasks_by_assignee (account_id) {
 		let procedure = "call get_tasks_by_assignee (?)";
 		let parameters = [account_id];
-		this.execute_query (procedure, parameters);
+		this.data_query (procedure, parameters);
 	}// get_tasks_by_assignee;
 
 
 	get_tasks_by_project (project_id) {
 		let procedure = "call get_tasks_by_project (?)";
 		let parameters = [project_id];
-		this.execute_query (procedure, parameters);
+		this.data_query (procedure, parameters);
 	}// get_tasks_by_project;
 
 
 	get_task (task_id) {
 		let procedure = "call get_task (?)";
 		let parameters = [task_id];
-		this.execute_query (procedure, parameters);
+		this.data_query (procedure, parameters);
 	}// get_task;
 
 
@@ -37,7 +37,7 @@ class TaskData extends Database {
 			estimate: this.parse_integer (fields.estimate), 
 			deadline: fields.deadline
 		};
-		this.execute_query (procedure, parameters);
+		this.data_query (procedure, parameters);
 	}// save;
 
 }// models;

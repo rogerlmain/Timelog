@@ -1,12 +1,13 @@
-import React from "react";
-
 import * as common from "classes/common";
 
-import BaseControl from "client/controls/base.control";
+import React from "react";
+
+import Permissions from "classes/settings";
+
+import BaseControl from "controls/base.control";
 import ResizePanel, { resize_state } from "controls/panels/resize.panel";
 import FadePanel from "controls/panels/fade.panel";
 
-import { globals } from "types/globals";
 import { renderToString } from "react-dom/server";
 
 
@@ -32,12 +33,11 @@ export default class ExplodingPanel extends BaseControl {
 
 	/********/
 
-
 	static defaultProps = {
 
 		id: null,
 
-		speed: globals.settings.animation_speed,
+		speed: Permissions.animation_speed (),
 
 		stretchOnly: false,
 

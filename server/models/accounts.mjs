@@ -2,32 +2,27 @@ import Database from "../database.mjs";
 import Cookies from "../cookies.mjs";
 
 
-class AccountData extends Database {
-
-
-	current_account = () => {
-		return JSON.parse (new Cookies ().get_cookie ("current_account"));
-	}// current_account;
+export default class AccountData extends Database {
 
 
 	get_accounts_by_company = (company_id) => {
 		let procedure = "call get_accounts_by_company (?)";
 		let parameters = [company_id];
-		this.execute_query (procedure, parameters);
+		this.data_query (procedure, parameters);
 	}// get_accounts_by_company;
 
 
 	get_accounts_by_project = (project_id) => {
 		let procedure = "call get_accounts_by_project (?)";
 		let parameters = [project_id];
-		this.execute_query (procedure, parameters);
+		this.data_query (procedure, parameters);
 	}// get_accounts_by_project;
 
 
 	get_accounts_by_task = (task_id) => {
 		let procedure = "call get_accounts_by_task (?)";
 		let parameters = [task_id];
-		this.execute_query (procedure, parameters);
+		this.data_query (procedure, parameters);
 	}// get_accounts_by_task;
 
 
@@ -55,35 +50,35 @@ class AccountData extends Database {
 
 		];
 
-		this.execute_query (procedure, parameters).then  (results => {
+		this.data_query (procedure, parameters).then  (results => {
 			if ((results == null) || (results [0].length != 1)) throw "Invalid data response: models.save_account";
-			response.cookie ("current_account", this.cookie_string (results [0]));
 			response.send ({ account_id: results[0][0].account_id });
 		});
 
 	}// save_account;
 
 
-	signin = async (fields) => {
-		this.execute_query ("get_account_by_credentials", [fields ["username"], fields ["password"]]).then (results => {
-			if ((results == null) || (results.length > 1)) throw "Invalid data response: models.signin";
+	signin = (fields, response) => {
+		this.data_query ("get_account_by_credentials", [fields ["username"], fields ["password"]]).then (async results => {
 
-let str = this.cookie_string (results);
+			let account = (global.is_null (results) || (results.length > 1)) ? null : results [0];
 
-			if (results.length == 1) response.cookie ("current_account", this.cookie_string (results), { encode: String });
+			if (global.is_null (account)) throw "Invalid data response: models.signin";
+
+			let result = { 
+				credentials: account, 
+				settings: await this.data_query ("get_account_settings", [account.account_id]),
+				options: await this.data_query ("get_account_options", [account.company_id])
+			};
+
+			response.send (result);
+
+			this.connection.end ();
+
 		});
 	}// signin;
 
 
-	signed_in = () => {
-		return this.cookies.get_cookie ("current_account") != null;
-	}// signed_in;
-
-	signed_out = () => {
-		return this.cookies.get_cookie ("current_account") == null;
-	}// signed_out */
-
 }// AccountData;
 
 
-export default AccountData;

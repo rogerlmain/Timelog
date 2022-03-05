@@ -1,11 +1,10 @@
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
-
-import * as common from "classes/common";
-
-import { globals } from "types/globals";
+import BaseControl from "client/controls/base.control";
 
 import React from "react";
 import SlideshowPanel from "./slideshow.panel";
+import Permissions from "classes/settings";
+
+import * as common from "classes/common";
 
 
 const eyecandy_index = 1;
@@ -17,7 +16,7 @@ export default class EyecandyPanel extends BaseControl {
 
 	static defaultProps = { 
 		id: null,
-		speed: globals.settings.animation_speed,
+		speed: Permissions.animation_speed (),
 		stretchOnly: false
 	};
 	

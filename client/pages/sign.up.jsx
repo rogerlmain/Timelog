@@ -2,13 +2,14 @@ import * as React from "react";
 
 import * as common from "classes/common";
 
-import BaseControl, {  } from "client/controls/base.control";
-import ExplodingPanel from "controls/panels/exploding.panel";
-
+import Credentials from "classes/credentials";
+import BaseControl from "client/controls/base.control";
 import AccountsModel from "models/accounts";
 
-import { account_types } from "types/constants";
+import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
+
+import { account_types } from "types/constants";
 
 
 export default class SignupPage extends BaseControl {
@@ -52,7 +53,7 @@ export default class SignupPage extends BaseControl {
 
 		let parent = this.props.parent;
 
-		if (common.is_null (this.account)) this.account = this.current_account ();
+		if (common.is_null (this.account)) this.account = Credentials.account_id ();
 		let account_id = common.isset (this.account) ? this.account.account_id : undefined;
 
 		return (

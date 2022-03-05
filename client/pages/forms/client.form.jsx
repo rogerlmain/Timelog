@@ -8,6 +8,7 @@ import Container from "client/controls/container";
 import Database from "classes/database";
 
 import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
+import Credentials from "client/classes/credentials";
 
 
 export default class ClientForm extends FormControl {
@@ -29,6 +30,7 @@ export default class ClientForm extends FormControl {
 		let form_data = new FormData (this.client_form.current);
 
 		form_data.append ("action", "save");
+		form_data.append ("company_id", Credentials.company_id ());
 
 		this.setState ({ status: "Saving..." }, () => Database.save_data ("clients", form_data).then (data => {
 			this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
@@ -93,7 +95,7 @@ export default class ClientForm extends FormControl {
 
 					<input type="hidden" id="client_id" name="client_id" value={client_id || constants.blank} />
 
-					<div className={"two-column-grid"}>
+					<div className="two-column-grid">
 
 						<label htmlFor="client_name">Client Name</label>
 						<input type="text" id="client_name" name="client_name" defaultValue={this.client_data ("name") || constants.blank} required={true} 

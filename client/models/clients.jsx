@@ -1,5 +1,4 @@
 import Database from "classes/database";
-import { ClientData } from "client/types/datatypes";
 
 
 export default class ClientsModel {

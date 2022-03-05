@@ -11,6 +11,8 @@ import MasterPanel from "client/master";
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
+import { globals } from "types/globals";
+
 
 export class Main extends BaseControl {
 
@@ -18,7 +20,8 @@ export class Main extends BaseControl {
 	constructor (props) {
 		super (props);
 		this.state.popup_contents = null;
-	}
+		globals.main = this;
+	}// constructor;
 
 
  	state = {

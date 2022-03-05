@@ -1,7 +1,5 @@
 import * as consts from "types/constants";
 
-import { Dimensions } from "types/datatypes";
-
 
 export function scroll_sizes (control) {
 	return {

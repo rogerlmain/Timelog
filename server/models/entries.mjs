@@ -7,35 +7,27 @@ class EntryData extends Database {
 	// get_entries (client_id, project_id) {
 	// 	let procedure = "call get_entries (?, ?)";
 	// 	let parameters = [ client_id, project_id ];
-	// 	this.execute_query (procedure, parameters);
+	// 	this.data_query (procedure, parameters);
 	// }// get_entries;
 
 
-	get_latest_entry () {
-		let procedure = "get_latest_entry";
-		if (global.is_null (global.account)) return response.send ();
-		this.execute_query (procedure, [account.account_id], data => {
-			let x = data;
-		});
-		
-// 		.then (results => {
-// 			if ((results == null) || (results.length > 1)) throw "Invalid data response: models.signin";
-			
-// let str = this.cookie_string (results);
-
-// 			if (results.length == 1) response.cookie ("current_entry", this.cookie_string (results), { encode: String });
-// 		});
-
+	get_latest_entry (account_id) {
+		this.data_query ("get_latest_entry", [account_id]).then (data => {
+			global.response.send (data);
+			this.connection.end ();
+ 		});
 	}// get_latest_entry;
 
 
-	save_entry (project_id) {
-		let procedure = "save_entry";
+	save_entry (account_id, project_id) {
 		let parameters = [
-			account.account_id,
+			account_id,
 			parseInt (project_id)
 		];
-		this.execute_query (procedure, parameters);
+		this.data_query ("save_entry", parameters).then (data => {
+			global.response.send (data);
+			this.connection.end ();
+ 		});
 	}// save_entry;
 
 }// EntryData;

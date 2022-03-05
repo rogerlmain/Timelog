@@ -41,8 +41,6 @@ export default class LoggingPage extends BaseControl {
 
 		const hour_coef = 3600000;
 
-		let account = this.current_account ();
-
 		let elapsed = this.elapsed_time ();
 		let minutes = (elapsed % hour_coef);
 

@@ -19,7 +19,7 @@ export class SmallProgressMeter extends BaseControl {
 	render () {
 		return (
 			<FadePanel id="progress_meter" visible={this.props.visible}>
-				<div className="two-column-grid">
+				<div className="two-column-grid unselectable">
 					{this.props.alignment == LeftHand && <img className="progress-image" src="resources/images/save.indicator.gif" />}
 					{this.props.children}
 					{this.props.alignment == RightHand && <img className="progress-image" src="resources/images/save.indicator.gif" />}

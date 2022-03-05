@@ -18,9 +18,9 @@ class DataModel {
 	}// data_response_handler;
 
 
-	execute_query (procedure, parameters, handler = this.data_response_handler) {
+	data_query (procedure, parameters, handler = this.data_response_handler) {
 		connection.query (procedure, parameters, handler);
-	}// execute_query;
+	}// data_query;
 
 }// DataModels;
 

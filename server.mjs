@@ -2,12 +2,12 @@ import "./server/globals.mjs";
 
 import express from "express";
 import multiparty from "multiparty";
-import cookieParser from "cookie-parser";
 
 import path, { join } from "path";
 
 import AccountData from "./server/models/accounts.mjs";
-import AccountOptionsData from "./server/models/account.options.mjs";
+import AccountSettingsData from "./server/models/settings.mjs";
+import AccountOptionsData from "./server/models/options.mjs";
 import ClientData from "./server/models/clients.mjs";
 import EntryData from "./server/models/entries.mjs";
 import ProjectData from "./server/models/projects.mjs";
@@ -27,43 +27,28 @@ app.process = async (request, response, handler) => {
 	//await new Promise (resolve => setTimeout (resolve, 5000)); // For debugging - used to pause
 
 	let request_data = request.body;
-	let formdata = request.headers ["content-type"].startsWith ("multipart/form-data");
 
 	global.request = request;
 	global.response = response;
-	global.account = new AccountData ().current_account ();
 
-	if (formdata) {
-		new multiparty.Form ().parse (request, (error, fields, files) => {
-			for (let key of Object.keys (fields)) {
-				request_data [key] = (fields [key].length > 1) ? fields [key] : fields [key][0];
-			}// for;
-			global.request.data = request_data;
-			handler (request_data);
-		});
-		return;
-	}// if;
+	new multiparty.Form ().parse (request, (error, fields, files) => {
+		for (let key of Object.keys (fields)) {
+			request_data [key] = (fields [key].length > 1) ? fields [key] : fields [key][0];
+		}// for;
+		global.data = request_data;
+		global.account_id = parseInt (request_data.account_id);
+		handler (request_data);
+	});
 
-	handler (request_data);
 }// process;
 
 
 app.set ("port", process.env.PORT || 3000);
 
 
-app.use (cookieParser ()); 
-
 app.use (express.static (root_path));
 app.use (express.urlencoded ({ extended: false }));
 app.use (express.json ());
-
-
-app.post ("/signin", function (request, response) {
-	app.process (request, response, (fields) => {
-		let account_data = new AccountData ();
-		account_data.signin (fields);
-	});
-});
 
 
 /********/
@@ -87,27 +72,11 @@ app.post ("/accounts", function (request, response) {
 });
 
 
-app.post ("/account_options", function (request, response) {
-
-	try {
-		app.process (request, response, (fields) => {
-			let account_option_data = new AccountOptionsData ();
-			switch (fields.action) {
-				case "get": account_option_data.get_options (); break;	
-				case "save": account_option_data.save_option (fields.option_id, fields.value); break;
-				default: break;
-			}// switch;
-		});
-	} catch (except) { console.log (except) }
-
-});
-
-
 app.post ("/clients", function (request, response) {
 	app.process (request, response, (fields) => {
 		let client_data = new ClientData ();
 		switch (fields.action) {
-			case "list": client_data.get_clients (new AccountData ().current_account ().company_id); break;
+			case "list": client_data.get_clients (parseInt (fields.account_id, response)); break;
 			case "details": client_data.get_client (fields.client_id); break;
 			case "save": client_data.save_client (fields); break;
 		}// switch;
@@ -137,6 +106,14 @@ app.post ("/reports", function (request, response) {
 });
 
 
+app.post ("/signin", function (request, response) {
+	app.process (request, response, fields => {
+		let account_data = new AccountData ();
+		account_data.signin (fields, response);
+	});
+});
+
+
 app.post ("/tasks", function (request, response) {
 	app.process (request, response, (fields) => {
 		let task_data = new TaskData ();
@@ -154,8 +131,8 @@ app.post ("/logging", function (request, response) {
 	app.process (request, response, (fields) => {
 		let entry_data = new EntryData ();
 		switch (fields.action) {
-			case "latest": entry_data.get_latest_entry (); break;
-			case "logging": entry_data.save_entry (fields.project_id); break;
+			case "latest": entry_data.get_latest_entry (fields.account_id); break;
+			case "logging": entry_data.save_entry (fields.account_id, fields.project_id); break;
 		}// switch;
 	});
 });
@@ -168,6 +145,38 @@ app.post ("/misc", function (request, response) {
 			case "status": misc_data.get_statuses (); break;
 		}// switch;
 	});
+});
+
+
+app.post ("/options", function (request, response) {
+
+	try {
+		app.process (request, response, (fields) => {
+			let account_option_data = new AccountOptionsData ();
+			switch (fields.action) {
+				case "get": account_option_data.get_options (); break;	
+				case "save": account_option_data.save_option (fields); break;
+				default: break;
+			}// switch;
+		});
+	} catch (except) { console.log (except) }
+
+});
+
+
+app.post ("/settings", function (request, response) {
+
+	try {
+		app.process (request, response, (fields) => {
+			let account_setting_data = new AccountSettingsData ();
+			switch (fields.action) {
+				case "get": account_setting_data.get_settings (); break;	
+				case "save": account_setting_data.save_setting (fields.setting_id, fields.value); break;
+				default: break;
+			}// switch;
+		});
+	} catch (except) { console.log (except) }
+
 });
 
 

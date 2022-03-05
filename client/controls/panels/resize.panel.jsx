@@ -1,5 +1,6 @@
 import React from "react";
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
+import BaseControl from "client/controls/base.control";
+import Permissions from "classes/settings";
 
 import { globals } from "types/globals";
 
@@ -83,7 +84,7 @@ export default class ResizePanel extends BaseControl {
 		id: null,
 		parent: null,
 		resize: resize_state.false,
-		speed: globals.settings.animation_speed,
+		speed: Permissions.animation_speed (),
 		stretchOnly: false
 	}// defaultProps;
 

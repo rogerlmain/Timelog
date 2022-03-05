@@ -1,0 +1,6 @@
+div.section-header {
+	font-weight: bold;
+	border-bottom: solid 1px var(--border-color);
+	margin: 1em 0;
+	padding-bottom: 0.2em;
+}/* div.section-header */

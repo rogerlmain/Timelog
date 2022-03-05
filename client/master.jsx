@@ -21,11 +21,11 @@ import { delete_cookie, is_null } from "classes/common";
 const master_pages = { 
 	home: "Home", 
 	clients: "Clients", 
-	account: "Account", 
 	projects: "Projects", 
 	logging: "Logging", 
-	settings: "Settings",
-	reports: "Reports"
+	reports: "Reports",
+	account: "Account", 
+	settings: "Settings"
 }// master_pages;
 
 
@@ -54,6 +54,8 @@ export default class MasterPanel extends BaseControl {
 			let name = `${key}_button`;
 			let value = master_pages [key];
 			if (is_null (result)) result = [];
+
+			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP
 			result.push (<SelectButton id={name} name={name} key={name} sticky={false}
 				onClick={() => this.setState ({ page: value })}>
 				{value}
@@ -83,7 +85,7 @@ export default class MasterPanel extends BaseControl {
 		return (
 			<SelectButton sticky={false}
 				onClick={() => {
-					delete_cookie ("current_account");
+					localStorage.clear ();
 					globals.main.forceUpdate ();
 				}}>
 				Sign out
@@ -103,10 +105,13 @@ export default class MasterPanel extends BaseControl {
 					{this.button_list ()}
 					{this.signout_button ()}
 
-					<br /><br />
 					<SelectButton onClick={() => {
 						alert ("setting contents");
 						this.setState ({ contents: <div>New Content</div>});
+					}} style={{ 
+						position: "absolute",
+						right: "1em",
+						top: "1em"
 					}}>TEST</SelectButton>
 
 				</div>

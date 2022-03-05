@@ -49,7 +49,7 @@ export default class ToggleSwitch extends BaseControl {
 		let speed = this.props.speed ?? globals.settings.animation_speed;
 
 		return (
-			<div id={this.props.id} className="toggle-switch">
+			<div id={this.props.id} className="toggle-switch unselectable">
 
 				{this.props.children ? this.props.children.map (child => {
 					return <div className="item" key={child.props.children} onClick={event => {

@@ -1,7 +1,7 @@
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
+import BaseControl from "client/controls/base.control";
 import React from "react";
 
-import { globals } from "types/globals";
+import Permissions from "classes/settings";
 
 import * as common from "classes/common";
 
@@ -39,7 +39,7 @@ export default class FadePanel extends BaseControl {
 		parent: null,
 		animate: false,
 		visible: false,
-		speed: globals.settings.animation_speed
+		speed: Permissions.animation_speed ()
 	}// defaultProps;
 
 

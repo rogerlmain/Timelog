@@ -1,16 +1,16 @@
 import * as React from "react";
 
-
-import BaseControl, { DefaultProps } from "client/controls/base.control";
+import BaseControl from "client/controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
+
+import { globals } from "client/types/globals";
 
 
 const bad_credentials = <div className="login-error">
 	That doesn't sound right. Check your username<br />
 	(email) and password and try again.
 </div>
-
 
 
 export default class SigninPage extends BaseControl {
@@ -26,6 +26,28 @@ export default class SigninPage extends BaseControl {
 		button_visible: true
 	
 	}// state;
+
+
+	sign_in () {
+		fetch ("/signin", {
+			method: "post",
+			body: new FormData (document.getElementById ("signin_form")),
+			credentials: "same-origin"
+		}).then (response => response.json ()).then (info => {
+
+			for (let key of Object.keys (info)) {
+				localStorage.setItem (key, JSON.stringify (info [key]));
+			}// for;
+
+			if (this.signed_in ()) return globals.main.forceUpdate ();
+
+			this.setState ({ 
+				eyecandy_visible: false,
+				error_message: bad_credentials
+			});
+
+		});
+	}// sign_in;
 
 
 	render () {
@@ -59,6 +81,7 @@ export default class SigninPage extends BaseControl {
 				</div>
 
 				<div className="tagline">
+
 					<div>
 						<label style={{ marginRight: "0.5em" }}>New to RMPC Timelog?</label>
 						<a onClick={() => parent.setState ({ signing_up: true })}>Sign up</a>
@@ -68,17 +91,7 @@ export default class SigninPage extends BaseControl {
 
 						<EyecandyPanel id="signin_eyecandy" eyecandyText="Signing you in." eyecandyVisible={this.state.eyecandy_visible}
 						
-							onEyecandy={() => fetch ("/signin", {
-								method: "post",
-								body: new FormData (document.getElementById ("signin_form")),
-								credentials: "same-origin"
-							}).then (() => {
-								if (this.signed_in ()) return parent.forceUpdate ();
-								this.setState ({ 
-									eyecandy_visible: false,
-									error_message: bad_credentials
-								});
-							})}>
+							onEyecandy={this.sign_in.bind (this)}>
 
 							<div className="middle-right-container">
 								<button onClick={() => this.setState ({ 

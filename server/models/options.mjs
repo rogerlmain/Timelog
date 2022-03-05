@@ -4,13 +4,13 @@ import Database from "../database.mjs";
 export default class AccountOptionsData extends Database {
 
 
-	get_options = () => this.execute_query ("get_account_options", [global.account.account_id]);
+	get_options = () => this.execute_query ("get_account_options", [global.account_id]);
 
 
-	save_option (option_id, value) {
+	save_option (values) {
 
 		let procedure = "save_account_option";
-		let parameters = [global.account.account_id, option_id, value];
+		let parameters = [values.company_id, values.option_id, values.value];
 
 		this.execute_query (procedure, parameters);
 

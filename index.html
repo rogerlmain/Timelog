@@ -13,20 +13,27 @@
 	<script type="module" src="publish/main.js"></script>
 
 	<style>
+
 		#debug_container {
 			position: absolute;
 			right: 2em;
 			top: 2em;
-		}
+		}/* #debug_container */
+
+		div.inset {
+			display: flex;
+			padding: 1em;
+		}/* div.inset */
+		
 	</style>
 
 </head>
 
 
 <body>
-	<div id="program_panel" class="full-screen" style="display: flex">
+	<div id="program_panel" class="full-screen inset">
 
-		<div class="two-column-grid">
+		<div class="two-column-grid" style="display: none">
 
 			<div>
 
