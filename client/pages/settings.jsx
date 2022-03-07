@@ -8,12 +8,20 @@ import ToggleSwitch from "controls/toggle.switch";
 
 import OptionsModel from "models/options";
 
+import CreditCardForm from "pages/forms/credit.card.form";
+
 import { option_types, globals } from "types/globals";
 
 import "resources/styles/pages.css";
 
 
 export default class SettingsPanel extends BaseControl {
+
+
+	state = { 
+		granularity: 1,
+		cc_form_showing: false 
+	}// state;
 
 
 	componentDidMount () {
@@ -24,6 +32,14 @@ export default class SettingsPanel extends BaseControl {
 	render () {
 		return (
 			<div className="one-piece-form">
+
+				<CreditCardForm showing={this.state.cc_form_showing} 
+					onCancel={() => this.setState ({ granularity: Options.granularity () })}
+					onSubmit={() => OptionsModel.save_option (option_types.granularity, this.state.granularity).then (data => {
+						Options.set (JSON.stringify (data));
+						this.setState ({ cc_form_showing: false });
+					})}>
+				</CreditCardForm>
 
 				<div className="full-row section-header">User Settings</div>
 
@@ -39,14 +55,13 @@ export default class SettingsPanel extends BaseControl {
 
 				<label htmlFor="granularity_setting">Granularity</label>
 				<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-					<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={this.state.granularity} onChange={async data => {
-						if (data.option <= this.state.granularity) return true;
-						if (confirm ("It's gonna cost you - wanna pay?")) { // TO DO - BUILD AND LINK TO BILLING POPUP WINDOW
-							await OptionsModel.save_option (option_types.granularity, data.option);
-							return true; 
-						}// if;
-						return false;
-					}}>
+					<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={this.state.granularity} 
+
+						onChange={(data) => { 
+							this.setState ({ cc_form_showing: (data.option > this.state.granularity) });
+							this.setState ({ granularity: data.option });
+							return true;
+						}}>
 
 						<option>1 Hr</option>
 						<option>15 Mins</option>

@@ -1,14 +1,27 @@
 import React from "react";
-import BaseControl, { DefaultProps } from "client/controls/base.control";
+import BaseControl from "client/controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
+import PopupWindow from "pages/gadgets/popup.window";
+
+export default class CreditCardForm extends BaseControl {
 
 
-export default class CreditCardGadget extends BaseControl {
+	static defaultProps = { 
+		showing: false,
+		onSubmit: null,
+		onCancel: null
+	}// defaultProps;
+
+
+	shouldComponentUpdate (new_props) {
+		if (new_props.showing != this.props.showing) this.setState ({ showing: new_props.showing });
+		return true;
+	}// shouldComponentUpdate;
 
 
 	render () {
 
-		return (
+		return (<PopupWindow id="credit_card_form" showing={this.state.showing}>
 
 			<div className="flex-grid payment-form" style={{ margin: "1.5em 0" }}>
 
@@ -48,7 +61,12 @@ export default class CreditCardGadget extends BaseControl {
 
 			</div>
 
-		);
+			<div className="button-bar">
+				<button onClick={this.props.onSubmit}>Submit</button>
+				<button onClick={() => this.setState ({ showing: false }, this.props.onCancel)}>Cancel</button>
+			</div>
+
+		</PopupWindow>);
 	}// render;
 
-}// CreditCardGadget;
+}// CreditCardForm;
