@@ -55,7 +55,7 @@ export default class SettingsPanel extends BaseControl {
 
 				<label htmlFor="granularity_setting">Granularity</label>
 				<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-					<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={this.state.granularity} 
+					<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={this.state.granularity} singleStep={true}
 
 						onChange={(data) => { 
 							this.setState ({ cc_form_showing: (data.option > this.state.granularity) });

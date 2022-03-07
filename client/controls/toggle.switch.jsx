@@ -12,10 +12,19 @@ const item_width = 24;
 export default class ToggleSwitch extends BaseControl {
 
 
-	switch = React.createRef ();
+	static defaultProps = {
+		id: null,
+		speed: null,
+		value: null,		
+		singleStep: false,
+		onChange: null,
+	}// defaultProps;
 
 
 	state = { option: 1 }
+
+
+	switch = React.createRef ();
 
 
 	transition_end (event) {
@@ -56,6 +65,8 @@ export default class ToggleSwitch extends BaseControl {
 
 						let selection = Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
 
+						if ((this.props.singleStep) && (Math.abs (selection - this.state.option) > 1)) selection = this.state.option + ((selection > this.state.option) ? 1 : -1);
+						
 						this.setState ({
 							previous: this.state.option,
 							option: selection
