@@ -39,16 +39,19 @@ export default class ReportsPage extends BaseControl {
 		
 		return this.state.entries.map (entry => {
 
-			let day_text = entry.start_time.same_day (current_day) ? null : (isset (entry.start_time) ? entry.start_time.format (Date.formats.full_date) : null);
+			let start_time = new Date (entry.start_time);
+			let end_time = new Date (entry.end_time);
+
+			let day_text = start_time.same_day (current_day) ? null : (isset (start_time) ? start_time.format (Date.formats.full_date) : null);
 
 			if (entry.total_time == 0) return;
-			if (isset (day_text)) current_day = entry.start_date.get_date ();
+			if (isset (day_text)) current_day = start_time.get_date ();
 
 			return <Container key={`result_${entry.entry_id}`}>
 				<div className="entry">{day_text}</div>
-				<div className="entry">{entry.start_time.format (Date.formats.time)}</div>
-				<div className="entry">{entry.end_time.format (Date.formats.time)}</div>
-				<div className="entry">{Date.elapsed (entry.total_time * 60)}</div>
+				<div className="entry">{start_time.format (Date.formats.timestamp)}</div>
+				<div className="entry">{end_time.format (start_time.same_day (end_time) ? Date.formats.timestamp : Date.formats.full_datetime)}</div>
+				<div className="entry">{Date.elapsed (entry.total_time)}</div>
 			</Container>
 
 		});
@@ -64,8 +67,10 @@ export default class ReportsPage extends BaseControl {
 
 		this.state.entries.map (entry => {
 
-			let active_year = entry.start_time.get_year ();
-			let active_month = Date.month_name (entry.start_time.get_month ());
+			let start_time = Date.validated (entry.start_time);
+
+			let active_year = start_time.get_year ();
+			let active_month = Date.month_name (start_time.get_month ());
 
 			let item = isset (entry_list) ? entry_list.find (element => { return is_object (element) && (element.year == active_year) && (element.month == active_month) }) : null;
 
@@ -90,8 +95,8 @@ export default class ReportsPage extends BaseControl {
 
 			return <Container>
 				<div className="entry" style={{ columnWidth: "min-content" }}>{active_year}</div>
-				<div className="entry" style={{ gridColumn: "2 / 4" }}>{active_month}</div>
-				<div className="entry">{Date.elapsed (item.value * 60)}</div>
+				<div className="entry" style={{ gridColumn: "2 / 4", textAlign: "left" }}>{active_month}</div>
+				<div className="entry">{Date.elapsed (item.value)}</div>
 			</Container>
 
 		}));
@@ -105,7 +110,8 @@ export default class ReportsPage extends BaseControl {
 		
 		this.state.entries.map (entry => {
 
-			let year = entry.start_time.get_year ();
+			let start_time = Date.validated (entry.start_time);
+			let year = start_time.get_year ();
 
 			if (is_null (entry_list)) entry_list = {}
 			if (is_null (entry_list [year])) return entry_list [year] = entry.total_time;
@@ -118,7 +124,7 @@ export default class ReportsPage extends BaseControl {
 			let value = entry_list [year];
 			return <Container>
 				<div className="entry" style={{ gridColumn: "1 / 4" }}>{year}</div>
-				<div className="entry">{Date.elapsed (value * 60)}</div>
+				<div className="entry">{Date.elapsed (value)}</div>
 			</Container>
 		}));
 
@@ -150,7 +156,7 @@ export default class ReportsPage extends BaseControl {
 
 		return <Container>
 			<div className="entry" style={{ gridColumn: "1 / 4" }}>Total</div>
-			<div className="entry">{Date.elapsed (total * 60)}</div>
+			<div className="entry">{Date.elapsed (total)}</div>
 		</Container>
 
 	}// show_totals;
@@ -189,7 +195,7 @@ export default class ReportsPage extends BaseControl {
 			</FadePanel>
 
 			<FadePanel id="report_results_panel" visible={has_data}>
-				<div className="four-column-grid report-grid outlined">
+				<div className="four-column-grid report-grid">
 					{(this.state.granularity < 4) && <Container>
 						{this.list_entries ()}
 						<hr />

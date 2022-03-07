@@ -1,6 +1,6 @@
-import { directions, empty } from "types/constants";
+import { blank, directions, empty } from "types/constants";
 
-import { is_null } from "classes/common";
+import { is_null, is_string } from "classes/common";
 
 
 Array.prototype.insert = function (item, index) {
@@ -23,14 +23,16 @@ Array.prototype.remove = function (element) {
 /**** Date Helper Items ****/
 
 
-Date.minute_coef = 60000;
+Date.minute_coef = 60;
 Date.hour_coef = Date.minute_coef * 60;
 Date.day_coef = Date.hour_coef * 24;
 
 
 Date.formats = {
 	full_date: "w, MMMM d, yyyy",
-	full_timestamp: "w, MMMM d, yyyy - H:mm ap",
+	full_datetime: "w, MMMM d, yyyy - H:mm ap",
+
+	timestamp: "H:mm ap",
 
 	database_date: "yyyy-MM-dd",
 	database_timestamp: "yyyy-MM-dd HH:mm"
@@ -47,7 +49,8 @@ Date.is_date = (candidate) => { return (candidate instanceof Date) }
 Date.not_date = (candidate) => { return !this.is_date (candidate) }
 
 
-Date.elapsed = function (elapsed_time) {
+// Date.elapsed: returns a time period in minutes in the format: dd:hh:mm (may need to adjust for other formats)
+Date.elapsed = function (elapsed_time /* in minutes */) {
 
 	let days = Math.floor (elapsed_time / Date.day_coef);
 	let hours = Math.floor ((elapsed_time - (days * Date.day_coef)) / Date.hour_coef);
@@ -72,9 +75,9 @@ Date.validated = (date) => {
 /**** Date Prototype Functions ****/
 
 
-Date.prototype.get_date = (date) => { return new Date (this.format (date, Date.formats.database_date)) }
-Date.prototype.get_month = (date) => { return isset (date = this.validated (date)) ? date.getMonth () : null }
-Date.prototype.get_year = (date) => { return isset (date = this.validated (date)) ? date.getFullYear () : null }
+Date.prototype.get_date = function () { return new Date (this.format (Date.formats.database_date)) }
+Date.prototype.get_month = function () { return this.getMonth () }
+Date.prototype.get_year = function () { return this.getFullYear () }
 
 
 Date.prototype.round_hours = function (direction) {
@@ -92,16 +95,15 @@ Date.prototype.round_hours = function (direction) {
 }// round_hours;
 
 
-Date.prototype.same_day = function (date_one, date_two) {
+Date.prototype.same_day = function (input_date) {
 
-	date_one = Date.validated (date_one);
-	date_two = Date.validated (date_two);
+	let new_date = Date.validated (input_date);
 
-	if (is_null (date_one) || is_null (date_two)) return false;
+	if (is_null (new_date)) return false;
 	
-	if (date_one.getDate () != date_two.getDate ()) return false;
-	if (date_one.getMonth () != date_two.getMonth ()) return false;
-	if (date_one.getFullYear () != date_two.getFullYear ()) return false;
+	if (this.getDate () != new_date.getDate ()) return false;
+	if (this.getMonth () != new_date.getMonth ()) return false;
+	if (this.getFullYear () != new_date.getFullYear ()) return false;
 
 	return true;
 
@@ -140,7 +142,11 @@ Date.prototype.format = function (selected_format) {
 	let hours = this.getHours ();
 	let month = this.getMonth ();
 
-	return selected_format.replace ("MMMM", "!!").replace ("w", "@@").
+	let result = (selected_format.replace ? selected_format : blank);
+
+	result = result.replace ("MMMM", "!!").replace ("w", "@@");
+
+	return result.
 		replace ("yyyy", this.getFullYear ().toString ()).
 		replace ("MM", (month + 1).toString ().padStart (2, "0")).
 		replace ("dd", this.getDate ().toString ().padStart (2, "0")).

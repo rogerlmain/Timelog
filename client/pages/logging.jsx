@@ -83,10 +83,10 @@ export default class LoggingPage extends BaseControl {
 			<Break />
 
 			<div>Start</div>
-			<div>: {new Date (entry.start_time).format (Date.formats.full_timestamp)}</div>
+			<div>: {new Date (entry.start_time).format (Date.formats.full_datetime)}</div>
 
 			<div>Stop</div>
-			<div>: {new Date ().round_hours (Date.rounding_direction.down).format (Date.formats.full_timestamp)}</div>
+			<div>: {new Date ().round_hours (Date.rounding_direction.down).format (Date.formats.full_datetime)}</div>
 
 			<div>Elapsed</div>
 			<div style={{ color: `var(--${(elapsed_time > (8 * Date.hour_coef) ? "warning-color" : "default-color")})` }}>: {elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time) }</div>
