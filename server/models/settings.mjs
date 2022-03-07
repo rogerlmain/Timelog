@@ -4,7 +4,10 @@ import Database from "../database.mjs";
 export default class AccountSettingsData extends Database {
 
 
-	get_settings = () => this.execute_query ("get_account_settings", [global.account.account_id]);
+	get_settings = () => { 
+		let result = this.data_query ("get_account_settings", [global.account.account_id], true);
+		return result;
+	}/* get_settings */;
 
 
 	save_setting (setting_id, value) {
@@ -18,4 +21,3 @@ export default class AccountSettingsData extends Database {
 
 
 }/* AccountSettingsData */;
- 

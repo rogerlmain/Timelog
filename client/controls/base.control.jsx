@@ -46,7 +46,10 @@ export default class BaseControl extends React.Component {
 			try {
 				if (is_function (method)) resolve (method (...parameters));
 				resolve ();
-			} catch (error) { reject (error) };
+			} catch (error) { 
+				alert (error);
+				reject (error);
+			};
 		});
 	}// execute;
 

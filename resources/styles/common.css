@@ -2,8 +2,12 @@
 
 :root {
 
+	--default-color: black;
+
 	--border-color: black;
 	--highlight-color: #FFF2CC;
+
+	--warning-color: #A00;
 
 	--double-margin: 2em;
 	--double-padding: 2em;
@@ -104,6 +108,20 @@ button, *.unselectable {
 	grid-column: 1;
 	grid-row: 1;
 }/* .overlay-container > * */
+
+
+.right-justified-container {
+	display: flex;
+	flex-direction: row;
+    justify-content: flex-end;
+}/* .right-justified-container */
+
+
+.fully-justified-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}/* .fully-justified-container */
 
 
 /********/
@@ -208,19 +226,14 @@ button, *.unselectable {
 }/* one-piece-form */
 
 
+.two-piece-form {
+	grid-template-columns: repeat(2, min-content 1fr);
+	column-gap: 0.5em;
+	row-gap: 0.2em;
+}/* two-piece-form */
+
+
 /********/
-
-
-.popup-window-form {
-	margin-bottom: 1em;
-	justify-content: center;
-	align-items: center;
-}/* .popup-window-form */
-
-
-.popup-window-form label {
-	text-align: right;
-}/* .popup-window-form label */
 
 
 .flex-aligned-right {
@@ -253,13 +266,17 @@ button, *.unselectable {
 }/* form-table */
 
 
-.tagline {
+.aside {
+
+	font-style: italic;
+	font-size: 9pt;
+	font-weight: bold;
+
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between;
 	align-items: center;
-	width: 100%;
-}/* tagline */
+
+}/* aside */
 
 
 .eyecandy-cell {
@@ -280,18 +297,10 @@ button, *.unselectable {
 .button-bar {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    align-self: flex-end;
+    column-gap: 0.25em;
     margin-top: 1em;
-    z-index: 1;
-    position: relative;
 }/* .button-bar */
-
-
-.eyecandy-button-panel {
-	display: flex;
-	flex-direction: row;
-    justify-content: flex-end;
-}/* .eyecandy-button-panel */
 
 
 /**** Frame Styles ****/
@@ -326,7 +335,7 @@ div[class*="column-grid"] label {
 .four-column-grid	{ grid-template-columns: repeat(4, auto) }
 
 
-/****/
+/********/
 
 
 .double-column { grid-column: span 2 }
@@ -346,3 +355,5 @@ div[class*="column-grid"] label {
 		display: inline-flex;
 	}
 				
+
+

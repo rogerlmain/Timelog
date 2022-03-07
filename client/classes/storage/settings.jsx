@@ -15,6 +15,9 @@ export default class Settings extends LocalStorage {
 		return null;
 	}// get;
 
-	static animation_speed = () => { return Settings.get (setting_types.animation_speed) ?? default_settings.animation_speed };
+	static animation_speed = () => { 
+		let result = Settings.get (setting_types.animation_speed) ?? default_settings.animation_speed;
+		return result;
+	};
 
 }// Settings;

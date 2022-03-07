@@ -104,6 +104,9 @@ label {
 }/* label */
 
 
+select { padding-left: 0.25em }
+
+
 select:not([multiple]) {
 	height: var(--double-height);
 }/* select:not(multiple) */

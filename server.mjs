@@ -9,7 +9,7 @@ import AccountData from "./server/models/accounts.mjs";
 import AccountSettingsData from "./server/models/settings.mjs";
 import AccountOptionsData from "./server/models/options.mjs";
 import ClientData from "./server/models/clients.mjs";
-import EntryData from "./server/models/entries.mjs";
+import LoggingData from "./server/models/logging.mjs";
 import ProjectData from "./server/models/projects.mjs";
 import ReportData from "./server/models/reports.mjs";
 import TaskData from "./server/models/tasks.mjs";
@@ -35,7 +35,6 @@ app.process = async (request, response, handler) => {
 		for (let key of Object.keys (fields)) {
 			request_data [key] = (fields [key].length > 1) ? fields [key] : fields [key][0];
 		}// for;
-		global.data = request_data;
 		global.account_id = parseInt (request_data.account_id);
 		handler (request_data);
 	});
@@ -84,6 +83,40 @@ app.post ("/clients", function (request, response) {
 });
 
 
+app.post ("/logging", function (request, response) {
+	app.process (request, response, async fields => {
+		let logging_data = new LoggingData ();
+		switch (fields.action) {
+			case "logging": logging_data.save_log_entry (fields); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/misc", function (request, response) {
+	app.process (request, response, (fields) => {
+		let misc_data = new MiscData ();
+		switch (fields.action) {
+			case "status": misc_data.get_statuses (); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/options", function (request, response) {
+	try {
+		app.process (request, response, (fields) => {
+			let account_option_data = new AccountOptionsData ();
+			switch (fields.action) {
+				case "get": account_option_data.get_options (); break;	
+				case "save": account_option_data.save_option (fields); break;
+				default: break;
+			}// switch;
+		});
+	} catch (except) { console.log (except) }
+});
+
+
 app.post ("/projects", function (request, response) {
 	app.process (request, response, (fields) => {
 		let project_data = new ProjectData ();
@@ -106,6 +139,20 @@ app.post ("/reports", function (request, response) {
 });
 
 
+app.post ("/settings", function (request, response) {
+	try {
+		app.process (request, response, (fields) => {
+			let account_setting_data = new AccountSettingsData ();
+			switch (fields.action) {
+				case "get": account_setting_data.get_settings (); break;	
+				case "save": account_setting_data.save_setting (fields.setting_id, fields.value); break;
+				default: break;
+			}// switch;
+		});
+	} catch (except) { console.log (except) }
+});
+
+
 app.post ("/signin", function (request, response) {
 	app.process (request, response, fields => {
 		let account_data = new AccountData ();
@@ -124,59 +171,6 @@ app.post ("/tasks", function (request, response) {
 			case "save": task_data.save (fields); break;
 		}// switch;
 	});
-});
-
-
-app.post ("/logging", function (request, response) {
-	app.process (request, response, (fields) => {
-		let entry_data = new EntryData ();
-		switch (fields.action) {
-			case "latest": entry_data.get_latest_entry (fields.account_id); break;
-			case "logging": entry_data.save_entry (fields.account_id, fields.project_id); break;
-		}// switch;
-	});
-});
-
-
-app.post ("/misc", function (request, response) {
-	app.process (request, response, (fields) => {
-		let misc_data = new MiscData ();
-		switch (fields.action) {
-			case "status": misc_data.get_statuses (); break;
-		}// switch;
-	});
-});
-
-
-app.post ("/options", function (request, response) {
-
-	try {
-		app.process (request, response, (fields) => {
-			let account_option_data = new AccountOptionsData ();
-			switch (fields.action) {
-				case "get": account_option_data.get_options (); break;	
-				case "save": account_option_data.save_option (fields); break;
-				default: break;
-			}// switch;
-		});
-	} catch (except) { console.log (except) }
-
-});
-
-
-app.post ("/settings", function (request, response) {
-
-	try {
-		app.process (request, response, (fields) => {
-			let account_setting_data = new AccountSettingsData ();
-			switch (fields.action) {
-				case "get": account_setting_data.get_settings (); break;	
-				case "save": account_setting_data.save_setting (fields.setting_id, fields.value); break;
-				default: break;
-			}// switch;
-		});
-	} catch (except) { console.log (except) }
-
 });
 
 

@@ -1,4 +1,4 @@
-import { directions } from "types/constants";
+import { directions, empty } from "types/constants";
 
 import { is_null } from "classes/common";
 
@@ -18,6 +18,143 @@ Array.prototype.remove = function (element) {
 	if (index < 0) return;
 	this.splice (index, 1);
 }// remove;
+
+
+/**** Date Helper Items ****/
+
+
+Date.minute_coef = 60000;
+Date.hour_coef = Date.minute_coef * 60;
+Date.day_coef = Date.hour_coef * 24;
+
+
+Date.formats = {
+	full_date: "w, MMMM d, yyyy",
+	full_timestamp: "w, MMMM d, yyyy - H:mm ap",
+
+	database_date: "yyyy-MM-dd",
+	database_timestamp: "yyyy-MM-dd HH:mm"
+}// formats;
+
+
+Date.rounding_direction = {
+	up		: "up",
+	down	: "down"
+}// rounding_direction;
+
+
+Date.is_date = (candidate) => { return (candidate instanceof Date) }
+Date.not_date = (candidate) => { return !this.is_date (candidate) }
+
+
+Date.elapsed = function (elapsed_time) {
+
+	let days = Math.floor (elapsed_time / Date.day_coef);
+	let hours = Math.floor ((elapsed_time - (days * Date.day_coef)) / Date.hour_coef);
+	let mins = Math.floor ((elapsed_time - ((days * Date.day_coef) + (hours * Date.hour_coef))) / Date.minute_coef);
+
+	return `${((days > 0) ? `${days}:` : empty)}${((days > 0) ? hours.padded (2) : hours)}:${mins.padded (2)}`;
+
+}// elapsed;
+
+
+Date.fromGMT = function (date_string) { return new Date (new Date (date_string).toLocaleString ()).format (Date.formats.database_timestamp) }
+
+Date.month_name = (month) => { return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month] }
+
+
+Date.validated = (date) => {
+	if (is_string (date)) date = new Date (date);
+	return (Date.is_date (date)) ? date : null;
+}// validated;
+
+
+/**** Date Prototype Functions ****/
+
+
+Date.prototype.get_date = (date) => { return new Date (this.format (date, Date.formats.database_date)) }
+Date.prototype.get_month = (date) => { return isset (date = this.validated (date)) ? date.getMonth () : null }
+Date.prototype.get_year = (date) => { return isset (date = this.validated (date)) ? date.getFullYear () : null }
+
+
+Date.prototype.round_hours = function (direction) {
+
+	let result = new Date (this);
+
+	if (direction == Date.rounding_direction.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
+
+	result.setMinutes (0);
+	result.setSeconds (0);
+	result.setMilliseconds (0);
+
+	return result;
+
+}// round_hours;
+
+
+Date.prototype.same_day = function (date_one, date_two) {
+
+	date_one = Date.validated (date_one);
+	date_two = Date.validated (date_two);
+
+	if (is_null (date_one) || is_null (date_two)) return false;
+	
+	if (date_one.getDate () != date_two.getDate ()) return false;
+	if (date_one.getMonth () != date_two.getMonth ()) return false;
+	if (date_one.getFullYear () != date_two.getFullYear ()) return false;
+
+	return true;
+
+}// same_day;
+
+
+Date.prototype.same_month = function (date_one, date_two) {
+
+	date_one = Date.validated (date_one);
+	date_two = Date.validated (date_two);
+
+	if (date_one.getMonth () != date_two.getMonth ()) return false;
+	if (date_one.getFullYear () != date_two.getFullYear ()) return false;
+
+	return true;
+
+}// same_month;
+
+
+Date.prototype.same_year = function (date_one, date_two) {
+
+	date_one = Date.validated (date_one);
+	date_two = Date.validated (date_two);
+
+	if (date_one.getFullYear () != date_two.getFullYear ()) return false;
+
+	return true;
+
+}// same_year;
+
+
+Date.prototype.format = function (selected_format) {
+
+	const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+	let hours = this.getHours ();
+	let month = this.getMonth ();
+
+	return selected_format.replace ("MMMM", "!!").replace ("w", "@@").
+		replace ("yyyy", this.getFullYear ().toString ()).
+		replace ("MM", (month + 1).toString ().padStart (2, "0")).
+		replace ("dd", this.getDate ().toString ().padStart (2, "0")).
+		replace ("HH", hours.toString ().padStart (2, "0")).
+		replace ("mm", this.getMinutes ().padded (2)).
+		replace ("M", (month + 1).toString ()).
+		replace ("d", this.getDate ().toString ()).
+		replace ("H", ((hours > 12) ? hours - 12 : hours).toString ()).
+		replace ("ap", (hours < 12) ? "am" : "pm").
+
+		replace ("!!", Date.month_name (month)).
+		replace ("@@", weekdays [this.getDay ()]);
+
+}// format;
 
 
 /********/

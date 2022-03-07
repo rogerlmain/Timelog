@@ -15,6 +15,9 @@ export default class Options extends LocalStorage {
 		return null;
 	}// get;
 
-	static granularity = () => { return Options.get (option_types.granularity ?? default_options.granularity) };
+	static granularity = () => { 
+		let result = Options.get (option_types.granularity ?? default_options.granularity);
+		return result;
+	};
 
 }// Options;

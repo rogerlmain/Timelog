@@ -19,18 +19,11 @@ export class Main extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		this.state.popup_contents = null;
 		globals.main = this;
 	}// constructor;
 
 
- 	state = {
-		popup: false,
-		popup_visible: false,
-		signing_up: false,
-
-		popup_contents: null
-	 }// state;
+ 	state = { signing_up: false }
 
 
     render () {
@@ -41,32 +34,11 @@ export class Main extends BaseControl {
 
 				<link rel="stylesheet" href="resources/styles/main.css" />
 
-{/*
- 			// 	{/* DEBUG CODE * /}
-
- 			// 	<div className="gray-outlined"
-			// 		style={{
-			// 			position: "absolute",
-			// 			left: "2em",
-			// 			top: "2em",
-			// 			zIndex: 25,
-			// 			display: "flex",
-			// 			flexDirection: "column",
-			// 			alignItems: "stretch"
-			// 		}}>
-
- 			// 		<button onClick={() => { alert (this.show_states (true)); }}>show states</button>
- 			// 		<button onClick={() => { alert (document.getElementById ("available_members_list").clientWidth) }}>Show width</button>
- 			// 	</div>
-
-
- 				{/* LIVE CODE */}
-
 				<div className="page-header">
 					<div className="title">RMPC Timelog</div>
 					<div className="tagline">Make every second count</div>
 				</div>
-
+				
  				<ExplodingPanel id="main_panel">
 					{this.signed_in () ? <MasterPanel parent={this} /> : (this.state.signing_up ? <SignupPage parent={this} /> : <SigninPage parent={this} />)}
  				</ExplodingPanel>

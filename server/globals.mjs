@@ -5,6 +5,7 @@ import Cookies from "./cookies.mjs";
 
 
 global.blank = "";
+global.space = " ";
 
 
 /********/

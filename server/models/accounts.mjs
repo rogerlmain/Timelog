@@ -1,5 +1,7 @@
 import Database from "../database.mjs";
-import Cookies from "../cookies.mjs";
+import AccountOptionsData from "./options.mjs";
+import AccountSettingsData from "./settings.mjs";
+import LoggingData from "./logging.mjs";
 
 
 export default class AccountData extends Database {
@@ -61,14 +63,15 @@ export default class AccountData extends Database {
 	signin = (fields, response) => {
 		this.data_query ("get_account_by_credentials", [fields ["username"], fields ["password"]]).then (async results => {
 
-			let account = (global.is_null (results) || (results.length > 1)) ? null : results [0];
+			global.account = (global.is_null (results) || (results.length > 1)) ? null : results [0];
 
 			if (global.is_null (account)) throw "Invalid data response: models.signin";
 
 			let result = { 
 				credentials: account, 
-				settings: await this.data_query ("get_account_settings", [account.account_id]),
-				options: await this.data_query ("get_account_options", [account.company_id])
+				settings: await (new AccountSettingsData ().get_settings ()),
+				options: await (new AccountOptionsData ().get_options ()),
+				logging: (await (new LoggingData ().latest_log_entry ())) [0]
 			};
 
 			response.send (result);
@@ -80,5 +83,4 @@ export default class AccountData extends Database {
 
 
 }// AccountData;
-
 

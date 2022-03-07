@@ -1,7 +1,7 @@
 import BaseControl from "client/controls/base.control";
 import React from "react";
 
-import Permissions from "classes/settings";
+import Permissions from "classes/storage/settings";
 
 import * as common from "classes/common";
 
@@ -10,6 +10,20 @@ export default class FadePanel extends BaseControl {
 
 
 	dom_control = React.createRef ();
+
+
+	static defaultProps = {
+		id: null,
+		animate: true,
+		visible: false,
+		speed: Permissions.animation_speed ()
+	}// defaultProps;
+
+
+	constructor (props) {
+		super (props);
+		if (common.is_null (this.props.id)) throw "FadePanel requires an ID";
+	}// constructor;
 
 
 	transition_start (event) {
@@ -29,24 +43,6 @@ export default class FadePanel extends BaseControl {
 		}// switch;
 		this.forceUpdate ();
 	}// transition_end;
-
-
-	/********/
-
-
-	static defaultProps = {
-		id: null,
-		parent: null,
-		animate: false,
-		visible: false,
-		speed: Permissions.animation_speed ()
-	}// defaultProps;
-
-
-	constructor (props) {
-		super (props);
-		if (common.is_null (this.props.id)) throw "FadePanel requires an ID";
-	}// constructor;
 
 
 	componentDidMount () {

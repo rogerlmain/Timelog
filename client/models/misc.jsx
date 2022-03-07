@@ -7,7 +7,7 @@ export default class MiscModel extends DataModel {
 
 	static fetch_statuses (callback) {
 		let parameters = new FormData ();
-		parameters.append ("action", "status");
+		parameters.set ("action", "status");
 		Database.fetch_data ("misc", parameters).then (callback);
 	}// fetch_statuses;
 

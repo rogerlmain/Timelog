@@ -1,14 +1,22 @@
 import React from "react";
 
-import EyecandyPanel from "controls/panels/eyecandy.panel";
-import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
-import LoggingModel from "models/logging";
-import FadePanel from "client/controls/panels/fade.panel";
-import TimeTool from "classes/timetool";
-
 import BaseControl from "controls/base.control";
 
-import { isset } from "client/classes/common";
+import EyecandyPanel from "controls/panels/eyecandy.panel";
+import LoggingModel from "models/logging";
+import FadePanel from "client/controls/panels/fade.panel";
+
+import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
+
+import Logging from "classes/storage/logging";
+
+import { not_empty } from "classes/common";
+
+import "resources/styles/controls/treeview.css";
+import "resources/styles/pages/projects.css";
+import "resources/styles/pages/logging.css";
+import Container from "client/controls/container";
+import Break from "client/controls/html/line.break";
 
 
 export default class LoggingPage extends BaseControl {
@@ -16,7 +24,6 @@ export default class LoggingPage extends BaseControl {
 
 	state = {
 		project_id: 0,
-		current_entry: undefined,
 		initialized: false,
 		updating: false
 	}// state;
@@ -31,73 +38,82 @@ export default class LoggingPage extends BaseControl {
 	project_selected = () => { return this.state.project_id > 0 }
 
 	
-	elapsed_time () {
-		let start = this.state.current_entry.start_time;
-		return new Date ().getTime () - new Date (start).getTime ();
+	set_logging = (data) => {
+
+		let project_id = (not_empty (data) ? data.project_id : 0);
+		let entry = (not_empty (data) ? data : null);
+
+		this.setState ({ 
+			project_id: project_id,
+			updating: false
+		});
+
+		Logging.set ("logging", entry);
+
+	}/* set_logging */;
+
+
+	elapsed_time (start_time) {
+		return new Date ().round_hours (Date.rounding_direction.down).getTime () - new Date (start_time).getTime ();
 	}// elapsed_time;
 
 
-	billable_time () {
+	billable_time (elapsed_time) {
 
-		const hour_coef = 3600000;
-
-		let elapsed = this.elapsed_time ();
-		let minutes = (elapsed % hour_coef);
+//		let minutes = (elapsed % hour_coef);
 
 		return "TO BE CALCULATED - ENSURE CORRECT LOGIN, FIRST"; //(elapsed - minutes) + Math.round (minutes / account.granularity) * account.granularity;
 
 	}// billable_time;
 
 
-	start_time () {
-		let start_time = new Date (this.state.current_entry.start_time);
-		if (TimeTool.same_day (start_time, new Date ())) return TimeTool.format (start_time, TimeTool.formats.time);
-		return TimeTool.format (start_time, TimeTool.formats.compact);
-	}// start_time;
+	log_details () {
+
+		let entry = Logging.get_all ();
+		let elapsed_time = this.elapsed_time (entry.start_time);
+
+		return <div className="two-column-grid">
+
+			<div>Client</div>
+			<div>: {entry.client_name}</div>
+
+			<div>Project</div>
+			<div>: {entry.project_name}</div>
+
+			<Break />
+
+			<div>Start</div>
+			<div>: {new Date (entry.start_time).format (Date.formats.full_timestamp)}</div>
+
+			<div>Stop</div>
+			<div>: {new Date ().round_hours (Date.rounding_direction.down).format (Date.formats.full_timestamp)}</div>
+
+			<div>Elapsed</div>
+			<div style={{ color: `var(--${(elapsed_time > (8 * Date.hour_coef) ? "warning-color" : "default-color")})` }}>: {elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time) }</div>
+
+			<Break />
+
+			<div>Billable</div>
+			<div>: {this.billable_time (elapsed_time)}</div> 
+
+		</div>
+	}// log_details;
 
 
-	logged_in = () => { return isset (this.state.current_entry) }
+	componentDidMount = () => this.setState ({ initialized: true });
 
 
-	componentDidMount () {
-		LoggingModel.fetch_latest_entry ().then (data => this.setState ({ current_entry: data, initialized: true }));
-	}// componentDidMount;
-
-	
 	render () {
+
+		let logged_in = Logging.logged_in ();
+
 		return (
 			<div id="log_panel">
-
-				<link rel="stylesheet" href="resources/styles/controls/treeview.css" />
-				<link rel="stylesheet" href="resources/styles/pages/projects.css" />
-				<link rel="stylesheet" href="resources/styles/pages/logging.css" />
 
 				<EyecandyPanel id="log_form_eyecandy" eyecandyText="Loading..." eyecandyVisible={!this.state.initialized}>
 
 
-					{this.logged_in () ? <div className="two-column-grid">
-
-
-						<div>Client</div>
-						<div>: {this.state.current_entry.client_name}</div>
-
-						<div>Project</div>
-						<div>: {this.state.current_entry.project_name}</div>
-
-						<div style={{ gridColumn: "1 / -1", height: "0.5em" }}></div>
-
-						<div>Start</div>
-						<div>: {this.start_time ()}</div>
-
-						<div>Elapsed</div>
-						<div>: {TimeTool.elapsed (this.elapsed_time ())}</div>
-
-						<div style={{ gridColumn: "1 / -1", height: "0.5em" }}></div>
-
-						<div>Billable</div>
-						<div>: {this.billable_time ()}</div> 
-
-					</div> : <div>
+					{logged_in ? this.log_details () : <div>
 
 						<ProjectSelectorGadget id="logging_project_selector" parent={this} 
 							hasHeader={true} headerSelectable={false}
@@ -111,19 +127,15 @@ export default class LoggingPage extends BaseControl {
 				<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 					<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 					
-						eyecandyText={`Logging you ${this.logged_in () ? "out" : "in"}...`} 
+						eyecandyText={`Logging you ${logged_in ? "out" : "in"}...`} 
 						eyecandyVisible={this.state.updating}
 						eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
 
-						onEyecandy={() => { LoggingModel.log (this.state.project_id).then (data => this.setState ({ 
-							project_id: (isset (data) ? data.project_id : 0),
-							current_entry: data,
-							updating: false
-						})) }}>
+						onEyecandy={() => { LoggingModel.log (this.state.project_id).then (this.set_logging)}}>
 
-						<FadePanel id="login_button" visible={this.project_selected () || this.logged_in ()} style={{ display: "flex" }}>
+						<FadePanel id="login_button" visible={this.project_selected () || logged_in} style={{ display: "flex" }}>
 							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }}>
-								{this.logged_in () ? "Log out" : "Log in"}
+								{logged_in ? "Log out" : "Log in"}
 							</button>
 						</FadePanel>
 

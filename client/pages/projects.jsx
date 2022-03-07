@@ -7,7 +7,7 @@ import ProjectsModel from "models/projects";
 import ProjectForm from "pages/forms/project.form";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import { isset } from "client/classes/common";
+import { isset } from "classes/common";
 
 
 export default class ProjectsPage extends BaseControl {

@@ -1,7 +1,7 @@
 import React from "react";
 
-import Settings from "classes/settings";
-import Options from "classes/options";
+import Settings from "classes/storage/settings";
+import Options from "classes/storage/options";
 
 import BaseControl from "controls/base.control";
 import ToggleSwitch from "controls/toggle.switch";

@@ -7,7 +7,6 @@ import Container from "controls/container";
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 import ReportsModel from "models/reports";
 
-import TimeTool from "classes/timetool";
 import { isset, is_null, is_object, not_set } from "classes/common";
 
 import "resources/styles/pages/reports.css";
@@ -40,16 +39,16 @@ export default class ReportsPage extends BaseControl {
 		
 		return this.state.entries.map (entry => {
 
-			let day_text = TimeTool.same_day (entry.start_time, current_day) ? null : (isset (entry.start_time) ? TimeTool.format (entry.start_time, "dw, MMMM dd, yyyy") : null);
+			let day_text = entry.start_time.same_day (current_day) ? null : (isset (entry.start_time) ? entry.start_time.format (Date.formats.full_date) : null);
 
 			if (entry.total_time == 0) return;
-			if (isset (day_text)) current_day = TimeTool.get_date (entry.start_time);
+			if (isset (day_text)) current_day = entry.start_date.get_date ();
 
 			return <Container key={`result_${entry.entry_id}`}>
 				<div className="entry">{day_text}</div>
-				<div className="entry">{TimeTool.format (entry.start_time, TimeTool.formats.time)}</div>
-				<div className="entry">{TimeTool.format (entry.end_time, TimeTool.formats.time)}</div>
-				<div className="entry">{TimeTool.elapsed (entry.total_time * 60)}</div>
+				<div className="entry">{entry.start_time.format (Date.formats.time)}</div>
+				<div className="entry">{entry.end_time.format (Date.formats.time)}</div>
+				<div className="entry">{Date.elapsed (entry.total_time * 60)}</div>
 			</Container>
 
 		});
@@ -65,8 +64,8 @@ export default class ReportsPage extends BaseControl {
 
 		this.state.entries.map (entry => {
 
-			let active_year = TimeTool.get_year (entry.start_time);
-			let active_month = TimeTool.month_name (TimeTool.get_month (entry.start_time));
+			let active_year = entry.start_time.get_year ();
+			let active_month = Date.month_name (entry.start_time.get_month ());
 
 			let item = isset (entry_list) ? entry_list.find (element => { return is_object (element) && (element.year == active_year) && (element.month == active_month) }) : null;
 
@@ -92,7 +91,7 @@ export default class ReportsPage extends BaseControl {
 			return <Container>
 				<div className="entry" style={{ columnWidth: "min-content" }}>{active_year}</div>
 				<div className="entry" style={{ gridColumn: "2 / 4" }}>{active_month}</div>
-				<div className="entry">{TimeTool.elapsed (item.value * 60)}</div>
+				<div className="entry">{Date.elapsed (item.value * 60)}</div>
 			</Container>
 
 		}));
@@ -106,7 +105,7 @@ export default class ReportsPage extends BaseControl {
 		
 		this.state.entries.map (entry => {
 
-			let year = TimeTool.get_year (entry.start_time);
+			let year = entry.start_time.get_year ();
 
 			if (is_null (entry_list)) entry_list = {}
 			if (is_null (entry_list [year])) return entry_list [year] = entry.total_time;
@@ -119,7 +118,7 @@ export default class ReportsPage extends BaseControl {
 			let value = entry_list [year];
 			return <Container>
 				<div className="entry" style={{ gridColumn: "1 / 4" }}>{year}</div>
-				<div className="entry">{TimeTool.elapsed (value * 60)}</div>
+				<div className="entry">{Date.elapsed (value * 60)}</div>
 			</Container>
 		}));
 
@@ -151,7 +150,7 @@ export default class ReportsPage extends BaseControl {
 
 		return <Container>
 			<div className="entry" style={{ gridColumn: "1 / 4" }}>Total</div>
-			<div className="entry">{TimeTool.elapsed (total * 60)}</div>
+			<div className="entry">{Date.elapsed (total * 60)}</div>
 		</Container>
 
 	}// show_totals;

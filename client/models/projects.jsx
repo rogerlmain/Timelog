@@ -14,8 +14,8 @@ export default class ProjectsModel {
 
 	static fetch_by_id (project_id) {
 		let parameters = new FormData ();
-		parameters.append ("project_id", project_id.toString ());
-		parameters.append ("action", "details");
+		parameters.set ("project_id", project_id.toString ());
+		parameters.set ("action", "details");
 		return Database.fetch_row ("projects", parameters);
 	}// fetch_by_id;
 

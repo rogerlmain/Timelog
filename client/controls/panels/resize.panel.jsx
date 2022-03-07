@@ -1,6 +1,6 @@
 import React from "react";
 import BaseControl from "client/controls/base.control";
-import Permissions from "classes/settings";
+import Permissions from "classes/storage/settings";
 
 import { globals } from "types/globals";
 

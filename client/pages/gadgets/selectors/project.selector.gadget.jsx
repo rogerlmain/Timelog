@@ -32,6 +32,8 @@ export default class ProjectSelectorGadget extends BaseControl {
 		onClientChange: null,
 		onProjectChange: null,
 
+		onClientsLoaded: null,
+
 		headerText: null,
 		hasHeader: false,
 		headerSelectable: true
@@ -63,21 +65,23 @@ export default class ProjectSelectorGadget extends BaseControl {
 		return (
 			<div id={this.props.id} className="two-column-grid project-selector-form">
 
-				<ClientSelectorGadget id="client_selector" headerText="" hasHeader={true} headerSelectable={false} onClientChange={(event) => {
-					this.setState ({ 
-						projects: null,
-						selected_client: event.target.value 
-					}, () => {
-						ProjectsModel.fetch_by_client (this.state.selected_client, data => this.setState ({ projects: data }));
-						this.execute (this.props.onClientChange, event);
-					});
-				}} />
+				<ClientSelectorGadget id="client_selector" headerText="" hasHeader={true} headerSelectable={false} 
+					onClientChange={event => {
+						this.setState ({ 
+							projects: null,
+							selected_client: event.target.value 
+						}, () => {
+							ProjectsModel.fetch_by_client (this.state.selected_client, data => this.setState ({ projects: data }));
+							this.execute (this.props.onClientChange, event);
+						});
+					}}>
+				</ClientSelectorGadget>
 
-				<FadePanel id={`${this.props.id}_projects_label`} visible={client_loaded} animate={true} className="vertical-centering-container">
+				<FadePanel id={`${this.props.id}_projects_label`} visible={client_loaded} className="vertical-centering-container">
 					<label htmlFor={this.project_selector_id}>Project</label>
 				</FadePanel>
 
-				<FadePanel id={`${this.props.id}_projects_list`} visible={client_loaded} animate={true}>
+				<FadePanel id={`${this.props.id}_projects_list`} visible={client_loaded}>
 					<EyecandyPanel id={`${this.props.id}_select_list`} eyecandyText="Loading..." eyecandyVisible={!projects_loaded} stretchOnly={true}>
 						<div style={{ display: "flex" }}>
 							<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}

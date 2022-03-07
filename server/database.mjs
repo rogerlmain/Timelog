@@ -32,13 +32,7 @@ class Database {
 	}// send_result_data;
 
 
-	// Use for standard data response
-	execute_query (procedure, parameters = null) {
-		this.data_query (procedure, parameters).then (data => this.send_result_data (data));
-	}// execute_query;
-	
-	
-	// Use if special handling required before send
+	// Use if special handling required before send 
 	data_query (procedure, parameters = null) {
 		return new Promise ((resolve, reject) => {
 			if (global.isset (parameters) && !Array.isArray (parameters)) parameters = Object.values (parameters);			
@@ -49,6 +43,12 @@ class Database {
 			});
 		});
 	}// data_query;
+
+
+	// Use for standard data response
+	execute_query (procedure, parameters= null) {
+		this.data_query (procedure, parameters).then (data => this.send_result_data (data));
+	}// execute_query;
 
 
 	constructor () {

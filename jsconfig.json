@@ -18,9 +18,7 @@
 
 		"paths": {
 
-
 "tests/*": ["client/tests/*"],
-
 
 			"client/*": ["client/*"],
 

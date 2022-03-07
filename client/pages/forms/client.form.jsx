@@ -8,7 +8,7 @@ import Container from "client/controls/container";
 import Database from "classes/database";
 
 import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
-import Credentials from "client/classes/credentials";
+import Credentials from "classes/credentials";
 
 
 export default class ClientForm extends FormControl {

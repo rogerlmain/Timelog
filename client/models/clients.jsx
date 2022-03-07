@@ -13,8 +13,8 @@ export default class ClientsModel {
 
 	static fetch_by_id (client_id) {
 		let parameters = new FormData ();
-		parameters.append ("client_id", client_id.toString ());
-		parameters.append ("action", "details");
+		parameters.set ("client_id", client_id.toString ());
+		parameters.set ("action", "details");
 		return Database.fetch_row ("clients", parameters);
 	}// fetch_by_id;
 

@@ -2,7 +2,7 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import Permissions from "classes/settings";
+import Settings from "classes/storage/settings";
 
 import BaseControl from "controls/base.control";
 import ResizePanel, { resize_state } from "controls/panels/resize.panel";
@@ -37,7 +37,7 @@ export default class ExplodingPanel extends BaseControl {
 
 		id: null,
 
-		speed: Permissions.animation_speed (),
+		speed: Settings.animation_speed (),
 
 		stretchOnly: false,
 
@@ -74,12 +74,7 @@ export default class ExplodingPanel extends BaseControl {
 
 	shouldComponentUpdate (next_props, next_state) {
 
-let updated = false;		
-try {		
-		updated = !this.same_element (next_state.children, next_props.children);
-} catch	(except) {
-	alert (except);
-}
+		let updated = !this.same_element (next_state.children, next_props.children);
 
 		if (this.transitioning) return common.is_null (setTimeout (() => this.forceUpdate ()));
 

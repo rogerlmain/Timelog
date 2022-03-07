@@ -3,7 +3,7 @@ import * as common from "classes/common";
 
 import BaseControl from "client/controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
-import Permissions from "classes/settings";
+import Permissions from "classes/storage/settings";
 
 
 export default class SlideshowPanel extends BaseControl {

@@ -19,4 +19,7 @@ export default class LocalStorage {
 	}// get;
 
 
+	static set = (key, value) => { localStorage.setItem (key, is_object (value) ? JSON.stringify (value) : value) }
+
+
 }// LocalStorage;

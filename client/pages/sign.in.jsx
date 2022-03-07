@@ -35,6 +35,8 @@ export default class SigninPage extends BaseControl {
 			credentials: "same-origin"
 		}).then (response => response.json ()).then (info => {
 
+			info.logging.start_time = Date.fromGMT (info.logging.start_time);
+
 			for (let key of Object.keys (info)) {
 				localStorage.setItem (key, JSON.stringify (info [key]));
 			}// for;
@@ -60,55 +62,40 @@ export default class SigninPage extends BaseControl {
 
 				<ExplodingPanel id="signin_error">{this.state.error_message}</ExplodingPanel>
 
-				<div style={{marginBottom: '1em'}}>
+				<form id="signin_form" encType="multipart/form-data">
+					<div className="one-piece-form form-table">
 
-					<form id="signin_form" encType="multipart/form-data">
+						<label htmlFor="username">Username or email</label>
+						<input name="username" type="text" defaultValue="rex@rogerlmain.com" />
 
-						<div className="one-piece-form form-table">
-							<label htmlFor="username">Username or email</label>
-							<input name="username" type="text" defaultValue="rex@rogerlmain.com" />
-							<label htmlFor="password">Password</label>
-							<div style={{display: 'flex', flexDirection: 'row'}}>
-								<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue="stranger" style={{ width: "100%" }} />
-								<img className="link-control" src={"resources/images/eyeball." + (this.state.password_visible ? "off" : "on") + ".svg"}
-									onClick={() => { this.setState ({ password_visible: !this.state.password_visible }); }}>
-								</img>
-							</div>
+						<label htmlFor="password">Password</label>
+						<div style={{display: 'flex', flexDirection: 'row'}}>
+							<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue="stranger" style={{ width: "100%" }} />
+							<img className="link-control" src={"resources/images/eyeball." + (this.state.password_visible ? "off" : "on") + ".svg"}
+								onClick={() => { this.setState ({ password_visible: !this.state.password_visible }); }}>
+							</img>
 						</div>
 
-					</form>
+					</div>
+				</form>
 
-				</div>
+				<div className="fully-justified-container button-bar">
 
-				<div className="tagline">
-
-					<div>
+					<div className="aside">
 						<label style={{ marginRight: "0.5em" }}>New to RMPC Timelog?</label>
 						<a onClick={() => parent.setState ({ signing_up: true })}>Sign up</a>
 					</div>
 
-					<div className="overlay-container middle-right-container" style={{ paddingLeft: "1em" }}>
-
-						<EyecandyPanel id="signin_eyecandy" eyecandyText="Signing you in." eyecandyVisible={this.state.eyecandy_visible}
-						
-							onEyecandy={this.sign_in.bind (this)}>
-
-							<div className="middle-right-container">
-								<button onClick={() => this.setState ({ 
-									error_message: null,
-									eyecandy_visible: true 
-								})}>Sign in</button>
-							</div>
-							
-						</EyecandyPanel>
-
-
-					</div>
+					<EyecandyPanel id="signin_eyecandy" eyecandyText="Signing you in." eyecandyVisible={this.state.eyecandy_visible} onEyecandy={this.sign_in.bind (this)}>
+						<button onClick={() => this.setState ({ 
+							error_message: null,
+							eyecandy_visible: true 
+						})}>Sign in</button>
+					</EyecandyPanel>
 
 				</div>
 
 			</div>
-
 		);
 	}// render;
 

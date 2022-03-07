@@ -9,8 +9,8 @@ export default class AccountsModel extends DataModel {
 
 	static fetch_by_company (company_id, callback) {
 		let parameters = new FormData ();
-		parameters.append ("action", "company");
-		parameters.append ("company_id", company_id.toString ());
+		parameters.set ("action", "company");
+		parameters.set ("company_id", company_id.toString ());
 		Database.fetch_data ("accounts", parameters).then (callback);
 	}// fetch_by_company;
 
@@ -18,16 +18,16 @@ export default class AccountsModel extends DataModel {
 	static fetch_by_project (project_id, callback = null) {
 		if (common.is_null (project_id)) return null;
 		let parameters = new FormData ();
-		parameters.append ("action", "project");
-		parameters.append ("project_id", project_id.toString ());
+		parameters.set ("action", "project");
+		parameters.set ("project_id", project_id.toString ());
 		Database.fetch_data ("accounts", parameters).then (() => DataModel.data_object (AccountsList, callback));
 	}// fetch_by_project;
 
 
 	static fetch_by_task (task_id, callback) {
 		let parameters = new FormData ();
-		parameters.append ("action", "task");
-		parameters.append ("task_id", task_id.toString ());
+		parameters.set ("action", "task");
+		parameters.set ("task_id", task_id.toString ());
 		Database.fetch_data ("accounts", parameters).then (callback);
 	}// fetch_by_task;
 

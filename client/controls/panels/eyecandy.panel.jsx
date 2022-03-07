@@ -2,7 +2,7 @@ import BaseControl from "client/controls/base.control";
 
 import React from "react";
 import SlideshowPanel from "./slideshow.panel";
-import Permissions from "classes/settings";
+import Permissions from "classes/storage/settings";
 
 import * as common from "classes/common";
 
