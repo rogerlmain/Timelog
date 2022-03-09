@@ -46,12 +46,12 @@ export default class LoggingPage extends BaseControl {
 		let project_id = (not_empty (data) ? data.project_id : 0);
 		let entry = (not_empty (data) ? data : null);
 
+		Logging.set ("logging", entry);
+
 		this.setState ({ 
 			project_id: project_id,
 			updating: false
 		});
-
-		Logging.set ("logging", entry);
 
 	}/* set_logging */;
 
@@ -127,8 +127,10 @@ export default class LoggingPage extends BaseControl {
 					Whoa! Are you sure this is right?<br/>
 					You have a single session going for more than a day!<br />
 					<br />
-					<button onClick={() => alert ("Close this window")}>Yep, that's right</button>
-					<button onClick={() => alert ("Show a calendar and time selector\nor offer to use the max (8 hrs)")}>Oops. Fix it.</button>
+					<div className="button-panel">
+						<button onClick={() => alert ("Close this window")}>Yep, that's right</button>
+						<button onClick={() => alert ("Show a calendar and time selector\nor offer to use the max (8 hrs)")}>Oops. Fix it.</button>
+					</div>
 				</PopupNotice>
 			</div>
 

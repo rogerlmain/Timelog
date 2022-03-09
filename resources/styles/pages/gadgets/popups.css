@@ -1,0 +1,87 @@
+div.popup-panel  {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}/* popup-panel  */
+
+
+/********/
+
+
+div.popup-modal {
+	background-color: black;
+	opacity: 0.5;
+	z-index: 1;
+}/* div.popup-modal */
+
+
+/********/
+
+
+div.popup-window-form {
+	margin-bottom: 1em;
+	justify-content: center;
+	align-items: center;
+}/* div.popup-window-form */
+
+
+div.popup-window-form label {
+	text-align: right;
+}/* div.popup-window-form label */
+
+
+div.popup-window {
+
+	background-color: white;
+
+	border: solid 2px black;
+	border-radius: 1em;
+	box-shadow: 2px 2px 10px #333;
+
+	padding: 1.25em;
+	z-index: 2;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+}/* div.popup-window */
+
+
+/********/
+
+
+.popup-notice {
+    position: absolute;
+    width: 320px;
+    padding: 10px;
+    margin: 3em;
+    background-color:#FFF;
+    color: #666;
+    font: normal 12px "Segoe UI", Arial, Sans-serif;
+    border: 1px solid black;
+}
+
+.popup-notice:before, .popup-notice:after {
+    content: "\0020";
+    display: block;
+    position: absolute;
+    top: 19px;
+    left: -18px;
+    z-index: 2;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    border: solid 20px transparent;
+    border-right: 0px;
+    border-bottom-color:white;
+}
+
+.popup-notice:before {
+    left: -20px;
+    top: 20px;
+    z-index: 1;
+    border-bottom-color: black;
+}
+
