@@ -27,7 +27,6 @@ Date.minute_coef = 60;
 Date.hour_coef = Date.minute_coef * 60;
 Date.day_coef = Date.hour_coef * 24;
 
-
 Date.formats = {
 	full_date: "w, MMMM d, yyyy",
 	full_datetime: "w, MMMM d, yyyy - H:mm ap",
@@ -93,6 +92,16 @@ Date.prototype.round_hours = function (direction) {
 	return result;
 
 }// round_hours;
+
+
+Date.prototype.round_minutes = function (direction, minute_count) {
+
+	let result = new Date (this);
+
+
+	
+
+}// round_minutes;
 
 
 Date.prototype.same_day = function (input_date) {

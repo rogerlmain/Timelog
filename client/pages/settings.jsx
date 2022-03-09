@@ -71,6 +71,11 @@ export default class SettingsPanel extends BaseControl {
 					</ToggleSwitch>
 				</div>
 
+
+				{/* Date.minute_increments = [5, 6, 10, 12, 15, 20, 30] */}
+
+
+
 			</div>
 		);
 	}// render;

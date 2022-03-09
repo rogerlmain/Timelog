@@ -2,21 +2,24 @@ import React from "react";
 
 import BaseControl from "controls/base.control";
 
-import EyecandyPanel from "controls/panels/eyecandy.panel";
-import LoggingModel from "models/logging";
-import FadePanel from "client/controls/panels/fade.panel";
+import Break from "controls/html/line.break";
+import Container from "controls/container";
 
-import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
+import EyecandyPanel from "controls/panels/eyecandy.panel";
+import FadePanel from "controls/panels/fade.panel";
 
 import Logging from "classes/storage/logging";
+import Options from "classes/storage/options";
 
 import { not_empty } from "classes/common";
 
-import "resources/styles/controls/treeview.css";
-import "resources/styles/pages/projects.css";
+import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
+import PopupNotice from "pages/gadgets/popup.notice";
+
+import LoggingModel from "models/logging";
+
+
 import "resources/styles/pages/logging.css";
-import Container from "client/controls/container";
-import Break from "client/controls/html/line.break";
 
 
 export default class LoggingPage extends BaseControl {
@@ -53,8 +56,20 @@ export default class LoggingPage extends BaseControl {
 	}/* set_logging */;
 
 
+	end_time (start_time) {
+		switch (Options.granularity ()) {
+			case 1: return new Date ().round_hours (Date.rounding_direction.down).format (start_time.same_day (new Date ()) ? Date.formats.timestamp : Date.formats.full_datetime);
+		}// switch;
+	}// end_time;
+
+
 	elapsed_time (start_time) {
-		return new Date ().round_hours (Date.rounding_direction.down).getTime () - new Date (start_time).getTime ();
+		switch (Options.granularity ()) {
+			case 1: return Math.floor ((new Date ().round_hours (Date.rounding_direction.down).getTime () - new Date (start_time).getTime ()) / 1000);
+			case 2: return Math.floor ((new Date ().round_minutes (Date.rounding_direction.down, 15).getTime () - new Date (start_time).getTime ()) / 1000);
+			case 3: return 0; // Level 3 Granularity - any number of minutes
+			case 4: return 0; // Level 4 Granularity - truetime: down to the second
+		}// switch;
 	}// elapsed_time;
 
 
@@ -62,7 +77,7 @@ export default class LoggingPage extends BaseControl {
 
 //		let minutes = (elapsed % hour_coef);
 
-		return "TO BE CALCULATED - ENSURE CORRECT LOGIN, FIRST"; //(elapsed - minutes) + Math.round (minutes / account.granularity) * account.granularity;
+		return "$1234.56";//"TO BE CALCULATED - ENSURE CORRECT LOGIN, FIRST"; //(elapsed - minutes) + Math.round (minutes / account.granularity) * account.granularity;
 
 	}// billable_time;
 
@@ -70,33 +85,55 @@ export default class LoggingPage extends BaseControl {
 	log_details () {
 
 		let entry = Logging.get_all ();
+
+		let start_time = Date.validated (entry.start_time);
+		let end_time = this.end_time (start_time);
 		let elapsed_time = this.elapsed_time (entry.start_time);
 
-		return <div className="two-column-grid">
+		let overtime = !start_time.same_day (end_time);
 
-			<div>Client</div>
-			<div>: {entry.client_name}</div>
+		let color = `var(--${(elapsed_time > (8 * Date.hour_coef) ? "warning-color" : "default-color")})`;
 
-			<div>Project</div>
-			<div>: {entry.project_name}</div>
+		return <div className="row-container">
+		
+			<div class="log-details two-column-grid">
 
-			<Break />
+				<label>Client</label>
+				<div>{entry.client_name}</div>
 
-			<div>Start</div>
-			<div>: {new Date (entry.start_time).format (Date.formats.full_datetime)}</div>
+				<label>Project</label>
+				<div>{entry.project_name}</div>
 
-			<div>Stop</div>
-			<div>: {new Date ().round_hours (Date.rounding_direction.down).format (Date.formats.full_datetime)}</div>
+				<Break />
 
-			<div>Elapsed</div>
-			<div style={{ color: `var(--${(elapsed_time > (8 * Date.hour_coef) ? "warning-color" : "default-color")})` }}>: {elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time) }</div>
+				<label>Start</label>
+				<div>{start_time.format (Date.formats.full_datetime)}</div>
 
-			<Break />
+				<label>Stop</label>
+				<div style={{ color: color }}>{end_time}</div>
 
-			<div>Billable</div>
-			<div>: {this.billable_time (elapsed_time)}</div> 
+				<label>Elapsed</label>
+				<div style={{ color: color }}>{elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time) }</div>
+				
+				<Break />
+
+				<label>Billable</label>
+				<div>{this.billable_time (elapsed_time)}</div> 
+
+			</div>
+
+			<div>
+				<PopupNotice id="overtime_notice" visible={overtime}>
+					Whoa! Are you sure this is right?<br/>
+					You have a single session going for more than a day!<br />
+					<br />
+					<button onClick={() => alert ("Close this window")}>Yep, that's right</button>
+					<button onClick={() => alert ("Show a calendar and time selector\nor offer to use the max (8 hrs)")}>Oops. Fix it.</button>
+				</PopupNotice>
+			</div>
 
 		</div>
+
 	}// log_details;
 
 
