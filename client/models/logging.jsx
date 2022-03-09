@@ -20,7 +20,8 @@ export default class LoggingModel {
 		let time_stamp = new Date ();
 
 		switch (Options.granularity ()) {
-			case 1: time_stamp = Logging.logged_in () ? time_stamp.round_hours (Date.rounding_direction.down) : time_stamp.round_hours (Date.rounding_direction.up);
+			case 1: time_stamp = Logging.logged_in () ? time_stamp.round_hours (Date.rounding.down) : time_stamp.round_hours (Date.rounding.up); break;
+			case 2: time_stamp = time_stamp.round_minutes (15); break;
 		}// switch;
 
 		parameters.set ("action", "logging");

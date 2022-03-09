@@ -1,6 +1,6 @@
 import { blank, directions, empty } from "types/constants";
 
-import { is_null, is_string } from "classes/common";
+import { is_null, is_string, not_set } from "classes/common";
 
 
 Array.prototype.insert = function (item, index) {
@@ -38,10 +38,10 @@ Date.formats = {
 }// formats;
 
 
-Date.rounding_direction = {
+Date.rounding = {
 	up		: "up",
 	down	: "down"
-}// rounding_direction;
+}// rounding;
 
 
 Date.is_date = (candidate) => { return (candidate instanceof Date) }
@@ -83,7 +83,7 @@ Date.prototype.round_hours = function (direction) {
 
 	let result = new Date (this);
 
-	if (direction == Date.rounding_direction.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
+	if (direction == Date.rounding.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
 
 	result.setMinutes (0);
 	result.setSeconds (0);
@@ -94,12 +94,19 @@ Date.prototype.round_hours = function (direction) {
 }// round_hours;
 
 
-Date.prototype.round_minutes = function (direction, minute_count) {
+Date.prototype.round_minutes = function (count, direction) {
 
 	let result = new Date (this);
+	let minutes = Math.floor (result.getMinutes () / count) * count;
 
+	// If not specified then round off
+	if (not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? Date.rounding.down : Date.rounding.up;
 
-	
+	result.setMinutes (direction == Date.rounding.down ? minutes : minutes + count);
+	result.setSeconds (0);
+	result.setMilliseconds (0);
+
+	return result;
 
 }// round_minutes;
 
