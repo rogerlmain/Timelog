@@ -61,7 +61,7 @@ export default class ToggleSwitch extends BaseControl {
 			<div id={this.props.id} className="toggle-switch unselectable">
 
 				{this.props.children ? this.props.children.map (child => {
-					return <div className="item" key={child.props.children} onClick={event => {
+					return <div className="item" key={child.props.children} title={child.props.children} onClick={event => {
 
 						let selection = Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
 

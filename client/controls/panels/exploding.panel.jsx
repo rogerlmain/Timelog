@@ -5,8 +5,9 @@ import React from "react";
 import Settings from "classes/storage/settings";
 
 import BaseControl from "controls/base.control";
-import ResizePanel, { resize_state } from "controls/panels/resize.panel";
 import FadePanel from "controls/panels/fade.panel";
+
+import ResizePanel, { resize_state, resize_direction } from "controls/panels/resize.panel";
 
 import { renderToString } from "react-dom/server";
 
@@ -40,6 +41,7 @@ export default class ExplodingPanel extends BaseControl {
 		speed: Settings.animation_speed (),
 
 		stretchOnly: false,
+		direction: resize_direction.both,
 
 		beforeShowing: null,
 		beforeHiding: null,
@@ -111,7 +113,7 @@ export default class ExplodingPanel extends BaseControl {
 				}}>
 
 
-				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} 
+				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} direction={this.props.direction}
 					speed={target_speed} resize={this.state.resize} parent={this} stretchOnly={this.props.stretchOnly}
 
 					beforeResizing={() => this.execute (this.props.beforeShowing)}

@@ -3,7 +3,10 @@ import BaseControl from "controls/base.control";
 
 export default class Container extends BaseControl {
 
-	static defaultProps = { condition: true }
+	static defaultProps = { 
+		condition: true,
+		inline: false
+	}// defaultProps;
 
 
 	render () { 
@@ -13,8 +16,12 @@ export default class Container extends BaseControl {
 		delete properties.style;
 		delete properties.condition;
 		delete properties.children;
+		delete properties.inline;
 			
-		return this.props.condition && <div style={{ ...this.props.style, display: "contents" }} {...properties}>{this.props.children}</div> 
+		return this.props.condition && <div style={{ 
+			display: ( this.props.inline ? null : "contents" ),
+			...this.props.style 
+		}} {...properties} >{this.props.children}</div> 
 	
 	}// render;
 

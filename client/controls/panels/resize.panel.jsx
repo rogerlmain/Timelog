@@ -14,6 +14,12 @@ export const resize_state = {
 }// resize_state;
 
 
+export const resize_direction = {
+	both		: 0,
+	horizontal	: 1,
+	vertical	: 2
+}// resize_direction;
+
 
 export default class ResizePanel extends BaseControl {
 
@@ -26,6 +32,9 @@ export default class ResizePanel extends BaseControl {
 
 
 	null_if = (value, threshold) => { return (value == threshold ? null : value) }
+
+	horizontal = () => { return ((this.props.direction == resize_direction.horizontal) || (this.props.direction == resize_direction.both)) }
+	vertical = () => { return ((this.props.direction == resize_direction.vertical) || (this.props.direction == resize_direction.both)) }
 
 
 	get_size = (control) => {
@@ -83,8 +92,12 @@ export default class ResizePanel extends BaseControl {
 	static defaultProps = {
 		id: null,
 		parent: null,
+
 		resize: resize_state.false,
+		direction: resize_direction.both,
+
 		speed: Permissions.animation_speed (),
+
 		stretchOnly: false
 	}// defaultProps;
 
@@ -120,8 +133,6 @@ export default class ResizePanel extends BaseControl {
 				width: (inner_size.width > outer_size.width) ? inner_size.width : outer_size.width,
 				height: (inner_size.height > outer_size.height) ? inner_size.height : outer_size.height
 			}// new_size;
-
-			let stretch = this.props.stretchOnly && common.matching_objects (outer_size, new_size);
 
 			if (this.transitioning) return true;
 			
@@ -177,8 +188,8 @@ export default class ResizePanel extends BaseControl {
 		}// if;
 
 
-		if (common.isset (this.state.width)) outer_style = { ...outer_style, width: this.state.width  };
-		if (common.isset (this.state.height)) outer_style = { ...outer_style, height: this.state.height };
+		if (common.isset (this.state.width) && this.horizontal ()) outer_style = { ...outer_style, width: this.state.width  };
+		if (common.isset (this.state.height) && this.vertical ()) outer_style = { ...outer_style, height: this.state.height };
 
 		return (
 			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={outer_style}>
