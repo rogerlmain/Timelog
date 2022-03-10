@@ -30,7 +30,7 @@ export default class ToggleSwitch extends BaseControl {
 	transition_end (event) {
 		if (event.propertyName != "left") return;
 		this.execute (this.props.onChange, this.state).then (result => {		
-			if (result) return;
+			if (result || not_set (result)) return;
 			this.setState ({ 
 				option: this.state.previous,
 				previous: this.state.option
@@ -41,6 +41,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	componentDidMount () { 
 		this.switch.current.addEventListener ("transitionend", this.transition_end.bind (this));
+		this.setState ({ option: this.props.value });
 	}// componentDidMount;
 
 
@@ -56,6 +57,7 @@ export default class ToggleSwitch extends BaseControl {
 	render () {
 
 		let speed = this.props.speed ?? globals.settings.animation_speed;
+		let index = this.props.children.get_index (this.props.children.find (item => item.props.value == this.state.option));
 
 		return (
 			<div id={this.props.id} className="toggle-switch unselectable">
@@ -63,7 +65,7 @@ export default class ToggleSwitch extends BaseControl {
 				{this.props.children ? this.props.children.map (child => {
 					return <div className="item" key={child.props.children} title={child.props.children} onClick={event => {
 
-						let selection = Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
+						let selection = child.props.value ?? Array.indexOf.call (event.target.parentNode.children, event.target) + 1;
 
 						if ((this.props.singleStep) && (Math.abs (selection - this.state.option) > 1)) selection = this.state.option + ((selection > this.state.option) ? 1 : -1);
 						
@@ -77,7 +79,7 @@ export default class ToggleSwitch extends BaseControl {
 
 				<div className="switch" ref={this.switch} style={{
 					transition: `left ${speed}ms ease-in-out`,
-					left: (this.state.option - 1) * (item_width + 2)
+					left: (item_width + 2) * index
 				}}></div>
 
 			</div>

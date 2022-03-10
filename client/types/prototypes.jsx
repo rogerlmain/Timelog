@@ -3,6 +3,12 @@ import { blank, directions, empty } from "types/constants";
 import { is_null, is_string, not_set } from "classes/common";
 
 
+Array.prototype.get_index = function (item) {
+	let index = this.indexOf (item);
+	return (index < 0) ? 0 : index;
+}// get_index;
+
+
 Array.prototype.insert = function (item, index) {
     this.splice (index, 0, item);
 }// insert;
@@ -40,7 +46,8 @@ Date.formats = {
 
 Date.rounding = {
 	up		: "up",
-	down	: "down"
+	down	: "down",
+	off		: "off"
 }// rounding;
 
 
