@@ -22,7 +22,7 @@ export default class ToggleSwitch extends BaseControl {
 	}// defaultProps;
 
 
-	state = { option: 1 }
+	state = { option: null }
 
 
 	switch = React.createRef ();
@@ -68,7 +68,7 @@ export default class ToggleSwitch extends BaseControl {
 
 				<div className="switch" ref={this.switch} style={{
 					transition: `left ${speed}ms ease-in-out`,
-					left: (item_width + 2) * (index - 1)
+					left: (item_width + 2) * (index)
 				}}></div>
 
 			</div>

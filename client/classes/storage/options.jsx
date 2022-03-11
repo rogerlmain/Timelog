@@ -39,8 +39,8 @@ export default class Options extends LocalStorage {
 
 
 	static granularity = () => { 
-		let result = Options.get (option_key (option_types.granularity));
-		return result;
+		let result = parseInt (Options.get (option_key (option_types.granularity)));
+		return isNaN (result) ? 0 : (result);
 	}/* granularity */;
 
 
