@@ -1,6 +1,7 @@
 import React from "react";
 import BaseControl from "controls/base.control";
 
+import { isset, not_set } from "classes/common";
 import { globals } from "types/globals";
 
 import "resources/styles/controls/toggle.switch.css";
@@ -29,13 +30,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	transition_end (event) {
 		if (event.propertyName != "left") return;
-		this.execute (this.props.onChange, this.state).then (result => {		
-			if (result || not_set (result)) return;
-			this.setState ({ 
-				option: this.state.previous,
-				previous: this.state.option
-			});
-		});
+		this.execute (this.props.onChange, this.state);
 	}// transition_end;
 
 
@@ -46,10 +41,7 @@ export default class ToggleSwitch extends BaseControl {
 
 
 	shouldComponentUpdate (new_props) {
-		if (new_props.value != this.props.value) this.setState ({ 
-			previous: this.state.option ?? this.props.value,
-			option: new_props.value
-		});
+		if (new_props.value != this.props.value) this.setState ({ option: new_props.value });
 		return true;
 	}// shouldComponentUpdate;
 
@@ -57,7 +49,7 @@ export default class ToggleSwitch extends BaseControl {
 	render () {
 
 		let speed = this.props.speed ?? globals.settings.animation_speed;
-		let index = this.props.children.get_index (this.props.children.find (item => item.props.value == this.state.option));
+		let index = this.props.children.get_index (this.props.children.find (item => this.state.option == (isset (item.props.value) ? item.props.value : this.props.children.indexOf (item))));
 
 		return (
 			<div id={this.props.id} className="toggle-switch unselectable">
@@ -65,21 +57,18 @@ export default class ToggleSwitch extends BaseControl {
 				{this.props.children ? this.props.children.map (child => {
 					return <div className="item" key={child.props.children} title={child.props.children} onClick={event => {
 
-						let selection = child.props.value ?? Array.indexOf.call (event.target.parentNode.children, event.target) + 1;
+						let selection = child.props.value ?? Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
 
 						if ((this.props.singleStep) && (Math.abs (selection - this.state.option) > 1)) selection = this.state.option + ((selection > this.state.option) ? 1 : -1);
 						
-						this.setState ({
-							previous: this.state.option,
-							option: selection
-						});
+						this.setState ({ option: selection });
 						
 					}}></div>
 				}) : null}
 
 				<div className="switch" ref={this.switch} style={{
 					transition: `left ${speed}ms ease-in-out`,
-					left: (item_width + 2) * index
+					left: (item_width + 2) * (index - 1)
 				}}></div>
 
 			</div>

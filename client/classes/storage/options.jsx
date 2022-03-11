@@ -1,13 +1,18 @@
 import LocalStorage from "classes/local.storage";
-import { default_options, option_types } from "types/globals";
+import { default_options, option_types, option_key } from "types/globals";
 import { is_null, isset, not_set } from "classes/common";
 
 
 const store_name = "options";
 
 
-export default class Options extends LocalStorage {
+export const log_ends = {
+	start: "start",
+	end: "end"
+}// log_ends;
 
+
+export default class Options extends LocalStorage {
 
 	static set (data) { super.set (store_name, data) }
 
@@ -34,8 +39,14 @@ export default class Options extends LocalStorage {
 
 
 	static granularity = () => { 
-		let result = Options.get (option_types.granularity ?? default_options.granularity);
+		let result = Options.get (option_key (option_types.granularity));
 		return result;
 	}/* granularity */;
+
+
+	static rounding = (end) => {
+		let result = Options.get (((end == log_ends.start) ? option_types.start_rounding : option_types.end_rounding) ?? default_options.rounding);
+		return result;
+	}// rounding;
 
 }// Options;

@@ -3,17 +3,18 @@ import React from "react";
 import Settings from "classes/storage/settings";
 import Options from "classes/storage/options";
 
+import Container from "controls/container";
+import ExplodingPanel from "controls/panels/exploding.panel";
+
 import BaseControl from "controls/base.control";
 import ToggleSwitch from "controls/toggle.switch";
-import Container from "controls/container";
 
 import OptionsModel from "models/options";
 
 import CreditCardForm from "pages/forms/credit.card.form";
 
-import ExplodingPanel from "controls/panels/exploding.panel";
-
-import { option_types, globals } from "types/globals";
+import { isset } from "classes/common";
+import { globals, option_types, option_key } from "types/globals";
 import { resize_direction } from "controls/panels/resize.panel";
 
 import "resources/styles/pages.css";
@@ -24,9 +25,9 @@ export default class SettingsPanel extends BaseControl {
 
 	state = { 
 		granularity: 1,
-		start_rounding: 2,
-		end_rounding: 2,
-		cc_form_showing: false 
+		start_rounding: Date.rounding.off,
+		end_rounding: Date.rounding.off,
+		cc_form: null
 	}// state;
 
 
@@ -39,12 +40,20 @@ export default class SettingsPanel extends BaseControl {
 		return (
 			<div className="one-piece-form">
 
-				<CreditCardForm showing={this.state.cc_form_showing} 
-					onCancel={() => this.setState ({ granularity: Options.granularity () })}
-					onSubmit={() => OptionsModel.save_option (option_types.granularity, this.state.granularity).then (data => {
-						Options.set (JSON.stringify (data));
-						this.setState ({ cc_form_showing: false });
-					})}>
+				<CreditCardForm showing={isset (this.state.cc_form)}
+
+					onCancel={() => this.setState ({ 
+						[this.state.cc_form.option]: this.state.cc_form.previous,
+						cc_form: null 
+					})}
+
+					onSubmit={() => {
+						OptionsModel.save_option (option_key (this.state.cc_form.option), this.state.cc_form.value).then (data => {
+							Options.set (JSON.stringify (data));
+							this.setState ({ cc_form: null });
+						});
+					}}>
+
 				</CreditCardForm>
 
 				<div className="full-row section-header">User Settings</div>
@@ -64,9 +73,19 @@ export default class SettingsPanel extends BaseControl {
 					<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={this.state.granularity} singleStep={true}
 
 						onChange={(data) => { 
-							this.setState ({ cc_form_showing: (data.option > this.state.granularity) });
+
+							if (data.option > this.state.granularity) this.setState ({ 
+								cc_form: { 
+									option: option_types.granularity, 
+									previous: this.state.granularity,
+									value: data.option
+								}/* cc_form */
+							});
+							
 							this.setState ({ granularity: data.option });
+							
 							return true;
+
 						}}>
 
 						<option>1 Hr</option>
@@ -81,22 +100,25 @@ export default class SettingsPanel extends BaseControl {
 
 				<div className="double-column">
 					<ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
-						<Container condition={ Options.granularity () > 1 /*this.state.granularity > 1*/} className="one-piece-form" inline={true} style={{ justifySelf: "stretch" }}>
+						<Container condition={ Options.granularity () > 1} className="one-piece-form" inline={true} style={{ justifySelf: "stretch" }}>
 
 							<label htmlFor="start_rounding">Start time rounding</label>
 							<div className="middle-right-container">
 								<ToggleSwitch id="start_rounding" speed={Settings.animation_speed ()} value={this.state.start_rounding} singleStep={true}
 
-									onChange={(data) => { 
-										this.setState ({ cc_form_showing: (data.option > this.state.start_rounding) });
+									onChange={(data) => {
+										this.setState ({ cc_form: (data.option > this.state.start_rounding) ? {
+											option: option_types.start_rounding,
+											value: Options.rounding (option_types.start_rounding)
+										} : null });
 										this.setState ({ start_rounding: data.option });
 										return true;
 									}}>
 
-									<option>Round down</option>
-									<option>Round off</option>
-									<option>Round up</option>
-
+									<option value={Date.rounding.down}>Round down</option>
+									<option value={Date.rounding.off}>Round off</option>
+									<option value={Date.rounding.up}>Round up</option>
+ 
 								</ToggleSwitch>
 							</div>
 
@@ -104,15 +126,18 @@ export default class SettingsPanel extends BaseControl {
 							<div className="middle-right-container">
 								<ToggleSwitch id="end_rounding" speed={Settings.animation_speed ()} value={this.state.end_rounding} singleStep={true}
 
-									onChange={(data) => { 
-										this.setState ({ cc_form_showing: (data.option > this.state.end_rounding) });
+									onChange={(data) => {
+										this.setState ({ cc_form: (data.option > this.state.end_rounding) ? {
+											option: option_types.end_rounding,
+											value: Options.rounding (option_types.end_rounding)
+										} : null });
 										this.setState ({ end_rounding: data.option });
 										return true;
 									}}>
 
-									<option>Round down</option>
-									<option>Round off</option>
-									<option>Round up</option>
+									<option value={Date.rounding.down}>Round down</option>
+									<option value={Date.rounding.off}>Round off</option>
+									<option value={Date.rounding.up}>Round up</option>
 
 								</ToggleSwitch>
 							</div>
