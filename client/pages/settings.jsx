@@ -32,7 +32,7 @@ export default class SettingsPanel extends BaseControl {
 
 
 	componentDidMount () {
-		this.setState ({ granularity: Options.granularity () });
+		this.setState ({ granularity: Options.granularity () - 1 });
 	}// componentDidMount;
 
 
