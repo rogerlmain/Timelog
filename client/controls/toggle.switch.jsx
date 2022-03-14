@@ -5,6 +5,7 @@ import { isset, not_set } from "classes/common";
 import { globals } from "types/globals";
 
 import "resources/styles/controls/toggle.switch.css";
+import { horizontal_alignment } from "client/types/constants";
 
 
 const item_width = 24;
@@ -18,6 +19,8 @@ export default class ToggleSwitch extends BaseControl {
 		speed: null,
 		value: null,		
 		singleStep: false,
+		showText: false,
+		textAlignment: horizontal_alignment.left,
 		onChange: null,
 	}// defaultProps;
 
@@ -52,26 +55,36 @@ export default class ToggleSwitch extends BaseControl {
 		let index = this.props.children.get_index (this.props.children.find (item => this.state.option == (isset (item.props.value) ? item.props.value : this.props.children.indexOf (item))));
 
 		return (
-			<div id={this.props.id} className="toggle-switch unselectable">
 
-				{this.props.children ? this.props.children.map (child => {
-					return <div className="item" key={child.props.children} title={child.props.children} onClick={event => {
+			<div className={this.props.showText ? "two-column-grid" : null} style={this.props.style}>
 
-						let selection = child.props.value ?? Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
+				{!this.props.textAlignment.matches (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
 
-						if ((this.props.singleStep) && (Math.abs (selection - this.state.option) > 1)) selection = this.state.option + ((selection > this.state.option) ? 1 : -1);
-						
-						this.setState ({ option: selection });
-						
+				<div id={this.props.id} className="toggle-switch unselectable">
+
+					{this.props.children ? this.props.children.map (child => {
+						return <div className="item" key={child.props.children} title={child.props.children} onClick={event => {
+
+							let selection = child.props.value ?? Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
+
+							if ((this.props.singleStep) && (Math.abs (selection - this.state.option) > 1)) selection = this.state.option + ((selection > this.state.option) ? 1 : -1);
+							
+							this.setState ({ option: selection });
+							
+						}}></div>
+					}) : null}
+
+					<div className="switch" ref={this.switch} style={{
+						transition: `left ${speed}ms ease-in-out`,
+						left: (item_width + 2) * (index)
 					}}></div>
-				}) : null}
 
-				<div className="switch" ref={this.switch} style={{
-					transition: `left ${speed}ms ease-in-out`,
-					left: (item_width + 2) * (index)
-				}}></div>
+				</div>
+
+				{this.props.textAlignment.matches (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
 
 			</div>
+
 		);
 
 	};

@@ -104,7 +104,7 @@ export default class SettingsPanel extends BaseControl {
 
 							<label htmlFor="start_rounding">Start time rounding</label>
 							<div className="middle-right-container">
-								<ToggleSwitch id="start_rounding" speed={Settings.animation_speed ()} value={this.state.start_rounding} singleStep={true}
+								<ToggleSwitch id="start_rounding" speed={Settings.animation_speed ()} value={this.state.start_rounding} singleStep={true} showText={true}
 
 									onChange={(data) => {
 										this.setState ({ cc_form: (data.option > this.state.start_rounding) ? {
