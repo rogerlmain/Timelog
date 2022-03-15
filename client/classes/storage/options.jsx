@@ -39,13 +39,13 @@ export default class Options extends LocalStorage {
 
 
 	static granularity = () => { 
-		let result = parseInt (Options.get (option_key (option_types.granularity)));
-		return isNaN (result) ? 0 : (result);
+		let result = parseInt (Options.get (option_types.granularity));
+		return isNaN (result) ? default_options.granularity : (result);
 	}/* granularity */;
 
 
 	static rounding = (end) => {
-		let result = Options.get (((end == log_ends.start) ? option_types.start_rounding : option_types.end_rounding) ?? default_options.rounding);
+		let result = Options.get (option_types [`${end}_rounding`]);
 		return result;
 	}// rounding;
 

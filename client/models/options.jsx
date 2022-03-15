@@ -24,4 +24,3 @@ export default class OptionsModel extends DataModel {
 
 
 }// OptionsModel;
-

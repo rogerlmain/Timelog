@@ -45,9 +45,9 @@ Date.formats = {
 
 
 Date.rounding = {
-	up		: "up",
 	down	: "down",
-	off		: "off"
+	off		: "off",
+	up		: "up"
 }// rounding;
 
 

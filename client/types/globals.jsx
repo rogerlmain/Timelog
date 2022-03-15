@@ -40,7 +40,13 @@ export const globals = {
 /********/
 
 
+export const record_key = (record, item) => {
+	let result = Object.keys (record).indexOf (item) + 1;
+	return result;
+}// record_key;
+
+
 export const option_key = (option_type) => { 
-	let result = Object.keys (option_types).indexOf (option_type) + 1;
+	let result = record_key (option_types, option_type);
 	return result;
 }// option_key;
