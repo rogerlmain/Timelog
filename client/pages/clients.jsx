@@ -13,6 +13,9 @@ import { globals } from "types/globals";
 
 export default class ClientsPage extends BaseControl {
 
+	static defaultProps = { id: "clients_page" }
+
+
 	state = {
 		client_data: null,
 		selected_client: null,
@@ -28,7 +31,7 @@ export default class ClientsPage extends BaseControl {
 
 	render () {
  		return (
-			<div id="client_page" className="top-center-container row-spaced">
+			<div id={this.props.id} className="top-center-container row-spaced">
 
 				<div className="two-column-grid">
 					<ClientSelectorGadget id="client_selector" parent={this} 

@@ -6,24 +6,34 @@ import BaseControl from "controls/base.control";
 
 import ExplodingPanel from "controls/panels/exploding.panel";
 
+import ExplodingPanelTest from "tests/exploding.panel.test";
+import SettingsPage from "./pages/settings";
+
 import MasterPanel from "client/master";
 
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
 import { globals } from "types/globals";
+import { notify } from "classes/common";
 
 
 export class Main extends BaseControl {
 
 
+	state = { signing_up: false }
+
+
 	constructor (props) {
 		super (props);
 		globals.main = this;
+		window.onerror = this.error_handler;
 	}// constructor;
 
 
- 	state = { signing_up: false }
+	error_handler (message, url, line) {
+		notify (message, url, line);
+	}
 
 
     render () {
@@ -55,9 +65,11 @@ export class Main extends BaseControl {
 document.onreadystatechange = () => {
 	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
-// ReactDOM.render (<ResizePanelTest id="resize_panel_test" />, document.getElementById ("resize_panel_test"));
-// ReactDOM.render (<FadePanelTest id="fade_panel_test" />, document.getElementById ("fade_panel_test"));
-// ReactDOM.render (<ExplodingPanelTest id="exploding_panel_test" />, document.getElementById ("exploding_panel_test"));
-// ReactDOM.render (<SlideshowPanelTest id="slideshow_panel_test" />,  document.getElementById ("slideshow_panel_test"));
+//	ReactDOM.render (<ResizePanelTest id="resize_panel_test" />, document.getElementById ("main_page"));
+//	ReactDOM.render (<FadePanelTest id="fade_panel_test" />, document.getElementById ("main_page"));
+//	ReactDOM.render (<ExplodingPanelTest id="exploding_panel_test" />, document.getElementById ("main_page"));
+//	ReactDOM.render (<SlideshowPanelTest id="slideshow_panel_test" />,  document.getElementById ("main_page"));
+
+//	ReactDOM.render (<SettingsPage />, document.getElementById ("main_page"));
 
 }// document.ready;

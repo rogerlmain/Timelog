@@ -1,6 +1,13 @@
 import * as consts from "types/constants";
 
 
+export function notify () { alert (isset (arguments) ? Array.from (arguments).join ("\n") : "paused") }
+export const pause = notify;
+
+
+/********/
+
+
 export function scroll_sizes (control) {
 	return {
 		width: control.scrollWidth,
@@ -40,6 +47,14 @@ export function styled_sizes (control) {
 export function html_encode (value) {
 	return value.replace ("<", "&lt;").replace (">", "&gt;");
 }// html_encode;
+
+
+export function json_string (value) {
+	return JSON.stringify (value).replace (",", ",\n");
+}// json_string;
+
+
+/**** Type Test Routines ****/
 
 
 export function is_empty (value) {
@@ -117,20 +132,6 @@ export function matching_objects (first_object, second_object) {
 /********/
 
 
-export function exists (object, ...methods) {
-	if (is_null (object)) return false;
-	if (not_empty (methods)) return exists (object [methods [0]], ...(methods.slice (1)));
-	return true;
-}// exists;
-
-
-export function nested_value (object, ...methods) {
-	if (is_null (object)) return null;
-	if (not_empty (methods)) return nested_value (object [methods [0]], ...(methods.slice (1)));
-	return object;
-}// nested_value;
-
-
 export function dimensions (object) {
 	let result = null;
 	if (isset (object)) {
@@ -151,6 +152,20 @@ export function dimensions (object) {
 }// dimensions;
 
 
+export function exists (object, ...methods) {
+	if (is_null (object)) return false;
+	if (not_empty (methods)) return exists (object [methods [0]], ...(methods.slice (1)));
+	return true;
+}// exists;
+
+
+export function nested_value (object, ...methods) {
+	if (is_null (object)) return null;
+	if (not_empty (methods)) return nested_value (object [methods [0]], ...(methods.slice (1)));
+	return object;
+}// nested_value;
+
+
 export function refresh (control, callback = null) {
 	if (isset (control.props) && isset (control.props.children)) {
 		let children = Array.isArray (control.props.children) ? control.props.children : [control.props.children];
@@ -159,39 +174,6 @@ export function refresh (control, callback = null) {
 	if (isset (control.ref) && isset (control.ref.current)) refresh (control.ref.current);
 	if (isset (control.setState)) control.setState (null, callback);
 }// refresh;
-
-
-/********/
-
-
-export function get_cookie (name) {
-	const cookies = document.cookie.split (";");
-	for (var cookie of cookies) {
-		var parts = cookie.split ("=");
-		if (parts.length != 2) return null;
-		if (parts [0].trim () != name) continue;
-		return parts [1];
-	}// for;
-}// get_cookie;
-
-
-export function set_cookie (name, value) {
-	if (is_object (value)) value = JSON.stringify (value);
-	document.cookie = `${name}=${value}`;
-}// set_cookie;
-
-
-export function set_state (control, values = null, callback = null) {
-	if ((control.current && control.current.setState) || (control.ref && control.ref.current && control.ref.current.setState)) return control.current.setState (values, callback);
-	setTimeout (() => { set_state (control, values, callback) });
-}// set_state;
-
-
-export function delete_cookie (name) {
-	document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-}// delete_cookie;
-
-export function clear_cookie (name) { delete_cookie (name); }
 
 
 /********/

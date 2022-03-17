@@ -7,7 +7,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 import { globals } from "client/types/globals";
 
 
-const bad_credentials = <div className="login-error">
+const bad_credentials = <div id="bad_credentials" className="login-error">
 	That doesn't sound right. Check your username<br />
 	(email) and password and try again.
 </div>
@@ -15,6 +15,8 @@ const bad_credentials = <div className="login-error">
 
 export default class SigninPage extends BaseControl {
 
+
+	static defaultProps = { id: "signin_page" }
 
 
 	state = { 
@@ -58,9 +60,11 @@ export default class SigninPage extends BaseControl {
 
 		return (
 
-			<div className="shadow-box" style={{ alignSelf: "center" }}>
+			<div id={this.props.id} className="shadow-box" style={{ alignSelf: "center" }}>
 
-				<ExplodingPanel id="signin_error">{this.state.error_message}</ExplodingPanel>
+				<ExplodingPanel id="signin_error">
+					<div id="signin_error_message">{this.state.error_message}</div>
+				</ExplodingPanel>
 
 				<form id="signin_form" encType="multipart/form-data">
 					<div className="one-piece-form form-table">

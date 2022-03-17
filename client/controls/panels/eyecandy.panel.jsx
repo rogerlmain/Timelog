@@ -47,7 +47,7 @@ export default class EyecandyPanel extends BaseControl {
 					this.execute (this.props.afterChanging);
 				}}>
 
-				<div style={eyecandy_style}>
+				<div id={`${id}_eyecandy`} style={eyecandy_style}>
 					<img src={this.state.eyecandy_image_name} style={{ marginRight: "0.5em" }} />
 					{this.props.eyecandyText}
 				</div>

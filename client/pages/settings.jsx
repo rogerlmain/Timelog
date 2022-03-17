@@ -14,13 +14,16 @@ import OptionsModel from "models/options";
 import Options, { log_ends } from "classes/storage/options";
 
 import { isset } from "classes/common";
-import { globals, option_types } from "types/globals";
+import { option_types } from "types/globals";
 import { resize_direction } from "controls/panels/resize.panel";
 
 import "resources/styles/pages.css";
 
 
-export default class SettingsPanel extends BaseControl {
+export default class SettingsPage extends BaseControl {
+
+
+	static defaultProps = { id: "settings_page" }
 
 
 	state = { 
@@ -39,6 +42,26 @@ export default class SettingsPanel extends BaseControl {
 	}// rounding_payment_required;
 
 
+	credit_card_form () {
+		return <CreditCardForm showing={isset (this.state.cc_form)}
+
+			onCancel={() => {
+				this.setState ({ [this.state.cc_form.option]: this.state.cc_form.previous }, () => {
+					this.setState ({ cc_form: null });
+				});
+			}}
+
+			onSubmit={() => {
+				OptionsModel.save_option (this.state.cc_form.option, this.state.cc_form.value).then (data => {
+					Options.set (JSON.stringify (data));
+					this.setState ({ cc_form: null });
+				});
+			}}>
+
+		</CreditCardForm>
+	}// credit_card_form;
+
+
 	granularity_switch () {
 		return <Container contentsOnly={true}>
 			<label htmlFor="granularity_setting">Granularity</label>
@@ -47,11 +70,13 @@ export default class SettingsPanel extends BaseControl {
 
 					onChange={(data) => { 
 
+						let selected_option = data.option + 1;
+
 						if (data.option > this.state.granularity) this.setState ({ 
 							cc_form: { 
 								option: option_types.granularity, 
 								previous: this.state.granularity,
-								value: data.option
+								value: selected_option
 							}/* cc_form */
 						});
 						
@@ -105,23 +130,9 @@ export default class SettingsPanel extends BaseControl {
 
 	render () {
 		return (
-			<div className="one-piece-form">
+			<div id={this.props.id} className="one-piece-form">
 
-				<CreditCardForm showing={isset (this.state.cc_form)}
-
-					onCancel={() => this.setState ({ 
-						[this.state.cc_form.option]: this.state.cc_form.previous,
-						cc_form: null 
-					})}
-					
-					onSubmit={() => {
-						OptionsModel.save_option (this.state.cc_form.option, this.state.cc_form.value).then (data => {
-							Options.set (JSON.stringify (data));
-							this.setState ({ cc_form: null });
-						});
-					}}>
-
-				</CreditCardForm>
+				{this.credit_card_form ()}
 
 				<div className="full-row section-header">User Settings</div>
 
@@ -141,7 +152,7 @@ export default class SettingsPanel extends BaseControl {
 
 				<div className="double-column">
 					<ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
-						<Container condition={ Options.granularity () > 1} className="one-piece-form" inline={true} style={{ justifySelf: "stretch" }}>
+						<Container id="rounding_options_container" condition={ Options.granularity () > 1} className="one-piece-form" inline={true} style={{ justifySelf: "stretch" }}>
 
 							{this.rounding_switch (log_ends.start)}
 							{this.rounding_switch (log_ends.end)}
@@ -158,4 +169,4 @@ export default class SettingsPanel extends BaseControl {
 	}// render;
 
 
-}// SettingsPanel;
+}// SettingsPage;

@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOMServer, { renderToString } from "react-dom/server";
 
 import { globals } from "types/globals";
-import { isset, is_null, is_function, not_null } from "classes/common";
+import { isset, is_null, is_function, not_null, not_set } from "classes/common";
 
 import { empty, blank, underscore } from "types/constants";
 
@@ -11,9 +11,21 @@ import "types/prototypes";
 
 export default class BaseControl extends React.Component {
 
+	constructor (props, state = {}) {
+		super (props);
+		this.state = state;
+	}// constructor;
+
+
+	/********/
+
+
 	compare_elements = (first_element, second_element) => { return ReactDOMServer.renderToString (first_element) == ReactDOMServer.renderToString (second_element) }
 
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
+
+
+	/********/
 
 
 	children () {
@@ -97,10 +109,18 @@ export default class BaseControl extends React.Component {
 	}// object_string;
 	
 	
-	same_element (first_element, second_element) {
+	same_element (first_element, second_element, deep) {
+
 		let first_string = ReactDOMServer.renderToString (first_element);
 		let second_string = ReactDOMServer.renderToString (second_element);
-		return first_string.matches (second_string);
+
+		if (deep !== false) deep = true;
+
+		switch (deep) {
+			case true: return first_string.matches (second_string);
+			default: return first_string.substring (0, first_string.indexOf (">") + 1).matches (second_string.substring (0, second_string.indexOf (">") + 1));
+		}// switch;
+
 	}// same_element;
 
 
@@ -297,17 +317,20 @@ export default class BaseControl extends React.Component {
 	}// show_states;
 
 
-	/********/
+	validate_ids (props, parent_only = false) {
 
+		let control = this.constructor.name;
+		let children = props.children;
 
-	constructor (props, state = {}) {
-		super (props);
-		this.state = state;
-	}// constructor;
+		if (is_null (props.id)) throw `${control} requires an ID`;
+		
+		if (parent_only) return true;
+		if (not_set (children)) return true;
+
+		if (!Array.isArray (children)) children = [children];
+		children.map (child => { if (isset (child.props) && not_set (child.props.id)) throw `${control} (${props.id}) child (${child.type.name}) must have a unique ID` });
+
+	}// validate_children;
 
 
 }// BaseControl;
-
-
-
-

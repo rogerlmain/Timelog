@@ -24,6 +24,9 @@ import "resources/styles/pages/logging.css";
 export default class LoggingPage extends BaseControl {
 
 
+	static defaultProps = { id: "logging_page" }
+
+
 	state = {
 		project_id: 0,
 		initialized: false,
@@ -103,7 +106,7 @@ export default class LoggingPage extends BaseControl {
 			let overtime = ((!start_time.same_day (end_time)) && (elapsed_time > 8));
 
 	
-			return <div className="row-container">
+			return <div id={this.props.id} className="row-container">
 			
 				<div class="log-details two-column-grid">
 	

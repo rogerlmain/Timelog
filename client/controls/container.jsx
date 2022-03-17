@@ -23,10 +23,10 @@ export default class Container extends BaseControl {
 			
 		delete properties.children;
 		
-		return this.props.contentsOnly ? this.props.children : <div style={{ 
+		return this.props.condition ? (this.props.contentsOnly ? this.props.children : <div style={{ 
 			display: ( this.props.inline ? null : "contents" ),
 			...this.props.style 
-		}} {...properties}>{this.props.children}</div>;
+		}} {...properties}>{this.props.children}</div>) : null;
 	
 	}// render;
 

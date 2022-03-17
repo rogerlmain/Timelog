@@ -25,6 +25,9 @@ const granularity = {
 export default class ReportsPage extends BaseControl {
 
 
+	static defaultProps = { id: "reports_page" }
+
+
 	state = {
 		client_id: null,
 		project_id: null,
@@ -166,7 +169,7 @@ export default class ReportsPage extends BaseControl {
 
 		let has_data = isset (this.state.entries);
 
-		return <div id="report_panel">
+		return <div id={this.props.id}>
 			
 			<div className="two-column-grid" style={{ columnGap: "1em" }}>
 

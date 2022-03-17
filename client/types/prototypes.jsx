@@ -186,21 +186,6 @@ Date.prototype.format = function (selected_format) {
 }// format;
 
 
-/********/
-
-
-FormData.prototype.toObject = function () {
-	let result = {}
-	this.forEach ((value, key) => result [key] = value);
-	return result;
-}// toObject;
-
-
-FormData.prototype.toJson = function () {
-	return JSON.stringify (this.toObject ());
-}// toJson;
-
-
 /**** HTMLElement ****/
 
 

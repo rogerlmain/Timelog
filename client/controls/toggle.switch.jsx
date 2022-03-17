@@ -1,11 +1,11 @@
 import React from "react";
 import BaseControl from "controls/base.control";
 
-import { isset, not_set } from "classes/common";
+import { isset } from "classes/common";
 import { globals } from "types/globals";
+import { horizontal_alignment } from "client/types/constants";
 
 import "resources/styles/controls/toggle.switch.css";
-import { horizontal_alignment } from "client/types/constants";
 
 
 const item_width = 24;

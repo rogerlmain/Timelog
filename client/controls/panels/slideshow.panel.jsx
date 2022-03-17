@@ -27,9 +27,13 @@ export default class SlideshowPanel extends BaseControl {
 	}// defaultProps;
 
 
-	render () {
+	constructor (props) {
+		super (props);
+		this.validate_ids (props);
+	}// constructor;
 
-		if (common.is_null (this.props.id)) throw "Slideshow panel requires an ID";
+
+	render () {
 
 		return (
 			<ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed} stretchOnly={this.props.stretchOnly}

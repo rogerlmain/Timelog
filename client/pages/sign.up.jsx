@@ -16,11 +16,10 @@ import { account_types } from "types/constants";
 export default class SignupPage extends BaseControl {
 
 
+	static defaultProps = { id: "signup_page" }
+
+
 	account = null;
-	account_id_field = React.createRef ();
-
-
-	/********/
 
 
 	state = {
@@ -47,7 +46,7 @@ export default class SignupPage extends BaseControl {
 
 		return (
 
-			<div className={this.signed_out () ? "shadow-box" : null} style={{ alignSelf: "center" }}>
+			<div id={this.props.id} className={this.signed_out () ? "shadow-box" : null} style={{ alignSelf: "center" }}>
 
 				<PasswordForm showing={this.state.changing_password} />
 
@@ -62,7 +61,9 @@ export default class SignupPage extends BaseControl {
 */}
 
 
-				<ExplodingPanel id="signup_error">{this.state.error_message}</ExplodingPanel>
+				<ExplodingPanel id="signup_error">
+					<div id="signup_error_message">{this.state.error_message}</div>
+				</ExplodingPanel>
 
 				<form id="account_form" encType="multipart/form-data">
 

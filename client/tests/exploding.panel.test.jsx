@@ -3,7 +3,7 @@ import React from "react";
 import BaseControl from "client/controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
-import SettingsPanel from "client/pages/settings";
+import SettingsPage from "client/pages/settings";
 
 
 export default class ExplodingPanelTest extends BaseControl {
@@ -21,38 +21,36 @@ export default class ExplodingPanelTest extends BaseControl {
 
 
 	render () {
-
-		let contents = (this.state.item == "none") ? null : <div>
-
-			{this.state_equals ("item", "small") && <div style={{ border: "solid 1px green" }}>Small Item</div>}
-
-			{this.state_equals ("item", "medium") && <div style={{ border: "solid 1px green" }}>
-				This is extra test content<br />
-				With a second line...
-			</div>}
-
-			{this.state_equals ("item", "large") && <div style={{ border: "solid 1px green" }}>
-				blah blah blah blahy blah<br />
-				blllaaahhh blah blah blah blahy blah<br />
-				blah blah blahby blahy blah blech<br />
-				<br />
-				<textarea></textarea>
-			</div>}
-
-			{this.state_equals ("item", "settings") && <div style={{ border: "solid 1px green" }}>
-				<SettingsPanel />
-			</div>}
-
-		</div>;
-
-
 		return (
 			<div style={{ border: "solid 1px blue", padding: "2em"}}>
 
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ExplodingPanel id="test_panel" speed={1000} stretchOnly={false} contents={contents} />
+						<ExplodingPanel id="test_panel" speed={500} stretchOnly={false}>
+
+							{this.state_equals ("item", "small") && <div style={{ border: "solid 1px green" }} id="small">
+								Small Item
+							</div>}
+
+							{this.state_equals ("item", "medium") && <div style={{ border: "solid 1px green" }} id="medium">
+								This is extra test content<br />
+								With a second line...
+							</div>}
+
+							{this.state_equals ("item", "large") && <div style={{ border: "solid 1px green" }} id="large">
+								blah blah blah blahy blah<br />
+								blllaaahhh blah blah blah blahy blah<br />
+								blah blah blahby blahy blah blech<br />
+								<br />
+								<textarea></textarea>
+							</div>}
+
+							{this.state_equals ("item", "settings") && <div style={{ border: "solid 1px green" }} id="settings">
+								<SettingsPage />
+							</div>}
+
+						</ExplodingPanel>
 					</div>
 
 				</div>

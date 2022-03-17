@@ -8,8 +8,8 @@ import ProjectsPage from "pages/projects";
 import LoggingPage from "pages/logging";
 import ReportsPage from "pages/reports";
 
-import AccountPanel from "pages/sign.up";
-import SettingsPanel from "pages/settings";
+import AccountPage from "pages/sign.up";
+import SettingsPage from "pages/settings";
 import ExplodingPanel from "./controls/panels/exploding.panel";
 
 import BaseControl from "controls/base.control";
@@ -33,6 +33,9 @@ export default class MasterPanel extends BaseControl {
 
 
 	/********/
+
+
+	static defaultProps = { id: "master_panel" }
 
 
 	state = {
@@ -65,20 +68,20 @@ export default class MasterPanel extends BaseControl {
 	}// button_list;
 
 
-	page_list () {
+	page_item () {
 		switch (this.state.page) {
 			case master_pages.clients: return <ClientsPage />;
-			case master_pages.account: return <AccountPanel parent={this.props.parent} />;
+			case master_pages.account: return <AccountPage parent={this.props.parent} />;
 			case master_pages.projects: return <ProjectsPage />;
 			// case master_pages.team: return <TeamPanel />;
 			// case master_pages.tasks: return <TasksPanel />;
 			case master_pages.logging: return <LoggingPage />;
-			case master_pages.settings: return <SettingsPanel />;
+			case master_pages.settings: return <SettingsPage />;
 			case master_pages.reports: return <ReportsPage />;
 			// case master_pages.history: return <div>Placeholder for History</div>;
 			default: return <HomePage />;
 		}// switch;
-	}// page_list;
+	}// page_item;
 
 
 	signout_button () {
@@ -96,7 +99,7 @@ export default class MasterPanel extends BaseControl {
 
 	render () {
 		return (
-			<div id="home_page_panel" className="full-screen">
+			<div id={this.props.id} className="full-screen">
 
 				<link rel="stylesheet" href="resources/styles/home.page.css" />
 
@@ -117,7 +120,7 @@ export default class MasterPanel extends BaseControl {
 				</div>
 
 				<div className="full-screen horizontal-centering-container" style={{ marginTop: "1em" }}>
-					<ExplodingPanel id="details_panel">{this.page_list ()}</ExplodingPanel>
+					<ExplodingPanel id="details_panel">{this.page_item ()}</ExplodingPanel>
 				</div>
 
 			</div>

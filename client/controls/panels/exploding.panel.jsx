@@ -1,4 +1,4 @@
-import * as common from "classes/common";
+import { isset, is_null, not_empty, not_set } from "classes/common";
 
 import React from "react";
 
@@ -17,22 +17,6 @@ export default class ExplodingPanel extends BaseControl {
 
 	transitioning = false;
 
-
-	load_contents = (new_children) => {
-
-		const run_animation = () => {
-			if (this.state.children != new_children) return setTimeout (run_animation);
-			this.forceUpdate (() => this.setState ({ resize: resize_state.animate }));
-		}// run_animation;
-
-		this.transitioning = false;
-
-		this.setState ({ children: new_children }, run_animation);
-
-	}// load_contents;
-
-
-	/********/
 
 	static defaultProps = {
 
@@ -66,9 +50,24 @@ export default class ExplodingPanel extends BaseControl {
 
 	constructor (props) {
 		super (props);
+		this.validate_ids (props);
 		this.state.children = this.props.children;
-		this.state.visible = common.not_empty (renderToString (this.props.children));
+		this.state.visible = not_empty (renderToString (this.props.children));
 	}// constructor;
+
+
+	load_contents = (new_children) => {
+
+		const run_animation = () => {
+			if (this.state.children != new_children) return setTimeout (run_animation);
+			this.forceUpdate (() => this.setState ({ resize: resize_state.animate }));
+		}// run_animation;
+
+		this.transitioning = false;
+
+		this.setState ({ children: new_children }, run_animation);
+
+	}// load_contents;
 
 
 	componentDidMount = () => this.setState ({ animate: true });
@@ -76,14 +75,28 @@ export default class ExplodingPanel extends BaseControl {
 
 	shouldComponentUpdate (next_props, next_state) {
 
-		let updated = !this.same_element (next_state.children, next_props.children);
+		let updated = !this.same_element (next_state.children, next_props.children, false);
+		let changed = !this.same_element (next_state.children, next_props.children, true);
 
-		if (this.transitioning) return common.is_null (setTimeout (() => this.forceUpdate ()));
+		if (this.transitioning) return is_null (setTimeout (() => this.forceUpdate ()));
 
-		if (updated) switch (this.state.visible) {
-			case true: this.transitioning = true; this.setState ({ visible: false }); return false;
-			default: this.load_contents (next_props.children); break; 
-		}// if / switch;
+		if (updated) {
+			if (this.state.visible) {
+				this.transitioning = true; 
+				this.setState ({ visible: false }); 
+				return false;
+			} else {
+				if (changed) {
+					this.load_contents (next_props.children); 
+					return false;
+				}// if;
+			}// if;
+		} else {
+			if (changed) {
+				this.load_contents (next_props.children); 
+				return false;
+			}// if;
+		}// if;
 
  		return true; 
 
@@ -93,8 +106,6 @@ export default class ExplodingPanel extends BaseControl {
 	render () {
 
 		let target_speed = Math.floor (this.props.speed / 2);
-
-		if (common.is_null (this.props.id)) throw "Exploding panel requires an ID";
 
 		return (
 
@@ -117,9 +128,9 @@ export default class ExplodingPanel extends BaseControl {
 					speed={target_speed} resize={this.state.resize} parent={this} stretchOnly={this.props.stretchOnly}
 
 					beforeResizing={() => this.execute (this.props.beforeShowing)}
-					afterResizing={() => this.setState ({ visible: common.isset (this.state.children) })}>
+					afterResizing={() => this.setState ({ visible: isset (this.state.children) })}>
 
-					{this.state.children}
+					{this.transitioning ? this.state.children : this.props.children}
 
 				</ResizePanel>
 				

@@ -7,9 +7,11 @@ import { isset } from "classes/common";
 
 export default class HomePage extends BaseControl {
 
+	static defaultProps = { id: "home_page" }
+
 	render () {
 		let name = Credentials.username ();
-		return (<div>Welcome {isset (name) ? name : "person with money"}</div>);
+		return (<div id={this.props.id}>Welcome {isset (name) ? name : "person with money"}</div>);
 	}// render;
 
 }// HomePage;

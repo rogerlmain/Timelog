@@ -16,13 +16,13 @@
 }/* #project_description */
 
 
-#project_page hr {
+#projects_page hr {
 	height: 0;
 	width: 100%;
 	border: none;
 	border-top: solid 1px black;
 	margin: 2em 0;
-}/* #project_page hr */
+}/* #projects_page hr */
 
 
 /********/

@@ -1,5 +1,6 @@
 import React from "react";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
+import Container from "controls/container";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import PopupWindow from "pages/gadgets/popup.window";
 
@@ -54,8 +55,10 @@ export default class CreditCardForm extends BaseControl {
 				<div className="cc-details subpanel">
 					<input type="text" name="cc_cvv" />
 					<ExplodingPanel id="license_panel">
-						<label htmlFor="licence_count">Licences</label>
-						<input type="text" name="licence_count" placeholder="1" />
+						<Container id="licence_form">
+							<label htmlFor="licence_count">Licences</label>
+							<input type="text" name="licence_count" placeholder="1" />
+						</Container>
 					</ExplodingPanel>
 				</div>
 

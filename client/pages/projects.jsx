@@ -12,6 +12,9 @@ import { isset } from "classes/common";
 
 export default class ProjectsPage extends BaseControl {
 
+	static defaultProps = { id: "projects_page" }
+
+
 	state = {
 
 		client_list: null,
@@ -30,7 +33,7 @@ export default class ProjectsPage extends BaseControl {
 	render () {
 		return (
 
-			<div id="project_page" className="top-center-container row-spaced">
+			<div id={this.props.id} className="top-center-container row-spaced">
 
 				<link rel="stylesheet" href="/resources/styles/pages/projects.css" />
 
