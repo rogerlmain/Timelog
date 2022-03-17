@@ -20,6 +20,12 @@ import { resize_direction } from "controls/panels/resize.panel";
 import "resources/styles/pages.css";
 
 
+const rounding_type = {
+	start: "start",
+	end: "end"
+}// rounding_type;
+
+
 export default class SettingsPage extends BaseControl {
 
 
@@ -37,9 +43,19 @@ export default class SettingsPage extends BaseControl {
 	rounding_payment_required (option, end) {
 		if (option == this.state [`${end}_rounding`]) return false;
 		if (option == Date.rounding.off) return false;
-		if (Options.rounding ("start") || Options.rounding ("end")) return false;
+		if (Options.rounding (rounding_type.start) || Options.rounding (rounding_type.end)) return false;
 		return true;
 	}// rounding_payment_required;
+
+
+	set_option (option, value) {
+		return new Promise ((resolve, reject) => {
+			OptionsModel.save_option (option, value).then (data => {
+				Options.set (JSON.stringify (data));
+				resolve ();
+			}).catch (reject);
+		});
+	}// set_option;
 
 
 	credit_card_form () {
@@ -51,12 +67,7 @@ export default class SettingsPage extends BaseControl {
 				});
 			}}
 
-			onSubmit={() => {
-				OptionsModel.save_option (this.state.cc_form.option, this.state.cc_form.value).then (data => {
-					Options.set (JSON.stringify (data));
-					this.setState ({ cc_form: null });
-				});
-			}}>
+			onSubmit={() => this.set_option (this.state.cc_form.option, this.state.cc_form.value).then (() => this.setState ({ cc_form: null }))}>
 
 		</CreditCardForm>
 	}// credit_card_form;
@@ -98,19 +109,30 @@ export default class SettingsPage extends BaseControl {
 
 
 	rounding_switch (end) {
+
+		let boundary_rounding = `${end}_rounding`;
+
 		return <Container contentsOnly={true}>
 			<label htmlFor="start_rounding">{end.charAt (0).toUpperCase () + end.slice (1)} time rounding</label>
 			<div className="middle-right-container">
-				<ToggleSwitch id="start_rounding" speed={Settings.animation_speed ()} value={this.state [`${end}_rounding`]} singleStep={true}
+				<ToggleSwitch id="start_rounding" speed={Settings.animation_speed ()} value={this.state [boundary_rounding]} singleStep={true}
 
 					onChange={(data) => {
-						this.setState ({ cc_form: this.rounding_payment_required (data.option, end) ? {
-							option: option_types [`${end}_rounding`],
-							previous: this.state [`${end}_rounding`],
-							value: data.option
-						} : null });
-						this.setState ({ [`${end}_rounding`]: data.option });
-						return true;
+
+						if (data.option == this.state [boundary_rounding]) return;
+
+						if (this.rounding_payment_required (data.option, end)) {
+							this.setState ({ cc_form: {
+								option: option_types [boundary_rounding],
+								previous: this.state [boundary_rounding],
+								value: data.option
+							}}) 
+						} else {
+							this.set_option (boundary_rounding, data.option);
+						}// if;
+
+						this.setState ({ [boundary_rounding]: data.option });
+
 					}}>
 
 					<option value={Date.rounding.down}>Round down</option>
@@ -124,7 +146,17 @@ export default class SettingsPage extends BaseControl {
 
 
 	componentDidMount () {
-		this.setState ({ granularity: Options.granularity () - 1 });
+		
+		let start_rounding = Options.rounding (rounding_type.start);
+		let end_rounding = Options.rounding (rounding_type.end);
+
+		let values = { granularity: Options.granularity () - 1 }
+
+		if (isset (start_rounding)) values = { ...values, start_rounding: start_rounding }
+		if (isset (end_rounding)) values = { ...values, end_rounding: end_rounding }
+
+		this.setState (values);
+
 	}// componentDidMount;
 
 
