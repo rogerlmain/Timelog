@@ -6,9 +6,6 @@ import BaseControl from "controls/base.control";
 
 import ExplodingPanel from "controls/panels/exploding.panel";
 
-import ExplodingPanelTest from "tests/exploding.panel.test";
-import SettingsPage from "./pages/settings";
-
 import MasterPanel from "client/master";
 
 import SigninPage from "pages/sign.in";
@@ -16,6 +13,12 @@ import SignupPage from "pages/sign.up";
 
 import { globals } from "types/globals";
 import { notify } from "classes/common";
+
+import "client/resources/styles/main.css";
+
+
+// Special Guest Import
+// import NumberPicker from "controls/number.picker";
 
 
 export class Main extends BaseControl {
@@ -31,9 +34,7 @@ export class Main extends BaseControl {
 	}// constructor;
 
 
-	error_handler (message, url, line) {
-		notify (message, url, line);
-	}
+	error_handler (message, url, line) { notify (message, url, line) }
 
 
     render () {
@@ -41,8 +42,6 @@ export class Main extends BaseControl {
 		return (
 
 			<div style={{ display: "flex", flexDirection: "column" }}>
-
-				<link rel="stylesheet" href="resources/styles/main.css" />
 
 				<div className="page-header">
 					<div className="title">RMPC Timelog</div>
@@ -63,13 +62,12 @@ export class Main extends BaseControl {
 
 
 document.onreadystatechange = () => {
+
 	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	ReactDOM.render (<ResizePanelTest id="resize_panel_test" />, document.getElementById ("main_page"));
 //	ReactDOM.render (<FadePanelTest id="fade_panel_test" />, document.getElementById ("main_page"));
 //	ReactDOM.render (<ExplodingPanelTest id="exploding_panel_test" />, document.getElementById ("main_page"));
 //	ReactDOM.render (<SlideshowPanelTest id="slideshow_panel_test" />,  document.getElementById ("main_page"));
-
-//	ReactDOM.render (<SettingsPage />, document.getElementById ("main_page"));
 
 }// document.ready;
