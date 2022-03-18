@@ -101,7 +101,7 @@ export default class MasterPanel extends BaseControl {
 		return (
 			<div id={this.props.id} className="full-screen">
 
-				<link rel="stylesheet" href="resources/styles/home.page.css" />
+				<link rel="stylesheet" href="client/resources/styles/home.page.css" />
 
 				<div className="home_button_panel">
 

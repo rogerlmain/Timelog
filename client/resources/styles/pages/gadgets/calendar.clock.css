@@ -1,0 +1,30 @@
+div.boundary-toggle-switch {
+	column-gap: 1em;
+	margin-bottom: 1em;
+	justify-content: center;
+}/* div.boundary-toggle-switch */
+
+
+div.date-time-controls {
+	column-gap: 1em;
+	align-items: center;
+}/* div.date-time-controls */
+
+
+div.react-calendar button {
+	border: none;
+}/* div.react-calendar button */
+
+
+/**** React Calendar ****/
+
+
+button.react-calendar__tile--now {
+	border: solid 2px #A00 !important; 
+}/* button.react-calendar__tile--now */
+
+
+button.react-calendar__tile--now:hover {
+	color: black !important;
+	background-color: #FDD;
+}/* button.react-calendar__tile--now:hover */

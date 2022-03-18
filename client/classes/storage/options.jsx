@@ -6,10 +6,10 @@ import { is_null, isset, not_set } from "classes/common";
 const store_name = "options";
 
 
-export const log_ends = {
+export const log_entry_boundaries = {
 	start: "start",
 	end: "end"
-}// log_ends;
+}// log_entry_boundaries;
 
 
 export default class Options extends LocalStorage {

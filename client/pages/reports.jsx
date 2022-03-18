@@ -9,7 +9,7 @@ import ReportsModel from "models/reports";
 
 import { isset, is_null, is_object, not_set } from "classes/common";
 
-import "resources/styles/pages/reports.css";
+import "client/resources/styles/pages/reports.css";
 
 
 

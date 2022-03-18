@@ -21,7 +21,7 @@ export default class EyecandyPanel extends BaseControl {
 	};
 	
 
-	state = { eyecandy_image_name: "resources/images/data.indicator.gif" };
+	state = { eyecandy_image_name: "client/resources/images/data.indicator.gif" };
 
 
 	render () {

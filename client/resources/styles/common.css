@@ -208,9 +208,9 @@ button, *.unselectable {
 /**** Debugging ****/
 
 
-.outlined, .outlined * {
+.bordered, .outlined, .outlined * {
 	border: solid 1px red;
-}/* outlined */
+}/* .bordered, .outlined, .outlined * */
 
 
 .gray-outlined {

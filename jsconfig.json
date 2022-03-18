@@ -17,19 +17,16 @@
 		"baseUrl": "./",
 
 		"paths": {
-
-"tests/*": ["client/tests/*"],
-
-			"client/*": ["client/*"],
-
-			"classes/*": ["client/classes/*"],
-			"controls/*": ["client/controls/*"],
-			"models/*": ["client/models/*"],
-			"pages/*": ["client/pages/*"],
-			"panels/*": ["client/panels/*"],
-			"types/*": ["client/types/*"],
-			
-			"/*": ["/*"]
+			"client/*"		: ["client/*"],
+			"classes/*"		: ["client/classes/*"],
+			"controls/*"	: ["client/controls/*"],
+			"models/*"		: ["client/models/*"],
+			"pages/*"		: ["client/pages/*"],
+			"panels/*"		: ["client/panels/*"],
+			"tests/*"		: ["client/tests/*"],
+			"types/*"		: ["client/types/*"],
+			"resources/*"	: ["client/resources/*"],
+			"/*"			: ["/*"]
 		}/* paths */,
 
 		"skipLibCheck": true,
@@ -46,6 +43,5 @@
 		"esnext"
 	],
 
-	"esModuleInterop": true,
 	"declaration": true
 }

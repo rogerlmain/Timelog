@@ -1,11 +1,12 @@
 import React from "react";
 import BaseControl from "controls/base.control";
+import Settings from "classes/storage/settings";
 
 import { isset } from "classes/common";
 import { globals } from "types/globals";
 import { horizontal_alignment } from "client/types/constants";
 
-import "resources/styles/controls/toggle.switch.css";
+import "client/resources/styles/controls/toggle.switch.css";
 
 
 const item_width = 24;
@@ -16,7 +17,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	static defaultProps = {
 		id: null,
-		speed: null,
+		speed: Settings.animation_speed (),
 		value: null,		
 		singleStep: false,
 		showText: false,
@@ -63,14 +64,10 @@ export default class ToggleSwitch extends BaseControl {
 				<div id={this.props.id} className="toggle-switch unselectable">
 
 					{this.props.children ? this.props.children.map (child => {
-						return <div className="item" key={child.props.children} title={child.props.children} onClick={event => {
-
+						return <div id={child.props.id} className="item" key={child.props.children} title={child.props.children} onClick={event => {
 							let selection = child.props.value ?? Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
-
 							if ((this.props.singleStep) && (Math.abs (selection - this.state.option) > 1)) selection = this.state.option + ((selection > this.state.option) ? 1 : -1);
-							
 							this.setState ({ option: selection });
-							
 						}}></div>
 					}) : null}
 

@@ -25,6 +25,8 @@ export const empty = blank;
 
 export const comma = ",";
 export const underscore = "_";
+export const dash = "-";
+export const minus = dash;
 
 export const hidden_zindex = -1;	// zIndex to put unseen items behind the page
 export const fade_zindex = 5;

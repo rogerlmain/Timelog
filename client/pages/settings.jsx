@@ -11,19 +11,13 @@ import CreditCardForm from "pages/forms/credit.card.form";
 
 import OptionsModel from "models/options";
 
-import Options, { log_ends } from "classes/storage/options";
+import Options, { log_entry_boundaries } from "classes/storage/options";
 
 import { isset } from "classes/common";
 import { option_types } from "types/globals";
 import { resize_direction } from "controls/panels/resize.panel";
 
-import "resources/styles/pages.css";
-
-
-const rounding_type = {
-	start: "start",
-	end: "end"
-}// rounding_type;
+import "client/resources/styles/pages.css";
 
 
 export default class SettingsPage extends BaseControl {
@@ -43,7 +37,7 @@ export default class SettingsPage extends BaseControl {
 	rounding_payment_required (option, end) {
 		if (option == this.state [`${end}_rounding`]) return false;
 		if (option == Date.rounding.off) return false;
-		if (Options.rounding (rounding_type.start) || Options.rounding (rounding_type.end)) return false;
+		if (Options.rounding (log_entry_boundaries.start) || Options.rounding (log_entry_boundaries.end)) return false;
 		return true;
 	}// rounding_payment_required;
 
@@ -147,8 +141,8 @@ export default class SettingsPage extends BaseControl {
 
 	componentDidMount () {
 		
-		let start_rounding = Options.rounding (rounding_type.start);
-		let end_rounding = Options.rounding (rounding_type.end);
+		let start_rounding = Options.rounding (log_entry_boundaries.start);
+		let end_rounding = Options.rounding (log_entry_boundaries.end);
 
 		let values = { granularity: Options.granularity () - 1 }
 
@@ -186,8 +180,8 @@ export default class SettingsPage extends BaseControl {
 					<ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
 						<Container id="rounding_options_container" condition={ Options.granularity () > 1} className="one-piece-form" inline={true} style={{ justifySelf: "stretch" }}>
 
-							{this.rounding_switch (log_ends.start)}
-							{this.rounding_switch (log_ends.end)}
+							{this.rounding_switch (log_entry_boundaries.start)}
+							{this.rounding_switch (log_entry_boundaries.end)}
 
 						</Container>
 					</ExplodingPanel>

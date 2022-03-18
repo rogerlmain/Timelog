@@ -1,6 +1,6 @@
 import { blank, directions, empty } from "types/constants";
 
-import { is_null, is_string, not_set } from "classes/common";
+import { is_null, is_string, is_number, not_set } from "classes/common";
 
 
 Array.prototype.get_index = function (item) {
@@ -261,4 +261,5 @@ String.prototype.matches = function (comparison, case_sensitive = false) {
 	if (is_null (comparison)) return false;
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
 }// matches;
+
 

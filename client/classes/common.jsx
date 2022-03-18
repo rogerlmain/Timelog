@@ -74,7 +74,7 @@ export function is_null (value) {
 
 export function is_object (value) { return value instanceof Object }
 export function is_string (value) { return typeof value == "string" }
-
+export function is_number (value) { return !isNaN (parseInt (value))}
 
 
 export function is_undefined (value) {

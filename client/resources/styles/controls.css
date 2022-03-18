@@ -1,0 +1,3 @@
+input.number-input { caret-color: transparent }
+
+input.number-input:focus { background-color: yellow }
