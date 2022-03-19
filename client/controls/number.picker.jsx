@@ -14,6 +14,7 @@ export default class NumberPicker extends BaseControl {
 		min: null,
 		max: null,
 		loop: false,
+		padding: 0,
 		onChange: null
 	}// defaultProps;
 
@@ -25,6 +26,14 @@ export default class NumberPicker extends BaseControl {
 		super (props);
 		this.state.value = props.value;
 	}// constructor;
+
+
+	save_selection (selection) {
+		this.setState ({ value: selection }, () => this.execute (this.props.onChange, {
+			old_value: this.state.value,
+			new_value: selection
+		}));
+	}// save_selection;
 
 
 	update_value (increment) {
@@ -41,10 +50,7 @@ export default class NumberPicker extends BaseControl {
 			else return;
 		}// if;
 
-		this.setState ({ value: new_value }, () => this.execute (this.props.onChange, {
-			old_value: this.state.value,
-			new_value: new_value
-		}));
+		this.save_selection (new_value);
 
 	}// update_value;
 
@@ -62,7 +68,7 @@ export default class NumberPicker extends BaseControl {
 
 		return <div className="number-picker">
 			<div className="up-arrow" onClick={() => this.update_value (1)} />
-			<NumberInput value={this.state.value} min={this.props.min} max={this.props.max} onChange={data => this.setState ({ value: data.new_value })} />
+			<NumberInput value={this.state.value.padded (this.props.padding)} min={this.props.min} max={this.props.max} onChange={data => this.save_selection (data.new_value)} />
 			<div className="down-arrow" onClick={() => this.update_value (-1)} />
 		</div>
 	}// render;
