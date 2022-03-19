@@ -20,11 +20,16 @@ div.react-calendar button {
 
 
 button.react-calendar__tile--now {
-	border: solid 2px #A00 !important; 
+	background-color: var(--highlight-color) !important;
 }/* button.react-calendar__tile--now */
 
 
 button.react-calendar__tile--now:hover {
-	color: black !important;
-	background-color: #FDD;
+	background-color: black !important;
+	color: white !important;
 }/* button.react-calendar__tile--now:hover */
+
+
+button.react-calendar__tile--active {
+	border: solid 2px #A00 !important; 
+}/* button.react-calendar__tile--active */

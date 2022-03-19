@@ -10,7 +10,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 import FadePanel from "controls/panels/fade.panel";
 
 import Logging from "classes/storage/logging";
-import Options from "classes/storage/options";
+import Options, { log_entry_boundaries } from "classes/storage/options";
 
 import CalendarClock from "pages/gadgets/calendar.clock";
 import PopupNotice from "pages/gadgets/popup.notice";
@@ -18,7 +18,7 @@ import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadg
 
 import LoggingModel from "models/logging";
 
-import { isset, not_empty } from "classes/common";
+import { isset, is_null, not_empty, notify } from "classes/common";
 
 import "client/resources/styles/pages/logging.css";
 
@@ -31,19 +31,42 @@ export default class LoggingPage extends BaseControl {
 
 	state = {
 		project_id: 0,
+		editable: false,
+		editing: false,
 		fixing: false,
 		initialized: false,
+		current_entry: null,
 		updating: false
 	}// state;
 
 
 	constructor (props) {
+
 		super (props);
-		this.state.project_id = 0;
+
+		let entry = Logging.get_all ();
+
+		if (isset (entry)) {
+			entry.start_time = Date.validated (entry.start_time);
+			entry.end_time = this.end_time ();
+			this.state.project_id = entry.project_id;
+			this.state.editable = this.needs_editing (entry);
+		}// if;
+
+		if (this.state.editable) this.state.editing = true;
+		this.state.current_entry = entry;
+
 	}// constructor;
 
 
 	project_selected = () => { return this.state.project_id > 0 }
+
+
+	needs_editing (entry = null) { 
+		if (is_null (entry)) entry = this.state.current_entry;
+		if (is_null (entry)) return false;
+		return ((!entry.start_time.same_day (entry.end_time)) && (this.elapsed_time (entry) > (8 * Date.hour_coef))) 
+	}// needs_editing;
 
 	
 	set_logging = (data) => {
@@ -62,20 +85,30 @@ export default class LoggingPage extends BaseControl {
 
 
 	end_time () {
+
+		let date = (isset (this.state.current_entry) ? this.state.current_entry.end_time : null) ?? new Date ();
+
 		switch (Options.granularity ()) {
-			case 1: return new Date ().round_hours (Date.rounding.down);
-			case 2: return new Date ().round_minutes (15);
+			case 1: return date.round_hours (Date.rounding.down);
+			case 2: return date.round_minutes (15);
 		}// switch;
+
 	}// end_time;
 
 
-	elapsed_time (start_time, end_time) {
+	elapsed_time (entry = null) {
+
+		let end_time = this.end_time ();
+		
+		entry = entry ?? this.state.current_entry;
+
 		switch (Options.granularity ()) {
-			case 1: return Math.floor ((end_time.round_hours (Date.rounding.down).getTime () - start_time.getTime ()) / 1000);
-			case 2: return Math.floor ((end_time.round_minutes (15, Date.rounding.down).getTime () - start_time.getTime ()) / 1000);
+			case 1: return Math.floor ((end_time.round_hours (Date.rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
+			case 2: return Math.floor ((end_time.round_minutes (15, Date.rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
 			case 3: return 0; // Level 3 Granularity - any number of minutes
 			case 4: return 0; // Level 4 Granularity - truetime: down to the second
 		}// switch;
+
 	}// elapsed_time;
 
 
@@ -88,42 +121,82 @@ export default class LoggingPage extends BaseControl {
 	}// billable_time;
 
 
-	componentDidMount = () => this.setState ({ initialized: true });
+	invalid_entry () {
+
+		let entry = this.state.current_entry;
+		let now = new Date ();
+
+		if (is_null (entry.end_time)) return false;
+
+		if (entry.end_time.before (entry.start_time)) return true;
+		if (entry.start_time.after (now) || entry.end_time.after (now)) {
+			// notify ("Projected end times are not", "available in this version."); // TODO: Create a setting for this
+			return true;
+		}// if;
+		
+		return false;
+		
+	}// invalid_entry;
+		
+		
+	componentDidMount () {
+		this.setState ({ initialized: true });
+	}// componentDidMount;
+
+
+	componentDidUpdate () {
+		this.setState ({ editable: this.needs_editing () });
+	}// componentDidUpdate;
+
+
+	link_cell (value) {
+		return <div className={this.state.editable ? "error-link" : null} onClick={this.state.editable ? () => this.setState ({ 
+			editing: true,
+			fixing: true
+		}) : null}>{value}</div>
+	}// link_cell;
 
 
 	render () {
 
-		let entry = Logging.get_all ();
+		let entry = this.state.current_entry;
+		let logged_in = isset (entry.start_time);
+		let elapsed_time = logged_in ? this.elapsed_time () : null;
 
-		let logged_in = isset (entry);
-	
-		let start_time = logged_in ? Date.validated (entry.start_time) : null;
-		let end_time = this.end_time ();
-
-		let elapsed_time = logged_in ? this.elapsed_time (start_time, end_time) : null;
-		let overtime = ((!start_time.same_day (end_time)) && (elapsed_time > 8));
-	
 
 		const overtime_notice = () => {
-			return <PopupNotice id="overtime_notice" visible={overtime}>
+			return <PopupNotice id="overtime_notice" visible={this.state.editing}>
 				<ExplodingPanel id="overtime_notice">
 	
-					<CalendarClock id="log_calendar_clock" visible={this.state.fixing} start={start_time} end={end_time} onChange={() => {
+					<Container id="calendar_clock" condition={this.state.fixing}>
+						<CalendarClock id="log_calendar_clock"
+							start={entry.start_time} end={entry.end_time}
+							onChange={data => this.setState ({ current_entry: { 
+								...this.state.current_entry,
+								[`${data.boundary}_time`]: data.date
+							}})}>
+						</CalendarClock>
 
-						// Update logging values
+						<div className="button-panel">
+							<button onClick={() => this.setState ({ editing: false })}>Close</button>
+						</div>
 
-					}} />
+					</Container>
 	
 					<Container id="overtime_instructions" condition={!this.state.fixing}>
-						Whoa! Are you sure this is right?<br/>
-						You have a single session going for more than a day!<br />
 	
 						<div style={{ padding: "0.5em 0" }}>
-						</div>
+
+							Whoa! Are you sure this is right?<br/>
+							You have a single session going for more than a day!<br />
+
+							<br />
 	
-						<div className="button-panel">
-							<button onClick={() => alert ("Close this window")}>Yep, that's right</button>
-							<button onClick={() => this.setState ({ fixing: true })}>Oops. Fix it.</button>
+							<div className="button-panel">
+								<button onClick={() => this.setState ({ editing: false })}>Yep, that's right</button>
+								<button onClick={() => this.setState ({ fixing: true })}>Oops. Fix it.</button>
+							</div>
+
 						</div>
 					</Container>
 	
@@ -134,7 +207,7 @@ export default class LoggingPage extends BaseControl {
 	
 		const entry_details = () => {
 	
-			let color = `var(--${(elapsed_time > (8 * Date.hour_coef) ? "warning-color" : "default-color")})`;
+			let elapsed_time = logged_in ? this.elapsed_time () : null;
 	
 			return <div id={this.props.id} className="row-container">
 			
@@ -149,13 +222,13 @@ export default class LoggingPage extends BaseControl {
 					<Break />
 	
 					<label>Start</label>
-					<div>{start_time.format (Date.formats.full_datetime)}</div>
+					<div>{entry.start_time.format (Date.formats.full_datetime)}</div>
 	
 					<label>Stop</label>
-					<div style={{ color: color }}>{end_time.format (start_time.same_day (new Date ()) ? Date.formats.timestamp : Date.formats.full_datetime)}</div>
+					{this.link_cell (entry.end_time.format (entry.start_time.same_day (entry.end_time) ? Date.formats.timestamp : Date.formats.full_datetime))}
 	
 					<label>Elapsed</label>
-					<div style={{ color: color }}>{elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time) }</div>
+					{this.link_cell (elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)) }
 					
 					<Break />
 	
@@ -197,13 +270,15 @@ export default class LoggingPage extends BaseControl {
 						onEyecandy={() => { LoggingModel.log (this.state.project_id).then (this.set_logging)}}>
 
 						<FadePanel id="login_button" visible={this.project_selected () || logged_in} style={{ display: "flex" }}>
-							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }}>
+							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }} disabled={this.invalid_entry ()}>
 								{logged_in ? (elapsed_time == 0 ? "Cancel log entry" : "Log out") : "Log in"}
 							</button>
 						</FadePanel>
 
 					</EyecandyPanel>
 				</div>
+
+<button onClick={() => alert (JSON.stringify (this.state.current_entry))}>SHOW ME</button>
 
 			</div>
 		);

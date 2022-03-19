@@ -2,8 +2,10 @@ import "regenerator-runtime/runtime.js";
 
 import React from "react";
 import ReactDOM from "react-dom";
-import BaseControl from "controls/base.control";
 
+import Calendar from "react-calendar";
+
+import BaseControl from "controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
 import MasterPanel from "client/master";

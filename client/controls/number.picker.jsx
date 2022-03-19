@@ -13,6 +13,7 @@ export default class NumberPicker extends BaseControl {
 		value: 0,
 		min: null,
 		max: null,
+		loop: false,
 		onChange: null
 	}// defaultProps;
 
@@ -28,10 +29,17 @@ export default class NumberPicker extends BaseControl {
 
 	update_value (increment) {
 
-		let new_value = this.state.value + increment;
+		let new_value = parseInt (this.state.value) + increment;
 
-		if (is_number (this.props.min) && (new_value < this.props.min)) return;
-		if (is_number (this.props.max) && (new_value > this.props.max)) return;
+		if (is_number (this.props.min) && (new_value < this.props.min)) {
+			if (this.props.loop) new_value = this.props.max;
+			else return;
+		}// if;
+
+		if (is_number (this.props.max) && (new_value > this.props.max)) {
+			if (this.props.loop) new_value = this.props.min;
+			else return;
+		}// if;
 
 		this.setState ({ value: new_value }, () => this.execute (this.props.onChange, {
 			old_value: this.state.value,

@@ -86,6 +86,10 @@ Date.prototype.get_month = function () { return this.getMonth () }
 Date.prototype.get_year = function () { return this.getFullYear () }
 
 
+Date.prototype.before = function (comparison) { return this - comparison < 0 }
+Date.prototype.after = function (comparison) { return this - comparison > 0 }
+
+
 Date.prototype.round_hours = function (direction) {
 
 	let result = new Date (this);

@@ -11,8 +11,8 @@ import ToggleSwitch from "client/controls/toggle.switch";
 
 import { log_entry_boundaries } from "classes/storage/options";
 
+import "react-clock/dist/Clock.css";
 import "client/resources/styles/pages/gadgets/calendar.clock.css";
-import 'react-clock/dist/Clock.css';
 
 
 export default class CalendarClock extends BaseControl {
@@ -26,8 +26,25 @@ export default class CalendarClock extends BaseControl {
 	}// defaultProps;
 
 
-	state = { boundary: log_entry_boundaries.end }
-	
+	state = { boundary: log_entry_boundaries.start }
+
+
+	date_value (new_date) {
+		let original_date = new Date (this.props [this.state.boundary]);
+		original_date.setFullYear (new_date.getFullYear ());
+		original_date.setMonth (new_date.getMonth ());
+		original_date.setDate (new_date.getDate ());
+		return original_date;
+	}// date_value;
+
+
+	time_value (new_time) {
+		let original_time = new Date (this.props [this.state.boundary]);
+		original_time.setHours (new_time.getHours ());
+		original_time.setMinutes (new_time.getMinutes ());
+		return original_time;
+	}// time_value;
+
 
 	render () {
 		return (
@@ -43,8 +60,22 @@ export default class CalendarClock extends BaseControl {
 				</div>
 
 				<div className="two-column-grid date-time-controls">
-					<Calendar id="test_calendar" value={this.props [this.state.boundary]} onChange={()=>alert ("changed")} />
-					<TimePicker id="time_picker" value={this.props [this.state.boundary]} onChange={()=>alert ("changed")} />
+
+					<Calendar id="test_calendar" calendarType="US" selectRange={false} 
+						value={this.props [this.state.boundary]} 
+						onChange={value => this.execute (this.props.onChange, {
+							date: this.date_value (value),
+							boundary: this.state.boundary
+						})}>
+					</Calendar>
+
+					<TimePicker id="time_picker" value={this.props [this.state.boundary]} 
+						onChange={value => this.execute (this.props.onChange, {
+							date: this.time_value (value),
+							boundary: this.state.boundary
+						})}>
+					</TimePicker>
+
 				</div>
 
 			</Container>
