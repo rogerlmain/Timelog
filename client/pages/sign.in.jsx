@@ -1,10 +1,11 @@
 import * as React from "react";
 
-import BaseControl from "client/controls/base.control";
+import BaseControl from "controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
-import { globals } from "client/types/globals";
+import { globals } from "types/globals";
+import { isset } from "classes/common";
 
 
 const bad_credentials = <div id="bad_credentials" className="login-error">
@@ -37,7 +38,7 @@ export default class SigninPage extends BaseControl {
 			credentials: "same-origin"
 		}).then (response => response.json ()).then (info => {
 
-			info.logging.start_time = Date.fromGMT (info.logging.start_time);
+			if (isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
 
 			for (let key of Object.keys (info)) {
 				localStorage.setItem (key, JSON.stringify (info [key]));
