@@ -2,6 +2,8 @@ import "./server/globals.mjs";
 
 import express from "express";
 import multiparty from "multiparty";
+import https from "https";
+import file_system from "fs";
 
 import path, { join } from "path";
 
@@ -185,7 +187,12 @@ app.post ("/tasks", function (request, response) {
 // });
 
 
-let server = app.listen (app.get ("port"), function () {
+var options = {
+    key: file_system.readFileSync ("server/certificates/timelog.key"),
+    cert: file_system.readFileSync ("server/certificates/timelog.crt"),
+};
+
+let server = https.createServer (options, app).listen (app.get ("port"), function () {
     console.log ("listening");
 });
 
