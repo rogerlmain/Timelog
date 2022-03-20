@@ -76,7 +76,7 @@ app.post ("/clients", function (request, response) {
 		let client_data = new ClientData ();
 		switch (fields.action) {
 			case "list": client_data.get_clients (parseInt (fields.account_id, response)); break;
-			case "details": client_data.get_client (fields.client_id); break;
+			case "details": client_data.get_client_by_id (fields.client_id); break;
 			case "save": client_data.save_client (fields); break;
 		}// switch;
 	});
@@ -122,7 +122,7 @@ app.post ("/projects", function (request, response) {
 		let project_data = new ProjectData ();
 		switch (fields.action) {
 			case "list": project_data.get_projects_by_client (fields.client_id); break;
-			case "details": project_data.get_project (fields.project_id); break;
+			case "details": project_data.get_project_by_id (fields.project_id); break;
 			case "save": project_data.save_project (fields); break;
 		}// switch;
 	});

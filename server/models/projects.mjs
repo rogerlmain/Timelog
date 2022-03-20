@@ -21,14 +21,14 @@ export default class ProjectData extends Database {
 	}/* save_project */;
 
 
-	get_project (project_id) {
+	get_project_by_id (project_id) {
 
-		let procedure = "get_project";
+		let procedure = "get_project_by_id";
 		let parameters = [project_id];
 
 		this.execute_query (procedure, parameters);
 
-	}/* get_project */;
+	}/* get_project_by_id */;
 
 
 	get_projects_by_client (client_id) {

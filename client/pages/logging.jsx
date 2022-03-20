@@ -160,7 +160,7 @@ export default class LoggingPage extends BaseControl {
 	render () {
 
 		let entry = this.state.current_entry;
-		let logged_in = isset (entry.start_time);
+		let logged_in = isset (entry);
 		let elapsed_time = logged_in ? this.elapsed_time () : null;
 
 
@@ -270,7 +270,7 @@ export default class LoggingPage extends BaseControl {
 						onEyecandy={() => { LoggingModel.log (this.state.project_id).then (this.set_logging)}}>
 
 						<FadePanel id="login_button" visible={this.project_selected () || logged_in} style={{ display: "flex" }}>
-							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }} disabled={this.invalid_entry ()}>
+							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }} disabled={logged_in && this.invalid_entry ()}>
 								{logged_in ? (elapsed_time == 0 ? "Cancel log entry" : "Log out") : "Log in"}
 							</button>
 						</FadePanel>

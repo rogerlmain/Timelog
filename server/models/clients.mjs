@@ -13,13 +13,13 @@ class ClientData extends Database {
 	}// get_clients;
 
 
-	get_client (client_id) {
+	get_client_by_id (client_id) {
 		let parameters = [client_id];
-		this.data_query ("get_client", parameters).then (data => {
+		this.data_query ("get_client_by_id", parameters).then (data => {
 			global.response.send (data);
 			this.connection.end ();
 		});
-	}// get_client;
+	}// get_client_by_id;
 
 
 	save_client (data) {
