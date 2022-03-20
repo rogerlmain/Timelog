@@ -1,6 +1,6 @@
 start transaction;
 
-drop procedure if exists save_client;
+drop procedure if exists save_project;
 
 delimiter ??
 
@@ -8,7 +8,6 @@ create procedure save_project (
     client_id int,
     project_id int,
 	project_name varchar (50),
-    project_code varchar (5),
     `description` text,
     deleted boolean
 ) begin
@@ -20,12 +19,10 @@ create procedure save_project (
 			insert into projects (
 				client_id,
 				`name`,
-				`code`,
 				`description`
 			) values (
 				client_id,
 				project_name,
-				project_code,
 				`description`
 			);
             
@@ -46,7 +43,6 @@ create procedure save_project (
 			update projects set
 				client_id = client_id,
 				`name` = project_name,
-				`code` = project_code,
 				`description` = `description`,
 				last_updated = current_timestamp()
 			where
