@@ -1,8 +1,23 @@
 import "types/prototypes";
 
 
+/**** Local Settings Objects ****/
+
+
+export const credential_types = {
+	account_id			: "account_id",
+	account_type		: "account_type",
+	administrator_type	: "administrator_type",
+	square_id			: "square_id",
+	company_id			: "company_id",
+	email_address		: "email_address",
+	first_name			: "first_name",
+	last_name			: "last_name",
+	username			: "username"
+}// credential_types;
+
 export const setting_types = {
-	animation_speed: 1
+	animation_speed: "animation_speed"
 }// setting_types;
 
 
@@ -13,6 +28,9 @@ export const option_types = {
 	start_rounding	: "start_rounding",
 	end_rounding	: "end_rounding"
 }// option_types;
+
+
+/**** Default Settings and Options ****/
 
 
 export const default_settings = {

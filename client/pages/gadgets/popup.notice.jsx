@@ -5,7 +5,7 @@ import SelectButton from "controls/buttons/select.button";
 import FadePanel from "controls/panels/fade.panel";
 
 import { isset, not_set } from "classes/common";
-import { hidden_zindex, popup_zindex } from "types/constants";
+import { hidden_zindex, visible_zindex } from "types/constants";
 
 import "client/resources/styles/pages/gadgets/popups.css";
 
@@ -47,7 +47,7 @@ export default class PopupNotice extends BaseControl {
 
 				beforeShowing={() => {
 					this.execute (this.props.beforeOpening);
-					this.setState ({ zIndex: popup_zindex });
+					this.setState ({ zIndex: visible_zindex });
 				}}
 
 				afterHiding={() => {

@@ -1,6 +1,6 @@
 import React from "react";
 import BaseControl from "client/controls/base.control";
-import Credentials from "classes/credentials";
+import Credentials from "client/classes/storage/credentials";
 
 import { isset } from "classes/common";
 

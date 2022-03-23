@@ -53,7 +53,7 @@ export default class SettingsPage extends BaseControl {
 
 
 	credit_card_form () {
-		return <CreditCardForm showing={isset (this.state.cc_form)}
+		return <CreditCardForm visible={isset (this.state.cc_form)}
 
 			onCancel={() => {
 				this.setState ({ [this.state.cc_form.option]: this.state.cc_form.previous }, () => {

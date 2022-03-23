@@ -29,8 +29,8 @@ export const dash = "-";
 export const minus = dash;
 
 export const hidden_zindex = -1;	// zIndex to put unseen items behind the page
-export const fade_zindex = 5;
-export const popup_zindex = 10;
+export const visible_zindex = 1;
+
 
 
 /********/

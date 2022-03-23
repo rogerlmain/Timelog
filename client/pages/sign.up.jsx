@@ -1,7 +1,7 @@
 import React from "react";
 
 import Container from "client/controls/container";
-import Credentials from "classes/credentials";
+import Credentials from "client/classes/storage/credentials";
 import BaseControl from "client/controls/base.control";
 import AccountsModel from "models/accounts";
 
@@ -48,7 +48,7 @@ export default class SignupPage extends BaseControl {
 
 			<div id={this.props.id} className={this.signed_out () ? "shadow-box" : null} style={{ alignSelf: "center" }}>
 
-				<PasswordForm showing={this.state.changing_password} />
+				<PasswordForm visible={this.state.changing_password} />
 
 {/* PUT THIS IN A POPUP WINDOW LIKE THE PASSWORD FORM
 						<div id="outer_control" style={{ gridColumn: "span 4", alignItems: "center" }}>

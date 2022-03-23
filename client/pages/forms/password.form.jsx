@@ -8,20 +8,20 @@ import Break from "controls/html/line.break";
 
 export default class PasswordForm extends BaseControl {
 
-	static defaultProps = { showing: false }
+	static defaultProps = { visible: false }
 
-	state = { showing: false }
+	state = { visible: false }
 
 
 	shouldComponentUpdate (new_props) {
-		if (new_props.showing != this.props.showing) this.setState ({ showing: new_props.showing });
+		if (new_props.visible != this.props.visible) this.setState ({ visible: new_props.visible });
 		return true;
 	}// shouldComponentUpdate;
 
 
 	render () {
 
-		return <PopupWindow id="password_form" showing={this.state.showing}>
+		return <PopupWindow id="password_form" visible={this.state.visible}>
 
 			<div className="two-column-grid">
 				<label htmlFor="password">Previous password</label>
@@ -38,7 +38,7 @@ export default class PasswordForm extends BaseControl {
 
 			<div className="button-bar">
 				<button onClick={() => alert ("UPDATE HERE")}>Update</button>
-				<button onClick={() => this.setState ({ showing: false })}>Cancel</button>
+				<button onClick={() => this.setState ({ visible: false })}>Cancel</button>
 			</div>
 
 		</PopupWindow>

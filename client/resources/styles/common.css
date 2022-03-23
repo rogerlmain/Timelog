@@ -270,15 +270,6 @@ button, *.unselectable {
 }/* flex-row-spaced */
 
 
-.flex-grid {
-	display: inline-grid;
-	flex-direction: row;
-	grid-template-columns: repeat(4, auto);
-	row-gap: 0.2em;
-	column-gap: 1em;
-}/* flex-grid */
-
-
 .form-table label {
 	text-align: right;
 	align-self: center;

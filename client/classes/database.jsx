@@ -1,4 +1,4 @@
-import Credentials from "classes/credentials";
+import Credentials from "client/classes/storage/credentials";
 import { isset, is_empty } from "classes/common";
 
 

@@ -190,6 +190,30 @@ Date.prototype.format = function (selected_format) {
 }// format;
 
 
+/**** FormData ****/
+
+
+FormData.fromObject = function (object) { 
+
+	let result = null;
+
+	Object.keys (object).forEach (key => {
+		if (is_null (result)) result = new FormData ();
+		result.append (key, object [key]);
+	});
+
+	return result;
+
+}// fromObject;
+
+
+/****/
+
+
+FormData.prototype.appendAll = function (object) { Object.keys (object).forEach (key => this.append (key, object [key])) }
+FormData.prototype.toJson = function () { return Object.fromEntries (this) }
+
+
 /**** HTMLElement ****/
 
 

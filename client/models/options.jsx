@@ -1,5 +1,5 @@
 import Database from "classes/database";
-import Credentials from "classes/credentials";
+import Credentials from "client/classes/storage/credentials";
 import DataModel from "models/data.model";
 
 

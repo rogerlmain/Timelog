@@ -5,7 +5,7 @@ import SelectButton from "controls/buttons/select.button";
 import FadePanel from "controls/panels/fade.panel";
 
 import { isset, not_set } from "classes/common";
-import { hidden_zindex, popup_zindex } from "types/constants";
+import { hidden_zindex, visible_zindex } from "types/constants";
 
 import "client/resources/styles/pages/gadgets/popups.css";
 
@@ -17,7 +17,7 @@ export default class PopupWindow extends BaseControl {
 
 		id: null,
 
-		showing: false,
+		visible: false,
 		modal: true,
 
 		beforeOpening: null,
@@ -39,16 +39,17 @@ export default class PopupWindow extends BaseControl {
 		if (not_set (this.props.id)) throw "PopupWindow requires an ID";
 		if (not_set (this.props.parent) && isset (this.props.switch)) throw "PopupWindow requires a parent if the switch is set";
 		if (not_set (this.props.switch) && isset (this.props.parent)) throw "PopupWindow requires a switch if the parent is set";
+		this.state.zIndex = props.visible ? visible_zindex : hidden_zindex;
 	}// constructor;
 
 
 	render () {
 		return (
-			<FadePanel id={`${this.props.id}_fade_panel`} className="full-size" visible={this.props.showing} style={{ zIndex: this.state.zIndex }}
+			<FadePanel id={`${this.props.id}_fade_panel`} className="full-size" visible={this.props.visible} style={{ zIndex: this.state.zIndex }}
 
 				beforeShowing={() => {
 					this.execute (this.props.beforeOpening);
-					this.setState ({ zIndex: popup_zindex });
+					this.setState ({ zIndex: visible_zindex });
 				}}
 
 				afterHiding={() => {

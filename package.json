@@ -17,9 +17,9 @@
 		"check-types": "tsc"
 	},
 	"dependencies": {
+		"buffer": "^6.0.3",
 		"cookie-parser": "^1.4.6",
 		"core-js": "^3.9.1",
-		"crypto": "^1.0.1",
 		"express": "^4.17.1",
 		"express-session": "^1.17.1",
 		"fbjs": "^3.0.0",
@@ -38,7 +38,9 @@
 		"react-universal-component": "^4.5.0",
 		"regenerator-runtime": "^0.13.9",
 		"request": "^2.88.2",
+		"square": "^17.3.0",
 		"util": "^0.12.4",
+		"uuidv4": "^6.2.12",
 		"watch": "^0.13.0"
 	},
 	"-vs-binding": {
@@ -51,6 +53,7 @@
 		"@babel/preset-env": "^7.16.11",
 		"@babel/preset-react": "^7.16.7",
 		"@babel/preset-typescript": "^7.16.7",
+		"@types/node": "^17.0.22",
 		"@types/react": "^17.0.39",
 		"@types/react-datepicker": "^4.3.2",
 		"@types/react-dom": "^17.0.11",
@@ -61,5 +64,8 @@
 		"webpack": "^5.67.0",
 		"webpack-cli": "^4.9.2",
 		"webpack-dev-server": "^4.7.3"
+	},
+	"browser": {
+		"crypto": false
 	}
 }

@@ -47,15 +47,14 @@ export default class AccountData extends Database {
 			fields ["email_address"],
 			fields ["password"],
 
+			fields ["square_id"],
+			
 			numeric_value ("account_type"),
 			numeric_value ("account_id")
 
 		];
 
-		this.data_query (procedure, parameters).then  (results => {
-			if ((results == null) || (results [0].length != 1)) throw "Invalid data response: models.save_account";
-			response.send ({ account_id: results[0][0].account_id });
-		});
+		this.data_query (procedure, parameters);
 
 	}// save_account;
 

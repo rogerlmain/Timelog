@@ -3,8 +3,6 @@ import "regenerator-runtime/runtime.js";
 import React from "react";
 import ReactDOM from "react-dom";
 
-import Calendar from "react-calendar";
-
 import BaseControl from "controls/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
@@ -20,10 +18,10 @@ import "client/resources/styles/main.css";
 
 
 // Special Guest Import
-// import NumberPicker from "controls/number.picker";
+import CreditCardForm from "pages/forms/credit.card.form";
 
 
-export class Main extends BaseControl {
+class Main extends BaseControl {
 
 
 	state = { signing_up: false }
@@ -65,11 +63,7 @@ export class Main extends BaseControl {
 
 document.onreadystatechange = () => {
 
-	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
-
-//	ReactDOM.render (<ResizePanelTest id="resize_panel_test" />, document.getElementById ("main_page"));
-//	ReactDOM.render (<FadePanelTest id="fade_panel_test" />, document.getElementById ("main_page"));
-//	ReactDOM.render (<ExplodingPanelTest id="exploding_panel_test" />, document.getElementById ("main_page"));
-//	ReactDOM.render (<SlideshowPanelTest id="slideshow_panel_test" />,  document.getElementById ("main_page"));
+//	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
+	ReactDOM.render (<CreditCardForm visible={true} id="special_guest_import" />, document.getElementById ("main_page"));
 
 }// document.ready;
