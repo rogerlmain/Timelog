@@ -14,9 +14,9 @@ export default class Credentials extends LocalStorage {
 
 
 	static set (name, value) {
-
-		// fetch: save and update
-
+		let credentials = this.all ();
+		credentials [name] = value;
+		LocalStorage.set (storage_locker, credentials);
 	}// set;
 
 	

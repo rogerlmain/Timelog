@@ -11,26 +11,6 @@ const header_value = -1;
 export default class SelectList extends BaseControl {
 
 
-	header_visible () {
-
-		let result = (
-		
-			(common.isset (this.props.headerText) || (this.props.useHeader)) && 
-			((this.state.selected_value == 0) || (this.props.headerSelectable))
-		
-		) 
-
-		return result;
-	
-	}
-
-
-	list = React.createRef ();
-
-
-	/********/
-
-
 	static defaultProps = {
 
 		data: null,
@@ -50,6 +30,23 @@ export default class SelectList extends BaseControl {
 
     
 	state = { selected_value: 0 }
+
+
+	list = React.createRef ();
+
+
+	header_visible () {
+
+		let result = (
+		
+			(common.isset (this.props.headerText) || (this.props.useHeader)) && 
+			((this.state.selected_value == 0) || (this.props.headerSelectable))
+		
+		) 
+
+		return result;
+	
+	}
 
 
 	componentDidUpdate () {

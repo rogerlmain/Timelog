@@ -249,30 +249,30 @@ export default class BaseControl extends React.Component {
 	render () { return this.props.children }
 
 
-	setState (values, callback = null) {
+	// setState (values, callback = null) {
 
-		let state_list = null;
+	// 	let state_list = null;
 
-		let string_value = (field) => {
-			switch (typeof field) {
-				case "object": return this.object_string (field);
-				default: return (isset (field) ? field.toString () : empty); 
-			}// switch;
-		}// string_value;
+	// 	let string_value = (field) => {
+	// 		switch (typeof field) {
+	// 			case "object": return this.object_string (field);
+	// 			default: return (isset (field) ? field.toString () : empty); 
+	// 		}// switch;
+	// 	}// string_value;
 
-		if (is_null (values)) return super.setState (this.state, callback);
+	// 	if (is_null (values)) return super.setState (this.state, callback);
 
-		Object.keys (values).forEach (key => {
-			if (string_value (this.state [key]).matches (string_value (values [key]))) return null;
-			if (is_null (state_list)) state_list = {}
-			state_list [key] = values [key];
-		});
+	// 	Object.keys (values).forEach (key => {
+	// 		if (string_value (this.state [key]).matches (string_value (values [key]))) return null;
+	// 		if (is_null (state_list)) state_list = {}
+	// 		state_list [key] = values [key];
+	// 	});
 
-		if (isset (state_list)) super.setState (state_list, callback);
+	// 	if (isset (state_list)) super.setState (state_list, callback);
 
-		return null; // for use with getSnapshotBeforeUpdate which requires a return value
+	// 	return null; // for use with getSnapshotBeforeUpdate which requires a return value
 
-	}// setState;
+	// }// setState;
 
 
 	/**** Debugging ****/

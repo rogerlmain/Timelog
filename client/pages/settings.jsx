@@ -14,7 +14,7 @@ import OptionsModel from "models/options";
 import Options, { log_entry_boundaries } from "classes/storage/options";
 
 import { isset } from "classes/common";
-import { option_types } from "client/classes/types/constants";
+import { option_types, date_rounding } from "client/classes/types/constants";
 import { resize_direction } from "controls/panels/resize.panel";
 
 import "client/resources/styles/pages.css";

@@ -18,6 +18,19 @@ const unselected_background = "white";
 export default class SelectButton extends BaseControl {
 
 
+	static defaultProps = {
+		disabled: false,
+		sticky: false,
+		submit: false
+	}// defaultProps;
+
+
+	state = {
+		selected: false,
+		flashing: false
+	}// state;
+
+	
 	button_reference = React.createRef ();
 
 	sticky = false;
@@ -46,15 +59,6 @@ export default class SelectButton extends BaseControl {
 	}// flash;
 
 
-	/********/
-
-
-	state = {
-		selected: false,
-		flashing: false
-	}// state;
-
-
 	componentDidMount () {
 		if (common.isset (this.props.sticky)) this.sticky = this.props.sticky;
 		if (common.isset (this.props.submit)) this.submit = this.props.submit;
@@ -63,7 +67,7 @@ export default class SelectButton extends BaseControl {
 
 	render () {
 		return (
-			<button id={this.props.id} name={this.props.name} className={this.props.className} 
+			<button id={this.props.id} name={this.props.name} className={this.props.className} disabled={this.props.disabled}
 				disabled={this.props.disabled} ref={this.button_reference}
 				style={{
 					...this.props.style,

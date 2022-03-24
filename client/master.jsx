@@ -14,6 +14,7 @@ import ExplodingPanel from "./controls/panels/exploding.panel";
 
 import BaseControl from "controls/abstract/base.control";
 
+import { globals } from "classes/types/constants";
 import { is_null } from "classes/common";
 
 
@@ -38,6 +39,7 @@ export default class MasterPanel extends BaseControl {
 
 
 	state = {
+		show_buttons: false,
 		eyecandy_visible: false,
 		eyecandy_callback: null,
 		page: master_pages.home
@@ -46,8 +48,16 @@ export default class MasterPanel extends BaseControl {
 
 	constructor (props) {
 		super (props);
+		if (is_null (globals.master)) globals.master = this;
 		this.state.page = master_pages.home;
 	}// componentDidMount;
+
+
+	update_buttons (value) {
+
+		this.setState ({ show_buttons: value });
+
+	}
 
 
 	button_list () {
@@ -57,10 +67,13 @@ export default class MasterPanel extends BaseControl {
 			let value = master_pages [key];
 			if (is_null (result)) result = [];
 
-			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP
+			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP (when needed)
 			result.push (<SelectButton id={name} name={name} key={name} sticky={false}
+				disabled={!this.state.show_buttons}
 				onClick={() => this.setState ({ page: value })}>
+
 				{value}
+
 			</SelectButton>);
 		}// for;
 		return result;
@@ -78,7 +91,7 @@ export default class MasterPanel extends BaseControl {
 			case master_pages.settings: return <SettingsPage />;
 			case master_pages.reports: return <ReportsPage />;
 			// case master_pages.history: return <div>Placeholder for History</div>;
-			default: return <HomePage />;
+			default: return <HomePage parent={this} />;
 		}// switch;
 	}// page_item;
 
@@ -108,8 +121,7 @@ export default class MasterPanel extends BaseControl {
 					{this.signout_button ()}
 
 					<SelectButton onClick={() => {
-						alert ("setting contents");
-						this.setState ({ contents: <div>New Content</div>});
+						this.setState ({ show_buttons: true });
 					}} style={{ 
 						position: "absolute",
 						right: "1em",

@@ -1,6 +1,7 @@
 import Database from "../database.mjs";
-import AccountOptionsData from "./options.mjs";
-import AccountSettingsData from "./settings.mjs";
+import OptionsData from "./options.mjs";
+import SettingsData from "./settings.mjs";
+import CompanyData from "./companies.mjs";
 import LoggingData from "./logging.mjs";
 
 
@@ -63,18 +64,27 @@ export default class AccountData extends Database {
 		this.data_query ("get_account_by_credentials", [fields ["username"], fields ["password"]]).then (async results => {
 
 			global.account = (global.is_null (results) || (results.length > 1)) ? null : results [0];
-
 			if (global.is_null (account)) throw "Invalid data response: models.signin";
 
 			let result = { 
 				credentials: account, 
-				settings: await (new AccountSettingsData ().get_settings ()),
-				options: await (new AccountOptionsData ().get_options ()),
+				companies: { list: await (new CompanyData ().get_companies_by_account (global.account.account_id)) },
+				settings: await (new SettingsData ().get_settings ()),
 				logging: (await (new LoggingData ().latest_log_entry ())) [0]
 			};
 
-			response.send (result);
+			for (let company of result.companies.list) {
 
+				let options = await (new OptionsData ().get_options_by_company (company.company_id));
+
+				if (is_empty (options)) continue;
+				if (not_set (result.options)) result.options = {};
+
+				result.options [company.company_id] = options;
+
+			}// for;
+
+			response.send (result);
 			this.connection.end ();
 
 		});

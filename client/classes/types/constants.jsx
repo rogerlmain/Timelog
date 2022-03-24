@@ -164,6 +164,7 @@ export const globals = {
 	debugging: true,
 
 	main: null,
+	master: null,
 	clients_page: null,
 	projects_page: null,
 

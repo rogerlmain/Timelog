@@ -9,8 +9,8 @@ import file_system from "fs";
 import path, { join } from "path";
 
 import AccountData from "./server/models/accounts.mjs";
-import AccountSettingsData from "./server/models/settings.mjs";
-import AccountOptionsData from "./server/models/options.mjs";
+import SettingsData from "./server/models/settings.mjs";
+import OptionsData from "./server/models/options.mjs";
 import ClientData from "./server/models/clients.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import ProjectData from "./server/models/projects.mjs";
@@ -110,7 +110,7 @@ app.post ("/misc", function (request, response) {
 app.post ("/options", function (request, response) {
 	try {
 		app.process (request, response, (fields) => {
-			let account_option_data = new AccountOptionsData ();
+			let account_option_data = new OptionsData ();
 			switch (fields.action) {
 				case "get": account_option_data.get_options (); break;	
 				case "save": account_option_data.save_option (fields); break;
@@ -146,7 +146,7 @@ app.post ("/reports", function (request, response) {
 app.post ("/settings", function (request, response) {
 	try {
 		app.process (request, response, (fields) => {
-			let account_setting_data = new AccountSettingsData ();
+			let account_setting_data = new SettingsData ();
 			switch (fields.action) {
 				case "get": account_setting_data.get_settings (); break;	
 				case "save": account_setting_data.save_setting (fields.setting_id, fields.value); break;

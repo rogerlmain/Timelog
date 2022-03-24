@@ -1,13 +1,13 @@
 import Database from "../database.mjs";
 
 
-export default class AccountOptionsData extends Database {
+export default class OptionsData extends Database {
 
 
-	get_options = () => { 
-		let result = this.data_query ("get_options", [global.account.company_id], true);
+	get_options_by_company = (company_id) => { 
+		let result = this.data_query ("get_options_by_company", [company_id], true);
 		return result;
-	 }/* get_options */;
+	 }/* get_options_by_company */;
 
 
 	save_option (values) {
@@ -20,4 +20,4 @@ export default class AccountOptionsData extends Database {
 	}/* save_option */;
 
 
-}/* AccountOptionsData */;
+}/* OptionsData */;

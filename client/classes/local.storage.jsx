@@ -1,4 +1,4 @@
-import { isset, is_object } from "classes/common";
+import { isset, is_null, is_object } from "classes/common";
 
 
 export default class LocalStorage {
@@ -13,13 +13,22 @@ export default class LocalStorage {
 	}// get_credentials;
 
 
-	static get (key, name) {
-		let items = this.get_all (key);
+	static get (store, name) {
+		let items = this.get_all (store);
 		return (isset (items) && isset (items [name]) ? items [name] : null);
 	}// get;
 
 
-	static set = (key, value) => { localStorage.setItem (key, is_object (value) ? JSON.stringify (value) : value) }
+	static set_store = (store, value) => { localStorage.setItem (store, is_object (value) ? JSON.stringify (value) : value) }
+
+
+	static set_item (store, name, value) {
+		let values = this.get_all (store);
+		if (is_null (values)) values = [];
+		values [name] = value;
+		this.set_store (store, values);
+	}// set_item;
+
 
 
 }// LocalStorage;

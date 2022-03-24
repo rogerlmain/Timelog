@@ -1,10 +1,10 @@
 start transaction;
 
-drop procedure if exists get_options;
+drop procedure if exists get_options_by_company;
 
 delimiter ??
 
-create procedure get_options (company_id int) begin
+create procedure get_options_by_company (company_id int) begin
 
 	select
 		`code` as id,
@@ -16,5 +16,5 @@ create procedure get_options (company_id int) begin
 	order by
 		`code`;
 
-end??
+end ??
 

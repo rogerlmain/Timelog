@@ -1,5 +1,3 @@
-let x = 0;
-
 import "regenerator-runtime/runtime.js";
 import "classes/types/prototypes";
 
@@ -16,6 +14,7 @@ import MasterPanel from "client/master";
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
+import { globals } from "classes/types/constants";
 import { notify } from "classes/common";
 
 
@@ -27,6 +26,7 @@ class Main extends BaseControl {
 
 
 	state = { signing_up: false }
+	reference = React.createRef ();
 
 
 	constructor (props) {
@@ -43,7 +43,7 @@ class Main extends BaseControl {
 
 		return (
 
-			<div style={{ display: "flex", flexDirection: "column" }}>
+			<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
 
 				<div className="page-header">
 					<div className="title">RMPC Timelog</div>
@@ -65,7 +65,9 @@ class Main extends BaseControl {
 
 document.onreadystatechange = () => {
 
-//	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
-	ReactDOM.render (<CreditCardForm visible={true} id="special_guest_import" />, document.getElementById ("main_page"));
+	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
+
+//	Special Guest Render	
+//	ReactDOM.render (<CreditCardForm visible={true} id="special_guest_import" />, document.getElementById ("main_page"));
 
 }// document.ready;

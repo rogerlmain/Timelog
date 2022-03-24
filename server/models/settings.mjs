@@ -1,7 +1,7 @@
 import Database from "../database.mjs";
 
 
-export default class AccountSettingsData extends Database {
+export default class SettingsData extends Database {
 
 
 	get_settings = () => { 
@@ -20,4 +20,4 @@ export default class AccountSettingsData extends Database {
 	}/* save_setting */;
 
 
-}/* AccountSettingsData */;
+}/* SettingsData */;
