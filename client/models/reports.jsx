@@ -1,4 +1,4 @@
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import Database from "classes/database";
 
 

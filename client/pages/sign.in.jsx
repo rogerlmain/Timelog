@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
-import { globals } from "types/globals";
+import { globals } from "client/classes/types/constants";
 import { isset } from "classes/common";
 
 

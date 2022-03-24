@@ -4,7 +4,7 @@ import Settings from "classes/storage/settings";
 
 import Container from "controls/container";
 import ExplodingPanel from "controls/panels/exploding.panel";
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import ToggleSwitch from "controls/toggle.switch";
 
 import CreditCardForm from "pages/forms/credit.card.form";
@@ -14,7 +14,7 @@ import OptionsModel from "models/options";
 import Options, { log_entry_boundaries } from "classes/storage/options";
 
 import { isset } from "classes/common";
-import { option_types } from "types/globals";
+import { option_types } from "client/classes/types/constants";
 import { resize_direction } from "controls/panels/resize.panel";
 
 import "client/resources/styles/pages.css";
@@ -28,15 +28,15 @@ export default class SettingsPage extends BaseControl {
 
 	state = { 
 		granularity: 1,
-		start_rounding: Date.rounding.off,
-		end_rounding: Date.rounding.off,
+		start_rounding: date_rounding.off,
+		end_rounding: date_rounding.off,
 		cc_form: null
 	}// state;
 
 
 	rounding_payment_required (option, end) {
 		if (option == this.state [`${end}_rounding`]) return false;
-		if (option == Date.rounding.off) return false;
+		if (option == date_rounding.off) return false;
 		if (Options.rounding (log_entry_boundaries.start) || Options.rounding (log_entry_boundaries.end)) return false;
 		return true;
 	}// rounding_payment_required;
@@ -129,9 +129,9 @@ export default class SettingsPage extends BaseControl {
 
 					}}>
 
-					<option value={Date.rounding.down}>Round down</option>
-					<option value={Date.rounding.off}>Round off</option>
-					<option value={Date.rounding.up}>Round up</option>
+					<option value={date_rounding.down}>Round down</option>
+					<option value={date_rounding.off}>Round off</option>
+					<option value={date_rounding.up}>Round up</option>
 
 				</ToggleSwitch>
 			</div>

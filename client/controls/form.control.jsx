@@ -1,5 +1,5 @@
-import "types/prototypes";
-import BaseControl from "client/controls/base.control";
+import "classes/types/prototypes";
+import BaseControl from "client/controls/abstract/base.control";
 import { is_empty } from "classes/common";
 
 

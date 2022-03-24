@@ -1,5 +1,5 @@
 import LocalStorage from "classes/local.storage";
-import { default_settings, setting_types } from "types/globals";
+import { default_settings, setting_types } from "classes/types/constants";
 import { is_null, not_set } from "classes/common";
 
 

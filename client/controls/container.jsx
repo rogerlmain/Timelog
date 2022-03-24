@@ -1,5 +1,5 @@
 import React from "react";
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 
 
 export default class Container extends BaseControl {

@@ -1,14 +1,14 @@
 import * as common from "classes/common";
-import * as constants from "types/constants";
+import * as constants from "client/classes/types/constants";
 
 import React from "react";
 import FormControl from "controls/form.control";
-import Container from "client/controls/container";
+import Container from "controls/container";
 
 import Database from "classes/database";
 
 import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
-import Credentials from "client/classes/storage/credentials";
+import Credentials from "classes/storage/credentials";
 
 
 export default class ClientForm extends FormControl {

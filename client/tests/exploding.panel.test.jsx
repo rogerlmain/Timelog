@@ -1,6 +1,6 @@
 import React from "react";
 
-import BaseControl from "client/controls/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
 import SettingsPage from "client/pages/settings";

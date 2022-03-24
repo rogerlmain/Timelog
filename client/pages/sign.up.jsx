@@ -2,7 +2,7 @@ import React from "react";
 
 import Container from "client/controls/container";
 import Credentials from "client/classes/storage/credentials";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 import AccountsModel from "models/accounts";
 
 import ExplodingPanel from "controls/panels/exploding.panel";
@@ -10,7 +10,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import PasswordForm from "pages/forms/password.form";
 
-import { account_types } from "types/constants";
+import { account_types } from "client/classes/types/constants";
 
 
 export default class SignupPage extends BaseControl {

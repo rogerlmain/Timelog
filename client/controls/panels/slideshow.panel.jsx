@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as common from "classes/common";
 
-import BaseControl from "client/controls/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import Permissions from "classes/storage/settings";
 

@@ -1,7 +1,7 @@
 import * as common from "classes/common";
 
 import React from "react";
-import BaseControl from "./base.control"
+import BaseControl from "controls/abstract/base.control"
 
 
 const placeholder_value = 0;

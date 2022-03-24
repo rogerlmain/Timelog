@@ -12,10 +12,9 @@ import AccountPage from "pages/sign.up";
 import SettingsPage from "pages/settings";
 import ExplodingPanel from "./controls/panels/exploding.panel";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 
-import { globals } from "types/globals";
-import { delete_cookie, is_null } from "classes/common";
+import { is_null } from "classes/common";
 
 
 const master_pages = { 

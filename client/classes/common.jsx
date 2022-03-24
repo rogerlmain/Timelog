@@ -1,4 +1,4 @@
-import * as consts from "types/constants";
+import * as consts from "client/classes/types/constants";
 
 
 export function notify () { alert (isset (arguments) ? Array.from (arguments).join ("\n") : "paused") }

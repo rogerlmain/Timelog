@@ -3,7 +3,7 @@ import Credentials from "classes/storage/credentials";
 
 import { is_null, json_string } from "classes/common";
 import { v4 as uuid } from "uuid";
-import { credential_types } from "client/types/globals";
+import { credential_types } from "client/classes/types/constants";
 
 const transaction_id_field = "transaction_id";
 

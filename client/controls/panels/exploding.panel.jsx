@@ -4,7 +4,7 @@ import React from "react";
 
 import Settings from "classes/storage/settings";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import FadePanel from "controls/panels/fade.panel";
 
 import ResizePanel, { resize_state, resize_direction } from "controls/panels/resize.panel";

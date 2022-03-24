@@ -1,6 +1,6 @@
 import React from "react";
 
-import BaseControl from "client/controls/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
@@ -8,7 +8,7 @@ import ClientSelectorGadget from "./gadgets/selectors/client.selector.gadget";
 import ClientForm from "pages/forms/client.form";
 import ClientModel from "models/clients";
 
-import { globals } from "types/globals";
+import { globals } from "client/classes/types/constants";
 
 
 export default class ClientsPage extends BaseControl {

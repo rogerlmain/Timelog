@@ -20,13 +20,13 @@ export default class LoggingModel {
 		let time_stamp = new Date ();
 
 		switch (Options.granularity ()) {
-			case 1: time_stamp = Logging.logged_in () ? time_stamp.round_hours (Date.rounding.down) : time_stamp.round_hours (Date.rounding.up); break;
+			case 1: time_stamp = Logging.logged_in () ? time_stamp.round_hours (date_rounding.down) : time_stamp.round_hours (date_rounding.up); break;
 			case 2: time_stamp = time_stamp.round_minutes (15); break;
 		}// switch;
 
 		parameters.set ("action", "logging");
 		parameters.set ("project_id", project_id.toString ());
-		parameters.set ("time_stamp", time_stamp.format (Date.formats.database_timestamp));
+		parameters.set ("time_stamp", time_stamp.format (date_formats.database_timestamp));
 
 		return Database.fetch_row ("logging", parameters);
 

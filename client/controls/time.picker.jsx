@@ -2,7 +2,7 @@ import React from "react";
 import Clock from "react-clock";
 import NumberPicker from "controls/number.picker";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 
 import "client/resources/styles/controls/time.picker.css";
 

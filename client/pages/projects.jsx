@@ -1,6 +1,6 @@
 
 import React from "react";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 import ProjectsModel from "models/projects";

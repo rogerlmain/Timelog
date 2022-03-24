@@ -1,6 +1,6 @@
 import React from "react";
-import BaseControl from "client/controls/base.control";
-import FadePanel from "./panels/fade.panel";
+import BaseControl from "controls/abstract/base.control";
+import FadePanel from "controls/panels/fade.panel";
 
 
 export const LeftHand = "left";

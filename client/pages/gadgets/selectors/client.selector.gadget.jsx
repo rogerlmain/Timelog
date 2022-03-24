@@ -1,7 +1,7 @@
 import * as common from "classes/common";
 
 import React from "react";
-import BaseControl from "client/controls/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 import Container from "controls/container";
 
 import SelectList from "controls/select.list";

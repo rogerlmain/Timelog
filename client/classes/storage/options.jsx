@@ -1,5 +1,5 @@
 import LocalStorage from "classes/local.storage";
-import { default_options, option_types, option_key } from "types/globals";
+import { default_options, option_types } from "client/classes/types/constants";
 import { is_null, isset, not_set } from "classes/common";
 
 

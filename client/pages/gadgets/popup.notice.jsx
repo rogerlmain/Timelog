@@ -1,11 +1,11 @@
 import React from "react";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import SelectButton from "controls/buttons/select.button";
 import FadePanel from "controls/panels/fade.panel";
 
 import { isset, not_set } from "classes/common";
-import { hidden_zindex, visible_zindex } from "types/constants";
+import { hidden_zindex, visible_zindex } from "client/classes/types/constants";
 
 import "client/resources/styles/pages/gadgets/popups.css";
 

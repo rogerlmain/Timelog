@@ -1,4 +1,4 @@
-import BaseControl from "client/controls/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
 import React from "react";
 import SlideshowPanel from "./slideshow.panel";

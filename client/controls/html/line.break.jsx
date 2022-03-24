@@ -1,5 +1,5 @@
 import React from "react";
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 
 import { is_null } from "classes/common";
 

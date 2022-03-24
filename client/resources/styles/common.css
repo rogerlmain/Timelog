@@ -255,19 +255,18 @@ button, *.unselectable {
 /********/
 
 
+.flex-row {
+	display: inline-flex;
+	flex-direction: row;
+	align-items: center;
+}/* flex-row */
+
+
 .flex-aligned-right {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
 }/* flex-aligned-right */
-
-
-.flex-row-spaced {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 0.5em;
-}/* flex-row-spaced */
 
 
 .form-table label {
@@ -361,9 +360,13 @@ div[class*="column-grid"] label {
 /**** Proving Ground ****/
 
 
-#ucdebug {
-		display: inline-flex;
-	}
+#testthing::before {
+	content: "some content";
+}
+				
+#testthing::after {
+	content: "more content";
+}
 				
 
 

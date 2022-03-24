@@ -1,4 +1,4 @@
-import * as constants from "types/constants";
+import * as constants from "client/classes/types/constants";
 import * as common from "classes/common";
 
 import React from "react";

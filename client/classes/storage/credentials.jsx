@@ -1,6 +1,6 @@
 import LocalStorage from "classes/local.storage"
 
-import { credential_types } from "types/globals";
+import { credential_types } from "client/classes/types/constants";
 
 
 const storage_locker = "credentials";

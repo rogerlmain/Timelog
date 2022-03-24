@@ -1,6 +1,6 @@
 import React from "react";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 
 import Break from "controls/html/line.break";
@@ -89,7 +89,7 @@ export default class LoggingPage extends BaseControl {
 		let date = (isset (this.state.current_entry) ? this.state.current_entry.end_time : null) ?? new Date ();
 
 		switch (Options.granularity ()) {
-			case 1: return date.round_hours (Date.rounding.down);
+			case 1: return date.round_hours (date_rounding.down);
 			case 2: return date.round_minutes (15);
 		}// switch;
 
@@ -103,8 +103,8 @@ export default class LoggingPage extends BaseControl {
 		entry = entry ?? this.state.current_entry;
 
 		switch (Options.granularity ()) {
-			case 1: return Math.floor ((end_time.round_hours (Date.rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
-			case 2: return Math.floor ((end_time.round_minutes (15, Date.rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
+			case 1: return Math.floor ((end_time.round_hours (date_rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
+			case 2: return Math.floor ((end_time.round_minutes (15, date_rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
 			case 3: return 0; // Level 3 Granularity - any number of minutes
 			case 4: return 0; // Level 4 Granularity - truetime: down to the second
 		}// switch;
@@ -222,10 +222,10 @@ export default class LoggingPage extends BaseControl {
 					<Break />
 	
 					<label>Start</label>
-					<div>{entry.start_time.format (Date.formats.full_datetime)}</div>
+					<div>{entry.start_time.format (date_formats.full_datetime)}</div>
 	
 					<label>Stop</label>
-					{this.link_cell (entry.end_time.format (entry.start_time.same_day (entry.end_time) ? Date.formats.timestamp : Date.formats.full_datetime))}
+					{this.link_cell (entry.end_time.format (entry.start_time.same_day (entry.end_time) ? date_formats.timestamp : date_formats.full_datetime))}
 	
 					<label>Elapsed</label>
 					{this.link_cell (elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)) }

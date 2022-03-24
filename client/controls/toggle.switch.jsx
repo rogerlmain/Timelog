@@ -1,10 +1,9 @@
 import React from "react";
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import Settings from "classes/storage/settings";
 
 import { isset } from "classes/common";
-import { globals } from "types/globals";
-import { horizontal_alignment } from "client/types/constants";
+import { globals, horizontal_alignment } from "client/classes/types/constants";
 
 import "client/resources/styles/controls/toggle.switch.css";
 

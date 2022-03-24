@@ -1,12 +1,10 @@
 import React from "react";
 import ReactDOMServer, { renderToString } from "react-dom/server";
 
-import { globals } from "types/globals";
 import { isset, is_null, is_function, not_null, not_set } from "classes/common";
+import { globals, empty, blank, underscore } from "client/classes/types/constants";
 
-import { empty, blank, underscore } from "types/constants";
-
-import "types/prototypes";
+import "classes/types/prototypes";
 
 
 export default class BaseControl extends React.Component {

@@ -2,7 +2,7 @@
 import * as common from "classes/common";
 
 import React, { SyntheticEvent } from "react";
-import BaseControl, { DefaultProps } from "client/controls/base.control";
+import BaseControl, { DefaultProps } from "client/controls/abstract/base.control";
 
 
 const flash_speed = 70;

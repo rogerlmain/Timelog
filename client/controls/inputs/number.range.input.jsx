@@ -1,5 +1,5 @@
 import React from "react";
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 
 import { isset, is_null, is_number } from "classes/common";
 
@@ -10,7 +10,7 @@ const default_length = 3;
 const dash = "-";
 
 
-export default class NumberInput extends BaseControl {
+export default class NumberRangeInput extends BaseControl {
 
 	static defaultProps = {
 		min: null,
@@ -82,4 +82,4 @@ export default class NumberInput extends BaseControl {
 		</input>
 	}// render;
 
-}// NumberInput;
+}// NumberRangeInput;

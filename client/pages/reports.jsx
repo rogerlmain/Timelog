@@ -1,5 +1,5 @@
 import React from "react";
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import FadePanel from "controls/panels/fade.panel";
 import SelectButton from "controls/buttons/select.button";
 import Container from "controls/container";
@@ -45,15 +45,15 @@ export default class ReportsPage extends BaseControl {
 			let start_time = new Date (entry.start_time);
 			let end_time = new Date (entry.end_time);
 
-			let day_text = start_time.same_day (current_day) ? null : (isset (start_time) ? start_time.format (Date.formats.full_date) : null);
+			let day_text = start_time.same_day (current_day) ? null : (isset (start_time) ? start_time.format (date_formats.full_date) : null);
 
 			if (entry.total_time == 0) return;
 			if (isset (day_text)) current_day = start_time.get_date ();
 
 			return <Container key={`result_${entry.entry_id}`}>
 				<div className="entry">{day_text}</div>
-				<div className="entry">{start_time.format (Date.formats.timestamp)}</div>
-				<div className="entry">{end_time.format (start_time.same_day (end_time) ? Date.formats.timestamp : Date.formats.full_datetime)}</div>
+				<div className="entry">{start_time.format (date_formats.timestamp)}</div>
+				<div className="entry">{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
 				<div className="entry">{Date.elapsed (entry.total_time)}</div>
 			</Container>
 

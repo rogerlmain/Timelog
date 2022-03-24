@@ -1,6 +1,19 @@
-import { blank, directions, empty } from "types/constants";
+import { blank, directions, empty } from "classes/types/constants";
 
 import { is_null, is_string, is_number, not_set } from "classes/common";
+
+
+/**** Array Helper Functions ****/
+
+
+Array.range = function (start, end) {
+	let result = new Array ();
+	for (let index = start; index <= end; index++) result.push (index);
+	return result;
+}// Array.range;
+
+
+/**** Array Prototype Functions ****/
 
 
 Array.prototype.get_index = function (item) {
@@ -26,30 +39,12 @@ Array.prototype.remove = function (element) {
 }// remove;
 
 
-/**** Date Helper Items ****/
+/**** Date Helper Functions ****/
 
 
 Date.minute_coef = 60;
 Date.hour_coef = Date.minute_coef * 60;
 Date.day_coef = Date.hour_coef * 24;
-
-Date.formats = {
-	full_date: "w, MMMM d, yyyy",
-	full_datetime: "w, MMMM d, yyyy - H:mm ap",
-
-	timestamp: "H:mm ap",
-
-	database_date: "yyyy-MM-dd",
-	database_timestamp: "yyyy-MM-dd HH:mm"
-}// formats;
-
-
-Date.rounding = {
-	down	: "down",
-	off		: "off",
-	up		: "up"
-}// rounding;
-
 
 Date.is_date = (candidate) => { return (candidate instanceof Date) }
 Date.not_date = (candidate) => { return !this.is_date (candidate) }
@@ -67,7 +62,7 @@ Date.elapsed = function (elapsed_time /* in minutes */) {
 }// elapsed;
 
 
-Date.fromGMT = function (date_string) { return new Date (new Date (date_string).toLocaleString ()).format (Date.formats.database_timestamp) }
+Date.fromGMT = function (date_string) { return new Date (new Date (date_string).toLocaleString ()).format (date_formats.database_timestamp) }
 
 Date.month_name = (month) => { return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month] }
 
@@ -81,7 +76,7 @@ Date.validated = (date) => {
 /**** Date Prototype Functions ****/
 
 
-Date.prototype.get_date = function () { return new Date (this.format (Date.formats.database_date)) }
+Date.prototype.get_date = function () { return new Date (this.format (date_formats.database_date)) }
 Date.prototype.get_month = function () { return this.getMonth () }
 Date.prototype.get_year = function () { return this.getFullYear () }
 
@@ -94,7 +89,7 @@ Date.prototype.round_hours = function (direction) {
 
 	let result = new Date (this);
 
-	if (direction == Date.rounding.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
+	if (direction == date_rounding.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
 
 	result.setMinutes (0);
 	result.setSeconds (0);
@@ -111,9 +106,9 @@ Date.prototype.round_minutes = function (count, direction) {
 	let minutes = Math.floor (result.getMinutes () / count) * count;
 
 	// If not specified then round off
-	if (not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? Date.rounding.down : Date.rounding.up;
+	if (not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? date_rounding.down : date_rounding.up;
 
-	result.setMinutes (direction == Date.rounding.down ? minutes : minutes + count);
+	result.setMinutes (direction == date_rounding.down ? minutes : minutes + count);
 	result.setSeconds (0);
 	result.setMilliseconds (0);
 
@@ -273,6 +268,9 @@ Number.prototype.padded = function (length) {
 /********/
 
 
+String.prototype.char_count = function (character) { return (this.match (new RegExp (character, "g")) ?? []).length }
+
+
 String.prototype.padded = function (length, character, direction = null) {
 	let result = this;
 	while (result.length < length) {
@@ -289,5 +287,4 @@ String.prototype.matches = function (comparison, case_sensitive = false) {
 	if (is_null (comparison)) return false;
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
 }// matches;
-
 

@@ -2,8 +2,10 @@ import React from "react";
 
 import PaymentHandler from "classes/payment.handler";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
+
+import CreditCardInput from "controls/inputs/credit.card.input";
 
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
@@ -12,29 +14,8 @@ import PopupWindow from "pages/gadgets/popup.window";
 
 import Credentials from "client/classes/storage/credentials";
 
-import { credential_types } from "client/types/globals";
 import { is_null } from "classes/common";
-
-
-
-const card_pattern = {
-	amex:		/^(?:3[47][0-9]{13})$/,
-	visa:		/^(?:4[0-9]{12}(?:[0-9]{3})?)$/,
-	Mastercard:	/^(?:5[1-5][0-9]{14})$/,
-	Discover:	/^(?:6(?:011|5[0-9][0-9])[0-9]{12})$/,
-	JCB:		/^(?:(?:2131|1800|35\d{3})\d{11})$/
-	/* else: UnionPay */
-}// card_pattern;
-
-
-const card_names = {
-	amex:		"American Express",
-	visa:		"Visa",
-	mastercard: "Mastercard",
-	discover:	"Discover",
-	jcb:		"JCB",
-	unionpay:	"UnionPay"
-}// card_names;
+import { credential_types, credit_card_images } from "client/classes/types/constants";
 
 
 export default class CreditCardForm extends BaseControl {
@@ -42,6 +23,7 @@ export default class CreditCardForm extends BaseControl {
 
 	state = { 
 		processing: false,
+		active_card: null,
 		keep_card: true
 	}// state;
 
@@ -84,7 +66,9 @@ export default class CreditCardForm extends BaseControl {
 				<input type="text" name="cc_name" />
 
 				<label htmlFor="cc_number">Card number</label>
-				<input type="text" name="cc_number" />
+				<CreditCardInput name="cc_number" />
+
+				<div className="span-all-columns" style={{ height: "1em" }} />
 
 				<label htmlFor="cc_expire">Expiration Date</label>
 				<div className="select-list subpanel">
@@ -116,9 +100,11 @@ export default class CreditCardForm extends BaseControl {
 					</ExplodingPanel>
 				</div>
 
-				<label htmlFor="reuse_card">Keep card on file</label>
-				<input type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
+			</div>
 
+			<div className="one-piece-form">
+				<label htmlFor="reuse_card" style={{ margin: 0 }}>Keep card on file</label>
+				<input type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
 			</div>
 
 			<EyecandyPanel id="payment_eyecandy" eyecandyText="Processing. One moment, please..." 

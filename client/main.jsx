@@ -1,9 +1,14 @@
+let x = 0;
+
 import "regenerator-runtime/runtime.js";
+import "classes/types/prototypes";
+
+import "client/resources/styles/main.css";
 
 import React from "react";
 import ReactDOM from "react-dom";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
 import MasterPanel from "client/master";
@@ -11,10 +16,7 @@ import MasterPanel from "client/master";
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
-import { globals } from "types/globals";
 import { notify } from "classes/common";
-
-import "client/resources/styles/main.css";
 
 
 // Special Guest Import

@@ -24,7 +24,7 @@
 			"pages/*"		: ["client/pages/*"],
 			"panels/*"		: ["client/panels/*"],
 			"tests/*"		: ["client/tests/*"],
-			"types/*"		: ["client/types/*"],
+			"types/*"		: ["client/classes/types/*"],
 			"resources/*"	: ["client/resources/*"],
 			"/*"			: ["/*"]
 		}/* paths */,
