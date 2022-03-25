@@ -1,5 +1,5 @@
 import Database from "classes/database";
-import Credentials from "classes/storage/credentials";
+import Accounts from "classes/storage/accounts";
 import DataModel from "models/data.model";
 
 
@@ -17,7 +17,7 @@ export default class OptionsModel extends DataModel {
 		let parameters = new FormData ();
 		parameters.set ("action", "save");
 		parameters.set ("option_id", option_id);
-		parameters.set ("company_id", Credentials.company_id ());
+		parameters.set ("company_id", Accounts.company_id ());
 		parameters.set ("value", value);
 		return Database.fetch_data ("options", parameters);
 	}// save_option;

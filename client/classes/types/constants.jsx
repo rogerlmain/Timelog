@@ -38,13 +38,11 @@ export const visible_zindex = 1;
 
 
 export const date_formats = {
-	full_date: "w, MMMM d, yyyy",
-	full_datetime: "w, MMMM d, yyyy - H:mm ap",
-
-	timestamp: "H:mm ap",
-
-	database_date: "yyyy-MM-dd",
-	database_timestamp: "yyyy-MM-dd HH:mm"
+	full_date			: "w, MMMM d, yyyy",
+	full_datetime		: "w, MMMM d, yyyy - H:mm ap",
+	timestamp			: "H:mm ap",
+	database_date		: "yyyy-MM-dd",
+	database_timestamp	: "yyyy-MM-dd HH:mm"
 }// date_formats;
 
 

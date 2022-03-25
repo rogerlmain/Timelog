@@ -1,4 +1,4 @@
-import Credentials from "client/classes/storage/credentials";
+import Accounts from "client/classes/storage/accounts";
 import { isset, is_empty } from "classes/common";
 
 
@@ -11,7 +11,7 @@ export default class Database {
 
 		if (!(parameters instanceof FormData)) throw "Invalid data passed to Database.fetch_data";
 
-		parameters.set ("account_id", Credentials.account_id ());
+		parameters.set ("account_id", Accounts.account_id ());
 		
 		fetch_parameters = {
 			method: "post",

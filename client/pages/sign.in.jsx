@@ -1,5 +1,8 @@
 import * as React from "react";
 
+import Accounts from "classes/storage/accounts";
+import Companies from "classes/storage/companies";
+
 import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
@@ -44,6 +47,7 @@ export default class SigninPage extends BaseControl {
 				localStorage.setItem (key, JSON.stringify (info [key]));
 			}// for;
 
+			if (Accounts.paid_account () && (Companies.list ().length == 1)) Companies.set ("active_company", Companies.list () [0].company_id);
 			if (this.signed_in ()) return globals.main.forceUpdate ();
 
 			this.setState ({ 

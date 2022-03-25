@@ -36,22 +36,26 @@ export default class SelectList extends BaseControl {
 
 
 	header_visible () {
-
 		let result = (
-		
 			(common.isset (this.props.headerText) || (this.props.useHeader)) && 
 			((this.state.selected_value == 0) || (this.props.headerSelectable))
-		
-		) 
-
+		);
 		return result;
-	
-	}
+	}// headser_visible;
 
 
-	componentDidUpdate () {
-		if (common.not_set (this.state.selected_value)) this.state.selected_value = (this.props.value ?? placeholder_value);
+	componentDidMount () {
+		this.setState ({ selected_value: this.props.value });
 	}// componentDidUpdate;
+
+
+	shouldComponentUpdate (new_props) {
+		if (this.props.value != new_props.value) {
+			this.setState ({ selected_value: new_props.value });
+			return false;
+		}// if;
+		return true;
+	}// shouldComponentUpdate;
 
 
     render () {

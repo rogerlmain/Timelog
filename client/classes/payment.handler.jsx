@@ -1,5 +1,5 @@
 import AccountsModel from "models/accounts";
-import Credentials from "classes/storage/credentials";
+import Accounts from "classes/storage/accounts";
 
 import { is_null, json_string } from "classes/common";
 import { v4 as uuid } from "uuid";
@@ -41,7 +41,7 @@ export default class PaymentHandler {
 
 	static async create_customer () {
 
-		let data = Credentials.all ();
+		let data = Accounts.all ();
 
 		let response = await this.send_square_request ({
 			given_name: data [credential_types.first_name],

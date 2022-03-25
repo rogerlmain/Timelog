@@ -1,5 +1,7 @@
 import React from "react";
 
+import Companies from "classes/storage/companies";
+
 import SelectButton from "controls/buttons/select.button";
 
 import HomePage from "pages/home";
@@ -15,7 +17,7 @@ import ExplodingPanel from "./controls/panels/exploding.panel";
 import BaseControl from "controls/abstract/base.control";
 
 import { globals } from "classes/types/constants";
-import { is_null } from "classes/common";
+import { is_empty, is_null, not_set } from "classes/common";
 
 
 const master_pages = { 
@@ -32,32 +34,35 @@ const master_pages = {
 export default class MasterPanel extends BaseControl {
 
 
-	/********/
-
-
-	static defaultProps = { id: "master_panel" }
+	reference = React.createRef ();
 
 
 	state = {
-		show_buttons: false,
 		eyecandy_visible: false,
 		eyecandy_callback: null,
 		page: master_pages.home
-	};
+	}/* state */;
+
+
+	static defaultProps = { 
+		id: "master_page",
+		parent: null
+	}// defaultProps;
 
 
 	constructor (props) {
 		super (props);
-		if (is_null (globals.master)) globals.master = this;
+		globals.master = this;
 		this.state.page = master_pages.home;
 	}// componentDidMount;
 
 
-	update_buttons (value) {
-
-		this.setState ({ show_buttons: value });
-
-	}
+	buttons_disabled () {
+		let company_list = Companies.list ();
+		if (is_empty (company_list) || (company_list.length == 1)) return false;
+		if (Companies.company_selected ()) return false;
+		return true;
+	}// buttons_disabled;
 
 
 	button_list () {
@@ -69,7 +74,7 @@ export default class MasterPanel extends BaseControl {
 
 			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP (when needed)
 			result.push (<SelectButton id={name} name={name} key={name} sticky={false}
-				disabled={!this.state.show_buttons}
+				disabled={this.buttons_disabled ()}
 				onClick={() => this.setState ({ page: value })}>
 
 				{value}
@@ -111,7 +116,7 @@ export default class MasterPanel extends BaseControl {
 
 	render () {
 		return (
-			<div id={this.props.id} className="full-screen">
+			<div ref={this.reference} id={this.props.id} className="full-screen">
 
 				<link rel="stylesheet" href="client/resources/styles/home.page.css" />
 
@@ -121,7 +126,7 @@ export default class MasterPanel extends BaseControl {
 					{this.signout_button ()}
 
 					<SelectButton onClick={() => {
-						this.setState ({ show_buttons: true });
+						alert ("waiting for something to test")
 					}} style={{ 
 						position: "absolute",
 						right: "1em",

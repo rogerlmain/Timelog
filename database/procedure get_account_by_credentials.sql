@@ -16,7 +16,8 @@ create procedure get_account_by_credentials (
         coalesce(acc.username, concat(acc.first_name, ' ', acc.last_name)) as username,
         acc.email_address,
         acc.account_type,
-        acc.administrator_type
+        acc.administrator_type,
+        acc.square_id
 	from
 		accounts as acc
 	where

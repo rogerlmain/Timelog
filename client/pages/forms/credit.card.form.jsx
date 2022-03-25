@@ -12,7 +12,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import PopupWindow from "pages/gadgets/popup.window";
 
-import Credentials from "client/classes/storage/credentials";
+import Accounts from "client/classes/storage/accounts";
 
 import { is_null } from "classes/common";
 import { credential_types, credit_card_images } from "client/classes/types/constants";
@@ -42,8 +42,8 @@ export default class CreditCardForm extends BaseControl {
 
 
 	async submit_payment () {
-		let square_id = Credentials.square_id ();
-		if (is_null (square_id)) Credentials.set (credential_types.square_id, await PaymentHandler.create_customer ());
+		let square_id = Accounts.square_id ();
+		if (is_null (square_id)) Accounts.set (credential_types.square_id, await PaymentHandler.create_customer ());
 		await PaymentHandler.verify_payment_method (this.state.keep_card);
 		await PaymentHandler.apply_payment ();
 		this.execute (this.props.onSubmit).then (() => this.setState ({ processing: false }));
