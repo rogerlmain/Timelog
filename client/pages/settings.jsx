@@ -23,15 +23,10 @@ import "client/resources/styles/pages.css";
 export default class SettingsPage extends BaseControl {
 
 
+	state = { cc_form: null }
+
+
 	static defaultProps = { id: "settings_page" }
-
-
-	state = { 
-		granularity: 1,
-		start_rounding: date_rounding.off,
-		end_rounding: date_rounding.off,
-		cc_form: null
-	}// state;
 
 
 	rounding_payment_required (option, end) {
@@ -44,9 +39,10 @@ export default class SettingsPage extends BaseControl {
 
 	set_option (option, value) {
 		return new Promise ((resolve, reject) => {
-			OptionsModel.save_option (option, value).then (data => {
-				Options.set (JSON.stringify (data));
-				resolve ();
+			OptionsModel.save_option (option, value).then (response => {
+				let data = Array.has_value (response) ? response [0] : null;
+				if (isset (data)) Options.set (data.id, data.value);
+				resolve (data);
 			}).catch (reject);
 		});
 	}// set_option;
@@ -71,21 +67,20 @@ export default class SettingsPage extends BaseControl {
 		return <Container contentsOnly={true}>
 			<label htmlFor="granularity_setting">Granularity</label>
 			<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-				<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={this.state.granularity} singleStep={true}
+				<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={Options.granularity () - 1} singleStep={true}
 
 					onChange={(data) => { 
 
 						let selected_option = data.option + 1;
+						let granularity = Options.granularity ();
 
-						if (data.option > this.state.granularity) this.setState ({ 
+						if (selected_option > granularity) this.setState ({ 
 							cc_form: { 
 								option: option_types.granularity, 
-								previous: this.state.granularity,
+								previous: granularity,
 								value: selected_option
 							}/* cc_form */
 						});
-						
-						this.setState ({ granularity: data.option });
 						
 						return true;
 
@@ -102,30 +97,30 @@ export default class SettingsPage extends BaseControl {
 	}// granularity_switch;
 
 
-	rounding_switch (end) {
+	rounding_switch (rounding_end) {
 
-		let boundary_rounding = `${end}_rounding`;
+		let label = `${rounding_end}_rounding`;
+		let id = `${label}_switch`;
+		let rounding = Options.rounding (rounding_end);
 
 		return <Container contentsOnly={true}>
-			<label htmlFor="start_rounding">{end.charAt (0).toUpperCase () + end.slice (1)} time rounding</label>
+			<label htmlFor={id}>{rounding_end.charAt (0).toUpperCase () + rounding_end.slice (1)} time rounding</label>
 			<div className="middle-right-container">
-				<ToggleSwitch id="start_rounding" speed={Settings.animation_speed ()} value={this.state [boundary_rounding]} singleStep={true}
+				<ToggleSwitch id={id} speed={Settings.animation_speed ()} value={rounding} singleStep={true}
 
 					onChange={(data) => {
 
-						if (data.option == this.state [boundary_rounding]) return;
+						if (data.option == rounding) return;
 
 						if (this.rounding_payment_required (data.option, end)) {
 							this.setState ({ cc_form: {
-								option: option_types [boundary_rounding],
-								previous: this.state [boundary_rounding],
+								option: option_types [label],
+								previous: rounding,
 								value: data.option
 							}}) 
 						} else {
-							this.set_option (boundary_rounding, data.option);
+							this.set_option (label, data.option);
 						}// if;
-
-						this.setState ({ [boundary_rounding]: data.option });
 
 					}}>
 
@@ -137,21 +132,6 @@ export default class SettingsPage extends BaseControl {
 			</div>
 		</Container>
 	}// rounding_switch;
-
-
-	componentDidMount () {
-		
-		let start_rounding = Options.rounding (log_entry_boundaries.start);
-		let end_rounding = Options.rounding (log_entry_boundaries.end);
-
-		let values = { granularity: Options.granularity () - 1 }
-
-		if (isset (start_rounding)) values = { ...values, start_rounding: start_rounding }
-		if (isset (end_rounding)) values = { ...values, end_rounding: end_rounding }
-
-		this.setState (values);
-
-	}// componentDidMount;
 
 
 	render () {

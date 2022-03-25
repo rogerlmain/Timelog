@@ -77,11 +77,12 @@ export default class AccountData extends Database {
 
 				let options = await (new OptionsData ().get_options_by_company (company.company_id));
 
-				if (is_empty (options)) continue;
-				if (not_set (result.options)) result.options = {};
-
-				result.options [company.company_id] = options;
-
+				if (Array.isArray (options)) for (let option of options) {
+					if (not_set (result.options)) result.options = {};
+					if (not_set (result.options [company.company_id])) result.options [company.company_id] = {};
+					result.options [company.company_id][option.id] = option.value;
+				}// if;
+					
 			}// for;
 
 			response.send (result);

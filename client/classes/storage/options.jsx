@@ -19,16 +19,27 @@ export default class Options extends LocalStorage {
 	static get (name) { 
 		let company_id = Companies.active_company_id ();
 		let options = super.get (store_name, company_id);
-		return options [name];
+		return isset (options) ? options [name] : null;
 	}// get;
 
 
-	static set (name, value) { super.set_item (store_name, name, value) }
+	static set (name, value) { 
+		let options = super.get_all (store_name);
+		let company_id = Companies.active_company_id ();
+		
+		if (not_set (options)) options = {};
+		if (not_set (options [company_id])) options [company_id] = {};
+
+		options [company_id][name] = value;
+
+		super.set_store (store_name, options);
+	}// set;
 
 
 	static granularity = () => { 
-		let result = parseInt (Options.get (option_types.granularity));
-		return isNaN (result) ? default_options.granularity : (result);
+		let granularity = Options.get (option_types.granularity);
+		let result = not_set (granularity) ? default_options.granularity : parseInt (granularity);
+		return result;
 	}/* granularity */;
 
 

@@ -30,7 +30,7 @@ export default class Accounts extends LocalStorage {
 
 		if (is_null (companies) || is_null (selected_id)) return null;
 		for (let company of companies) {
-			if (company.company_id = selected_id) return company;
+			if (company.company_id == selected_id) return company;
 		}// if;
 		return null;
 	}// selected;

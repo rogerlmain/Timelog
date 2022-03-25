@@ -6,6 +6,9 @@ import { is_null, is_string, is_number, not_set } from "classes/common";
 /**** Array Helper Functions ****/
 
 
+Array.has_value = function (candidate) { return Array.isArray (candidate) && (candidate.length > 0) }
+
+
 Array.range = function (start, end) {
 	let result = new Array ();
 	for (let index = start; index <= end; index++) result.push (index);

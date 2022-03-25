@@ -6,8 +6,8 @@ delimiter ??
 
 create procedure save_option (
 	company_id int,
-	option_code varchar(32),
-	option_value varchar(16)
+	option_code varchar (32),
+	option_value varchar (16)
 ) begin
 
 	declare account_option_id int;
@@ -44,6 +44,10 @@ create procedure save_option (
 	
 	end if;
 
-	call get_options (company_id);
+	call get_options_by_company (company_id);
 
 end??
+
+delimiter ;
+
+commit;

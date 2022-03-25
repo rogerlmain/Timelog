@@ -126,7 +126,11 @@ export default class MasterPanel extends BaseControl {
 					{this.signout_button ()}
 
 					<SelectButton onClick={() => {
-						alert ("waiting for something to test")
+					//	alert ("waiting for something to test")
+
+						this.forceRefresh ();
+
+
 					}} style={{ 
 						position: "absolute",
 						right: "1em",
