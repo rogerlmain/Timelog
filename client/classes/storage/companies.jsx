@@ -37,7 +37,7 @@ export default class Accounts extends LocalStorage {
 
 	static active_company_id () {
 		let active_company = this.selected ();
-		return is_null (active_company) ? null : active_company.company_id;
+		return is_null (active_company) ? 0 : active_company.company_id;
 	}// active_company_id;
 
 }// Accounts;
