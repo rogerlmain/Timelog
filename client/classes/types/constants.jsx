@@ -134,10 +134,9 @@ export const setting_types = {
 }// setting_types;
 
 
-// Order is important - do not rearrange or insert - append only
-// index correlates to database option code.
 export const option_types = {
 	granularity		: "granularity",
+	rounding		: "rounding",
 	start_rounding	: "start_rounding",
 	end_rounding	: "end_rounding"
 }// option_types;

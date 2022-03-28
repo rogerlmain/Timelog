@@ -8,10 +8,10 @@ import { is_null, isset, not_set } from "classes/common";
 const store_name = "options";
 
 
-export const log_entry_boundaries = {
+export const boundaries = {
 	start: "start",
 	end: "end"
-}// log_entry_boundaries;
+}// boundaries;
 
 
 export default class Options extends LocalStorage {
@@ -36,16 +36,31 @@ export default class Options extends LocalStorage {
 	}// set;
 
 
-	static granularity = () => { 
+	static set_all (value) {
+		super.set_store (store_name, value);
+	}// set_all;
+
+
+	static granularity () { 
 		let granularity = Options.get (option_types.granularity);
 		let result = not_set (granularity) ? default_options.granularity : parseInt (granularity);
 		return result;
-	}/* granularity */;
+	}// granularity;
 
 
-	static rounding = (end) => {
-		let result = Options.get (option_types [`${end}_rounding`]);
+	static rounding (end) {
+		let rounding = Options.get (option_types [`${end}_rounding`]);
+		let result = isset (rounding) ? rounding : null;
 		return result;
 	}// rounding;
+
+
+	static subscribed (option) {
+		switch (option) {
+			case option_types.granularity: return isset (this.granularity ());
+			case option_types.rounding: return (isset (this.rounding (boundaries.start)) || isset (this.rounding (boundaries.end)));
+		}// switch;
+		return false;
+	}// subscribed;
 
 }// Options;

@@ -10,7 +10,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 import FadePanel from "controls/panels/fade.panel";
 
 import Logging from "classes/storage/logging";
-import Options, { log_entry_boundaries } from "classes/storage/options";
+import Options, { boundaries } from "classes/storage/options";
 
 import CalendarClock from "pages/gadgets/calendar.clock";
 import PopupNotice from "pages/gadgets/popup.notice";

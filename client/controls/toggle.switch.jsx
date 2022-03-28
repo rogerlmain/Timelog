@@ -22,10 +22,13 @@ export default class ToggleSwitch extends BaseControl {
 		showText: false,
 		textAlignment: horizontal_alignment.left,
 		onChange: null,
-	}// defaultProps;
+	}/* defaultProps */;
 
 
-	state = { option: null }
+	state = { 
+		option: null,
+		process_change: false
+	}/* state */;
 
 
 	switch = React.createRef ();
@@ -33,8 +36,24 @@ export default class ToggleSwitch extends BaseControl {
 
 	transition_end (event) {
 		if (event.propertyName != "left") return;
-		this.execute (this.props.onChange, this.state);
+		if (this.state.process_change) this.execute (this.props.onChange, this.state).then (() => this.setState ({ process_change: false }));
 	}// transition_end;
+
+
+	click_handler (child) {
+		return event => {
+
+			let selection = child.props.value ?? Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
+
+			if ((this.props.singleStep) && (Math.abs (selection - this.state.option) > 1)) selection = this.state.option + ((selection > this.state.option) ? 1 : -1);
+
+			this.setState ({ 
+				process_change: true, 
+				option: selection 
+			});
+			
+		}// return;
+	}// click_handler;
 
 
 	componentDidMount () { 
@@ -63,11 +82,7 @@ export default class ToggleSwitch extends BaseControl {
 				<div id={this.props.id} className="toggle-switch unselectable">
 
 					{this.props.children ? this.props.children.map (child => {
-						return <div id={child.props.id} className="item" key={child.props.children} title={child.props.children} onClick={event => {
-							let selection = child.props.value ?? Array.prototype.indexOf.call (event.target.parentNode.children, event.target) + 1;
-							if ((this.props.singleStep) && (Math.abs (selection - this.state.option) > 1)) selection = this.state.option + ((selection > this.state.option) ? 1 : -1);
-							this.setState ({ option: selection });
-						}}></div>
+						return <div id={child.props.id} className="item" key={child.props.children} title={child.props.children} onClick={this.click_handler (child)}></div>
 					}) : null}
 
 					<div className="switch" ref={this.switch} style={{

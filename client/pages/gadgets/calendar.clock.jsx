@@ -9,7 +9,7 @@ import Container from "controls/container";
 import ToggleButton from "client/controls/toggle.button";
 import ToggleSwitch from "client/controls/toggle.switch";
 
-import { log_entry_boundaries } from "classes/storage/options";
+import { boundaries } from "classes/storage/options";
 
 import "react-clock/dist/Clock.css";
 import "client/resources/styles/pages/gadgets/calendar.clock.css";
@@ -26,7 +26,7 @@ export default class CalendarClock extends BaseControl {
 	}// defaultProps;
 
 
-	state = { boundary: log_entry_boundaries.start }
+	state = { boundary: boundaries.start }
 
 
 	date_value (new_date) {
@@ -52,9 +52,9 @@ export default class CalendarClock extends BaseControl {
 
 				<div className="three-column-grid boundary-toggle-switch">
 					<ToggleButton htmlFor="log_boundary_start" className="centering-container">Start</ToggleButton>
-					<ToggleSwitch id="log_boundary_toggle" value={log_entry_boundaries.end} onChange={data => this.setState ({ boundary: data.option })}>
-						<option id="log_boundary_start" value={log_entry_boundaries.start}>Start</option>
-						<option id="log_boundary_end" value={log_entry_boundaries.end}>End</option>
+					<ToggleSwitch id="log_boundary_toggle" value={boundaries.end} onChange={data => this.setState ({ boundary: data.option })}>
+						<option id="log_boundary_start" value={boundaries.start}>Start</option>
+						<option id="log_boundary_end" value={boundaries.end}>End</option>
 					</ToggleSwitch>
 					<ToggleButton htmlFor="log_boundary_end" className="centering-container">End</ToggleButton>
 				</div>

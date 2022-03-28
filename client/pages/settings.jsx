@@ -11,10 +11,10 @@ import CreditCardForm from "pages/forms/credit.card.form";
 
 import OptionsModel from "models/options";
 
-import Options, { log_entry_boundaries } from "classes/storage/options";
+import Options, { boundaries } from "classes/storage/options";
 
 import { isset } from "classes/common";
-import { option_types, date_rounding } from "client/classes/types/constants";
+import { option_types, date_rounding, default_options } from "client/classes/types/constants";
 import { resize_direction } from "controls/panels/resize.panel";
 
 import "client/resources/styles/pages.css";
@@ -23,40 +23,53 @@ import "client/resources/styles/pages.css";
 export default class SettingsPage extends BaseControl {
 
 
-	state = { cc_form: null }
+	state = { 
+		granularity: 0,
+		start_rounding: date_rounding.off,
+		end_rounding: date_rounding.off,
+		cc_form: null 
+	}/* state */;
 
 
 	static defaultProps = { id: "settings_page" }
 
 
-	rounding_payment_required (option, end) {
-		if (option == this.state [`${end}_rounding`]) return false;
-		if (option == date_rounding.off) return false;
-		if (Options.rounding (log_entry_boundaries.start) || Options.rounding (log_entry_boundaries.end)) return false;
-		return true;
-	}// rounding_payment_required;
+//	constructor (props) {
+	componentDidMount () {
+
+//		super (props);
+
+alert ("constructing");
+
+		this.setState ({
+			granularity: Options.granularity () ?? this.state.granularity,
+			start_rounding: Options.rounding (boundaries.start) ?? this.state.start_rounding,
+			end_rounding: Options.rounding (boundaries.end) ?? this.state.end_rounding
+		}, () => {
+
+//			alert (JSON.stringify (this.state));
+
+		})/* settings */;
+
+	}// constructor;
+
+	componentDidUpdate () {
+		alert ("updating");
+	}
 
 
 	set_option (option, value) {
-		return new Promise ((resolve, reject) => {
-			OptionsModel.save_option (option, value).then (response => {
-				let data = Array.has_value (response) ? response [0] : null;
-				if (isset (data)) Options.set (data.id, data.value);
-				resolve (data);
-			}).catch (reject);
-		});
+		return new Promise ((resolve, reject) => OptionsModel.save_option (option, value).then (response => {
+			Options.set (option, value);
+			this.setState ({ [option]: value }, resolve (response));
+		}).catch (reject));
 	}// set_option;
 
 
 	credit_card_form () {
 		return <CreditCardForm visible={isset (this.state.cc_form)}
 
-			onCancel={() => {
-				this.setState ({ [this.state.cc_form.option]: this.state.cc_form.previous }, () => {
-					this.setState ({ cc_form: null });
-				});
-			}}
-
+			onCancel={() => this.setState ({ [this.state.cc_form.option]: this.state.cc_form.previous }, this.setState ({ cc_form: null })) }
 			onSubmit={() => this.set_option (this.state.cc_form.option, this.state.cc_form.value).then (() => this.setState ({ cc_form: null }))}>
 
 		</CreditCardForm>
@@ -67,22 +80,26 @@ export default class SettingsPage extends BaseControl {
 		return <Container contentsOnly={true}>
 			<label htmlFor="granularity_setting">Granularity</label>
 			<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-				<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={Options.granularity () - 1} singleStep={true}
+				<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={this.state.granularity - 1} singleStep={true}
 
 					onChange={(data) => { 
 
 						let selected_option = data.option + 1;
 						let granularity = Options.granularity ();
 
-						if (selected_option > granularity) this.setState ({ 
-							cc_form: { 
-								option: option_types.granularity, 
-								previous: granularity,
-								value: selected_option
-							}/* cc_form */
-						});
-						
-						return true;
+						if (selected_option > granularity) {
+							this.setState ({ 
+								cc_form: { 
+									option: option_types.granularity, 
+									previous: granularity,
+									value: selected_option
+								}/* cc_form */
+							});
+							
+							return true;
+						}// if;
+
+						this.set_option (option_types.granularity, selected_option);
 
 					}}>
 
@@ -101,28 +118,34 @@ export default class SettingsPage extends BaseControl {
 
 		let label = `${rounding_end}_rounding`;
 		let id = `${label}_switch`;
-		let rounding = Options.rounding (rounding_end);
+		let rounding = Options.rounding (rounding_end) ?? default_options.rounding;
 
 		return <Container contentsOnly={true}>
 			<label htmlFor={id}>{rounding_end.charAt (0).toUpperCase () + rounding_end.slice (1)} time rounding</label>
 			<div className="middle-right-container">
-				<ToggleSwitch id={id} speed={Settings.animation_speed ()} value={rounding} singleStep={true}
+				<ToggleSwitch id={id} speed={Settings.animation_speed ()} value={this.state [label]} singleStep={true}
 
 					onChange={(data) => {
 
 						if (data.option == rounding) return;
 
-						if (this.rounding_payment_required (data.option, end)) {
-							this.setState ({ cc_form: {
-								option: option_types [label],
-								previous: rounding,
-								value: data.option
-							}}) 
+						this.setState ({ [label]: data.option });
+
+						if (!Options.subscribed (option_types.rounding)) {
+							this.setState ({ 
+								cc_form: {
+									option: option_types [label],
+									previous: rounding,
+									value: data.option
+								}
+							}) 
 						} else {
 							this.set_option (label, data.option);
 						}// if;
 
-					}}>
+					}}
+					
+					>
 
 					<option value={date_rounding.down}>Round down</option>
 					<option value={date_rounding.off}>Round off</option>
@@ -152,17 +175,15 @@ export default class SettingsPage extends BaseControl {
 
 				<div className="full-row section-header">Account Options</div>
 
-				{this.granularity_switch ()}
+				{/* {this.granularity_switch ()} */}
 
 				<br />
 
 				<div className="double-column">
 					<ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
 						<Container id="rounding_options_container" condition={ Options.granularity () > 1} className="one-piece-form" inline={true} style={{ justifySelf: "stretch" }}>
-
-							{this.rounding_switch (log_entry_boundaries.start)}
-							{this.rounding_switch (log_entry_boundaries.end)}
-
+							{this.rounding_switch (boundaries.start)}
+							{/* {this.rounding_switch (boundaries.end)} */}
 						</Container>
 					</ExplodingPanel>
 				</div>

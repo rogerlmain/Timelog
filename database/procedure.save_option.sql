@@ -44,7 +44,7 @@ create procedure save_option (
 	
 	end if;
 
-	call get_options_by_company (company_id);
+	select account_option_id;
 
 end??
 
