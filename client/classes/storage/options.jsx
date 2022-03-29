@@ -16,8 +16,8 @@ export const boundaries = {
 
 export default class Options extends LocalStorage {
 
-	static get (name) { 
-		let company_id = Companies.active_company_id ();
+	static get (name, company_id = null) { 
+		if (is_null (company_id)) company_id = Companies.active_company_id ();
 		let options = super.get (store_name, company_id);
 		return isset (options) ? (isset (options [name]) ? options [name] : null) : null;
 	}// get;
@@ -41,8 +41,8 @@ export default class Options extends LocalStorage {
 	}// set_all;
 
 
-	static granularity () { 
-		let granularity = Options.get (option_types.granularity);
+	static granularity (company_id = null) { 
+		let granularity = Options.get (option_types.granularity, company_id);
 		let result = not_set (granularity) ? default_options.granularity : parseInt (granularity);
 		return result;
 	}// granularity;

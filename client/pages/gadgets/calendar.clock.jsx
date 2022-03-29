@@ -26,7 +26,7 @@ export default class CalendarClock extends BaseControl {
 	}// defaultProps;
 
 
-	state = { boundary: boundaries.start }
+	state = { boundary: boundaries.end }
 
 
 	date_value (new_date) {

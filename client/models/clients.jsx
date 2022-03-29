@@ -4,9 +4,10 @@ import Database from "classes/database";
 export default class ClientsModel {
 
 
-	static fetch_all () {
+	static fetch_by_company (company_id) {
 		let parameters = new FormData ();
-		parameters.set ("action", "list");
+		parameters.set ("action", "company_list");
+		parameters.set ("company_id", company_id);
 		return Database.fetch_data ("clients", parameters);
 	}// fetch_by_client;
 

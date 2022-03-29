@@ -4,9 +4,9 @@ import Database from "../database.mjs";
 class ClientData extends Database {
 
 
-	get_clients (account_id) {
-		let parameters = [account_id];
-		this.data_query ("get_clients", parameters).then (data => {
+	get_clients_by_company (company_id) {
+		let parameters = [company_id];
+		this.data_query ("get_clients_by_company", parameters).then (data => {
 			global.response.send (data);
 			this.connection.end ();
 		});

@@ -1,10 +1,11 @@
 start transaction;
 
 drop procedure if exists get_clients;
+drop procedure if exists get_clients_by_company;
 
 delimiter ??
 
-create procedure get_clients (account_id int) begin
+create procedure get_clients_by_company (company_id int) begin
 
 	select
 		id as client_id,
@@ -13,8 +14,10 @@ create procedure get_clients (account_id int) begin
 	from
 		clients
 	where
-		(clients.company_id = (select company_id from accounts where id = account_id)) and
-        (not clients.deleted);
+		(clients.company_id = company_id) and
+        (not clients.deleted)
+	order by
+		clients.`name`;
         
 end??
 

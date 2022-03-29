@@ -24,8 +24,16 @@ export default class ClientSelectorGadget extends BaseControl {
  	/********/
 
 
+	 state = { 
+		clients: null ,
+		client_selected: false
+	}// state;
+
+
 	static defaultProps = {
+
 		id: "client_selector",
+		companyId: null,
 
 		hasHeader: false,
 		headerSelectable: false,
@@ -36,12 +44,6 @@ export default class ClientSelectorGadget extends BaseControl {
 	}// defaultProps;
 
 
-	state = { 
-		clients: null ,
-		client_selected: false
-	}// ClientSelectorState;
-
-
 	constructor (props) {
 		super (props);
 		this.client_selector_id = `${this.props.id}_selecter`;
@@ -49,8 +51,15 @@ export default class ClientSelectorGadget extends BaseControl {
 
 
 	componentDidMount () {
-		ClientsModel.fetch_all ().then (data => this.setState ({ clients: data }));
+		ClientsModel.fetch_by_company (this.props.companyId).then (data => this.setState ({ clients: data }));
 	}// componentDidMount;
+
+
+	shouldComponentUpdate (new_props) {
+		if (new_props.companyId == this.props.companyId) return true;
+		ClientsModel.fetch_by_company (new_props.companyId).then (data => this.setState ({ clients: data }));
+		return false;
+	}// shouldComponentUpdate;
 
 
 	render () {

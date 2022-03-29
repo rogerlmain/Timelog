@@ -24,6 +24,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 	static defaultProps = {
 
 		id: null,
+		companyId: null,
 
 		selectedClient: null,
 		selectedProject: null,
@@ -65,7 +66,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 		return (
 			<div id={this.props.id} className="two-column-grid project-selector-form">
 
-				<ClientSelectorGadget id="client_selector" headerText="" hasHeader={true} headerSelectable={false} 
+				<ClientSelectorGadget id="client_selector" companyId={this.props.companyId} headerText="" hasHeader={true} headerSelectable={false} 
 					onClientChange={event => {
 						this.setState ({ 
 							projects: null,

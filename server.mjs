@@ -79,7 +79,7 @@ app.post ("/clients", function (request, response) {
 	app.process (request, response, (fields) => {
 		let client_data = new ClientData ();
 		switch (fields.action) {
-			case "list": client_data.get_clients (parseInt (fields.account_id, response)); break;
+			case "company_list": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
 			case "details": client_data.get_client_by_id (fields.client_id); break;
 			case "save": client_data.save_client (fields); break;
 		}// switch;

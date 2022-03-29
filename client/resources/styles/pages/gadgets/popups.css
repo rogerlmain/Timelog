@@ -54,13 +54,15 @@ div.popup-window {
 
 .popup-notice {
     position: absolute;
-    padding: 10px;
+    padding: 1.2em;
     margin: 3em;
     background-color:#FFF;
     color: #666;
     font: normal 12px "Segoe UI", Arial, Sans-serif;
     border: 1px solid black;
-}
+    border-radius: 2em;
+}/* .popup-notice */
+
 
 .popup-notice:before, .popup-notice:after {
     content: "\0020";
@@ -75,12 +77,13 @@ div.popup-window {
     border: solid 20px transparent;
     border-right: 0px;
     border-bottom-color:white;
-}
+}/* .popup-notice:before, .popup-notice:after */
+
 
 .popup-notice:before {
     left: -20px;
     top: 20px;
     z-index: 1;
     border-bottom-color: black;
-}
+}/* .popup-notice:before */
 

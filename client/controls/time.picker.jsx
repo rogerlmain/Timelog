@@ -83,8 +83,8 @@ export default class TimePicker extends BaseControl {
 				<NumberPicker id="hours" min="1" max="12" value={meridian_hours.hours} onChange={data => this.update_time (time_parts.hours, data.new_value )} loop={true} />
 				<NumberPicker id="minutes" min="0" max="59" value={this.props.value.getMinutes ()} onChange={data => this.update_time (time_parts.minutes, data.new_value )} loop={true} padding={2} />
 				<div className="meridian">
-					<div onClick={() => this.update_time (time_parts.meridian, meridians.am)} className={meridian_hours.morning ? "selected" : null}>AM</div>
-					<div onClick={() => this.update_time (time_parts.meridian, meridians.pm)} className={meridian_hours.afternoon ? "selected" : null}>PM</div>
+					<div onClick={() => this.update_time (time_parts.meridian, meridians.am)} className={meridian_hours.morning ? "selected" : null}>am</div>
+					<div onClick={() => this.update_time (time_parts.meridian, meridians.pm)} className={meridian_hours.afternoon ? "selected" : null}>pm</div>
 				</div>
 			</div>
 

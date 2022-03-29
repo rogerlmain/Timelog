@@ -10,7 +10,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 import FadePanel from "controls/panels/fade.panel";
 
 import Logging from "classes/storage/logging";
-import Options, { boundaries } from "classes/storage/options";
+import Options from "classes/storage/options";
 
 import CalendarClock from "pages/gadgets/calendar.clock";
 import PopupNotice from "pages/gadgets/popup.notice";
@@ -18,15 +18,13 @@ import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadg
 
 import LoggingModel from "models/logging";
 
-import { isset, is_null, not_empty, notify } from "classes/common";
+import { date_formats, date_rounding } from "classes/types/constants";
+import { isset, is_null, not_empty } from "classes/common";
 
 import "client/resources/styles/pages/logging.css";
 
 
 export default class LoggingPage extends BaseControl {
-
-
-	static defaultProps = { id: "logging_page" }
 
 
 	state = {
@@ -37,24 +35,29 @@ export default class LoggingPage extends BaseControl {
 		initialized: false,
 		current_entry: null,
 		updating: false
-	}// state;
+	}/* state */;
+
+
+	static defaultProps = { 
+		id: "logging_page",
+		companyId: null
+	}/* defaultProps */;
 
 
 	constructor (props) {
 
 		super (props);
 
-		let entry = Logging.get_all ();
+		this.state.current_entry = Logging.get_all ();
 
-		if (isset (entry)) {
-			entry.start_time = Date.validated (entry.start_time);
-			entry.end_time = this.end_time ();
-			this.state.project_id = entry.project_id;
-			this.state.editable = this.needs_editing (entry);
+		if (isset (this.state.current_entry)) {
+			this.state.current_entry.start_time = Date.validated (this.state.current_entry.start_time);
+			this.state.current_entry.end_time = this.end_time ();
+			this.state.project_id = this.state.current_entry.project_id;
+			this.state.editable = this.needs_editing (this.state.current_entry);
 		}// if;
 
 		if (this.state.editable) this.state.editing = true;
-		this.state.current_entry = entry;
 
 	}// constructor;
 
@@ -64,8 +67,13 @@ export default class LoggingPage extends BaseControl {
 
 	needs_editing (entry = null) { 
 		if (is_null (entry)) entry = this.state.current_entry;
-		if (is_null (entry)) return false;
-		return ((!entry.start_time.same_day (entry.end_time)) && (this.elapsed_time (entry) > (8 * Date.hour_coef))) 
+		if (is_null (entry)) return false
+
+		let same_day = entry.start_time.same_day (entry.end_time);
+		let elapsed_time = this.elapsed_time (entry);
+		
+		let result = (!same_day || (elapsed_time > (8 * Date.hour_coef)));
+		return result;
 	}// needs_editing;
 
 	
@@ -88,10 +96,12 @@ export default class LoggingPage extends BaseControl {
 
 		let date = (isset (this.state.current_entry) ? this.state.current_entry.end_time : null) ?? new Date ();
 
-		switch (Options.granularity ()) {
+		switch (Options.granularity (this.state.current_entry.company_id)) {
 			case 1: return date.round_hours (date_rounding.down);
 			case 2: return date.round_minutes (15);
 		}// switch;
+
+		return date;
 
 	}// end_time;
 
@@ -102,7 +112,7 @@ export default class LoggingPage extends BaseControl {
 		
 		entry = entry ?? this.state.current_entry;
 
-		switch (Options.granularity ()) {
+		switch (Options.granularity (this.state.current_entry.granularity)) {
 			case 1: return Math.floor ((end_time.round_hours (date_rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
 			case 2: return Math.floor ((end_time.round_minutes (15, date_rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
 			case 3: return 0; // Level 3 Granularity - any number of minutes
@@ -145,7 +155,9 @@ export default class LoggingPage extends BaseControl {
 
 
 	componentDidUpdate () {
-		this.setState ({ editable: this.needs_editing () });
+		let needs_editing = this.needs_editing ();
+		if (this.state.editable == needs_editing) return;
+		this.setState ({ editable: needs_editing });
 	}// componentDidUpdate;
 
 
@@ -162,7 +174,6 @@ export default class LoggingPage extends BaseControl {
 		let entry = this.state.current_entry;
 		let logged_in = isset (entry);
 		let elapsed_time = logged_in ? this.elapsed_time () : null;
-
 
 		const overtime_notice = () => {
 			return <PopupNotice id="overtime_notice" visible={this.state.editing}>
@@ -251,7 +262,7 @@ export default class LoggingPage extends BaseControl {
 
 					{logged_in ? entry_details () : <div>
 
-						<ProjectSelectorGadget id="logging_project_selector" parent={this} 
+						<ProjectSelectorGadget id="logging_project_selector" companyId={this.props.companyId} parent={this} 
 							hasHeader={true} headerSelectable={false}
 							onProjectChange={event => this.setState ({ project_id: event.target.value })}>
 						</ProjectSelectorGadget>
@@ -278,10 +289,9 @@ export default class LoggingPage extends BaseControl {
 					</EyecandyPanel>
 				</div>
 
-<button onClick={() => alert (JSON.stringify (this.state.current_entry))}>SHOW ME</button>
-
 			</div>
 		);
+		
 	}// render;
 
 

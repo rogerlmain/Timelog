@@ -8,6 +8,7 @@ create procedure get_latest_entry (account_id integer) begin
 
 	select
 		etr.id as log_entry_id,
+        clt.company_id,
 		etr.project_id,
 		clt.`name` as client_name,
 		prj.`name` as project_name,

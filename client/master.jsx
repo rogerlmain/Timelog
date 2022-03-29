@@ -93,7 +93,7 @@ export default class MasterPanel extends BaseControl {
 			case master_pages.projects: return <ProjectsPage />;
 			// case master_pages.team: return <TeamPanel />;
 			// case master_pages.tasks: return <TasksPanel />;
-			case master_pages.logging: return <LoggingPage />;
+			case master_pages.logging: return <LoggingPage companyId={this.props.companyId} />;
 			case master_pages.settings: return <SettingsPage companyId={this.props.companyId} />;
 			case master_pages.reports: return <ReportsPage />;
 			// case master_pages.history: return <div>Placeholder for History</div>;

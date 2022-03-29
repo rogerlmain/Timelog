@@ -2,7 +2,7 @@ div.toggle-switch {
 	display: inline-flex;
 	flex-direction: row;
 	position: relative;
-	border-radius: 100px;
+	border-radius: 999px;
 	border: solid 1px black;
 }/* div.toggle-switch */
 
@@ -17,7 +17,7 @@ div.toggle-switch div.item {
 div.toggle-switch div.switch {
 	width: 26px;
 	height: 26px;
-	border-radius: 100px;
+	border-radius: 999px;
 	border: solid 3px white;
 	background-color: black;
 	position: absolute;
