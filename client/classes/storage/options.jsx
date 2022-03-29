@@ -19,7 +19,7 @@ export default class Options extends LocalStorage {
 	static get (name) { 
 		let company_id = Companies.active_company_id ();
 		let options = super.get (store_name, company_id);
-		return isset (options) ? options [name] : null;
+		return isset (options) ? (isset (options [name]) ? options [name] : null) : null;
 	}// get;
 
 
@@ -49,9 +49,8 @@ export default class Options extends LocalStorage {
 
 
 	static rounding (end) {
-		let rounding = Options.get (option_types [`${end}_rounding`]);
-		let result = isset (rounding) ? rounding : null;
-		return result;
+		let fieldname = `${end}_rounding`;
+		return Options.get (option_types [fieldname]);
 	}// rounding;
 
 

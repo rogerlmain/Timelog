@@ -27,10 +27,15 @@ import { isset, is_empty, not_empty, notify } from "classes/common";
 import CreditCardForm from "pages/forms/credit.card.form";
 
 
+export const MainContext = React.createContext (null);
+
+
 class Main extends BaseControl {
 
-
-	state = { signing_up: false  }/* state */;
+	state = { 
+		signing_up: false,
+		company_id: null
+	}/* state */;
 
 
 	reference = React.createRef ();
@@ -40,6 +45,7 @@ class Main extends BaseControl {
 		super (props);
 		globals.main = this;
 		window.onerror = this.error_handler;
+		this.state.company_id = Companies.active_company_id ();
 	}// constructor;
 
 
@@ -52,10 +58,16 @@ class Main extends BaseControl {
 		return (
 			<div>
 				<Container condition={(isset (companies) && (companies.length > 1))}>
-					<SelectList value={Companies.active_company_id ()} data={companies} idField="company_id" textField="company_name" useHeader={true} onChange={event => {
-						Companies.set ("active_company", event.target.value);
-						this.forceUpdate ();
-					}} />
+					<SelectList value={Companies.active_company_id ()} data={companies}
+					
+						idField="company_id" textField="company_name" useHeader={true}
+						
+						onChange={event => {
+							Companies.set ("active_company", event.target.value);
+							this.setState ({ company_id: event.target.value });
+						}}>
+							
+					</SelectList>
 				</Container>
 
 				<Container condition={(isset (companies) && (companies.length == 1))}>
@@ -71,12 +83,12 @@ class Main extends BaseControl {
 	}// company_header;
 
 
-	error_handler (message, url, line) { notify (message, url, line) }
+error_handler (message, url, line) { notify (message, url, line) }
 
 
 	main_page () {
 
-		if (this.signed_in ()) return <MasterPanel id="master_panel" parent={this} />
+		if (this.signed_in ()) return <MasterPanel id="master_panel" parent={this} companyId={this.state.company_id} />
 		if (this.state.signing_up) return <SignupPage parent={this} />
 
 		return <SigninPage parent={this} />
@@ -86,24 +98,26 @@ class Main extends BaseControl {
 
     render () {
 		return (
-			<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
+			<MainContext.Provider value={this.state.company_id}>
+				<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
 
-				<div className="fully-justified-container">
+					<div className="fully-justified-container">
 
-					<div className="page-header">
-						<div className="title">RMPC Timelog</div>
-						<div className="tagline">Make every second count</div>
+						<div className="page-header">
+							<div className="title">RMPC Timelog</div>
+							<div className="tagline">Make every second count</div>
+						</div>
+
+						{this.company_header ()}
+
 					</div>
-
-					{this.company_header ()}
+					
+					<ExplodingPanel id="main_panel">
+						{this.main_page ()}
+					</ExplodingPanel>
 
 				</div>
-				
- 				<ExplodingPanel id="main_panel">
-					{this.main_page ()}
- 				</ExplodingPanel>
-
-			</div>
+			</MainContext.Provider>
  		);
  	}// render;
 

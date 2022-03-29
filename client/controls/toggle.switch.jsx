@@ -63,7 +63,10 @@ export default class ToggleSwitch extends BaseControl {
 
 
 	shouldComponentUpdate (new_props) {
-		if (new_props.value != this.props.value) this.setState ({ option: new_props.value });
+		if (new_props.value != this.props.value) {
+			this.setState ({ option: new_props.value });
+			return false;
+		}// if;
 		return true;
 	}// shouldComponentUpdate;
 

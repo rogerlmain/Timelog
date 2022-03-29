@@ -14,7 +14,7 @@ import OptionsModel from "models/options";
 import Options, { boundaries } from "classes/storage/options";
 
 import { isset } from "classes/common";
-import { option_types, date_rounding, default_options } from "client/classes/types/constants";
+import { option_types, date_rounding, default_options, globals } from "classes/types/constants";
 import { resize_direction } from "controls/panels/resize.panel";
 
 import "client/resources/styles/pages.css";
@@ -34,28 +34,14 @@ export default class SettingsPage extends BaseControl {
 	static defaultProps = { id: "settings_page" }
 
 
-//	constructor (props) {
-	componentDidMount () {
-
-//		super (props);
-
-alert ("constructing");
-
-		this.setState ({
+	constructor (props) {
+		super (props);
+		this.state = {
 			granularity: Options.granularity () ?? this.state.granularity,
 			start_rounding: Options.rounding (boundaries.start) ?? this.state.start_rounding,
 			end_rounding: Options.rounding (boundaries.end) ?? this.state.end_rounding
-		}, () => {
-
-//			alert (JSON.stringify (this.state));
-
-		})/* settings */;
-
+		};
 	}// constructor;
-
-	componentDidUpdate () {
-		alert ("updating");
-	}
 
 
 	set_option (option, value) {
@@ -69,8 +55,8 @@ alert ("constructing");
 	credit_card_form () {
 		return <CreditCardForm visible={isset (this.state.cc_form)}
 
-			onCancel={() => this.setState ({ [this.state.cc_form.option]: this.state.cc_form.previous }, this.setState ({ cc_form: null })) }
-			onSubmit={() => this.set_option (this.state.cc_form.option, this.state.cc_form.value).then (() => this.setState ({ cc_form: null }))}>
+			onCancel={() => this.setState ({ [this.state.cc_form.option]: this.state.cc_form.previous }, () => this.setState ({ cc_form: null }))} 
+			onSubmit={() => this.set_option (this.state.cc_form.option, this.state.cc_form.value).then (() => this.execute (this.state.cc_form.onSubmit).then (() => this.setState ({ cc_form: null })))}>
 
 		</CreditCardForm>
 	}// credit_card_form;
@@ -84,22 +70,26 @@ alert ("constructing");
 
 					onChange={(data) => { 
 
-						let selected_option = data.option + 1;
 						let granularity = Options.granularity ();
 
-						if (selected_option > granularity) {
+						this.state.granularity = data.option + 1;
+
+						if (this.state.granularity > granularity) {
 							this.setState ({ 
 								cc_form: { 
 									option: option_types.granularity, 
 									previous: granularity,
-									value: selected_option
+									value: this.state.granularity,
+									onSubmit: () => this.setState ({
+										start_rounding: date_rounding.off,
+										end_rounding: date_rounding.off
+									})
 								}/* cc_form */
 							});
-							
 							return true;
 						}// if;
 
-						this.set_option (option_types.granularity, selected_option);
+						this.set_option (option_types.granularity, this.state.granularity);
 
 					}}>
 
@@ -127,25 +117,23 @@ alert ("constructing");
 
 					onChange={(data) => {
 
-						if (data.option == rounding) return;
+						this.state [label] = data.option;
 
-						this.setState ({ [label]: data.option });
+						if (this.state [label] == rounding) return;
 
 						if (!Options.subscribed (option_types.rounding)) {
 							this.setState ({ 
 								cc_form: {
 									option: option_types [label],
 									previous: rounding,
-									value: data.option
+									value: this.state [label]
 								}
 							}) 
 						} else {
-							this.set_option (label, data.option);
+							this.set_option (label, this.state [label]);
 						}// if;
 
-					}}
-					
-					>
+					}}>
 
 					<option value={date_rounding.down}>Round down</option>
 					<option value={date_rounding.off}>Round off</option>
@@ -155,6 +143,19 @@ alert ("constructing");
 			</div>
 		</Container>
 	}// rounding_switch;
+
+
+	shouldComponentUpdate (new_props) {
+		if (new_props.companyId != this.props.companyId) {
+			this.setState ({
+				granularity: Options.granularity () ?? default_options.granularity,
+				start_rounding: Options.rounding (boundaries.start) ?? default_options.rounding,
+				end_rounding: Options.rounding (boundaries.end) ?? default_options.rounding
+			});
+			return false;
+		}// if;
+		return true;
+	}// shouldComponentUpdate;
 
 
 	render () {
@@ -175,7 +176,7 @@ alert ("constructing");
 
 				<div className="full-row section-header">Account Options</div>
 
-				{/* {this.granularity_switch ()} */}
+				{this.granularity_switch ()}
 
 				<br />
 
@@ -183,7 +184,7 @@ alert ("constructing");
 					<ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
 						<Container id="rounding_options_container" condition={ Options.granularity () > 1} className="one-piece-form" inline={true} style={{ justifySelf: "stretch" }}>
 							{this.rounding_switch (boundaries.start)}
-							{/* {this.rounding_switch (boundaries.end)} */}
+							{this.rounding_switch (boundaries.end)}
 						</Container>
 					</ExplodingPanel>
 				</div>
