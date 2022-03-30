@@ -18,8 +18,8 @@ import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadg
 
 import LoggingModel from "models/logging";
 
-import { date_formats, date_rounding } from "classes/types/constants";
-import { isset, is_null, not_empty } from "classes/common";
+import { blank, date_formats, date_rounding } from "classes/types/constants";
+import { isset, is_null, is_empty } from "classes/common";
 
 import "client/resources/styles/pages/logging.css";
 
@@ -45,24 +45,29 @@ export default class LoggingPage extends BaseControl {
 
 
 	constructor (props) {
-
 		super (props);
-
-		this.state.current_entry = Logging.get_all ();
-
-		if (isset (this.state.current_entry)) {
-			this.state.current_entry.start_time = Date.validated (this.state.current_entry.start_time);
-			this.state.current_entry.end_time = this.end_time ();
-			this.state.project_id = this.state.current_entry.project_id;
-			this.state.editable = this.needs_editing (this.state.current_entry);
-		}// if;
-
-		if (this.state.editable) this.state.editing = true;
-
+		this.update_current_entry ();
 	}// constructor;
 
 
 	project_selected = () => { return this.state.project_id > 0 }
+
+
+	update_current_entry () {
+
+		let entry = Logging.get ();
+
+		this.state.current_entry = entry;
+
+		if (isset (entry)) {
+			entry.start_time = Date.validated (entry.start_time);
+			entry.end_time = this.end_time ();
+			this.state.project_id = entry.project_id;
+			this.state.editable = this.needs_editing (entry);
+			if (this.state.editable) this.state.editing = true;
+		}// if;
+
+	}// local_storage_entry;
 
 
 	needs_editing (entry = null) { 
@@ -77,28 +82,37 @@ export default class LoggingPage extends BaseControl {
 	}// needs_editing;
 
 	
-	set_logging = (data) => {
+	log_entry () {
 
-		let project_id = (not_empty (data) ? data.project_id : 0);
-		let entry = (not_empty (data) ? data : null);
+		this.update_current_entry ();
 
-		Logging.set ("logging", entry);
+		LoggingModel.log (this.props.companyId, parseInt (this.state.project_id)).then (entry => {
 
-		this.setState ({ 
-			project_id: project_id,
-			updating: false
+			if (is_empty (entry)) {
+				entry = null;
+				Logging.delete ();
+			} else {
+				entry.start_time = Date.validated (entry.start_time);
+				Logging.set (entry);
+			}// if;
+
+			this.setState ({ 
+				current_entry: entry,
+				updating: false
+			});
+
 		});
 
-	}/* set_logging */;
+	}// log_entry;
 
 
 	end_time () {
 
-		let date = (isset (this.state.current_entry) ? this.state.current_entry.end_time : null) ?? new Date ();
-
 		switch (Options.granularity (this.state.current_entry.company_id)) {
-			case 1: return date.round_hours (date_rounding.down);
-			case 2: return date.round_minutes (15);
+			case 1: return new Date ().round_hours (date_rounding.down);
+			case 2: return new Date ().round_minutes (15);
+			case 3: return 0; // Level 3 Granularity - any number of minutes
+			case 4: return 0; // Level 4 Granularity - truetime: down to the second
 		}// switch;
 
 		return date;
@@ -108,13 +122,12 @@ export default class LoggingPage extends BaseControl {
 
 	elapsed_time (entry = null) {
 
-		let end_time = this.end_time ();
-		
 		entry = entry ?? this.state.current_entry;
+		entry.end_time = entry.end_time ?? this.end_time ();
 
-		switch (Options.granularity (this.state.current_entry.granularity)) {
-			case 1: return Math.floor ((end_time.round_hours (date_rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
-			case 2: return Math.floor ((end_time.round_minutes (15, date_rounding.down).getTime () - entry.start_time.getTime ()) / 1000);
+		switch (Options.granularity (entry.granularity)) {
+			case 1: return Math.floor ((entry.end_time.getTime () - entry.start_time.getTime ()) / 1000);
+			case 2: return Math.floor ((entry.end_time.getTime () - entry.start_time.getTime ()) / 1000);
 			case 3: return 0; // Level 3 Granularity - any number of minutes
 			case 4: return 0; // Level 4 Granularity - truetime: down to the second
 		}// switch;
@@ -135,20 +148,26 @@ export default class LoggingPage extends BaseControl {
 
 		let entry = this.state.current_entry;
 		let now = new Date ();
+		let granularity = Options.granularity (this.props.companyId);
 
 		if (is_null (entry.end_time)) return false;
 
 		if (entry.end_time.before (entry.start_time)) return true;
-		if (entry.start_time.after (now) || entry.end_time.after (now)) {
-			// notify ("Projected end times are not", "available in this version."); // TODO: Create a setting for this
-			return true;
-		}// if;
+		if ((granularity == 1) && (entry.start_time.before (now) || entry.end_time.after (now))) return true;
 		
 		return false;
 		
 	}// invalid_entry;
 		
 		
+	link_cell (value) {
+		return <div className={this.state.editable ? "error-link" : null} onClick={this.state.editable ? () => this.setState ({ 
+			editing: true,
+			fixing: true
+		}) : null}>{value}</div>
+	}// link_cell;
+
+
 	componentDidMount () {
 		this.setState ({ initialized: true });
 	}// componentDidMount;
@@ -159,14 +178,6 @@ export default class LoggingPage extends BaseControl {
 		if (this.state.editable == needs_editing) return;
 		this.setState ({ editable: needs_editing });
 	}// componentDidUpdate;
-
-
-	link_cell (value) {
-		return <div className={this.state.editable ? "error-link" : null} onClick={this.state.editable ? () => this.setState ({ 
-			editing: true,
-			fixing: true
-		}) : null}>{value}</div>
-	}// link_cell;
 
 
 	render () {
@@ -218,7 +229,10 @@ export default class LoggingPage extends BaseControl {
 	
 		const entry_details = () => {
 	
-			let elapsed_time = logged_in ? this.elapsed_time () : null;
+			entry.end_time = this.end_time ();
+			setTimeout (() => {
+				this.forceUpdate ();
+			}, 1000 + (new Date ().getMilliseconds () % 1000));
 	
 			return <div id={this.props.id} className="row-container">
 			
@@ -263,7 +277,7 @@ export default class LoggingPage extends BaseControl {
 					{logged_in ? entry_details () : <div>
 
 						<ProjectSelectorGadget id="logging_project_selector" companyId={this.props.companyId} parent={this} 
-							hasHeader={true} headerSelectable={false}
+							hasHeader={true} headerSelectable={false} headerText={blank}
 							onProjectChange={event => this.setState ({ project_id: event.target.value })}>
 						</ProjectSelectorGadget>
 					
@@ -278,7 +292,7 @@ export default class LoggingPage extends BaseControl {
 						eyecandyVisible={this.state.updating}
 						eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
 
-						onEyecandy={() => { LoggingModel.log (this.state.project_id).then (this.set_logging)}}>
+						onEyecandy={this.log_entry.bind (this)}>
 
 						<FadePanel id="login_button" visible={this.project_selected () || logged_in} style={{ display: "flex" }}>
 							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }} disabled={logged_in && this.invalid_entry ()}>

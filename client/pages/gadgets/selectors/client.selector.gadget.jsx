@@ -69,9 +69,9 @@ export default class ClientSelectorGadget extends BaseControl {
 				<label htmlFor={this.client_selector_id}>Client</label>
 
 				<EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} eyecandyText="Loading..." eyecandyVisible={common.is_null (this.state.clients)}>
-					<SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient} 
+					<SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient}
 					
-						useHeader={this.props.hasHeader}
+						hasHeader={this.props.hasHeader}
 
 						headerText={this.props.hasHeader ? this.props.headerText : null} 
 						headerSelectable={this.props.headerSelectable}

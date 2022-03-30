@@ -7,14 +7,11 @@ const store_name = "logging";
 
 export default class Logging extends LocalStorage {
 
-	static get = (name) => { return super.get (store_name, name) }
-	static get_all = () => { return super.get_all (store_name) }
-
-	static entry = () => { return this.get_all () }
+	static get = () => { return super.get_all (store_name) }
+	static set = (value) => { return super.set_store (store_name, value) }
+	static delete = () => super.remove_store (store_name);	
 
 	static logged_in = () => { return isset (this.entry ()) }
-
-	static set = (name, value) => { return super.set (store_name, name, value) }
 
 	static start_time = () => { return this.get ("start_time") }
 	static client_name = () => { return this.get ("client_name") }

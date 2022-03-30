@@ -60,7 +60,7 @@ class Main extends BaseControl {
 				<Container condition={(isset (companies) && (companies.length > 1))}>
 					<SelectList value={Companies.active_company_id ()} data={companies}
 					
-						idField="company_id" textField="company_name" useHeader={true}
+						idField="company_id" textField="company_name" hasHeader={true}
 						
 						onChange={event => {
 							Companies.set ("active_company", event.target.value);

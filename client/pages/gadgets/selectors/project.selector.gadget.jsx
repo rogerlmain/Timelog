@@ -9,6 +9,8 @@ import ClientSelectorGadget from "client/pages/gadgets/selectors/client.selector
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import FadePanel from "client/controls/panels/fade.panel";
 import ProjectsModel from "client/models/projects";
+
+import { blank } from "classes/types/constants";
 import { isset } from "classes/common";
 
 
@@ -66,7 +68,10 @@ export default class ProjectSelectorGadget extends BaseControl {
 		return (
 			<div id={this.props.id} className="two-column-grid project-selector-form">
 
-				<ClientSelectorGadget id="client_selector" companyId={this.props.companyId} headerText="" hasHeader={true} headerSelectable={false} 
+				<ClientSelectorGadget id="client_selector" companyId={this.props.companyId} 
+				
+					hasHeader={this.props.hasHeader} headerSelectable={false} headerText={this.props.headerText} 
+
 					onClientChange={event => {
 						this.setState ({ 
 							projects: null,
@@ -76,6 +81,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 							this.execute (this.props.onClientChange, event);
 						});
 					}}>
+						
 				</ClientSelectorGadget>
 
 				<FadePanel id={`${this.props.id}_projects_label`} visible={client_loaded} className="vertical-centering-container">
@@ -87,9 +93,10 @@ export default class ProjectSelectorGadget extends BaseControl {
 						<div style={{ display: "flex" }}>
 							<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}
 							
-								useHeader={this.props.hasHeader || isset (this.props.headerText)}
-								headerText={this.props.headerText}
+								hasHeader={this.props.hasHeader || isset (this.props.headerText)}
 								headerSelectable={this.props.headerSelectable}
+								headerText={this.props.headerText}
+
 								idField="project_id" textField="project_name"
 
 								className="form-item" style={{ flex: 1 }}

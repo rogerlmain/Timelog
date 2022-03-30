@@ -129,6 +129,9 @@ export function matching_objects (first_object, second_object) {
 }// matching_objects;
 
 
+export function zero_value (value) { return null_or_undefined (value) ? 0 : value }
+
+
 /********/
 
 

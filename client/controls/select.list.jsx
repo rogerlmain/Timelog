@@ -1,10 +1,9 @@
-import * as common from "classes/common";
-
 import React from "react";
 import BaseControl from "controls/abstract/base.control"
 
+import { coalesce, isset, zero_value } from "classes/common";
 
-const placeholder_value = 0;
+
 const header_value = -1;
 
 
@@ -20,7 +19,7 @@ export default class SelectList extends BaseControl {
 
 		headerText: null,
 		headerSelectable: false,
-		useHeader: false,
+		hasHeader: false,
 
 		value: null,
 
@@ -37,7 +36,7 @@ export default class SelectList extends BaseControl {
 
 	header_visible () {
 		let result = (
-			(common.isset (this.props.headerText) || (this.props.useHeader)) && 
+			(isset (this.props.headerText) || (this.props.hasHeader)) && 
 			((this.state.selected_value == 0) || (this.props.headerSelectable))
 		);
 		return result;
@@ -45,13 +44,13 @@ export default class SelectList extends BaseControl {
 
 
 	componentDidMount () {
-		this.setState ({ selected_value: this.props.value });
+		this.setState ({ selected_value: zero_value (this.props.value) });
 	}// componentDidUpdate;
 
 
 	shouldComponentUpdate (new_props) {
 		if (this.props.value != new_props.value) {
-			this.setState ({ selected_value: new_props.value });
+			this.setState ({ selected_value: zero_value (new_props.value) });
 			return false;
 		}// if;
 		return true;
@@ -60,7 +59,7 @@ export default class SelectList extends BaseControl {
 
     render () {
 
-		let selectedValue = common.coalesce (this.state.selected_value, this.props.value, header_value);
+		let selectedValue = coalesce (this.state.selected_value, this.props.value, header_value);
 
         return (
             <select id={this.props.id} name={this.props.id} ref={this.list} value={selectedValue} className={this.props.className} style={this.props.style}

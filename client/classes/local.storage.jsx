@@ -19,7 +19,8 @@ export default class LocalStorage {
 	}// get;
 
 
-	static set_store = (store, value) => { localStorage.setItem (store, is_object (value) ? JSON.stringify (value) : value) }
+	static set_store = (store, value) => localStorage.setItem (store, is_object (value) ? JSON.stringify (value) : value);
+	static remove_store = (store) => localStorage.removeItem (store);
 
 
 	static set_item (store, name, value) {
