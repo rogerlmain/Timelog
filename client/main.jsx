@@ -22,12 +22,11 @@ import SignupPage from "pages/sign.up";
 import { globals } from "classes/types/constants";
 import { isset, is_empty, not_empty, notify } from "classes/common";
 
+import { MainContext } from "classes/types/contexts.jsx";
+
 
 // Special Guest Import
 import CreditCardForm from "pages/forms/credit.card.form";
-
-
-export const MainContext = React.createContext (null);
 
 
 class Main extends BaseControl {
@@ -98,7 +97,7 @@ error_handler (message, url, line) { notify (message, url, line) }
 
     render () {
 		return (
-			<MainContext.Provider value={this.state.company_id}>
+			<MainContext.Provider value={{ company_id: this.state.company_id }}>
 				<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
 
 					<div className="fully-justified-container">

@@ -26,7 +26,6 @@ export default class ProjectSelectorGadget extends BaseControl {
 	static defaultProps = {
 
 		id: null,
-		companyId: null,
 
 		selectedClient: null,
 		selectedProject: null,

@@ -38,10 +38,7 @@ export default class LoggingPage extends BaseControl {
 	}/* state */;
 
 
-	static defaultProps = { 
-		id: "logging_page",
-		companyId: null
-	}/* defaultProps */;
+	static defaultProps = { id: "logging_page" }
 
 
 	constructor (props) {

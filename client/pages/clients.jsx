@@ -13,14 +13,14 @@ import { globals } from "client/classes/types/constants";
 
 export default class ClientsPage extends BaseControl {
 
-	static defaultProps = { id: "clients_page" }
-
-
 	state = {
 		client_data: null,
 		selected_client: null,
 		updating: false
 	}// state;
+
+
+	static defaultProps = { id: "clients_page" }
 
 
 	constructor (props) {
@@ -34,7 +34,7 @@ export default class ClientsPage extends BaseControl {
 			<div id={this.props.id} className="top-center-container row-spaced">
 
 				<div className="two-column-grid">
-					<ClientSelectorGadget id="client_selector" parent={this} 
+					<ClientSelectorGadget id="client_selector" parent={this} companyId={this.props.companyId}
 					
 						hasHeader={true} 
 						headerSelectable={true}

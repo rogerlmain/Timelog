@@ -9,6 +9,8 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import { isset } from "classes/common";
 
+import "client/resources/styles/pages/projects.css";
+
 
 export default class ProjectsPage extends BaseControl {
 
@@ -34,8 +36,6 @@ export default class ProjectsPage extends BaseControl {
 		return (
 
 			<div id={this.props.id} className="top-center-container row-spaced">
-
-				<link rel="stylesheet" href="/resources/styles/pages/projects.css" />
 
 				<div className="project-select-form">
 					<ProjectSelectorGadget id="project_selector" parent={this} 

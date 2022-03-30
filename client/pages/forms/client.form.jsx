@@ -78,7 +78,10 @@ export default class ClientForm extends FormControl {
 
 
 	shouldComponentUpdate (next_props) {
-		this.setState ({ saved: common.matching_objects (this.props.formData, next_props.formData) });
+		if (this.props.formData != next_props.formData) {
+			this.setState ({ saved: common.matching_objects (this.props.formData, next_props.formData) });
+			return false;
+		}// if;
 		return true;
 	}// shouldComponentUpdate;
 

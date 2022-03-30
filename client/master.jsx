@@ -17,7 +17,7 @@ import ExplodingPanel from "./controls/panels/exploding.panel";
 import BaseControl from "controls/abstract/base.control";
 
 import { globals } from "classes/types/constants";
-import { is_empty, is_null, not_set } from "classes/common";
+import { is_empty, is_null } from "classes/common";
 
 
 const master_pages = { 
@@ -46,7 +46,6 @@ export default class MasterPanel extends BaseControl {
 
 	static defaultProps = { 
 		id: "master_page",
-		companyId: null,
 		parent: null
 	}// defaultProps;
 
@@ -93,8 +92,8 @@ export default class MasterPanel extends BaseControl {
 			case master_pages.projects: return <ProjectsPage />;
 			// case master_pages.team: return <TeamPanel />;
 			// case master_pages.tasks: return <TasksPanel />;
-			case master_pages.logging: return <LoggingPage companyId={this.props.companyId} />;
-			case master_pages.settings: return <SettingsPage companyId={this.props.companyId} />;
+			case master_pages.logging: return <LoggingPage />;
+			case master_pages.settings: return <SettingsPage />;
 			case master_pages.reports: return <ReportsPage />;
 			// case master_pages.history: return <div>Placeholder for History</div>;
 			default: return <HomePage parent={this} />;

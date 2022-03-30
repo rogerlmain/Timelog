@@ -8,17 +8,13 @@ import SelectList from "controls/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import ClientsModel from "client/models/clients";
 
+import { MainContext } from "client/classes/types/contexts";
+
 
 export default class ClientSelectorGadget extends BaseControl {
 
 
- 	client_selector_id = null;
-
-
-	client_change_handler (event) {
-		this.setState ({ client_selected: true });
-		this.execute (this.props.onClientChange, event);
-	}// client_change_handler;
+	static contextType = MainContext;
 
 
  	/********/
@@ -26,14 +22,13 @@ export default class ClientSelectorGadget extends BaseControl {
 
 	 state = { 
 		clients: null ,
-		client_selected: false
+		client_selected: false,
 	}// state;
 
 
 	static defaultProps = {
 
 		id: "client_selector",
-		companyId: null,
 
 		hasHeader: false,
 		headerSelectable: false,
@@ -41,6 +36,7 @@ export default class ClientSelectorGadget extends BaseControl {
 
 		selectedClient: null,
 		onClientChange: null
+
 	}// defaultProps;
 
 
@@ -51,22 +47,25 @@ export default class ClientSelectorGadget extends BaseControl {
 
 
 	componentDidMount () {
-		ClientsModel.fetch_by_company (this.props.companyId).then (data => this.setState ({ clients: data }));
+		ClientsModel.fetch_by_company (this.context.company_id).then (data => this.setState ({ clients: data }));
 	}// componentDidMount;
 
 
-	shouldComponentUpdate (new_props) {
-		if (new_props.companyId == this.props.companyId) return true;
-		ClientsModel.fetch_by_company (new_props.companyId).then (data => this.setState ({ clients: data }));
-		return false;
-	}// shouldComponentUpdate;
+	componentDidUpdate () {
+		if (this.context.company_id != this.state.company_id) {
+			ClientsModel.fetch_by_company (this.context.company_id).then (data => this.setState ({
+				company_id: this.context.company_id,
+				clients: data 
+			}));
+		}// if;
+	}// componentDidUpdate;
 
 
 	render () {
 		return (
 			<Container>
 
-				<label htmlFor={this.client_selector_id}>Client</label>
+				<label htmlFor={this.client_selector_id}>Client ({this.state.company_id})</label>
 
 				<EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} eyecandyText="Loading..." eyecandyVisible={common.is_null (this.state.clients)}>
 					<SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient}
@@ -78,7 +77,10 @@ export default class ClientSelectorGadget extends BaseControl {
 
 						idField="client_id" textField="name"
 
-						onChange={event => this.client_change_handler (event)}>
+						onChange={event => {
+							this.setState ({ client_selected: true });
+							this.execute (this.props.onClientChange, event);							
+						}}>
 
 					</SelectList>
 				</EyecandyPanel>

@@ -6,7 +6,7 @@ export default class ClientsModel {
 
 	static fetch_by_company (company_id) {
 		let parameters = new FormData ();
-		parameters.set ("action", "company_list");
+		parameters.set ("action", "list_by_company");
 		parameters.set ("company_id", company_id);
 		return Database.fetch_data ("clients", parameters);
 	}// fetch_by_client;

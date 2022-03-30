@@ -3,14 +3,11 @@ import "./server/globals.mjs";
 import express from "express";
 import multiparty from "multiparty";
 import https from "https";
-import http from "http";
 import file_system from "fs";
 
-import path, { join } from "path";
-
 import AccountData from "./server/models/accounts.mjs";
-import SettingsData from "./server/models/settings.mjs";
-import OptionsData from "./server/models/options.mjs";
+import AccountSettingsData from "./server/models/settings.mjs";
+import AccountOptionsData from "./server/models/options.mjs";
 import ClientData from "./server/models/clients.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import ProjectData from "./server/models/projects.mjs";
@@ -18,12 +15,12 @@ import ReportData from "./server/models/reports.mjs";
 import TaskData from "./server/models/tasks.mjs";
 import MiscData from "./server/models/misc.mjs";
 
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-global.root_path = join (path.resolve (), "/");
 
-
+const root_path = dirname (fileURLToPath (import.meta.url));
 const app = express ();
-
 
 
 app.process = async (request, response, handler) => {
@@ -79,7 +76,7 @@ app.post ("/clients", function (request, response) {
 	app.process (request, response, (fields) => {
 		let client_data = new ClientData ();
 		switch (fields.action) {
-			case "company_list": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
+			case "list_by_company": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
 			case "details": client_data.get_client_by_id (fields.client_id); break;
 			case "save": client_data.save_client (fields); break;
 		}// switch;
@@ -110,7 +107,7 @@ app.post ("/misc", function (request, response) {
 app.post ("/options", function (request, response) {
 	try {
 		app.process (request, response, (fields) => {
-			let account_option_data = new OptionsData ();
+			let account_option_data = new AccountOptionsData ();
 			switch (fields.action) {
 				case "get": account_option_data.get_options (); break;	
 				case "save": account_option_data.save_option (fields); break;
@@ -146,7 +143,7 @@ app.post ("/reports", function (request, response) {
 app.post ("/settings", function (request, response) {
 	try {
 		app.process (request, response, (fields) => {
-			let account_setting_data = new SettingsData ();
+			let account_setting_data = new AccountSettingsData ();
 			switch (fields.action) {
 				case "get": account_setting_data.get_settings (); break;	
 				case "save": account_setting_data.save_setting (fields.setting_id, fields.value); break;
@@ -190,12 +187,12 @@ app.post ("/tasks", function (request, response) {
 
 
 var options = {
-    key: file_system.readFileSync ("server/certificates/timelog.key"),
-    cert: file_system.readFileSync ("server/certificates/timelog.crt"),
+    key: file_system.readFileSync (`${root_path}/server/certificates/timelog.key`),
+    cert: file_system.readFileSync (`${root_path}/server/certificates/timelog.crt`),
 };
 
 let server = https.createServer (options, app).listen (app.get ("port"), function () {
-    console.log ("listening");
+    console.log (`listening: ${root_path}`);
 });
 
 //server.keepAliveTimeout = 10000;
