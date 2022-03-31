@@ -53,24 +53,38 @@ export default class DeluxeAccountForm extends BaseControl {
 
 
 	render () {
-
 		return (<PopupWindow id="deluxe_account_form" visible={this.state.visible}>
-
+			<label className="header">Customer Details</label>
 			<div className="two-column-newspaper">
-				<div><AddressForm /></div>
-				<div><CreditCardForm /></div>
-			</div>
+				<AddressForm />
+				<div className="vertically-spaced-out">
 
-			<EyecandyPanel id="payment_eyecandy" eyecandyText="Processing. One moment, please..." 
-				eyecandyVisible={this.state.processing} onEyecandy={this.submit_payment.bind (this)}>
+					<div><CreditCardForm /></div>
 
-				<div className="button-bar">
-					<button onClick={() => this.setState ({ processing: true })}>Submit</button>
-					<button onClick={() => this.setState ({ visible: false }, this.props.onCancel)}>Cancel</button>
+					<div className="right-justified-container">
+						<EyecandyPanel id="payment_eyecandy" eyecandyText="Processing. One moment, please..." 
+							eyecandyVisible={this.state.processing} onEyecandy={this.submit_payment.bind (this)}>
+							
+							<button onClick={() => this.setState ({ processing: true })}>Submit</button>
+							<button onClick={() => this.setState ({ visible: false }, this.props.onCancel)}>Cancel</button>
+							
+						</EyecandyPanel>
+					</div>
+
+					<div className="horizontally-spaced-out">
+						<img src={"client/resources/images/logos/square.png"} className="square-logo" />
+						<div className="credit-card-logos right-justified-container">
+							<img src={"client/resources/images/logos/mastercard.svg"} />
+							<img src={"client/resources/images/logos/visa.png"} />
+							<img src={"client/resources/images/logos/discover.svg"} />
+							<img src={"client/resources/images/logos/amex.png"} />
+							<img src={"client/resources/images/logos/JCB.svg"} />
+							<img src={"client/resources/images/logos/unionpay.svg"} />
+						</div>
+					</div>
+
 				</div>
-
-			</EyecandyPanel>
-
+			</div>
 		</PopupWindow>);
 	}// render;
 

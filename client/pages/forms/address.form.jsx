@@ -58,7 +58,7 @@ export default class AddressForm extends BaseControl {
 		return <div className="one-piece-form">
 
 			<label>Company name</label>
-			<div className="flex-spaced">
+			<div className="horizontally-spaced-out">
 
 				<input type="text" id="company_name" name="company_name" style={{ width: "17em", marginRight: "1em" }} />
 
@@ -69,13 +69,15 @@ export default class AddressForm extends BaseControl {
 
 			</div>
 
+			<break />
+
 			<label htmlFor="street_address">Street address</label>
 			<input type="text" id="street_address" name="street_address" />
 
 			<input type="text" id="additional_address" name="additional_address" style={{ gridColumn: "2" }} />
 
 			<label htmlFor="state">City</label>
-			<div className="flex-spaced">
+			<div className="horizontally-spaced-out">
 
 				<input type="text" id="city" name="city" style={{ width: "8em" }} maxLength={85} />
 
@@ -96,6 +98,14 @@ export default class AddressForm extends BaseControl {
 			<SelectList id="country" data={this.state.countries} idField="id" textField="short_name" 
 				value={this.state.country_id} onChange={event => this.setState ({ country_id: event.target.value })}>
 			</SelectList>
+
+			<break />
+
+			<label htmlFor="primary_phone">Main phone number</label>
+			<input type="text" id="primary_phone" name="primary_phone" className="full-width" maxLength={85} />
+ 
+			<label htmlFor="second_phone">Second phone number</label>
+			<input type="text" id="second_phone" name="second_phone" className="full-width" maxLength={85} />
 
 		</div>
 	}// render;

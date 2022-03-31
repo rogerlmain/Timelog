@@ -88,7 +88,7 @@ export default class SigninPage extends BaseControl {
 					</div>
 				</form>
 
-				<div className="fully-justified-container button-bar">
+				<div className="horizontally-spaced-out button-bar">
 
 					<div className="aside">
 						<label style={{ marginRight: "0.5em" }}>New to RMPC Timelog?</label>

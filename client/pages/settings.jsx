@@ -112,7 +112,7 @@ export default class SettingsPage extends BaseControl {
 
 		return <Container contentsOnly={true}>
 			<label htmlFor={id}>{rounding_end.charAt (0).toUpperCase () + rounding_end.slice (1)} time rounding</label>
-			<div className="middle-right-container">
+			<div className="right-justified-container">
 				<ToggleSwitch id={id} speed={Settings.animation_speed ()} value={this.state [label]} singleStep={true}
 
 					onChange={(data) => {

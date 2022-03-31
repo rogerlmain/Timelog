@@ -100,7 +100,7 @@ error_handler (message, url, line) { notify (message, url, line) }
 			<MainContext.Provider value={{ company_id: this.state.company_id }}>
 				<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
 
-					<div className="fully-justified-container">
+					<div className="horizontally-spaced-out">
 
 						<div className="page-header">
 							<div className="title">RMPC Timelog</div>

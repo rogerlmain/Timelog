@@ -165,7 +165,7 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 */}
 				</form>
 
-				<div className="middle-right-container">
+				<div className="right-justified-container">
 					<SmallProgressMeter visible={common.isset (this.state.status)} alignment={LeftHand}>{this.state.status}</SmallProgressMeter>
 				</div>
 

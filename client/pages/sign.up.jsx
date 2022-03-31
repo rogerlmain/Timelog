@@ -114,7 +114,7 @@ export default class SignupPage extends BaseControl {
 
 				</form>
 
-				<div className={`${this.signed_out () ? "fully-justified-container" : "right-justified-container"} button-bar`}>
+				<div className={`${this.signed_out () ? "horizontally-spaced-out" : "right-justified-container"} button-bar`}>
 
 					<Container condition={this.signed_out ()}>
 						<div className="aside">

@@ -5,6 +5,8 @@ import Container from "controls/container";
 import CreditCardInput from "controls/inputs/credit.card.input";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
+import "client/resources/styles/pages/forms.css";
+
 
 export default class DeluxeAccountForm extends BaseControl {
 
@@ -53,9 +55,9 @@ export default class DeluxeAccountForm extends BaseControl {
 
 			</div>
 
-			<break />
+			<break /> 
 
-			<div className="flex-aligned-right" style={{ marginTop: "1em" }}>
+			<div className="flex-aligned-right">
 				<div className="one-piece-form">
 					<label htmlFor="reuse_card" style={{ margin: 0 }}>Keep card on file</label>
 					<input type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />

@@ -1,4 +1,35 @@
+/**** Global Variables ****/
+
+:root {
+
+	--default-color: black;
+
+	--border-color: black;
+	--highlight-color: #FFF2CC;
+
+	--mouseover-color: #999D66;
+
+	--warning-color: #A00;
+
+	--double-margin: 2em;
+	--double-padding: 2em;
+
+	--standard-height: 1.5em;
+	--double-height: 2em;
+	--full-height: 3em;
+
+	--single-height: var(--standard-height);
+
+	--standard-column-gap: 0.5em;
+	--standard-row-gap: 0.2em;
+
+}/* root */
+
+
 /**** Globals ****/
+
+
+*.unselectable * { user-select: inherit }
 
 
 * {
@@ -35,6 +66,13 @@ a {
 
 
 a:hover, .link-control:hover { cursor: pointer }
+
+
+body {
+	overflow: hidden;
+	padding: 1em;
+	/* overflow-y: scroll; */
+}/* body */
 
 
 button, div, *.unselectable {
@@ -78,11 +116,11 @@ button[disabled], button[disabled]:hover {
 }/* button[disabled],button [disabled]:hover */
 
 
-body {
-	overflow: hidden;
-	padding: 1em;
-	/* overflow-y: scroll; */
-}/* body */
+button, *.unselectable {
+    -webkit-user-select: none;	/* Apple */
+    -ms-user-select: none;		/* Microsoft */
+    user-select: none;			/* Everyone else */
+}/* button, unselectable */
 
 
 input, select {
@@ -101,6 +139,9 @@ input {
 input[type=numeric] { text-align: right }
 
 
+/********/
+
+
 label {
 	margin-right: 0.5em;
 	text-align: right;
@@ -109,6 +150,21 @@ label {
 
 
 label:not(:first-child) { margin-left: 1em }
+
+
+label.header {
+	display: flex;
+	font-size: 11pt !important;
+	font-weight: bold;
+	font-style: italic;
+	text-align: left;
+	margin-left: 1.5em;
+	margin-bottom: 0.7em;
+	width: 100%;
+}/* label.header */
+
+
+/********/
 
 
 select { padding-left: 0.25em }
@@ -130,11 +186,20 @@ textarea {
 /**** Custom Tags ****/
 
 
-break {
+break, half-break {
 	display: flex;
 	grid-column: 1 / -1;
+}
+
+
+break {
 	height: 1em;
 }/* break */
+
+
+half-break {
+	height: 0.5em;
+}
 
 
 /**** Partial Classes ****/
@@ -226,19 +291,6 @@ break {
 
 
 #signin_eyecandy_contents { z-index: 1 }
-
-
-/********/
-
-
-.login-error {
-	display: flex;
-	justify-items: center;
-	align-items: center;
-	text-align: left;
-	font-style: italic;
-	margin-bottom: 2em;
-}/* .login-error */
 
 
 /********/
