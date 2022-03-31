@@ -27,10 +27,6 @@ export default class DeluxeAccountForm extends BaseControl {
 	}/* state */;
 
 
-	get_country_districts (districts) {
-	}// get_country_districts;
-
-
 	componentDidMount () {
 		LookupsModel.get_countries ().then (result => this.setState ({ countries: result }, () => {
 			LookupsModel.get_districts ().then (result => this.setState ({ districts: result }));
@@ -79,15 +75,9 @@ export default class DeluxeAccountForm extends BaseControl {
 				<input type="text" id="city" name="city" style={{ width: "8em" }} maxLength={85} />
 
 				<label htmlFor="state" title="District, state or province">District</label>
-
-
-
 				<SelectList id="district" data={this.state.active_districts} idField="id" textField="long_name" 
-					hasHeader={true} maxLength={128} value={this.state.district_id} 
-					
 					style={{ width: "8em" }}
-					>
-					
+					hasHeader={true} maxLength={128} value={this.state.district_id}>
 				</SelectList>
 
 				<label htmlFor="zip" title="Zip or Postal Code">Post Code</label>
@@ -97,12 +87,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 			<label htmlFor="country">Country</label>
 			<SelectList id="country" data={this.state.countries} idField="id" textField="short_name" 
-				value={this.state.country_id} onChange={event => 
-{				
-alert (event.target.value);					
-					this.setState ({ country_id: event.target.value })
-}					
-				}>
+				value={this.state.country_id} onChange={event => this.setState ({ country_id: event.target.value })}>
 			</SelectList>
 
 		</div>
