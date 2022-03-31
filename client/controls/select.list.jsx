@@ -12,6 +12,7 @@ export default class SelectList extends BaseControl {
 
 	static defaultProps = {
 
+		id: null,
 		data: null,
 
 		idField: null,

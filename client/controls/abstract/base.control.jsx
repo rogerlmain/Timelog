@@ -123,7 +123,7 @@ export default class BaseControl extends React.Component {
 
 
 	select_options (list, id_field, text_field) {
-		if (is_null (list)) return null;
+		if (is_null (list) || (list.then)) return null;
 		let result = list.map ((item) => {
 			return <option value={item [id_field]} key={item [id_field]}>{item [text_field]}</option>
 		});

@@ -7,7 +7,7 @@ import ExplodingPanel from "controls/panels/exploding.panel";
 import BaseControl from "controls/abstract/base.control";
 import ToggleSwitch from "controls/toggle.switch";
 
-import CreditCardForm from "pages/forms/credit.card.form";
+import DeluxeAccountForm from "pages/forms/deluxe.account.form";
 
 import OptionsModel from "models/options";
 
@@ -52,14 +52,14 @@ export default class SettingsPage extends BaseControl {
 	}// set_option;
 
 
-	credit_card_form () {
-		return <CreditCardForm visible={isset (this.state.cc_form)}
+	deluxe_account_form () {
+		return <DeluxeAccountForm visible={isset (this.state.cc_form)}
 
 			onCancel={() => this.setState ({ [this.state.cc_form.option]: this.state.cc_form.previous }, () => this.setState ({ cc_form: null }))} 
 			onSubmit={() => this.set_option (this.state.cc_form.option, this.state.cc_form.value).then (() => this.execute (this.state.cc_form.onSubmit).then (() => this.setState ({ cc_form: null })))}>
 
-		</CreditCardForm>
-	}// credit_card_form;
+		</DeluxeAccountForm>
+	}// deluxe_account_form;
 
 
 	granularity_switch () {
@@ -162,7 +162,7 @@ export default class SettingsPage extends BaseControl {
 		return (
 			<div id={this.props.id} className="one-piece-form">
 
-				{this.credit_card_form ()}
+				{this.deluxe_account_form ()}
 
 				<div className="full-row section-header">User Settings</div>
 

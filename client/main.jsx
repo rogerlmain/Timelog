@@ -26,7 +26,7 @@ import { MainContext } from "classes/types/contexts.jsx";
 
 
 // Special Guest Import
-import CreditCardForm from "pages/forms/credit.card.form";
+import DeluxeAccountForm from "pages/forms/deluxe.account.form";
 
 
 class Main extends BaseControl {
@@ -125,9 +125,9 @@ error_handler (message, url, line) { notify (message, url, line) }
 
 document.onreadystatechange = () => {
 
-	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
+//	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-//	ReactDOM.render (<CreditCardForm visible={true} id="special_guest_import" />, document.getElementById ("main_page"));
+	ReactDOM.render (<DeluxeAccountForm visible={true} id="special_guest_import" />, document.getElementById ("main_page"));
 
 }// document.ready;

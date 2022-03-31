@@ -10,6 +10,7 @@ import AccountSettingsData from "./server/models/settings.mjs";
 import AccountOptionsData from "./server/models/options.mjs";
 import ClientData from "./server/models/clients.mjs";
 import LoggingData from "./server/models/logging.mjs";
+import LookupsData from "./server/models/lookups.mjs";
 import ProjectData from "./server/models/projects.mjs";
 import ReportData from "./server/models/reports.mjs";
 import TaskData from "./server/models/tasks.mjs";
@@ -21,6 +22,10 @@ import { dirname } from "path";
 
 const root_path = dirname (fileURLToPath (import.meta.url));
 const app = express ();
+
+
+const countries_id = 1;
+const districts_id = 2;
 
 
 app.process = async (request, response, handler) => {
@@ -89,6 +94,17 @@ app.post ("/logging", function (request, response) {
 		let logging_data = new LoggingData ();
 		switch (fields.action) {
 			case "logging": logging_data.save_log_entry (fields); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/lookups", function (request, response) {
+	app.process (request, response, async fields => {
+		let lookups_data = new LookupsData ();
+		switch (fields.action) {
+			case "get_countries": lookups_data.get_lookups_by_category (countries_id); break;
+			case "get_districts": lookups_data.get_lookups_by_category (districts_id); break;
 		}// switch;
 	});
 });

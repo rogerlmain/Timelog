@@ -1,24 +1,22 @@
 import React from "react";
 
 import PaymentHandler from "classes/payment.handler";
+import Accounts from "classes/storage/accounts";
 
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
-
 import CreditCardInput from "controls/inputs/credit.card.input";
-
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import PopupWindow from "pages/gadgets/popup.window";
-
-import Accounts from "client/classes/storage/accounts";
+import AddressForm from "pages/forms/address.form"
 
 import { is_null } from "classes/common";
-import { credential_types, credit_card_images } from "client/classes/types/constants";
+import { credential_types } from "client/classes/types/constants";
 
 
-export default class CreditCardForm extends BaseControl {
+export default class DeluxeAccountForm extends BaseControl {
 
 
 	state = { 
@@ -50,15 +48,8 @@ export default class CreditCardForm extends BaseControl {
 	}// submit_payment
 
 
-	shouldComponentUpdate (new_props) {
-		if (new_props.visible != this.props.visible) this.setState ({ visible: new_props.visible });
-		return true;
-	}// shouldComponentUpdate;
-
-
-	render () {
-
-		return (<PopupWindow id="credit_card_form" visible={this.state.visible}>
+	credit_card_form () {
+		return <Container>
 
 			<div className="one-piece-form payment-form" style={{ margin: "1.5em 0" }}>
 
@@ -107,6 +98,25 @@ export default class CreditCardForm extends BaseControl {
 				<input type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
 			</div>
 
+		</Container>
+	}// credit_card_form;
+
+
+	shouldComponentUpdate (new_props) {
+		if (new_props.visible != this.props.visible) this.setState ({ visible: new_props.visible });
+		return true;
+	}// shouldComponentUpdate;
+
+
+	render () {
+
+		return (<PopupWindow id="deluxe_account_form" visible={this.state.visible}>
+
+			<div className="two-column-newspaper">
+				<div><AddressForm /></div>
+				<div>{this.credit_card_form ()}</div>
+			</div>
+
 			<EyecandyPanel id="payment_eyecandy" eyecandyText="Processing. One moment, please..." 
 				eyecandyVisible={this.state.processing} onEyecandy={this.submit_payment.bind (this)}>
 
@@ -120,4 +130,4 @@ export default class CreditCardForm extends BaseControl {
 		</PopupWindow>);
 	}// render;
 
-}// CreditCardForm;
+}// DeluxeAccountForm;

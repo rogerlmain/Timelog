@@ -19,7 +19,9 @@ export default class Database {
 			body: parameters
 		}// fetch_parameters;
 
-		return fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (response => { return response }).catch (error => {
+		return fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (response => { 
+			return response 
+		}).catch (error => {
 			alert (error);
 			return null;
  		});
