@@ -270,6 +270,16 @@ div.two-piece-subform { grid-template-columns: 1fr repeat(2, min-content 1fr) }
 }/* flex-aligned-right */
 
 
+.flex-spaced {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}/* .flex-spaced */
+
+
+/********/
+
+
 .form-table label {
 	text-align: right;
 	align-self: center;

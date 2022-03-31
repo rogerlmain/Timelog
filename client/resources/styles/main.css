@@ -15,3 +15,9 @@ div.title, div.tagline {
 
 
 div.tagline { font-size: 10pt }
+
+
+label.mini-title {
+	font-size: 7pt;
+	font-style: italic;
+}/* label.mini-title */

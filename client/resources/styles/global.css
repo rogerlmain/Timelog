@@ -19,11 +19,13 @@
 
 
 html, body, .full-screen, .full-size {
-	width: 100%;
-	height: 100%;
 	margin: 0;
 	padding: 0;
 }/* html, body, .full-screen, .full-size */
+
+
+html, body, .full-screen, .full-size, .full-width	{ width: 100% }
+html, body, .full-screen, .full-size, .full-height	{ height: 100% }
 
 
 a {
@@ -100,9 +102,13 @@ input[type=numeric] { text-align: right }
 
 
 label {
-	margin-right: 1em;
+	margin-right: 0.5em;
+	text-align: right;
 	white-space: nowrap;
 }/* label */
+
+
+label:not(:first-child) { margin-left: 1em }
 
 
 select { padding-left: 0.25em }
