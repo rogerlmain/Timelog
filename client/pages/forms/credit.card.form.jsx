@@ -2,15 +2,19 @@ import * as constants from "classes/types/constants";
 
 import React from "react";
 
+import CurrentAccount from "classes/storage/account";
+
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 import CreditCardInput from "controls/inputs/credit.card.input";
-import ExplodingPanel from "controls/panels/exploding.panel";
 
 import "client/resources/styles/pages/forms.css";
 
 
 export default class DeluxeAccountForm extends BaseControl {
+
+
+	name_checkbox = React.createRef ();
 
 
 	state = { cc_name: constants.blank }
@@ -40,14 +44,16 @@ export default class DeluxeAccountForm extends BaseControl {
 
 					<div key={this.state.cc_name}>
 						<input type="text" id="cc_name" name="cc_name" style={{ width: "13em", marginRight: "1em" }} 
-							defaultValue={this.state.cc_name || constants.blank} required={true}>
+							defaultValue={this.state.cc_name || constants.blank} required={true}
+							onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}>
 						</input>
 					</div>				
 
 					<div className="one-piece-form">
 						<label htmlFor="use_account_name_for_cc" className="mini-title">Just use<br />my name</label>
-						<input type="checkbox" id="use_account_name_for_cc" name="use_account_name_for_cc" style={{ columnWidth: "min-content" }}
-							onChange={event => this.setState ({ cc_name: event.target.checked ? Accounts.username () : constants.blank })}>
+						<input id="use_account_name_for_cc" name="use_account_name_for_cc" ref={this.name_checkbox}
+							type="checkbox" style={{ columnWidth: "min-content" }}
+							onChange={event => this.setState ({ cc_name: event.target.checked ? CurrentAccount.username () : constants.blank })}>
 						</input>
 					</div>
 

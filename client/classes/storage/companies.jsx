@@ -6,7 +6,7 @@ import { isset, is_null } from "classes/common";
 const store_name = "companies";
 
 
-export default class Accounts extends LocalStorage {
+export default class Companies extends LocalStorage {
 
 	static get (name) { return LocalStorage.get (store_name, name) }
 	static set (name, value) { super.set_item (store_name, name, value) }
@@ -40,4 +40,4 @@ export default class Accounts extends LocalStorage {
 		return is_null (active_company) ? 0 : active_company.company_id;
 	}// active_company_id;
 
-}// Accounts;
+}// Companies;

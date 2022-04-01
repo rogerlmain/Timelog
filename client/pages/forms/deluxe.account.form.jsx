@@ -1,7 +1,7 @@
 import React from "react";
 
 import PaymentHandler from "classes/payment.handler";
-import Accounts from "classes/storage/accounts";
+import CurrentAccount from "classes/storage/account";
 
 import BaseControl from "controls/abstract/base.control";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
@@ -38,8 +38,8 @@ export default class DeluxeAccountForm extends BaseControl {
 
 
 	async submit_payment () {
-		let square_id = Accounts.square_id ();
-		if (is_null (square_id)) Accounts.set (credential_types.square_id, await PaymentHandler.create_customer ());
+		let square_id = CurrentAccount.square_id ();
+		if (is_null (square_id)) CurrentAccount.set (credential_types.square_id, await PaymentHandler.create_customer ());
 		await PaymentHandler.verify_payment_method (this.state.keep_card);
 		await PaymentHandler.apply_payment ();
 		this.execute (this.props.onSubmit).then (() => this.setState ({ processing: false }));

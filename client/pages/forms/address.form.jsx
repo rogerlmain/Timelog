@@ -3,7 +3,7 @@ import * as constants from "classes/types/constants";
 
 import React from "react";
 
-import Accounts from "classes/storage/accounts";
+import CurrentAccount from "classes/storage/account";
 
 import BaseControl from "controls/abstract/base.control";
 import SelectList from "controls/select.list";
@@ -16,6 +16,9 @@ const default_district_name = "District";
 
 
 export default class AddressForm extends BaseControl {
+
+
+	name_checkbox = React.createRef ();
 
 
 	state = {
@@ -91,14 +94,16 @@ export default class AddressForm extends BaseControl {
 
 				<div key={this.state.company_name}>
 					<input type="text" id="company_name" name="company_name" style={{ width: "17em", marginRight: "1em" }} 
-						defaultValue={this.state.company_name || constants.blank} required={true}>
+						defaultValue={this.state.company_name || constants.blank} required={true}
+						onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}>
 					</input>
 				</div>				
 
 				<div className="one-piece-form">
 					<label htmlFor="use_account_name_for_company" className="mini-title">Just use<br />my name</label>
-					<input type="checkbox" id="use_account_name_for_company" name="use_account_name_for_company" style={{ columnWidth: "min-content" }}
-						onChange={event => this.setState ({ company_name: event.target.checked ? Accounts.username () : constants.blank })}>
+					<input id="use_account_name_for_company" name="use_account_name_for_company" ref={this.name_checkbox}
+						type="checkbox" style={{ columnWidth: "min-content" }}
+						onChange={event => this.setState ({ company_name: event.target.checked ? CurrentAccount.username () : constants.blank })}>
 					</input>
 				</div>
 

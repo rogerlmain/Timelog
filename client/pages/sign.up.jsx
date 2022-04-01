@@ -1,7 +1,7 @@
 import React from "react";
 
 import Container from "client/controls/container";
-import Accounts from "client/classes/storage/accounts";
+import CurrentAccount from "client/classes/storage/account";
 import BaseControl from "client/controls/abstract/base.control";
 import AccountsModel from "models/accounts";
 
@@ -40,7 +40,7 @@ export default class SignupPage extends BaseControl {
 	render () {
 
 		let parent = this.props.parent;
-		let creds = Accounts.all ();
+		let creds = CurrentAccount.all ();
 
 		let credentials = name => { return (this.signed_in () && creds [name]) }
 
