@@ -10,7 +10,8 @@ create procedure get_lookups_by_category (category_id integer) begin
 		id,
         reference_id,
         short_name,
-        long_name
+        long_name,
+        `description`
 	from
 		lookups
 	where

@@ -1,3 +1,5 @@
+import * as constants from "classes/types/constants";
+
 import React from "react";
 
 import BaseControl from "controls/abstract/base.control";
@@ -10,22 +12,57 @@ import "client/resources/styles/pages/forms.css";
 
 export default class DeluxeAccountForm extends BaseControl {
 
+
+	state = { cc_name: constants.blank }
+
+
 	render () {
 		return <Container>
+
+			<div className="horizontally-spaced-out">
+				<img src={"client/resources/images/logos/square.png"} className="square-logo" />
+				<div className="credit-card-logos right-justified-container">
+					<img src={"client/resources/images/logos/mastercard.svg"} />
+					<img src={"client/resources/images/logos/visa.png"} />
+					<img src={"client/resources/images/logos/discover.svg"} />
+					<img src={"client/resources/images/logos/amex.png"} />
+					<img src={"client/resources/images/logos/JCB.svg"} />
+					<img src={"client/resources/images/logos/unionpay.svg"} />
+				</div>
+			</div>
+
+			<br className="double" />
 
 			<div className="one-piece-form payment-form">
 
 				<label htmlFor="cc_name">Name on card</label>
-				<input type="text" name="cc_name" />
+				<div className="horizontally-spaced-out">
+
+					<div key={this.state.cc_name}>
+						<input type="text" id="cc_name" name="cc_name" style={{ width: "13em", marginRight: "1em" }} 
+							defaultValue={this.state.cc_name || constants.blank} required={true}>
+						</input>
+					</div>				
+
+					<div className="one-piece-form">
+						<label htmlFor="use_account_name_for_cc" className="mini-title">Just use<br />my name</label>
+						<input type="checkbox" id="use_account_name_for_cc" name="use_account_name_for_cc" style={{ columnWidth: "min-content" }}
+							onChange={event => this.setState ({ cc_name: event.target.checked ? Accounts.username () : constants.blank })}>
+						</input>
+					</div>
+
+				</div>
 
 				<label htmlFor="cc_number">Card number</label>
 				<CreditCardInput name="cc_number" />
 
-				<break />
+				<div className="break" />
 
 				<label htmlFor="cc_expire">Expiration Date</label>
-				<div className="select-list subpanel">
-					<select>
+				<div className="horizontally-spaced-out">
+
+					<select id="cc_expire_month" required={true}>
+						<option />
 						<option value="1">January</option>
 						<option value="2">February</option>
 						<option value="3">March</option>
@@ -39,23 +76,19 @@ export default class DeluxeAccountForm extends BaseControl {
 						<option value="11">November</option>
 						<option value="12">December</option>
 					</select>
-					<input type="text" placeholder="Year" />
-				</div>
 
-				<label htmlFor="cc_cvv">CVV</label>
-				<div className="cc-details subpanel">
-					<input type="text" name="cc_cvv" />
-					<ExplodingPanel id="license_panel">
-						<Container id="licence_form">
-							<label htmlFor="licence_count">Licences</label>
-							<input type="text" name="licence_count" placeholder="1" />
-						</Container>
-					</ExplodingPanel>
+					<input type="text" placeholder="Year" id="cc_year" name="cc_year" required={true} style={{ width: "4rem" }} />
+
+					<div className="one-piece-form">
+						<label htmlFor="cc_cvv" style={{ marginLeft: "0.5em" }}>CVV</label>
+						<input type="text" id="cc_cvv" name="cc_cvv" required={true} style={{ width: "3rem" }} />
+					</div>
+
 				</div>
 
 			</div>
 
-			<break /> 
+			<div className="break" />
 
 			<div className="flex-aligned-right">
 				<div className="one-piece-form">

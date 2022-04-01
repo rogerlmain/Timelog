@@ -122,6 +122,19 @@
 }/* .vertically-spaced-out */
 
 
+/**** Line Breaks ****/
+
+
+div.break, div.half-break {
+	display: flex;
+	grid-column: 1 / -1;
+}/* div.break, div.half-break */
+
+
+div.break		{ height: 1em }
+div.half-break	{ height: 0.5em }
+
+
 /********/
 
 
@@ -242,12 +255,13 @@ div[class$="piece-form"], div[class$="piece-subform"] {
 }/* div[class$="piece-form"], div[class$="piece-subform"] */
 
 
-div.one-piece-form { grid-template-columns: min-content 1fr }
-div.two-piece-form { grid-template-columns: repeat(2, min-content 1fr) }
+div.one-piece-form		{ grid-template-columns: min-content 1fr }
+div.two-piece-form		{ grid-template-columns: repeat(2, min-content 1fr) }
+div.three-piece-form	{ grid-template-columns: repeat(3, min-content 1fr) }
 
 
-div.one-piece-subform { grid-template-columns: 1fr min-content 1fr }
-div.two-piece-subform { grid-template-columns: 1fr repeat(2, min-content 1fr) }
+div.one-piece-subform	{ grid-template-columns: 1fr min-content 1fr }
+div.two-piece-subform	{ grid-template-columns: 1fr repeat(2, min-content 1fr) }
 
 
 /********/

@@ -68,6 +68,18 @@ a {
 a:hover, .link-control:hover { cursor: pointer }
 
 
+/********/
+
+
+br.half 	{ line-height: 0.5em }
+
+br.double	{ line-height: 2em }
+br.triple	{ line-height: 3em }
+
+
+/********/
+
+
 body {
 	overflow: hidden;
 	padding: 1em;
@@ -149,9 +161,6 @@ label {
 }/* label */
 
 
-label:not(:first-child) { margin-left: 1em }
-
-
 label.header {
 	display: flex;
 	font-size: 11pt !important;
@@ -181,25 +190,6 @@ textarea {
 	border-radius: 1em;
 	border-bottom-right-radius: 0;
 }/* textarea */
-
-
-/**** Custom Tags ****/
-
-
-break, half-break {
-	display: flex;
-	grid-column: 1 / -1;
-}
-
-
-break {
-	height: 1em;
-}/* break */
-
-
-half-break {
-	height: 0.5em;
-}
 
 
 /**** Partial Classes ****/

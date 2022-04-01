@@ -54,7 +54,10 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	render () {
 		return (<PopupWindow id="deluxe_account_form" visible={this.state.visible}>
-			<label className="header">Customer Details</label>
+			<label className="header">Tell us a little about yourself</label>
+
+			<br className="half" />
+			
 			<div className="two-column-newspaper">
 				<AddressForm />
 				<div className="vertically-spaced-out">
@@ -69,18 +72,6 @@ export default class DeluxeAccountForm extends BaseControl {
 							<button onClick={() => this.setState ({ visible: false }, this.props.onCancel)}>Cancel</button>
 							
 						</EyecandyPanel>
-					</div>
-
-					<div className="horizontally-spaced-out">
-						<img src={"client/resources/images/logos/square.png"} className="square-logo" />
-						<div className="credit-card-logos right-justified-container">
-							<img src={"client/resources/images/logos/mastercard.svg"} />
-							<img src={"client/resources/images/logos/visa.png"} />
-							<img src={"client/resources/images/logos/discover.svg"} />
-							<img src={"client/resources/images/logos/amex.png"} />
-							<img src={"client/resources/images/logos/JCB.svg"} />
-							<img src={"client/resources/images/logos/unionpay.svg"} />
-						</div>
 					</div>
 
 				</div>
