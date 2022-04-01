@@ -68,8 +68,10 @@ export default class DeluxeAccountForm extends BaseControl {
 						<EyecandyPanel id="payment_eyecandy" eyecandyText="Processing. One moment, please..." 
 							eyecandyVisible={this.state.processing} onEyecandy={this.submit_payment.bind (this)}>
 							
-							<button onClick={() => this.setState ({ processing: true })}>Submit</button>
-							<button onClick={() => this.setState ({ visible: false }, this.props.onCancel)}>Cancel</button>
+							<div className="button-panel">
+								<button onClick={() => this.setState ({ processing: true })}>Submit</button>
+								<button onClick={() => this.setState ({ visible: false }, this.props.onCancel)}>Cancel</button>
+							</div>
 							
 						</EyecandyPanel>
 					</div>
