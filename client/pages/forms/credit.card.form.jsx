@@ -6,6 +6,7 @@ import CurrentAccount from "classes/storage/account";
 
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
+import NumericInput from "controls/inputs/numeric.input";
 import CreditCardInput from "controls/inputs/credit.card.input";
 
 import "client/resources/styles/pages/forms.css";
@@ -60,7 +61,7 @@ export default class DeluxeAccountForm extends BaseControl {
 				</div>
 
 				<label htmlFor="cc_number">Card number</label>
-				<CreditCardInput name="cc_number" />
+				<CreditCardInput id="cc_number" name="cc_number" required={true} />
 
 				<div className="break" />
 
@@ -83,11 +84,11 @@ export default class DeluxeAccountForm extends BaseControl {
 						<option value="12">December</option>
 					</select>
 
-					<input type="text" placeholder="Year" id="cc_year" name="cc_year" required={true} style={{ width: "4rem" }} />
+					<NumericInput id="cc_year" name="cc_year" required={true} style={{ width: "4rem" }} placeholder="Year" maxLength={4} />
 
 					<div className="one-piece-form">
 						<label htmlFor="cc_cvv" style={{ marginLeft: "0.5em" }}>CVV</label>
-						<input type="text" id="cc_cvv" name="cc_cvv" required={true} style={{ width: "3rem" }} />
+						<NumericInput id="cc_cvv" name="cc_cvv" required={true} style={{ width: "3rem" }} maxLength={3} />
 					</div>
 
 				</div>
@@ -98,7 +99,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 			<div className="flex-aligned-right">
 				<div className="one-piece-form">
-					<label htmlFor="reuse_card" style={{ margin: 0 }}>Keep card on file</label>
+					<label htmlFor="reuse_card" style={{ margin: 0 }}>Keep my card on file</label>
 					<input type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
 				</div>
 			</div>

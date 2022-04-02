@@ -1,11 +1,41 @@
+import * as common from "classes/common";
+
+import React from "react";
 import BaseControl from "controls/abstract/base.control";
 
 
 export default class BaseForm extends BaseControl {
 
-	validate () {
-		let options = Array.from (arguments);
-		alert (this);
+	active_form = React.createRef ();
+
+
+	validate (input) {
+		
+		let valid = true;
+
+		if (input.hasAttribute ("required") && input.value.is_empty ()) valid = false;
+		if (common.isset (input.validate) && (!input.validate (input))) valid = false;
+
+		switch (valid) {
+			case true: input.removeClass ("invalid"); break;
+			default: input.addClass ("invalid"); break;
+		}// switch;
+
+		return valid;
+		
 	}// validate;
 
-}// AddressForm;
+
+	valid_form () {
+
+		let valid = true;
+		let elements = this.active_form.current.elements;
+
+		if (common.not_set (elements)) return valid;
+		for (let element of elements) if (!this.validate (element)) valid = false;
+
+		return valid;
+
+	}// valid_form;
+
+}// BaseForm;

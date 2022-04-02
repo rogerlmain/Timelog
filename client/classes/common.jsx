@@ -83,7 +83,7 @@ export function is_undefined (value) {
 
 
 export function isset (value, ...nullables) {
-	return not_null (value) && !nullables.includes (value);
+	return !null_or_undefined (value) && !nullables.includes (value);
 }// isset;
 
 
@@ -107,11 +107,7 @@ export function not_undefined (value) {
 }// not_undefined;
 
 
-export function null_value (value, replacement, ...nullables) {
-	let result = isset (value, ...nullables) ? value : replacement;
-	return result;
-}// null_value;
-
+export function null_value (value) { return isset (value) ? value : null }
 
 
 export function null_or_undefined (value) {

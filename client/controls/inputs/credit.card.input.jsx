@@ -14,7 +14,8 @@ const card_types = {
 	mastercard	: "mastercard",
 	discover	: "discover",
 	jcb			: "jcb",
-	unionpay	: "unionpay"
+	unionpay	: "unionpay",
+	other		: "other"
 }// card_types;
 
 
@@ -44,7 +45,16 @@ const card_masks = {
 }// card_masks;
 
 
+const card_validators = {
+	amex	: /^([\d]{4}\s)([\d]{6}\s)([\d]{5})$/,
+	other	: /^([\d]{4}\s){3}[\d]{4}$/
+}
+
+
 export default class CreditCardInput extends InputControl {
+
+
+	input_control = React.createRef ();
 
 
 	state = { 
@@ -74,7 +84,7 @@ export default class CreditCardInput extends InputControl {
 			return ((previous_char == mask_character) || (previous_char == space)) ? event.target.value.indexOf (mask_character) : cursor_location;
 		}/* get_index */;
 
-		event.target.value = this.masked (event.target.value, card_masks [(card_type == card_types.amex) ? card_types.amex : "other"]);
+		event.target.value = this.masked (event.target.value, card_masks [(card_type == card_types.amex) ? card_types.amex : card_types.other]);
 		event.target.selectionStart = event.target.selectionEnd = get_index ();	
 
 		this.setState ({ current_card: card_type });
@@ -82,18 +92,24 @@ export default class CreditCardInput extends InputControl {
 	}// verify;
 
 
-	render () { return <div className="flex-row">
+	render () { 
+
+		let card_pattern = card_validators [(this.state.current_card == card_types.amex) ? card_types.amex : card_types.other];
+
+		return <div className="flex-row">
 		
-		<NumericInput {...this.props} type="text" style={{ width: "100%" }} masked={true} onChange={this.verify.bind (this)} />
+			<NumericInput {...this.props} pattern={card_pattern} style={{ width: "100%" }} masked={true} onChange={this.verify.bind (this)} />
 
-		<ExplodingPanel id="credit_card_image">
-			{isset (this.state.current_card) && <img src={`client/resources/images/logos/${this.state.current_card}.svg`} style={{ 
-				width: "auto", 
-				height: "27px",  
-				marginLeft: "0.5em"
-			}} />}
-		</ExplodingPanel>
+			<ExplodingPanel id="credit_card_image">
+				{isset (this.state.current_card) && <img src={`client/resources/images/logos/${this.state.current_card}.svg`} style={{ 
+					width: "auto", 
+					height: "1.4em",  
+					marginLeft: "0.5em"
+				}} />}
+			</ExplodingPanel>
 
-	</div>}
+		</div>
+	}// render;
+
 
 }// CreditCardInput;

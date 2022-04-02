@@ -6,6 +6,7 @@ import React from "react";
 import CurrentAccount from "classes/storage/account";
 
 import BaseControl from "controls/abstract/base.control";
+import Container from "controls/container";
 import SelectList from "controls/select.list";
 
 import LookupsModel from "models/lookups";
@@ -54,20 +55,20 @@ export default class AddressForm extends BaseControl {
 
 	district_name () {
 		if (common.is_null (this.state.countries) || common.is_null (this.state.country_id)) return default_district_name;
-		if (common.is_null (this.state.district_id)) return this.get_country ().description;
-		return this.get_district ().description;
+		if (common.is_null (this.state.district_id)) return this.get_country ().description ?? default_district_name;
+		return this.get_district ().description ?? default_district_name;
 	}// district_name;
 
 
 	componentDidMount () {
 		LookupsModel.get_countries ().then (result => this.setState ({ countries: result }, () => {
 			LookupsModel.get_districts ().then (result => this.setState ({ districts: result }));
-		}));
+		}));8		
 	}// componentDidMount;
 
 
 	shouldComponentUpdate (new_props, new_state) {
-		if  (common.is_null (this.state.districts) && (common.isset (new_state.districts)) || (new_state.country_id != this.state.country_id)) {
+		if  ((common.is_null (this.state.districts) && common.isset (new_state.districts)) || (new_state.country_id != this.state.country_id)) {
 
 			let districts = null;
 
@@ -117,9 +118,9 @@ export default class AddressForm extends BaseControl {
 			<input type="text" id="additional_address" name="additional_address" style={{ gridColumn: "2" }} />
 
 			<label htmlFor="state">City</label>
-			<div className="horizontally-spaced-out" required={true}>
+			<div className="horizontally-spaced-out">
 
-				<input type="text" id="city" name="city" style={{ width: "8em" }} maxLength={85} />
+				<input type="text" id="city" name="city" style={{ width: "8em" }} maxLength={85} required={true} />
 
 				<div className="one-piece-form">
 					<label htmlFor="zip" title="Zip or Postal Code">Post Code</label>
@@ -128,11 +129,16 @@ export default class AddressForm extends BaseControl {
 
 			</div>
 
-			<label htmlFor="state" title="District, state or province">{this.district_name ()}</label>
-			<SelectList id="district" data={this.state.active_districts} idField="id" textField="long_name" 
-				style={{ width: "100%" }} required={true} hasHeader={true}
-				value={this.state.district_id} onChange={event => this.setState ({ district_id: event.target.value })}>
-			</SelectList>
+			<label htmlFor="district" title="District, state or province">{this.district_name ()}</label>
+			<Container condition={common.not_set (this.state.active_districts)}>
+				<input type="text" id="district" name="district" maxLength={255} />
+			</Container>
+			<Container condition={common.isset (this.state.active_districts)}>
+				<SelectList id="district" data={this.state.active_districts} idField="id" textField="long_name" 
+					style={{ width: "100%" }} required={true} hasHeader={true}
+					value={this.state.district_id} onChange={event => this.setState ({ district_id: event.target.value })}>
+				</SelectList>
+			</Container>
 
 			<label htmlFor="country">Country</label>
 			<SelectList id="country" data={this.state.countries} idField="id" textField="short_name" 
@@ -145,11 +151,22 @@ export default class AddressForm extends BaseControl {
 
 			<div className="break" />
 
-			<label htmlFor="primary_phone">Main phone number</label>
-			<input type="text" id="primary_phone" name="primary_phone" className="full-width" maxLength={85} required={true} />
- 
-			<label htmlFor="second_phone">Second phone number</label>
-			<input type="text" id="second_phone" name="second_phone" className="full-width" maxLength={85} />
+			<div className="full-row centering-container">
+				<div className="one-piece-form">
+
+					<label htmlFor="primary_phone">Main phone</label>
+					<input type="text" id="primary_phone" name="primary_phone" className="full-width" maxLength={85} required={true} style={{ width: "12rem" }} />
+		
+					<label htmlFor="second_phone">Second phone</label>
+					<input type="text" id="second_phone" name="second_phone" className="full-width" maxLength={85} style={{ width: "12rem" }} />
+				
+				</div>
+			</div>
+
+			<div className="break" />
+
+			<label htmlFor="email">Email</label>
+			<input type="email" id="email" name="email" className="full-width" maxLength={255} required={true} />
 
 		</div>
 	}// render;

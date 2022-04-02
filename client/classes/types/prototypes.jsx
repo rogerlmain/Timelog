@@ -1,6 +1,5 @@
-import { blank, date_formats, date_rounding, directions, empty } from "classes/types/constants";
-
-import { is_null, is_string, not_set } from "classes/common";
+import * as constants from "classes/types/constants";
+import * as common from "classes/common";
 
 
 /**** Array Helper Functions ****/
@@ -60,18 +59,18 @@ Date.elapsed = function (elapsed_time /* in minutes */) {
 	let hours = Math.floor ((elapsed_time - (days * Date.day_coef)) / Date.hour_coef);
 	let mins = Math.floor ((elapsed_time - ((days * Date.day_coef) + (hours * Date.hour_coef))) / Date.minute_coef);
 
-	return `${((days > 0) ? `${days}:` : empty)}${((days > 0) ? hours.padded (2) : hours)}:${mins.padded (2)}`;
+	return `${((days > 0) ? `${days}:` : constants.empty)}${((days > 0) ? hours.padded (2) : hours)}:${mins.padded (2)}`;
 
 }// elapsed;
 
 
-Date.fromGMT = function (date_string) { return new Date (new Date (date_string).toLocaleString ()).format (date_formats.database_timestamp) }
+Date.fromGMT = function (date_string) { return new Date (new Date (date_string).toLocaleString ()).format (constants.date_formats.database_timestamp) }
 
 Date.month_name = (month) => { return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month] }
 
 
 Date.validated = (date) => {
-	if (is_string (date)) date = new Date (date);
+	if (common.is_string (date)) date = new Date (date);
 	return (Date.is_date (date)) ? date : null;
 }// validated;
 
@@ -79,7 +78,7 @@ Date.validated = (date) => {
 /**** Date Prototype Functions ****/
 
 
-Date.prototype.get_date = function () { return new Date (this.format (date_formats.database_date)) }
+Date.prototype.get_date = function () { return new Date (this.format (constants.date_formats.database_date)) }
 Date.prototype.get_month = function () { return this.getMonth () }
 Date.prototype.get_year = function () { return this.getFullYear () }
 
@@ -92,7 +91,7 @@ Date.prototype.round_hours = function (direction) {
 
 	let result = new Date (this);
 
-	if (direction == date_rounding.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
+	if (direction == constants.date_rounding.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
 
 	result.setMinutes (0);
 	result.setSeconds (0);
@@ -109,9 +108,9 @@ Date.prototype.round_minutes = function (count, direction) {
 	let minutes = Math.floor (result.getMinutes () / count) * count;
 
 	// If not specified then round off
-	if (not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? date_rounding.down : date_rounding.up;
+	if (common.not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? constants.date_rounding.down : constants.date_rounding.up;
 
-	result.setMinutes (direction == date_rounding.down ? minutes : minutes + count);
+	result.setMinutes (direction == constants.date_rounding.down ? minutes : minutes + count);
 	result.setSeconds (0);
 	result.setMilliseconds (0);
 
@@ -124,7 +123,7 @@ Date.prototype.same_day = function (input_date) {
 
 	let new_date = Date.validated (input_date);
 
-	if (is_null (new_date)) return false;
+	if (common.is_null (new_date)) return false;
 	
 	if (this.getDate () != new_date.getDate ()) return false;
 	if (this.getMonth () != new_date.getMonth ()) return false;
@@ -167,7 +166,7 @@ Date.prototype.format = function (selected_format) {
 	let hours = this.getHours ();
 	let month = this.getMonth ();
 
-	let result = (selected_format.replace ? selected_format : blank);
+	let result = (selected_format.replace ? selected_format : constants.blank);
 
 	result = result.replace ("MMMM", "!!").replace ("w", "@@");
 
@@ -196,7 +195,7 @@ FormData.fromObject = function (object) {
 	let result = null;
 
 	Object.keys (object).forEach (key => {
-		if (is_null (result)) result = new FormData ();
+		if (common.is_null (result)) result = new FormData ();
 		result.append (key, object [key]);
 	});
 
@@ -213,6 +212,21 @@ FormData.prototype.toJson = function () { return Object.fromEntries (this) }
 
 
 /**** HTMLElement ****/
+
+
+HTMLElement.prototype.addClass = function (new_class) {
+	let classes = this.className.split (constants.space).filter (item => common.not_empty (item));
+	if (classes.indexOf (new_class) >= 0) return;
+	classes.push (new_class);
+	this.className = classes.join (constants.space);
+}// addClass;
+
+
+HTMLElement.prototype.removeClass = function (new_class) {
+	let classes = this.className.split (constants.space);
+	if (classes.indexOf (new_class) >= 0) classes.remove (new_class);
+	this.className = classes.join (constants.space);
+}// removeClass;
 
 
 // Calculates the amount of space in the parent container
@@ -264,7 +278,7 @@ HTMLSelectElement.prototype.selectedValue = function () {
 
 
 Number.prototype.padded = function (length) {
-	return this.toString ().padded (length, "0", directions.left);
+	return this.toString ().padded (length, "0", constants.directions.left);
 }// if;
 
 
@@ -278,7 +292,7 @@ String.prototype.padded = function (length, character, direction = null) {
 	let result = this;
 	while (result.length < length) {
 		switch (direction) {
-			case directions.left: result = character + result; break;
+			case constants.directions.left: result = character + result; break;
 			default: result += character; break;
 		}// switch;
 	}// while;
@@ -287,7 +301,12 @@ String.prototype.padded = function (length, character, direction = null) {
 
 
 String.prototype.matches = function (comparison, case_sensitive = false) {
-	if (is_null (comparison)) return false;
+	if (common.is_null (comparison)) return false;
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
 }// matches;
 
+
+String.prototype.is_empty = function () { return this.trim () == constants.blank }
+
+
+String.prototype.validate = function (pattern) { return common.isset (this.match (pattern)) }

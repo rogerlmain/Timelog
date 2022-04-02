@@ -9,7 +9,10 @@
 
 	--mouseover-color: #999D66;
 
+	--error-color: #C00;
 	--warning-color: #A00;
+
+	--error-highlight: #FFFAFA;
 
 	--double-margin: 2em;
 	--double-padding: 2em;
@@ -149,6 +152,12 @@ input {
 
 
 input[type=numeric] { text-align: right }
+
+
+input.invalid, select.invalid {
+	border: solid 1px var(--error-color);
+	background-color: var(--error-highlight);
+}/* input.invalid, select.invalid */
 
 
 /********/
