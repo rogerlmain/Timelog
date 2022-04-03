@@ -78,7 +78,7 @@ export default class CreditCardInput extends InputControl {
 	render () { 
 		return <div className="flex-row">
 		
-			<InputMask ref={this.input_field} {...this.props} mask={this.state.mask} maskChar="*" onChange={this.update_mask.bind (this)} 
+			<InputMask mask={this.state.mask} maskChar="*" onChange={this.update_mask.bind (this)} 
 				style={{ 
 					textAlign: "center",
 					width: "100%"
