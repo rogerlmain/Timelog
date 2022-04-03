@@ -1,14 +1,13 @@
 import React from "react";
-import InputControl, { mask_character } from "controls/abstract/input.control";
+import InputMask from "react-input-mask";
 
-import NumericInput from "controls/inputs/numeric.input";
+import InputControl from "controls/abstract/input.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
-import { isset, is_number } from "classes/common";
-import { blank, space } from "classes/types/constants";
+import { isset } from "classes/common";
 
 
-const card_types = {
+const card_type = {
 	amex		: "amex",
 	visa		: "visa",
 	mastercard	: "mastercard",
@@ -16,7 +15,7 @@ const card_types = {
 	jcb			: "jcb",
 	unionpay	: "unionpay",
 	other		: "other"
-}// card_types;
+}// card_type;
 
 
 const card_names = {
@@ -39,34 +38,24 @@ const number_patterns = {
 }// number_patterns;
 
 
-const card_masks = {
+const card_mask = {
 	amex	: "**** ****** *****",
 	other	: "**** **** **** ****"
-}// card_masks;
-
-
-const card_validators = {
-	amex	: /^([\d]{4}\s)([\d]{6}\s)([\d]{5})$/,
-	other	: /^([\d]{4}\s){3}[\d]{4}$/
-}
+}// card_mask;
 
 
 export default class CreditCardInput extends InputControl {
 
 
-	input_control = React.createRef ();
+	input_field = React.createRef ();
 
 
-	state = { 
-		current_card: null,
-		cursor_position: null,
-		value: blank
-	}// state;
+	state = { mask: null }
 
 
 	get_card_type (card_number) {
 		for (let card of Object.keys (number_patterns)) {
-			for (let prefix of number_patterns [card]) {
+			for (let prefix of number_patterns [card]) {	
 				if ((card_number.match (new RegExp (`^${prefix}`)) ?? []).length > 0) return card;
 			}// for;
 		}// for;
@@ -74,31 +63,27 @@ export default class CreditCardInput extends InputControl {
 	}// get_card_type;
 
 
-	verify (event) {
+	update_mask (event) {
 
-		let card_type = this.get_card_type (event.target.value);
-		let cursor_location = event.target.selectionStart;
+		let type = this.get_card_type (event.target.value);
 
-		const get_index = () => {
-			let previous_char = event.target.value.charAt (cursor_location - 1);
-			return ((previous_char == mask_character) || (previous_char == space)) ? event.target.value.indexOf (mask_character) : cursor_location;
-		}/* get_index */;
+		this.setState ({ 
+			mask: (type == card_type.amex) ? card_mask.amex : card_mask.other,
+			current_card: type
+		});
 
-		event.target.value = this.masked (event.target.value, card_masks [(card_type == card_types.amex) ? card_types.amex : card_types.other]);
-		event.target.selectionStart = event.target.selectionEnd = get_index ();	
-
-		this.setState ({ current_card: card_type });
-
-	}// verify;
+	}// update_mask;
 
 
 	render () { 
-
-		let card_pattern = card_validators [(this.state.current_card == card_types.amex) ? card_types.amex : card_types.other];
-
 		return <div className="flex-row">
 		
-			<NumericInput {...this.props} pattern={card_pattern} style={{ width: "100%" }} masked={true} onChange={this.verify.bind (this)} />
+			<InputMask ref={this.input_field} {...this.props} mask={this.state.mask} maskChar="*" onChange={this.update_mask.bind (this)} 
+				style={{ 
+					textAlign: "center",
+					width: "100%"
+				}}>
+			</InputMask>
 
 			<ExplodingPanel id="credit_card_image">
 				{isset (this.state.current_card) && <img src={`client/resources/images/logos/${this.state.current_card}.svg`} style={{ 

@@ -5,9 +5,11 @@ import React from "react";
 
 import CurrentAccount from "classes/storage/account";
 
-import BaseControl from "controls/abstract/base.control";
-import Container from "controls/container";
 import SelectList from "controls/select.list";
+import Container from "controls/container";
+
+import BaseControl from "controls/abstract/base.control";
+import PhoneNumberInput from "controls/inputs/phone.number.input";
 
 import LookupsModel from "models/lookups";
 
@@ -54,16 +56,29 @@ export default class AddressForm extends BaseControl {
 
 
 	district_name () {
+
+		let district = this.get_district ();
+
 		if (common.is_null (this.state.countries) || common.is_null (this.state.country_id)) return default_district_name;
 		if (common.is_null (this.state.district_id)) return this.get_country ().description ?? default_district_name;
-		return this.get_district ().description ?? default_district_name;
+
+		return (common.isset (district) && common.isset (district.description)) ? district.description : default_district_name;
+
 	}// district_name;
 
 
 	componentDidMount () {
 		LookupsModel.get_countries ().then (result => this.setState ({ countries: result }, () => {
 			LookupsModel.get_districts ().then (result => this.setState ({ districts: result }));
-		}));8		
+		}));
+
+
+this.setState ({
+	company_name: "RMPC Inc",
+	district_id: 206
+});
+
+
 	}// componentDidMount;
 
 
@@ -94,7 +109,7 @@ export default class AddressForm extends BaseControl {
 			<div className="horizontally-spaced-out">
 
 				<div key={this.state.company_name}>
-					<input type="text" id="company_name" name="company_name" style={{ width: "17em", marginRight: "1em" }} 
+					<input type="text" id="company_name" name="company_name" style={{ width: "16em", marginRight: "1em" }} 
 						defaultValue={this.state.company_name || constants.blank} required={true}
 						onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}>
 					</input>
@@ -113,18 +128,25 @@ export default class AddressForm extends BaseControl {
 			<div className="break" />
 
 			<label htmlFor="street_address">Street address</label>
-			<input type="text" id="street_address" name="street_address" required={true} />
+			<input type="text" id="street_address" name="street_address" required={true}
+			
+defaultValue="6795 West 19th Pl." />
 
-			<input type="text" id="additional_address" name="additional_address" style={{ gridColumn: "2" }} />
+			<input type="text" id="additional_address" name="additional_address" style={{ gridColumn: "2" }}
+			
+defaultValue="108" />
 
 			<label htmlFor="state">City</label>
 			<div className="horizontally-spaced-out">
 
-				<input type="text" id="city" name="city" style={{ width: "8em" }} maxLength={85} required={true} />
+				<input type="text" id="city" name="city" style={{ width: "10em" }} maxLength={85} required={true}
+				
+defaultValue="Lakewood" />
 
 				<div className="one-piece-form">
 					<label htmlFor="zip" title="Zip or Postal Code">Post Code</label>
-					<input type="text" id="zip" name="zip"  style={{ width: "8em" }} maxLength={16} required={true}  />
+					<input type="text" id="zip" name="zip"  style={{ width: "5em" }} maxLength={16} required={true} 
+defaultValue="80214" />
 				</div>
 
 			</div>
@@ -155,10 +177,11 @@ export default class AddressForm extends BaseControl {
 				<div className="one-piece-form">
 
 					<label htmlFor="primary_phone">Main phone</label>
-					<input type="text" id="primary_phone" name="primary_phone" className="full-width" maxLength={85} required={true} style={{ width: "12rem" }} />
-		
+
+					<PhoneNumberInput id="primary_phone" name="primary_phone" country_id={this.state.country_id} className="full-width" maxLength={85} required={true} style={{ width: "10em" }} />
+
 					<label htmlFor="second_phone">Second phone</label>
-					<input type="text" id="second_phone" name="second_phone" className="full-width" maxLength={85} style={{ width: "12rem" }} />
+					<PhoneNumberInput id="second_phone" name="second_phone" country_id={this.state.country_id} className="full-width" maxLength={85} required={true} style={{ width: "10em" }} />
 				
 				</div>
 			</div>
@@ -166,7 +189,9 @@ export default class AddressForm extends BaseControl {
 			<div className="break" />
 
 			<label htmlFor="email">Email</label>
-			<input type="email" id="email" name="email" className="full-width" maxLength={255} required={true} />
+			<input type="email" id="email" name="email" className="full-width" maxLength={255} required={true}
+			
+defaultValue="rex@rogerlmain.com" />
 
 		</div>
 	}// render;

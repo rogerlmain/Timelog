@@ -9,35 +9,21 @@ export default class NumericInput extends InputControl {
 	input_control = React.createRef ();
 
 
-	static defaultProps = { 
-		masked: false,
-		onValidate: null
-	}/* defaultProps */
+	static defaultProps = { onKeyDown: null }
 
 
-	verify (event) {
+	key_handler (event) {
 
-		let value = event.target.value;
-		let new_value = `${value.substring (0, value.selectionStart)}${event.key}${value.substring (value.selectionEnd)}`;
-		
-		if (event.key.length > 1) return true;
-		if (isNaN (this.props.masked ? this.stripped (new_value) : new_value)) return event.preventDefault ();
+		if ((event.key.length > 1) || ((parseInt (event.key) > -1) && (parseInt (event.key) < 10))) return this.execute (this.props.onKeyDown, event);
+		if ((event.key == ".") && (event.target.value.indexOf (".") < 0)) return this.execute (this.props.onKeyDown, event);
 
-	}// verify;
+	//	event.preventDefault ();
+
+	}// key_handler;
 
 
-	componentDidMount () { if (common.isset (this.props.onValidate)) this.input_control.current.validate = this.props.onValidate }
-
-	
 	render () { 
-
-		let properties = {...this.props};
-
-		delete properties.masked;
-		delete properties.onValidate;
-
-		return <input type="text" ref={this.input_control} {...properties} onKeyDown={this.verify.bind (this)} /> 
-		
+		return <input type="text" ref={this.input_control} {...this.props} onKeyDown={this.key_handler.bind (this)} /> 
 	}// render;
 
 }// NumericInput;

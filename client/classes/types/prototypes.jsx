@@ -306,7 +306,19 @@ String.prototype.matches = function (comparison, case_sensitive = false) {
 }// matches;
 
 
-String.prototype.is_empty = function () { return this.trim () == constants.blank }
+String.prototype.empty = function () { return this.trim () == constants.blank }
 
 
 String.prototype.validate = function (pattern) { return common.isset (this.match (pattern)) }
+
+
+String.prototype.splice = function (start_index, end_index, replacement = null) {
+
+	let start = common.is_number (start_index) ? parseInt (start_index) : null;
+	let finish = common.is_number (end_index) ? parseInt (end_index) : null;
+
+	if (common.is_null (start) || common.is_null (finish) || (finish > start)) return this;
+
+	return `${this.substring (0, start)}${replacement}${this.substring (finish)}`;
+	
+}// splice;

@@ -13,7 +13,7 @@ export default class BaseForm extends BaseControl {
 		
 		let valid = true;
 
-		if (input.hasAttribute ("required") && input.value.is_empty ()) valid = false;
+		if (input.hasAttribute ("required") && input.value.empty ()) valid = false;
 		if (common.isset (input.validate) && (!input.validate (input))) valid = false;
 
 		switch (valid) {

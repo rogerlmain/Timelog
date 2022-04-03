@@ -27,13 +27,13 @@ tests: path.resolve (__dirname, "client/tests"),
 			panels: path.resolve (__dirname, "client/panels"),
 			types: path.resolve (__dirname, "client/types"),
 
-			resources: path.resolve (__dirname, "resources")
+			resources: path.resolve (__dirname, "client/resources")
 
 		}/* alias */
 	},
 
 	devServer: {
-		port: 3001
+		port: 3000
 	},
 
 	module: {
