@@ -6,10 +6,13 @@ import CurrentAccount from "classes/storage/account";
 
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
+import CreditCardInput, { card_type } from "controls/inputs/credit.card.input";
 import NumericInput from "controls/inputs/numeric.input";
-import CreditCardInput from "controls/inputs/credit.card.input";
 
 import "client/resources/styles/pages/forms.css";
+
+
+const expired_message = "Card expired\nWhat are you trying to pull?";
 
 
 export default class DeluxeAccountForm extends BaseControl {
@@ -17,11 +20,47 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	name_checkbox = React.createRef ();
 
+	month_field = React.createRef ();
+	year_field = React.createRef ();
 
-	state = { cc_name: constants.blank }
+
+	state = { 
+		cc_name: constants.blank,
+		card_type: null
+	}/* state */
+
+
+	/********/
+
+
+	validate_date = (event) => {
+
+		let month_field = this.month_field.current;
+		let year_field = this.year_field.current.input_field.current;
+
+		let card_date = new Date (year_field.value, month_field.selectedValue ()).add (-1, Date.parts.day);
+		let valid = (card_date.getTime () >= new Date ().getTime ());
+
+		month_field.setValidity (valid, expired_message);
+		year_field.setValidity (valid, expired_message);
+
+	}// validate_date;
+
+
+	/********/
+
+
+	componentDidMount () { 
+		this.month_field.current.addValidator (this.validate_date);
+		this.year_field.current.input_field.current.addValidator (this.validate_date);
+	}// componentDidMount;
 
 
 	render () {
+
+		let this_year = new Date ().getFullYear ();
+		let cvv_length = (this.state.card_type == card_type.amex) ? 4 : 3;
+
 		return <Container>
 
 			<div className="horizontally-spaced-out">
@@ -46,7 +85,10 @@ export default class DeluxeAccountForm extends BaseControl {
 					<div key={this.state.cc_name}>
 						<input type="text" id="cc_name" name="cc_name" style={{ width: "13em", marginRight: "1em" }} 
 							defaultValue={this.state.cc_name || constants.blank} required={true}
-							onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}>
+							onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}
+							
+defaultValue="Rex Strange">
+
 						</input>
 					</div>				
 
@@ -61,14 +103,15 @@ export default class DeluxeAccountForm extends BaseControl {
 				</div>
 
 				<label htmlFor="cc_number">Card number</label>
-				<CreditCardInput id="cc_number" name="cc_number" required={true} />
+				<CreditCardInput id="cc_number" name="cc_number" required={true} parent={this} />
 
 				<div className="break" />
 
 				<label htmlFor="cc_expire">Expiration Date</label>
 				<div className="horizontally-spaced-out">
 
-					<select id="cc_expire_month" required={true}>
+					<select id="cc_expire_month" ref={this.month_field} required={true} onChange={this.validate_date}
+defaultValue={5}>
 						<option />
 						<option value="1">January</option>
 						<option value="2">February</option>
@@ -84,11 +127,14 @@ export default class DeluxeAccountForm extends BaseControl {
 						<option value="12">December</option>
 					</select>
 
-					<NumericInput id="cc_year" name="cc_year" required={true} style={{ width: "4rem" }} placeholder="Year" maxLength={4} />
+					<NumericInput id="cc_year" ref={this.year_field} required={true} placeholder="Year" min={this_year} max={this_year + 10} onChange={this.validate_date}
+defaultValue={2022} />
+
 
 					<div className="one-piece-form">
 						<label htmlFor="cc_cvv" style={{ marginLeft: "0.5em" }}>CVV</label>
-						<NumericInput id="cc_cvv" name="cc_cvv" required={true} style={{ width: "3rem" }} maxLength={3} />
+						<NumericInput id="cc_cvv" required={true} length={cvv_length}
+defaultValue={123} />
 					</div>
 
 				</div>
@@ -100,7 +146,7 @@ export default class DeluxeAccountForm extends BaseControl {
 			<div className="flex-aligned-right">
 				<div className="one-piece-form">
 					<label htmlFor="reuse_card" style={{ margin: 0 }}>Keep my card on file</label>
-					<input type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
+					<input id="keep_card" name="keep_card" type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
 				</div>
 			</div>
 

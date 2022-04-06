@@ -123,11 +123,39 @@ error_handler (message, url, line) { notify (message, url, line) }
 }// Main;
 
 
+/*********/
+
+
+class QuickTest extends BaseControl {
+
+
+	input_field = React.createRef ();
+
+
+	componentDidMount () {
+		this.input_field.current.addEventListener ("keydown", event => alert ("listener"));
+	}// componentDidMount;
+
+
+	render () {
+		return <input ref={this.input_field} onKeyDown={event => alert ("inline")} />
+	}// render;
+
+
+}// QuickTest;
+
+
+/*********/
+
+
 document.onreadystatechange = () => {
 
 //	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
 	ReactDOM.render (<DeluxeAccountForm visible={true} id="special_guest_import" />, document.getElementById ("main_page"));
+
+//	Quick Test
+//	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));
 
 }// document.ready;

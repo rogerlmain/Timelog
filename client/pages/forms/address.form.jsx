@@ -5,6 +5,7 @@ import React from "react";
 
 import CurrentAccount from "classes/storage/account";
 
+import DynamicInput from "controls/inputs/dynamic.input";
 import SelectList from "controls/select.list";
 import Container from "controls/container";
 
@@ -108,12 +109,9 @@ this.setState ({
 			<label>Company name</label>
 			<div className="horizontally-spaced-out">
 
-				<div key={this.state.company_name}>
-					<input type="text" id="company_name" name="company_name" style={{ width: "16em", marginRight: "1em" }} 
-						defaultValue={this.state.company_name || constants.blank} required={true}
-						onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}>
-					</input>
-				</div>				
+				<DynamicInput id="company_name" value={this.state.company_name} required={true} style={{ width: "16em", marginRight: "1em" }} 
+					onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}>
+				</DynamicInput>
 
 				<div className="one-piece-form">
 					<label htmlFor="use_account_name_for_company" className="mini-title">Just use<br />my name</label>
@@ -177,12 +175,21 @@ defaultValue="80214" />
 				<div className="one-piece-form">
 
 					<label htmlFor="primary_phone">Main phone</label>
-
-					<PhoneNumberInput id="primary_phone" name="primary_phone" country_id={this.state.country_id} className="full-width" maxLength={85} required={true} style={{ width: "10em" }} />
+					<PhoneNumberInput id="primary_phone" name="primary_phone" 
+						className="full-width" style={{ width: "10em" }} maxLength={85} 
+						country_id={this.state.country_id} required={true}
+						
+defaultValue="+1 (720) 322-5154"
+						
+						>
+					</PhoneNumberInput>
 
 					<label htmlFor="second_phone">Second phone</label>
-					<PhoneNumberInput id="second_phone" name="second_phone" country_id={this.state.country_id} className="full-width" maxLength={85} required={true} style={{ width: "10em" }} />
-				
+					<PhoneNumberInput id="second_phone" name="second_phone" 
+						className="full-width" style={{ width: "10em" }} maxLength={85}
+						country_id={this.state.country_id}>
+					</PhoneNumberInput>
+
 				</div>
 			</div>
 

@@ -178,6 +178,18 @@ export function refresh (control, callback = null) {
 /********/
 
 
+export function next_integer () { 
+	for (let candidate of arguments) {
+		let candidate_integer = parseInt (candidate);
+		if (isNaN (candidate_integer)) continue;
+		return candidate_integer;
+	}// for;
+	return null;
+}// next_integer;
+
+
+
+
 export let is_blank = is_empty;
 export let not_blank = not_empty;
 

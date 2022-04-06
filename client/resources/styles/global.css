@@ -151,7 +151,13 @@ input {
 }/* input */
 
 
-input[type=numeric] { text-align: right }
+input[type=number] { text-align: center }
+
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+	-webkit-appearance: none; 
+	margin: 0; 
+}/* input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button */
 
 
 input.invalid, select.invalid {

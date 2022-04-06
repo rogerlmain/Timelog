@@ -78,6 +78,25 @@ Date.validated = (date) => {
 /**** Date Prototype Functions ****/
 
 
+Date.parts = {
+	year		: "year",
+	month		: "month",
+	day			: "day",
+	hour		: "hour",
+	minute		: "minute",
+	second		: "second",
+	millisecond	: "millisecond"
+}/* parts */;
+
+
+Date.increments 			= {}
+Date.increments.millisecond = 1;
+Date.increments.second		= Date.increments.millisecond * 1000,
+Date.increments.minute		= Date.increments.second * 60,
+Date.increments.hour		= Date.increments.minute * 60,
+Date.increments.day			= Date.increments.hour * 24,
+
+
 Date.prototype.get_date = function () { return new Date (this.format (constants.date_formats.database_date)) }
 Date.prototype.get_month = function () { return this.getMonth () }
 Date.prototype.get_year = function () { return this.getFullYear () }
@@ -85,6 +104,20 @@ Date.prototype.get_year = function () { return this.getFullYear () }
 
 Date.prototype.before = function (comparison) { return this - comparison < 0 }
 Date.prototype.after = function (comparison) { return this - comparison > 0 }
+
+
+Date.prototype.add = function (amount, part) { 
+
+	if ([Date.parts.year, Date.parts.month].includes (part)) {
+		if ((part == Date.parts.year) || ((part == Date.parts.month) && (this.getMonth () == 11))) this.setFullYear (this.getFullYear () + 1);
+		if (part == Date.parts.month) this.setMonth (this.getMonth + 1);
+		return;
+	}// if;
+
+	this.setTime (this.getTime () + (Date.increments [part] * amount));
+	return this; // for chaining
+
+}// add;
 
 
 Date.prototype.round_hours = function (direction) {
@@ -222,6 +255,11 @@ HTMLElement.prototype.addClass = function (new_class) {
 }// addClass;
 
 
+HTMLElement.prototype.attributeLength = function (attribute) {
+	return (this.hasAttribute (attribute) ? this.getAttribute (attribute).toString ().length : null);
+}// attributeLength;
+
+
 HTMLElement.prototype.removeClass = function (new_class) {
 	let classes = this.className.split (constants.space);
 	if (classes.indexOf (new_class) >= 0) classes.remove (new_class);
@@ -243,19 +281,135 @@ HTMLElement.prototype.availableHeight = function () {
 
 
 HTMLElement.prototype.freeze = function () {
-	let dimensions = {
-		width: this.offsetWidth,
-		height: this.offsetHeight
-	}// dimensions;
+	let dimensions = { width: this.offsetWidth, height: this.offsetHeight }
 	if (dimensions.width != null) this.style.width = `${dimensions.width}px`;
 	if (dimensions.height != null) this.style.height = `${dimensions.height}px`;
 	return dimensions;
 }// freeze;
 
 
+HTMLElement.prototype.getNumber = function (attribute) {
+	let value = parseInt (this.getAttribute (attribute));
+	return isNaN (value) ? null : value;
+}// getNumber;
+
+
 HTMLElement.prototype.property = function (property_name) {
 	return getComputedStyle (this).getPropertyValue (property_name);
 }// property;
+
+
+HTMLElement.prototype.setAttributes = function (attributes) { for (let key in attributes) this.setAttribute (key, attributes [key]) }
+HTMLElement.prototype.removeAttributes = function (/* keys */) { for (let attribute of arguments) this.removeAttribute (attribute) }
+
+
+HTMLElement.prototype.isComplete = function () {
+
+	let input_mask = this.getAttribute ("input_mask");
+
+	if (common.isset (input_mask)) {
+
+		let entry_length = this.value.extractNumber ().length;
+		let required_length = input_mask.extractNumber ().length;
+		let common_length = 0;
+
+		for (let index = 0; index < Math.min (this.value.length, input_mask.length); index++) {
+			if (common.is_number (this.value [index]) && (this.value [index] == input_mask [index])) common_length++;
+		}// for;
+
+		return (entry_length == common_length) || (entry_length == required_length);
+
+	}// if;
+
+	return true;
+
+}// isComplete;
+
+
+HTMLElement.prototype.isValid = function () {
+
+
+	const provided = () => {
+
+		if (!this.hasAttribute ("required")) return true;
+
+		switch (this.hasAttribute ("pattern")) {
+			case true: if (this.value.validate (this.pattern)) return true; break;
+			default: if (this.value.not_empty ()) return true; break;
+		}// switch;
+
+		return false;
+
+	}/* provided */;
+
+
+	const pattern_match = () => {
+		if (!this.hasAttribute ("pattern")) return true;
+		if (this.isComplete ()) return true;
+		return false;
+	}/* pattern_match */;
+	
+
+	const valid_number = () => {
+
+		if (this.type != "number") return true;
+
+		const number_length = (value) => { return common.isset (value) ? value.toString ().length : null }
+
+		let min_value = this.getNumber ("min");
+		let max_value = this.getNumber ("max");
+
+		let min_length = common.next_integer (this.getAttribute ("length"), this.getAttribute ("minLength"), number_length (min_value));
+		let max_length = common.next_integer (this.getAttribute ("length"), this.getAttribute ("maxLength"), number_length (max_value));
+
+		let value = parseInt (this.value);
+	
+		if (common.isset (min_value) && (value < min_value)) return false;
+		if (common.isset (max_value) && (value > max_value)) return false;
+
+		if (common.isset (min_length) && (this.value.length < min_length)) return false;
+		if (common.isset (max_length) && (this.value.length > max_length)) return false;
+
+		return true;
+	
+	}/* valid_number */;
+
+
+	if (!provided ()) return false;
+	if (!pattern_match ()) return false;
+	if (!valid_number ()) return false;
+
+	return true;
+
+}// isValid;
+
+
+HTMLElement.prototype.notComplete = function () { return !this.isComplete () }
+
+
+HTMLElement.prototype.addValidator = function (validator) {
+	let parent_validator = this.validate;
+	this.validate = function (event) {
+		parent_validator.bind (this) (event);
+		validator.bind (this) (event);
+	}// validate;
+}// addValidator;
+
+
+HTMLElement.prototype.setValidity = function (valid, message = null) {
+	if (valid) {
+		this.setCustomValidity (constants.blank);
+		this.removeClass ("invalid");
+		return;
+	}// if;	
+	this.setCustomValidity (message);
+	this.addClass ("invalid");
+}// setValidity;
+
+
+HTMLElement.prototype.validate = function () {
+	this.setValidity (this.isValid ());
+}// validate;
 
 
 HTMLElement.prototype.visible = function () {
@@ -288,6 +442,15 @@ Number.prototype.padded = function (length) {
 String.prototype.char_count = function (character) { return (this.match (new RegExp (character, "g")) ?? []).length }
 
 
+String.prototype.extractNumber = function () {
+	let result = constants.blank;
+	for (var i = 0; i < this.length; i++) {
+		if (common.is_number (this [i])) result += this [i];
+	}// for;
+	return result;
+}// extractNumber;
+
+
 String.prototype.padded = function (length, character, direction = null) {
 	let result = this;
 	while (result.length < length) {
@@ -307,6 +470,7 @@ String.prototype.matches = function (comparison, case_sensitive = false) {
 
 
 String.prototype.empty = function () { return this.trim () == constants.blank }
+String.prototype.not_empty = function () { return !this.empty () }
 
 
 String.prototype.validate = function (pattern) { return common.isset (this.match (pattern)) }

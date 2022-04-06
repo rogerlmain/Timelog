@@ -10,12 +10,11 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import PopupWindow from "pages/gadgets/popup.window";
 
-import BaseForm from "pages/forms/base.form";
 import AddressForm from "pages/forms/address.form"
 import CreditCardForm from "pages/forms/credit.card.form";
 import BaseControl from "client/controls/abstract/base.control";
 
-
+import { dynamic_input_classname } from "client/controls/inputs/dynamic.input";
 
 export default class DeluxeAccountForm extends BaseControl {
 
@@ -57,6 +56,15 @@ return;
 		this.execute (this.props.onSubmit).then (() => this.setState ({ processing: false }));
 
 	}// submit_payment
+	
+
+	validate = (event) => {
+		for (let element of this.active_form.current.elements) {
+			if (!common.is_function (element.onValidate)) continue;
+			if (element.validate (element)) continue;
+			event.preventDefault ();
+		}// for;
+	}// validate;
 
 
 	/*********/
@@ -69,9 +77,14 @@ return;
 
 
 	componentDidMount () {
-		for (let element of this.active_form.current.elements) {
-			element.addEventListener ("invalid", event => event.target.addClass ("invalid"));
-			element.addEventListener ("change", event => event.target.removeClass ("invalid"));
+		let pattern_elements = this.active_form.current.querySelectorAll ("[required], [pattern]");
+		if (common.isset (pattern_elements)) for (let element of pattern_elements) {
+
+			if (element.parentNode.classList.contains (dynamic_input_classname)) continue;
+
+			element.addEventListener ("invalid", event => event.target.validate (event));
+			element.addEventListener ("keyup", event => event.target.validate (event));
+
 		}// for;
 	}// componentDidMount;
 
@@ -95,7 +108,9 @@ return;
 								eyecandyVisible={this.state.processing} onEyecandy={this.submit_payment.bind (this)}>
 								
 								<div className="button-panel">
-									<button>Submit</button>
+
+									<button onClick={this.validate}>Submit</button>
+
 									<button onClick={() => this.setState ({ visible: false }, this.props.onCancel)}>Cancel</button>
 								</div>
 								

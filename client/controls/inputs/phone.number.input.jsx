@@ -1,6 +1,10 @@
+import * as common from "classes/common";
+
 import React from "react";
 import InputMask from "react-input-mask";
+
 import InputControl from "controls/abstract/input.control";
+import Container from "controls/container";
 
 
 const pattern_group = {
@@ -11,16 +15,59 @@ const pattern_group = {
 
 const pattern_mask = {
 	north_america	: "+1 (999) 999-9999",
-	australia		: "+62 (99)-9999-9999"
+	australia		: "+62 (99) 9999-9999"
 }// pattern_masks;
+
+
+const pattern_validator = {
+	north_america	: "\\+1\\s\\([\\d]{3}\\)\\s[\\d]{3}-[\\d]{4}",
+	australia		: "\\+62\\s\\([\\d]{2}\\)\\s[\\d]{4}-[\\d]{4}"
+}// pattern_validator;
 
 
 export default class PhoneNumberInput extends InputControl {
 
-	state = { mask: pattern_mask.north_america }
+
+	state = { 
+		mask: pattern_mask.north_america, 
+		input_field: null,
+	}/* state */;
+
+	static defaultProps = { 
+		country_id: null,
+		defaultValue: null
+	}/* defaultProps */
 
 
-	static defaultProps = { country_id: null }
+	/********/
+
+
+	validators = () => {
+		let is_required = this.props.required || (common.isset (this.state.input_field) && this.state.input_field.notComplete (this.state.mask));
+		return {
+			required: is_required,
+			pattern:  (is_required ? pattern_validator [this.group_name (this.props.country_id)] : null)
+		}// return;
+	}// validators;
+
+
+	update_pattern = (event) => {
+
+		let validator = this.validators ();
+
+		switch (validator.required) {
+			case true: event.target.setAttributes ({ "required": "true", "pattern": validator.pattern }); break;
+			default: event.target.removeAttributes ("required", "pattern"); break;
+		}// if;
+
+		event.target.validate ();
+
+		return true;
+
+	}// update_pattern;
+
+
+	/********/
 
 
 	group_name (country_id) {
@@ -35,7 +82,10 @@ export default class PhoneNumberInput extends InputControl {
 
 
 	componentDidMount () {
-		this.setState ({ mask: pattern_mask.north_america })
+		this.setState ({ 
+			mask: pattern_mask.north_america,
+			input_field: this.input_field.current.getInputDOMNode ()
+		});
 	}// componentDidMount;
 
 
@@ -50,7 +100,14 @@ export default class PhoneNumberInput extends InputControl {
 
 
 	render () { 
-		return <InputMask mask={this.state.mask} maskChar="*" alwaysShowMask={true} style={{ textAlign: "center" }} />
+		let validators = this.validators ();
+		return <Container>
+			<InputMask id={this.props.id} name={this.props.name} ref={this.input_field} defaultValue={this.props.defaultValue}
+				mask={this.state.mask} input_mask={this.state.mask} maskChar="*" alwaysShowMask={true} 
+				style={{ textAlign: "center" }} required={validators.required} pattern={validators.pattern}
+				onChange={this.update_pattern}>
+			</InputMask>
+		</Container>
 	}// render;
 
 }// PhoneNumberInput;
