@@ -41,16 +41,23 @@ export default class NumericInput extends InputControl {
 	}// key_handler;
 
 
-	validate_entry = event => {
+	validate_entry = () => {
 
 		let min_length = this.get_length ("min");
 		let max_length = this.get_length ("max");
 
-		if ((event.target.value.length >= min_length) && (event.target.value.length <= max_length))  return event.target.setCustomValidity (constants.blank);
+		let value = this.input_field.value;
 
-		if (common.is_number (this.props.length)) return event.target.setCustomValidity (`Number must be ${this.props.length} digits long`);
-		if (common.is_number (min_length) && (string_length < min_length)) return event.target.setCustomValidity (`Number must be at least ${min_length} digits`);
-		if (common.is_number (max_length) && (string_length > max_length)) return event.target.setCustomValidity (`Number cannot be more than must be at least ${min_length} digits`);
+		if ((value.length >= min_length) && (value.length <= max_length)) {
+			this.input_field.setCustomValidity (constants.blank);
+			return true;
+		}// if;
+
+		if (common.is_number (this.props.length)) this.input_field.setCustomValidity (`Number must be ${this.props.length} digits long`);
+		if (common.is_number (min_length) && (value.length < min_length)) this.input_field.setCustomValidity (`Number must be at least ${min_length} digits`);
+		if (common.is_number (max_length) && (value.length > max_length)) this.input_field.setCustomValidity (`Number cannot be more than must be at least ${min_length} digits`);
+
+		return false;
 
 	}// validate_entry;
 

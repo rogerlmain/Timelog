@@ -33,7 +33,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	/********/
 
 
-	validate_date = (event) => {
+	validate_date = () => {
 
 		let month_field = this.month_field.current;
 		let year_field = this.year_field.current.input_field.current;
@@ -43,6 +43,8 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		month_field.setValidity (valid, expired_message);
 		year_field.setValidity (valid, expired_message);
+
+		return valid;
 
 	}// validate_date;
 

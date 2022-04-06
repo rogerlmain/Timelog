@@ -44,8 +44,6 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	async submit_payment () {
 
-return;		
-
 		let square_id = CurrentAccount.square_id ();
 
 		if (common.is_null (square_id)) CurrentAccount.set (constants.credential_types.square_id, await PaymentHandler.create_customer ());
@@ -54,15 +52,14 @@ return;
 		await PaymentHandler.apply_payment ();
 
 		this.execute (this.props.onSubmit).then (() => this.setState ({ processing: false }));
+		this.preventDefault ();
 
 	}// submit_payment
 	
 
 	validate = (event) => {
 		for (let element of this.active_form.current.elements) {
-			if (!common.is_function (element.onValidate)) continue;
-			if (element.validate (element)) continue;
-			event.preventDefault ();
+			if (common.is_function (element.validate) && !element.validate (event)) event.preventDefault ();
 		}// for;
 	}// validate;
 
@@ -91,7 +88,7 @@ return;
 
 	render () {
 		return <PopupWindow id="deluxe_account_window" visible={this.state.visible}>
-			<form ref={this.active_form} id="deluxe_account_form" onSubmit={event => event.preventDefault ()}>
+			<form ref={this.active_form} id="deluxe_account_form" onSubmit={this.submit_payment}>
 
 				<label className="header">Tell us a little about yourself</label>
 
@@ -110,7 +107,6 @@ return;
 								<div className="button-panel">
 
 									<button onClick={this.validate}>Submit</button>
-
 									<button onClick={() => this.setState ({ visible: false }, this.props.onCancel)}>Cancel</button>
 								</div>
 								

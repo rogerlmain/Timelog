@@ -390,8 +390,9 @@ HTMLElement.prototype.notComplete = function () { return !this.isComplete () }
 HTMLElement.prototype.addValidator = function (validator) {
 	let parent_validator = this.validate;
 	this.validate = function (event) {
-		parent_validator.bind (this) (event);
-		validator.bind (this) (event);
+		if (!parent_validator.bind (this) (event)) return false;
+		if (!validator.bind (this) (event)) return false;
+		return true;
 	}// validate;
 }// addValidator;
 
@@ -408,7 +409,12 @@ HTMLElement.prototype.setValidity = function (valid, message = null) {
 
 
 HTMLElement.prototype.validate = function () {
-	this.setValidity (this.isValid ());
+	
+	let valid = this.isValid ();
+	
+	this.setValidity (valid);
+	return valid;
+	
 }// validate;
 
 
