@@ -384,8 +384,8 @@ HTMLElement.prototype.validate = function () {
 	}/* pattern_match */;
 
 
-	let labels = document.querySelectorAll (`[for=${this.id}]`);
-	let field_name = (labels.length > 0) ? labels [0].innerText : "This field";
+	let labels = common.not_empty (this.id) ? document.querySelectorAll (`[for=${this.id}]`) : null;
+	let field_name = (common.isset (labels) && (labels.length > 0)) ? labels [0].innerText : "This field";
 
 	this.setValidity (provided (), `${field_name} is a required value.`);
 	this.setValidity (pattern_match (), "Please match the pattern provided.");

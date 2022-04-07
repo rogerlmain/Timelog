@@ -61,10 +61,16 @@ export default class DeluxeAccountForm extends BaseControl {
 	
 
 	validate = (event) => {
-		for (let element of this.active_form.current.elements.reverse ()) {
-			if (common.is_function (element.validate) && !element.validate (event)) element.reportValidity ();
-		}// for;
-		event.preventDefault ();
+		try {		
+			let items = Array.from (this.active_form.current.elements);
+			if (common.isset (items)) for (let element of items.reverse ()) {
+				if (common.is_function (element.validate) && !element.validate (event)) element.reportValidity ();
+			}// for;
+		} catch (except) {
+			console.log (except);
+		} finally {
+			event.preventDefault ();
+		}// try;
 	}// validate;
 
 
