@@ -80,7 +80,7 @@ export default class ToggleSwitch extends BaseControl {
 
 			<div className={this.props.showText ? "two-column-grid" : null} style={this.props.style}>
 
-				{!this.props.textAlignment.matches (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
+				{!this.props.textAlignment.equals (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
 
 				<div id={this.props.id} className="toggle-switch unselectable">
 
@@ -95,7 +95,7 @@ export default class ToggleSwitch extends BaseControl {
 
 				</div>
 
-				{this.props.textAlignment.matches (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
+				{this.props.textAlignment.equals (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
 
 			</div>
 

@@ -33,6 +33,9 @@ export default class AccountsModel extends DataModel {
 
 
 	static save_account (data) {
+
+return;
+
 		data.append ("action", "save");
 		return Database.save_data ("accounts", data);
 	}// save_account;

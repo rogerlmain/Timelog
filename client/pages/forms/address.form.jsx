@@ -106,11 +106,11 @@ this.setState ({
 
 		return <div className="one-piece-form">
 
-			<label>Company name</label>
+			<label htmlFor="company_name">Company name</label>
 			<div className="horizontally-spaced-out">
 
 				<DynamicInput id="company_name" value={this.state.company_name} required={true} style={{ width: "16em", marginRight: "1em" }} 
-					onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}>
+					onChange={event => this.name_checkbox.current.checked = event.target.value.equals (CurrentAccount.username ())}>
 				</DynamicInput>
 
 				<div className="one-piece-form">
@@ -196,7 +196,7 @@ defaultValue="+1 (720) 322-5154"
 			<div className="break" />
 
 			<label htmlFor="email">Email</label>
-			<input type="email" id="email" name="email" className="full-width" maxLength={255} required={true}
+			<input type="email" id="email_address" name="email_address" className="full-width" maxLength={255} required={true}
 			
 defaultValue="rex@rogerlmain.com" />
 

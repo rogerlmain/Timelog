@@ -39,37 +39,44 @@ export default class PaymentHandler {
 	}// send_square_request;
 
 
-	static async create_customer () {
+	static async create_customer (data) {
 
-		let data = CurrentAccount.all ();
+		let account_data = CurrentAccount.all ();
+		let form_data = data.toObject ();
 
 		let response = await this.send_square_request ({
-			given_name: data [credential_types.first_name],
-			family_name: data [credential_types.last_name],
+			given_name: account_data [credential_types.first_name],
+			family_name: account_data [credential_types.last_name],
 
-			company_name: "Roger Main Programming Company",
+			company_name: form_data.company_name,
 
 			address: {
-				address_line_1: "6795 West 19th Place",
-				address_line_2: "108",
-				administrative_district_level_1: "Lakewood",
-				locality: "Colorado",
-				postal_code: "80214",
-				country: "US"
+				address_line_1: form_data.street_address,
+				address_line_2: form_data.additional_address,
+				administrative_district_level_1: form_data.city,
+				locality: form_data.district_name,
+				postal_code: form_data.zip,
+				country: form_data.country_name
 			},
 
-			email_address: data [credential_types.email_address],
+			email_address: form_data [credential_types.email_address],
 
-			phone_number: "7203225154"
+			phone_number: form_data.primary_phone
 		});
 
+		AccountsModel.save_account (form_data);
 		let user_square_id = response.customer.id;
-		return await AccountsModel.save_account (FormData.fromObject ({ square_id: user_square_id }));
+//		return await AccountsModel.save_account (FormData.fromObject ({ square_id: user_square_id }));
+
+return true;		
 
 	}// create_customer;
 
 
 	static async verify_payment_method (keep_card) {
+		if (true) {		// TODO: TEST FOR EXISTING CUSTOMER
+
+		}
 	}// verify_payment_method;
 
 

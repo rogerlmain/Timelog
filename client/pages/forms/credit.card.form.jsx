@@ -87,7 +87,7 @@ export default class DeluxeAccountForm extends BaseControl {
 					<div key={this.state.cc_name}>
 						<input type="text" id="cc_name" name="cc_name" style={{ width: "13em", marginRight: "1em" }} 
 							defaultValue={this.state.cc_name || constants.blank} required={true}
-							onChange={event => this.name_checkbox.current.checked = event.target.value.matches (CurrentAccount.username ())}
+							onChange={event => this.name_checkbox.current.checked = event.target.value.equals (CurrentAccount.username ())}
 							
 defaultValue="Rex Strange">
 

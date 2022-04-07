@@ -20,6 +20,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 
 	active_form = React.createRef ();
+	address_form = React.createRef ();
 
 
 	state = { 
@@ -41,11 +42,17 @@ export default class DeluxeAccountForm extends BaseControl {
 	submit_payment = async event => {
 
 		let square_id = CurrentAccount.square_id ();
+		let form_data = new FormData (event.target);
 
-		if (common.is_null (square_id)) CurrentAccount.set (constants.credential_types.square_id, await PaymentHandler.create_customer ());
+		let address_state = this.address_form.current.state;
 
-		await PaymentHandler.verify_payment_method (this.state.keep_card);
-		await PaymentHandler.apply_payment ();
+		form_data.append ("district_name", address_state.districts.extract (address_state.district_id).long_name);
+		form_data.append ("country_name", address_state.countries.extract (address_state.country_id).short_name);
+
+		if (common.is_null (square_id)) CurrentAccount.set (constants.credential_types.square_id, await PaymentHandler.create_customer (form_data));
+
+		// await PaymentHandler.verify_payment_method (this.state.keep_card);
+		// await PaymentHandler.apply_payment ();
 
 		this.setState ({ processing: false });
 		event.preventDefault ();
@@ -54,9 +61,10 @@ export default class DeluxeAccountForm extends BaseControl {
 	
 
 	validate = (event) => {
-		for (let element of this.active_form.current.elements) {
-			if (common.is_function (element.validate) && !element.validate (event)) event.preventDefault ();
+		for (let element of this.active_form.current.elements.reverse ()) {
+			if (common.is_function (element.validate) && !element.validate (event)) element.reportValidity ();
 		}// for;
+		event.preventDefault ();
 	}// validate;
 
 
@@ -92,7 +100,7 @@ export default class DeluxeAccountForm extends BaseControl {
 				
 				<div className="two-column-newspaper">
 
-					<AddressForm />
+					<AddressForm ref={this.address_form} />
 
 					<div className="vertically-spaced-out">
 						<div><CreditCardForm /></div>

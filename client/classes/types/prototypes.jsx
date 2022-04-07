@@ -41,6 +41,14 @@ Array.prototype.remove = function (element) {
 }// remove;
 
 
+Array.prototype.extract = function (value, name = "id") {
+	for (let item of this) {
+		if (common.is_object (item) && (item [name] == value)) return item;
+	}// for;
+	return null;
+}// extract;
+
+
 /**** Date Helper Functions ****/
 
 
@@ -241,7 +249,8 @@ FormData.fromObject = function (object) {
 
 
 FormData.prototype.appendAll = function (object) { Object.keys (object).forEach (key => this.append (key, object [key])) }
-FormData.prototype.toJson = function () { return Object.fromEntries (this) }
+FormData.prototype.toObject = function () { return Object.fromEntries (this) }
+FormData.prototype.toJson = function () { return JSON.stringify (this.toObject ()) }
 
 
 /**** HTMLElement ****/
@@ -326,64 +335,6 @@ HTMLElement.prototype.isComplete = function () {
 }// isComplete;
 
 
-HTMLElement.prototype.isValid = function () {
-
-
-	const provided = () => {
-
-		if (!this.hasAttribute ("required")) return true;
-
-		switch (this.hasAttribute ("pattern")) {
-			case true: if (this.value.validate (this.pattern)) return true; break;
-			default: if (this.value.not_empty ()) return true; break;
-		}// switch;
-
-		return false;
-
-	}/* provided */;
-
-
-	const pattern_match = () => {
-		if (!this.hasAttribute ("pattern")) return true;
-		if (this.isComplete ()) return true;
-		return false;
-	}/* pattern_match */;
-	
-
-	const valid_number = () => {
-
-		if (this.type != "number") return true;
-
-		const number_length = (value) => { return common.isset (value) ? value.toString ().length : null }
-
-		let min_value = this.getNumber ("min");
-		let max_value = this.getNumber ("max");
-
-		let min_length = common.next_integer (this.getAttribute ("length"), this.getAttribute ("minLength"), number_length (min_value));
-		let max_length = common.next_integer (this.getAttribute ("length"), this.getAttribute ("maxLength"), number_length (max_value));
-
-		let value = parseInt (this.value);
-	
-		if (common.isset (min_value) && (value < min_value)) return false;
-		if (common.isset (max_value) && (value > max_value)) return false;
-
-		if (common.isset (min_length) && (this.value.length < min_length)) return false;
-		if (common.isset (max_length) && (this.value.length > max_length)) return false;
-
-		return true;
-	
-	}/* valid_number */;
-
-
-	if (!provided ()) return false;
-	if (!pattern_match ()) return false;
-	if (!valid_number ()) return false;
-
-	return true;
-
-}// isValid;
-
-
 HTMLElement.prototype.notComplete = function () { return !this.isComplete () }
 
 
@@ -397,30 +348,56 @@ HTMLElement.prototype.addValidator = function (validator) {
 }// addValidator;
 
 
+// Returns optional boolean = valid, for chaining.
 HTMLElement.prototype.setValidity = function (valid, message = null) {
 	if (valid) {
 		this.setCustomValidity (constants.blank);
 		this.removeClass ("invalid");
-		return;
+		return true;
 	}// if;	
 	this.setCustomValidity (message);
 	this.addClass ("invalid");
+	return false;
 }// setValidity;
 
 
 HTMLElement.prototype.validate = function () {
+
+	const provided = () => {
+
+		if (!this.hasAttribute ("required")) return true;
+
+		switch (this.hasAttribute ("pattern")) {
+			case true: if (!this.getAttribute ("input_mask").replaceAll ("9","*").equals (this.value)) return true; break;
+			default: if (this.value.not_empty ()) return true; break;
+		}// switch;
+
+		return false;
+
+	}/* provided */;
+
+
+	const pattern_match = () => {
+		if (!this.hasAttribute ("pattern")) return true;
+		if (this.isComplete ()) return true;
+		return false;
+	}/* pattern_match */;
+
+
+	let labels = document.querySelectorAll (`[for=${this.id}]`);
+	let field_name = (labels.length > 0) ? labels [0].innerText : "This field";
+
+	this.setValidity (provided (), `${field_name} is a required value.`);
+	this.setValidity (pattern_match (), "Please match the pattern provided.");
 	
-	let valid = this.isValid ();
-	
-	this.setValidity (valid);
-	return valid;
+	return true;
 	
 }// validate;
 
 
 HTMLElement.prototype.visible = function () {
-	if (this.style.display.matches ("none")) return false;
-	if (this.style.visibility.matches ("hidden")) return false;
+	if (this.style.display.equals ("none")) return false;
+	if (this.style.visibility.equals ("hidden")) return false;
 	if (parseInt (this.style.opacity) == 0) return false;
 	return true;
 }// if;
@@ -469,17 +446,17 @@ String.prototype.padded = function (length, character, direction = null) {
 }// padded;
 
 
-String.prototype.matches = function (comparison, case_sensitive = false) {
+String.prototype.equals = function (comparison, case_sensitive = false) {
 	if (common.is_null (comparison)) return false;
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
-}// matches;
+}// equals;
 
 
 String.prototype.empty = function () { return this.trim () == constants.blank }
 String.prototype.not_empty = function () { return !this.empty () }
 
 
-String.prototype.validate = function (pattern) { return common.isset (this.match (pattern)) }
+String.prototype.matches = function (pattern) { return common.isset (this.match (pattern)) }
 
 
 String.prototype.splice = function (start_index, end_index, replacement = null) {

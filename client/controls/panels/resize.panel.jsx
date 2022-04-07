@@ -57,8 +57,8 @@ export default class ResizePanel extends BaseControl {
 
 		if (!["width", "height"].includes (event.propertyName)) return;
 
-		if ((size.width < size.height) && event.propertyName.matches ("width")) return;
-		if ((size.width >= size.height) && event.propertyName.matches ("height")) return;
+		if ((size.width < size.height) && event.propertyName.equals ("width")) return;
+		if ((size.width >= size.height) && event.propertyName.equals ("height")) return;
 
 		this.execute (this.props.beforeResizing ? this.props.beforeResizing.bind (this) : null);
 

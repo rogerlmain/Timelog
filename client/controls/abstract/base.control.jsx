@@ -129,8 +129,8 @@ export default class BaseControl extends React.Component {
 		if (deep !== false) deep = true;
 
 		switch (deep) {
-			case true: return first_string.matches (second_string);
-			default: return first_string.substring (0, first_string.indexOf (">") + 1).matches (second_string.substring (0, second_string.indexOf (">") + 1));
+			case true: return first_string.equals (second_string);
+			default: return first_string.substring (0, first_string.indexOf (">") + 1).equals (second_string.substring (0, second_string.indexOf (">") + 1));
 		}// switch;
 
 	}// same_element;
@@ -155,7 +155,7 @@ export default class BaseControl extends React.Component {
 
 
 	state_equals (state, value) {
-		return (common.isset (value) && value.matches (this.state [state]));
+		return (common.isset (value) && value.equals (this.state [state]));
 	}// state_equals;
 
 
@@ -175,7 +175,7 @@ export default class BaseControl extends React.Component {
 	add_class (value, class_name) {
 		let classes = value.split (space);
 		for (let i = 0; i < classes.length; i++) {
-			if (classes [i].matches (class_name)) return; // already exists;
+			if (classes [i].equals (class_name)) return; // already exists;
 		}// for;
 		classes.push (class_name);
 		return classes.join (space);
@@ -185,7 +185,7 @@ export default class BaseControl extends React.Component {
 	remove_class (value, class_name) {
 		let classes = value.split (space);
 		for (let i = 0; i < classes.length; i++) {
-			if (classes [i].matches (class_name)) {
+			if (classes [i].equals (class_name)) {
 				classes.remove (i);
 				break;
 			}// if;

@@ -38,28 +38,35 @@ export default class NumericInput extends InputControl {
 	key_handler = event => {
 		let max_length = this.get_length ("max");
 		if ((event.key.length == 1) && (common.isset (max_length) && (event.target.value.length + 1 > max_length))) event.preventDefault ();
-	}// key_handler;
+	}/* key_handler */;
 
 
-	validate_entry = () => {
+	/********/
 
-		let min_length = this.get_length ("min");
-		let max_length = this.get_length ("max");
 
-		let value = this.input_field.value;
+	valid_number () {
 
-		if ((value.length >= min_length) && (value.length <= max_length)) {
-			this.input_field.setCustomValidity (constants.blank);
-			return true;
-		}// if;
+		if (this.type != "number") return null;
 
-		if (common.is_number (this.props.length)) this.input_field.setCustomValidity (`Number must be ${this.props.length} digits long`);
-		if (common.is_number (min_length) && (value.length < min_length)) this.input_field.setCustomValidity (`Number must be at least ${min_length} digits`);
-		if (common.is_number (max_length) && (value.length > max_length)) this.input_field.setCustomValidity (`Number cannot be more than must be at least ${min_length} digits`);
+		const number_length = (value) => { return common.isset (value) ? value.toString ().length : null }
 
-		return false;
+		let min_value = this.getNumber ("min");
+		let max_value = this.getNumber ("max");
 
-	}// validate_entry;
+		let min_length = common.next_integer (this.getAttribute ("length"), this.getAttribute ("minLength"), number_length (min_value));
+		let max_length = common.next_integer (this.getAttribute ("length"), this.getAttribute ("maxLength"), number_length (max_value));
+
+		let value = parseInt (this.value);
+	
+		if (common.isset (min_value) && (value < min_value)) return this.setValidity (false, `Value must be greater than ${min_value}.`);
+		if (common.isset (max_value) && (value > max_value)) return this.setValidity (false, `Value must be less than ${max_value}.`);
+
+		if (common.isset (min_length) && (this.value.length < min_length)) return this.setValidity (false, `Value cannot be less than ${min_length} digits.`);
+		if (common.isset (max_length) && (this.value.length > max_length)) return this.setValidity (false, `Value cannot be more than ${max_length} digits.`);
+
+		return true;
+
+	}/* valid_number */;
 
 
 	/********/
@@ -70,7 +77,7 @@ export default class NumericInput extends InputControl {
 		if (common.isset (this.props.minLength)) this.input_field.current.minLength = common.next_integer (this.props.minLength);
 		if (common.isset (this.props.maxLength)) this.input_field.current.maxLength = common.next_integer (this.props.maxLength);
 
-		this.input_field.current.addValidator (this.validate_entry);
+		this.input_field.current.addValidator (this.valid_number.bind (this.input_field.current));
 
 	}// componentDidMount;
 
