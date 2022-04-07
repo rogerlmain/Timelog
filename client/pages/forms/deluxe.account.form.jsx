@@ -29,11 +29,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	}// state;
 
 
-	static defaultProps = { 
-		visible: false,
-		onSubmit: null,
-		onCancel: null
-	}// defaultProps;
+	static defaultProps = {  visible: false }
 
 
 	constructor (props) {
@@ -42,7 +38,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	}// constructor;
 
 
-	async submit_payment () {
+	submit_payment = async event => {
 
 		let square_id = CurrentAccount.square_id ();
 
@@ -51,8 +47,8 @@ export default class DeluxeAccountForm extends BaseControl {
 		await PaymentHandler.verify_payment_method (this.state.keep_card);
 		await PaymentHandler.apply_payment ();
 
-		this.execute (this.props.onSubmit).then (() => this.setState ({ processing: false }));
-		this.preventDefault ();
+		this.setState ({ processing: false });
+		event.preventDefault ();
 
 	}// submit_payment
 	
@@ -107,7 +103,7 @@ export default class DeluxeAccountForm extends BaseControl {
 								<div className="button-panel">
 
 									<button onClick={this.validate}>Submit</button>
-									<button onClick={() => this.setState ({ visible: false }, this.props.onCancel)}>Cancel</button>
+									<button onClick={() => this.setState ({ visible: false })}>Cancel</button>
 								</div>
 								
 							</EyecandyPanel>
