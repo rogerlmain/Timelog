@@ -1,7 +1,7 @@
 import Database from "../database.mjs";
 
 
-class ClientData extends Database {
+export default class ClientData extends Database {
 
 
 	get_clients_by_company (company_id) {
@@ -38,6 +38,3 @@ class ClientData extends Database {
 
 
 }// ClientData;
-
-
-export default ClientData;

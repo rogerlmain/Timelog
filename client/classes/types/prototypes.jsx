@@ -232,16 +232,9 @@ Date.prototype.format = function (selected_format) {
 
 
 FormData.fromObject = function (object) { 
-
-	let result = null;
-
-	Object.keys (object).forEach (key => {
-		if (common.is_null (result)) result = new FormData ();
-		result.append (key, object [key]);
-	});
-
+	let result = new FormData ();
+	result.appendAll (object);
 	return result;
-
 }// fromObject;
 
 

@@ -1,7 +1,11 @@
 import AccountsModel from "models/accounts";
-import CurrentAccount from "classes/storage/account";
+import AddressesModel from "models/addresses";
+import CompaniesModel from "models/companies";
 
-import { is_null, json_string } from "classes/common";
+import Account from "classes/storage/account";
+import Companies from "classes/storage/companies";
+
+import { is_null } from "classes/common";
 import { v4 as uuid } from "uuid";
 import { credential_types } from "client/classes/types/constants";
 
@@ -41,34 +45,47 @@ export default class PaymentHandler {
 
 	static async create_customer (data) {
 
-		let account_data = CurrentAccount.all ();
+		let account_data = Account.all ();
 		let form_data = data.toObject ();
 
-		let response = await this.send_square_request ({
-			given_name: account_data [credential_types.first_name],
-			family_name: account_data [credential_types.last_name],
+//		let response = await this.send_square_request ({
+//			given_name: account_data [credential_types.first_name],
+//			family_name: account_data [credential_types.last_name],
+//			company_name: form_data.company_name,
+//			address: {
+//				address_line_1: form_data.street_address,
+//				address_line_2: form_data.additional_address,
+//				administrative_district_level_1: form_data.city,
+//				locality: form_data.district_name,
+//				postal_code: form_data.zip,
+//				country: form_data.country_name
+//			}/* address */,
+//			email_address: form_data [credential_types.email_address],
+//			phone_number: form_data.primary_phone
+//		});
 
-			company_name: form_data.company_name,
+let response = { customer: { id: "4RR7K1JTH4YX96B9K5DFR36ZMW" }}
 
-			address: {
-				address_line_1: form_data.street_address,
-				address_line_2: form_data.additional_address,
-				administrative_district_level_1: form_data.city,
-				locality: form_data.district_name,
-				postal_code: form_data.zip,
-				country: form_data.country_name
-			},
+		let address_id = (await AddressesModel.save_address (FormData.fromObject ({
+			company_id: Companies.active_company (),
+			street_address: form_data.street_address,
+			additional: form_data.additional_address,
+			city: form_data.city,
+			state_id: form_data.district,
+			country_id: form_data.country,
+			postcode: form_data.zip
+		}))).address_id;
 
-			email_address: form_data [credential_types.email_address],
+		CompaniesModel.save_company (FormData.fromObject ({
+			name: form_data.company_name,
+			address_id: address_id,
+			primary_contact_id: Account.account_id (),
+			square_id: response.customer.id
+		}));
 
-			phone_number: form_data.primary_phone
-		});
+		localStorage.removeItem (transaction_id_field);
 
-		AccountsModel.save_account (form_data);
-		let user_square_id = response.customer.id;
-//		return await AccountsModel.save_account (FormData.fromObject ({ square_id: user_square_id }));
-
-return true;		
+		return response.customer.id;
 
 	}// create_customer;
 

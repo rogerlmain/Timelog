@@ -15,7 +15,7 @@ import PhoneNumberInput from "controls/inputs/phone.number.input";
 import LookupsModel from "models/lookups";
 
 
-const us_country_code = 189;
+const us_country_code = 236;
 const default_district_name = "District";
 
 
@@ -76,7 +76,7 @@ export default class AddressForm extends BaseControl {
 
 this.setState ({
 	company_name: "RMPC Inc",
-	district_id: 206
+	district_id: 277
 });
 
 
@@ -161,7 +161,7 @@ defaultValue="80214" />
 			</Container>
 
 			<label htmlFor="country">Country</label>
-			<SelectList id="country" data={this.state.countries} idField="id" textField="short_name" 
+			<SelectList id="country" data={this.state.countries} idField="id" textField="long_name" 
 				style={{ width: "100%" }} required={true}
 				value={this.state.country_id} onChange={event => this.setState ({ 
 					country_id: event.target.value,

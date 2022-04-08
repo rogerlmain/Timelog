@@ -39,11 +39,11 @@ create procedure get_companies_by_account (account_id integer) begin
 	left outer join
 		lookups as lkc
 	on
-		adr.country_id = lks.id
+		adr.country_id = lkc.id
 	where
 		(acc.id = account_id) or
         (cpy.primary_contact_id = account_id) or
-        (cpy.second_contact_id = account_id);
+        (cpy.secondary_contact_id = account_id);
 
 end ??
 

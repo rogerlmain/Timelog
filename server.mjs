@@ -8,7 +8,9 @@ import file_system from "fs";
 import AccountData from "./server/models/accounts.mjs";
 import AccountSettingsData from "./server/models/settings.mjs";
 import AccountOptionsData from "./server/models/options.mjs";
+import AddressData from "./server/models/addresses.mjs";
 import ClientData from "./server/models/clients.mjs";
+import CompanyData from "./server/models/companies.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import LookupsData from "./server/models/lookups.mjs";
 import ProjectData from "./server/models/projects.mjs";
@@ -60,7 +62,6 @@ app.use (express.json ());
 
 
 app.post ("/accounts", function (request, response) {
-
 	try {
 		app.process (request, response, (fields) => {
 			let account_data = new AccountData ();
@@ -73,7 +74,19 @@ app.post ("/accounts", function (request, response) {
 			}// switch;
 		});
 	} catch (except) { console.log (except) }
+});
 
+
+app.post ("/addresses", function (request, response) {
+	try {
+		app.process (request, response, (fields) => {
+			let address_data = new AddressData ();
+			switch (fields.action) {
+				case "save": address_data.save_address (fields); break;
+				default: break;
+			}// switch;
+		});
+	} catch (except) { console.log (except) }
 });
 
 
@@ -84,6 +97,16 @@ app.post ("/clients", function (request, response) {
 			case "list_by_company": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
 			case "details": client_data.get_client_by_id (fields.client_id); break;
 			case "save": client_data.save_client (fields); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/companies", function (request, response) {
+	app.process (request, response, (fields) => {
+		let company_data = new CompanyData ();
+		switch (fields.action) {
+			case "save": company_data.save_company (fields); break;
 		}// switch;
 	});
 });

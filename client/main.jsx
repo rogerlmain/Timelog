@@ -150,12 +150,12 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
-//	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
+	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-	ReactDOM.render (<DeluxeAccountForm visible={true} id="special_guest_import" />, document.getElementById ("main_page"));
+//	ReactDOM.render (<DeluxeAccountForm visible={true} id="special_guest_import" />, document.getElementById ("main_page"));
 
-//	Quick Test
+//	Quick Test Render
 //	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));
 
 }// document.ready;

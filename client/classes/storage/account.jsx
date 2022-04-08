@@ -17,7 +17,7 @@ export default class Account extends LocalStorage {
 	static set (name, value) {
 		let credentials = this.all ();
 		credentials [name] = value;
-		LocalStorage.set (storage_locker, credentials);
+		LocalStorage.set_store (storage_locker, credentials);
 	}// set;
 
 	

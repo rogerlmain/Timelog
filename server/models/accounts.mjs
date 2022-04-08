@@ -66,24 +66,32 @@ export default class AccountData extends Database {
 			global.account = (global.is_null (results) || (results.length > 1)) ? null : results [0];
 			if (global.is_null (account)) throw "Invalid data response: models.signin";
 
-			let result = { 
-				credentials: account, 
-				companies: { list: await (new CompanyData ().get_companies_by_account (global.account.account_id)) },
-				settings: await (new SettingsData ().get_settings ()),
-				logging: (await (new LoggingData ().latest_log_entry ())) [0]
-			};
+			let result = { credentials: account };
 
-			for (let company of result.companies.list) {
+			let companies = await (new CompanyData ().get_companies_by_account (global.account.account_id));
+			let settings = await (new SettingsData ().get_settings ());
+			let logging = (await (new LoggingData ().latest_log_entry ())) [0];
 
-				let options = await (new OptionsData ().get_options_by_company (company.company_id));
+			if (companies.length > 0) {
+				
+				for (let company of companies) {
 
-				if (Array.isArray (options)) for (let option of options) {
-					if (not_set (result.options)) result.options = {};
-					if (not_set (result.options [company.company_id])) result.options [company.company_id] = {};
-					result.options [company.company_id][option.id] = option.value;
-				}// if;
-					
-			}// for;
+					let options = await (new OptionsData ().get_options_by_company (company.company_id));
+
+					if (Array.isArray (options)) for (let option of options) {
+						if (not_set (result.options)) result.options = {};
+						if (not_set (result.options [company.company_id])) result.options [company.company_id] = {};
+						result.options [company.company_id][option.id] = option.value;
+					}// if;
+						
+				}// for;
+
+				result.companies = { list: companies }
+
+			}// if;
+
+			if (settings.length > 0) result.settings = settings;
+			if (global.isset (logging)) result.logging = logging;
 
 			response.send (result);
 			this.connection.end ();

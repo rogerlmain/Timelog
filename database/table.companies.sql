@@ -7,9 +7,12 @@ drop table if exists companies;
 create table companies (
 	id						integer primary key not null auto_increment,
 	name					varchar (64) not null,
-	date_registered			datetime not null default current_timestamp,
-	primary_contact_id		int not null,
-	secondary_contact_id	int default null,
+	address_id				integer,
+	primary_contact_id		integer not null,
+	secondary_contact_id	integer,
+	square_id				varchar (64),
+	active					boolean default true,
+
 	date_created			datetime not null default current_timestamp,
 	last_updated			datetime not null default current_timestamp,
 
