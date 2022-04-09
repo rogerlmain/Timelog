@@ -54,6 +54,10 @@ export default class Options extends LocalStorage {
 	}// rounding;
 
 
+	static client_limit () { return Options.get (option_types.client_limit) ?? 0 }
+	static project_limit () { return Options.get (option_types.project_limit) ?? 0 }
+
+
 	static subscribed (option) {
 		switch (option) {
 			case option_types.granularity: return isset (this.granularity ());

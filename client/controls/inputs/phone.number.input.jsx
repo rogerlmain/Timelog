@@ -1,3 +1,4 @@
+import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
 import React from "react";
@@ -102,7 +103,7 @@ export default class PhoneNumberInput extends InputControl {
 	render () { 
 		let validators = this.validators ();
 		return <Container>
-			<InputMask id={this.props.id} name={this.props.name} ref={this.input_field} defaultValue={this.props.defaultValue}
+			<InputMask id={this.props.id} name={this.props.name} ref={this.input_field} defaultValue={this.props.defaultValue ?? constants.blank}
 				mask={this.state.mask} input_mask={this.state.mask} maskChar="*" alwaysShowMask={true} 
 				style={{ textAlign: "center" }} required={validators.required} pattern={validators.pattern}
 				onChange={this.update_pattern}>

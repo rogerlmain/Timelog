@@ -11,6 +11,8 @@ import DeluxeAccountForm from "pages/forms/deluxe.account.form";
 
 import OptionsModel from "models/options";
 
+import ToggleOption from "pages/gadgets/settings/toggle.option";
+
 import Options, { boundaries } from "classes/storage/options";
 
 import { isset } from "classes/common";
@@ -27,6 +29,8 @@ export default class SettingsPage extends BaseControl {
 		granularity: 0,
 		start_rounding: date_rounding.off,
 		end_rounding: date_rounding.off,
+		client_limit: 0,
+		project_limit: 0,
 		cc_form: null 
 	}/* state */;
 
@@ -36,10 +40,12 @@ export default class SettingsPage extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		this.state = {
+		this.state = { ...this.state,
 			granularity: Options.granularity () ?? this.state.granularity,
 			start_rounding: Options.rounding (boundaries.start) ?? this.state.start_rounding,
-			end_rounding: Options.rounding (boundaries.end) ?? this.state.end_rounding
+			end_rounding: Options.rounding (boundaries.end) ?? this.state.end_rounding,
+			client_limit: Options.client_limit () ?? this.state.client_limit,
+			project_limit: Options.project_limit () ?? this.state.project_limit,
 		};
 	}// constructor;
 
@@ -60,48 +66,6 @@ export default class SettingsPage extends BaseControl {
 
 		</DeluxeAccountForm>
 	}// deluxe_account_form;
-
-
-	granularity_switch () {
-		return <Container contentsOnly={true}>
-			<label htmlFor="granularity_setting">Granularity</label>
-			<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-				<ToggleSwitch id="granularity" speed={Settings.animation_speed ()} value={this.state.granularity - 1} singleStep={true}
-
-					onChange={(data) => { 
-
-						let granularity = Options.granularity ();
-
-						this.state.granularity = data.option + 1;
-
-						if (this.state.granularity > granularity) {
-							this.setState ({ 
-								cc_form: { 
-									option: option_types.granularity, 
-									previous: granularity,
-									value: this.state.granularity,
-									onSubmit: () => this.setState ({
-										start_rounding: date_rounding.off,
-										end_rounding: date_rounding.off
-									})
-								}/* cc_form */
-							});
-							return true;
-						}// if;
-
-						this.set_option (option_types.granularity, this.state.granularity);
-
-					}}>
-
-					<option>1 Hr</option>
-					<option>15 Mins</option>
-					<option>1 Min</option>
-					<option>Truetime</option>
-
-				</ToggleSwitch>
-			</div>
-		</Container>
-	}// granularity_switch;
 
 
 	rounding_switch (rounding_end) {
@@ -145,6 +109,97 @@ export default class SettingsPage extends BaseControl {
 	}// rounding_switch;
 
 
+	rounding_switches () {
+		return <ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
+			<Container id="rounding_options_container" condition={ Options.granularity () > 1} 
+				className="one-piece-form with-headspace" inline={true}>
+
+				{this.rounding_switch (boundaries.start)}
+				{this.rounding_switch (boundaries.end)}
+
+			</Container>
+		</ExplodingPanel>
+	}// rounding_switches;
+
+
+	client_limit_switch () {
+		return <Container contentsOnly={true}>
+			<label htmlFor="client_limit_setting">Number of clients</label>
+			<div className="right-justified-container">
+				<ToggleSwitch id="client_limit" value={this.state.client_limit - 1} singleStep={true}
+
+					onChange={(data) => { 
+
+						let client_limit = Options.client_limit ();
+
+						this.state.client_limit = data.option + 1;
+
+						if (this.state.client_limit > client_limit) {
+							this.setState ({ 
+								cc_form: { 
+									option: option_types.client_limit, 
+									previous: client_limit,
+									value: this.state.client_limit
+								}/* cc_form */
+							});
+							return true;
+						}// if;
+
+						this.set_option (option_types.client_limit, this.state.client_limit);
+
+					}}>
+
+					<option>0</option>
+					<option>5</option>
+					<option>10</option>
+					<option>50</option>
+					<option>Unlimited</option>
+
+				</ToggleSwitch>
+			</div>
+		</Container>
+	}// client_limit_switch;
+
+
+	project_limit_switch () {
+		return <Container contentsOnly={true}>
+			<label htmlFor="project_limit_setting">Number of projects</label>
+			<div className="right-justified-container">
+				<ToggleSwitch id="granularity" value={this.state.project_limit - 1} singleStep={true}
+
+					onChange={(data) => { 
+
+						let project_limit = Options.project_limit ();
+
+						this.state.project_limit = data.option + 1;
+
+						if (this.state.project_limit > project_limit) {
+							this.setState ({ 
+								cc_form: { 
+									option: option_types.project_limit, 
+									previous: project_limit,
+									value: this.state.project_limit
+								}/* cc_form */
+							});
+							return true;
+						}// if;
+
+						this.set_option (option_types.project_limit, this.state.project_limit);
+
+					}}>
+
+					<option>0</option>
+					<option>5</option>
+					<option>10</option>
+					<option>50</option>
+					<option>Unlimited</option>
+
+				</ToggleSwitch>
+			</div>
+		</Container>
+	}// project_limit_switch;
+
+
 	shouldComponentUpdate (new_props) {
 		if (new_props.companyId != this.props.companyId) {
 			this.setState ({
@@ -159,7 +214,7 @@ export default class SettingsPage extends BaseControl {
 
 
 	render () {
-		return (
+		return <Container>
 			<div id={this.props.id} className="one-piece-form">
 
 				{this.deluxe_account_form ()}
@@ -176,24 +231,34 @@ export default class SettingsPage extends BaseControl {
 
 				<div className="full-row section-header">Account Options</div>
 
-				{this.granularity_switch ()}
-
-				<br />
-
-				<div className="double-column">
-					<ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
-						<Container id="rounding_options_container" condition={ Options.granularity () > 1} className="one-piece-form" inline={true} style={{ justifySelf: "stretch" }}>
-							{this.rounding_switch (boundaries.start)}
-							{this.rounding_switch (boundaries.end)}
-						</Container>
-					</ExplodingPanel>
-				</div>
-
-				{/* Date.minute_increments = [5, 6, 10, 12, 15, 20, 30] */}
-
-
 			</div>
-		);
+
+			<br />
+
+			<div className=" with-headspace two-column-newspaper">
+				<div>
+					<ToggleOption id="granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
+						option={option_types.granularity} parent={this} 
+						onPaymentConfirmed={option => this.setState ({
+							start_rounding: date_rounding.off,
+							end_rounding: date_rounding.off,
+							value: option
+						})}>
+					</ToggleOption>
+{/*
+					{/* Date.minute_increments = [5, 6, 10, 12, 15, 20, 30] * /}
+					{this.rounding_switches ()}
+				</div>
+				<div>
+					<div className="one-piece-form" >
+						{this.client_limit_switch ()}
+						{this.project_limit_switch ()}
+					</div>
+*/}
+				</div>
+			</div>
+
+		</Container>
 	}// render;
 
 

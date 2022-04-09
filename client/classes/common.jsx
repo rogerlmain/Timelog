@@ -58,7 +58,7 @@ export function json_string (value) {
 
 
 export function is_empty (value) {
-	return (not_set (value, consts.blank) || (Array.isArray (value) && (value.length == 0)));
+	return (not_set (value, consts.blank) || (value.length == 0));
 }// is_empty;
 
 

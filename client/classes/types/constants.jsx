@@ -138,7 +138,8 @@ export const option_types = {
 	granularity		: "granularity",
 	rounding		: "rounding",
 	start_rounding	: "start_rounding",
-	end_rounding	: "end_rounding"
+	end_rounding	: "end_rounding",
+	multiple_clients: "multiple_clients"
 }// option_types;
 
 

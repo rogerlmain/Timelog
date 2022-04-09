@@ -28,7 +28,7 @@
 }/* .overlay-container > * */
 
 
-/**** Justification Containers ****/
+/**** Justification and Layout Containers ****/
 
 
 .self-centered {
@@ -44,6 +44,8 @@
 
 
 .right-aligned { text-align: right !important }
+
+.with-headspace { margin-top: 1em }
 
 
 /** inline-flex **/
@@ -337,29 +339,29 @@ div.two-piece-subform	{ grid-template-columns: 1fr repeat(2, min-content 1fr) }
 /**** Grid Styles ****/
 
 
-div[class$="column-newspaper"], div[class$="column-grid"] {
+div[class*="two-column-"]	{ grid-template-columns: repeat(2, min-content) }
+div[class*="three-column-"]	{ grid-template-columns: repeat(3, min-content) }
+div[class*="four-column-"]	{ grid-template-columns: repeat(4, min-content) }
+
+
+div[class*="-column-newspaper"], div[class*="-column-grid"] {
 	display: grid;
+	flex-direction: row;
 	row-gap: 0.2em;
-}/* div[class$="column-newspaper"], div[class$="column-grid"] */
+}/* div[class*="-column-newspaper"], div[class*="-column-grid"] */
 
 
-div[class$="column-newspaper"] > div:nth-child(odd) { 
+div[class*="-column-newspaper"] > div:nth-child(odd) { 
 	border-right: solid 1px var(--border-color);
 	padding-right: 1em;
 	margin-right: 1em;
-}/* div[class$="column-newspaper"] > div:nth-child(odd) */
+}/* div[class*="-column-newspaper"] > div:nth-child(odd) */
 
 
-div[class$="column-grid"] label {
+div[class*="-column-grid"] label {
 	display: inline-flex;
-	flex-direction: row;
 	align-items: center;
-}/* div[class*="column-grid"] label */
-
-
-div[class^="two-column"]	{ grid-template-columns: repeat(2, min-content);}
-div[class^="three-column"]	{ grid-template-columns: repeat(3, min-content) }
-div[class^="four-column"]	{ grid-template-columns: repeat(4, min-content) }
+}/* div[class*="-column-grid"] label */
 
 
 div.header-column {

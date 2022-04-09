@@ -228,6 +228,17 @@ Date.prototype.format = function (selected_format) {
 }// format;
 
 
+/***** DOMRect ****/
+
+
+DOMRect.prototype.contains = function (point) {
+	if (common.not_set (point)) return false;
+	if (common.isset (point.x) && ((point.x < this.left) || (point.x > this.right))) return false;
+	if (common.isset (point.y) && ((point.y < this.top) || (point.y > this.bottom))) return false;
+	return true;
+}// contains;
+
+
 /**** FormData ****/
 
 
@@ -247,6 +258,15 @@ FormData.prototype.toJson = function () { return JSON.stringify (this.toObject (
 
 
 /**** HTMLElement ****/
+
+
+HTMLElement.prototype.absolutePosition = function () {
+	var rect = this.getBoundingClientRect ();
+	return {
+		left: Math.round (rect.left + document.body.scrollLeft),
+		top: Math.round (rect.top + document.body.scrollTop)
+	}
+}// absolutePosition;
 
 
 HTMLElement.prototype.addClass = function (new_class) {

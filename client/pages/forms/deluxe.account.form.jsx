@@ -54,13 +54,10 @@ export default class DeluxeAccountForm extends BaseControl {
 			Account.set (constants.credential_types.square_id, square_id);
 		}// if;
 
-		await PaymentHandler.verify_payment_method (this.state.keep_card);
+		// await PaymentHandler.verify_payment_method (this.state.keep_card);
 		// await PaymentHandler.apply_payment ();
 
-alert ("success");		
-		
 		this.setState ({ processing: false });
-		event.preventDefault ();
 
 	}// submit_payment
 	
