@@ -151,20 +151,20 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
-//	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
+	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-	ReactDOM.render (<ToggleSwitch value={1} singleStep={true} id="special_guest_import">
-		<option>One</option>
-		<option>Two</option>
-		<option>Three</option>
-		<option>Four</option>
-		<option>Fve</option>
-		<option>Six</option>
-		<option>Seven</option>
-		<option>Eight</option>
-		<option>Nine</option>
-	</ToggleSwitch>, document.getElementById ("main_page"));
+	// ReactDOM.render (<ToggleSwitch value={1} singleStep={true} id="special_guest_import">
+	// 	<option>One</option>
+	// 	<option>Two</option>
+	// 	<option>Three</option>
+	// 	<option>Four</option>
+	// 	<option>Fve</option>
+	// 	<option>Six</option>
+	// 	<option>Seven</option>
+	// 	<option>Eight</option>
+	// 	<option>Nine</option>
+	// </ToggleSwitch>, document.getElementById ("main_page"));
 
 //	Quick Test Render
 //	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));

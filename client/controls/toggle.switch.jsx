@@ -132,18 +132,7 @@ export default class ToggleSwitch extends BaseControl {
 				{this.props.textAlignment.equals (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
 
 			</div>
-
-			<div>
-				{this.switch_control.current ? this.switch_control.current.absolutePosition ().left : null}<br />
-				{this.state.option}<br />
-				{this.state.drag_position}<br />
-				{this.state.drag_offset}<br />
-				<br />
-				<pre>{this.state.output}</pre>
-			</div>
-
-		</div>;
-
+		</div>
 	};
 
 }// ToggleSwitch;

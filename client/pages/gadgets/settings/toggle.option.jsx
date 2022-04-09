@@ -74,7 +74,7 @@ alert ("changing...");
 		return <div className="one-piece-form">
 			<label htmlFor="granularity_setting">Granularity</label>
 			<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-				<ToggleSwitch id="granularity" value={this.state.value - 1} singleStep={true} onChange={this.change_handler}>{this.option_items ()}</ToggleSwitch>
+				<ToggleSwitch id="granularity" value={this.state.value} singleStep={true} onChange={this.change_handler}>{this.option_items ()}</ToggleSwitch>
 			</div>
 		</div>
 	}// render;
