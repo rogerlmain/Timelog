@@ -5,6 +5,7 @@ import React from "react";
 
 import PaymentHandler from "classes/payment.handler";
 import Account from "classes/storage/account";
+import Companies from "client/classes/storage/companies";
 
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
@@ -27,10 +28,14 @@ export default class DeluxeAccountForm extends BaseControl {
 		processing: false,
 		active_card: null,
 		keep_card: true
-	}// state;
+	}/* state */;
 
 
-	static defaultProps = {  visible: false }
+	static defaultProps = {  
+		onSubmit: null,
+		onCancel: null,
+		visible: false
+	}/* defaultProps */;
 
 
 	constructor (props) {
@@ -39,7 +44,12 @@ export default class DeluxeAccountForm extends BaseControl {
 	}// constructor;
 
 
+	/********/
+
+
 	submit_payment = async event => {
+
+		let customer_data = null;
 
 		let square_id = Account.square_id ();
 		let form_data = new FormData (this.deluxe_account_form.current);
@@ -50,14 +60,34 @@ export default class DeluxeAccountForm extends BaseControl {
 		form_data.append ("country_name", address_state.countries.extract (address_state.country_id).short_name);
 
 		if (common.is_null (square_id)) {
-			square_id = await PaymentHandler.create_customer (form_data);
-			Account.set (constants.credential_types.square_id, square_id);
+				
+			customer_data = await PaymentHandler.save_customer (form_data)
+
+			Companies.set ({
+				active_company: customer_data.company_data.company_id,
+				list: [{
+					company_id: customer_data.company_data.company_id,
+					company_name: customer_data.company_data.name,
+					address_id: customer_data.address_data.address_id,
+					street_address: customer_data.address_data.street_address,
+					additional: customer_data.address_data.additional,
+					city: customer_data.address_data.city,
+					state_id: customer_data.address_data.state_id,
+					state_name: document.getElementById ("district").selectedText (),
+					country_id: customer_data.address_data.country_id,
+					country_name: document.getElementById ("country").selectedText (),
+					postcode: customer_data.address_data.postcode
+				}]
+			});
+
+			Account.set (constants.credential_types.square_id, customer_data.square_data.square_id);
+
 		}// if;
 
-		// await PaymentHandler.verify_payment_method (this.state.keep_card);
+		await PaymentHandler.verify_payment_method (customer_data.square_data.square_id);
 		// await PaymentHandler.apply_payment ();
 
-		this.setState ({ processing: false });
+		this.setState ({ processing: false }, this.props.onSubmit);
 
 	}// submit_payment
 	
@@ -123,7 +153,7 @@ export default class DeluxeAccountForm extends BaseControl {
 								
 								<div className="button-panel">
 									<button onClick={() => this.setState ({ processing: true })}>Submit</button>
-									<button onClick={() => this.setState ({ visible: false })}>Cancel</button>
+									<button onClick={this.props.onCancel}>Cancel</button>
 								</div>
 								
 							</EyecandyPanel>

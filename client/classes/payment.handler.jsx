@@ -1,13 +1,16 @@
+import * as constants from "classes/types/constants";
+import * as common from "classes/common";
+
 import AccountsModel from "models/accounts";
 import AddressesModel from "models/addresses";
 import CompaniesModel from "models/companies";
+import CompanyAccountsModel from "models/company.accounts";
 
 import Account from "classes/storage/account";
 import Companies from "classes/storage/companies";
 
-import { is_null } from "classes/common";
 import { v4 as uuid } from "uuid";
-import { credential_types } from "client/classes/types/constants";
+import { add } from "date-fns";
 
 const transaction_id_field = "transaction_id";
 
@@ -25,7 +28,7 @@ export default class PaymentHandler {
 
 		data.idempotency_key = localStorage.getItem (transaction_id_field);
 
-		if (is_null (data.idempotency_key)) {
+		if (common.is_null (data.idempotency_key)) {
 			data.idempotency_key = uuid ();
 			localStorage.setItem (transaction_id_field, data.idempotency_key);
 		}// if;
@@ -43,14 +46,10 @@ export default class PaymentHandler {
 	}// send_square_request;
 
 
-	static async create_customer (data) {
-
-		let account_data = Account.all ();
-		let form_data = data.toObject ();
-
-//		let response = await this.send_square_request ({
-//			given_name: account_data [credential_types.first_name],
-//			family_name: account_data [credential_types.last_name],
+	static async save_square_account (data) {
+//		return this.send_square_request ({
+//			given_name: account_data [constants.credential_types.first_name],
+//			family_name: account_data [constants.credential_types.last_name],
 //			company_name: form_data.company_name,
 //			address: {
 //				address_line_1: form_data.street_address,
@@ -60,34 +59,83 @@ export default class PaymentHandler {
 //				postal_code: form_data.zip,
 //				country: form_data.country_name
 //			}/* address */,
-//			email_address: form_data [credential_types.email_address],
+//			email_address: form_data [constants.credential_types.email_address],
 //			phone_number: form_data.primary_phone
 //		});
 
-let response = { customer: { id: "4RR7K1JTH4YX96B9K5DFR36ZMW" }}
+return new Promise ((resolve, reject) => resolve ({ customer: { id: "4RR7K1JTH4YX96B9K5DFR36ZMW" }}));
 
-		let address_id = (await AddressesModel.save_address (FormData.fromObject ({
-			company_id: Companies.active_company (),
-			street_address: form_data.street_address,
-			additional: form_data.additional_address,
-			city: form_data.city,
-			state_id: form_data.district,
-			country_id: form_data.country,
-			postcode: form_data.zip
-		}))).address_id;
+	}// save_square_account;
 
-		CompaniesModel.save_company (FormData.fromObject ({
-			name: form_data.company_name,
-			address_id: address_id,
+
+	static async save_address (data) {
+		let address_data = {
+			company_id: data.company_id,
+			street_address: data.street_address,
+			additional: data.additional_address,
+			city: data.city,
+			state_id: data.district,
+			country_id: data.country,
+			postcode: data.zip
+		}// address_data;
+		return { ...(await AddressesModel.save_address (FormData.fromObject (address_data))), ...address_data };
+	}// save_address;
+
+
+	static async save_company (data) {
+
+		let company_data = {
+			name: data.company_name,
 			primary_contact_id: Account.account_id (),
-			square_id: response.customer.id
+			square_id: data.square_id
+		}// company_data;
+
+		if (common.isset (data.company_id)) company_data.company_id = data.company_id;
+		if (common.isset (data.address_id)) company_data.address_id = data.address_id;
+
+		return { ...(await CompaniesModel.save_company (FormData.fromObject (company_data))), ...company_data };
+
+	}// save_company;
+
+
+	static async save_company_association (data) {
+		await CompanyAccountsModel.save_company_account (FormData.fromObject ({
+			account_id: Account.account_id (),
+			company_id: data.company_id
 		}));
+	}// save_company_association;
 
-		localStorage.removeItem (transaction_id_field);
 
-		return response.customer.id;
+	static save_customer (data) {
 
-	}// create_customer;
+		return new Promise (async (resolve, reject) => {
+
+			let form_data = data.toObject ();
+			let result = {}
+
+			try {
+
+				result.square_data = await this.save_square_account (form_data);
+				result.company_data = await this.save_company ({ ...form_data, square_id: result.square_data.customer.id });
+				result.address_data = await this.save_address ({ ...form_data, company_id: result.company_data.company_id});
+
+				result.company_data = await this.save_company ({ // add the address ID
+					...form_data, 
+					company_id: result.company_data.company_id,
+					address_id: result.address_data.address_id 
+				});
+
+				await this.save_company_association (result.company_data);
+
+				localStorage.removeItem (transaction_id_field);
+
+			} catch (except) { reject (except) }
+
+			resolve (result);
+
+		});
+
+	}// save_customer;
 
 
 	static async verify_payment_method (keep_card) {

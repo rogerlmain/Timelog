@@ -419,6 +419,11 @@ HTMLElement.prototype.visible = function () {
 /********/
 
 
+HTMLSelectElement.prototype.selectedText = function () {
+	return this.options [this.selectedIndex].text;
+}// selectedText;
+
+
 HTMLSelectElement.prototype.selectedValue = function () {
 	return (this.children [this.selectedIndex]).value;
 }// selectedValue;

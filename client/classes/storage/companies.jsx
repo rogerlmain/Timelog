@@ -8,19 +8,22 @@ const store_name = "companies";
 
 export default class Companies extends LocalStorage {
 
+	static set_active_company (value) { super.set_item (store_name, "active_company", value) }
+	static set (values) { super.set_store (store_name, values) }
+
+
+	/********/
+
+
+	static active_company () { return this.get ("active_company") }
+	static company_selected () { return isset (this.active_company ()) }
 	static get (name) { return LocalStorage.get (store_name, name) }
-	static set (name, value) { super.set_item (store_name, name, value) }
+	
 
 	static list () { 
 		let companies = LocalStorage.get_all (store_name);
 		return isset (companies) ? companies.list : null;
 	}// list;
-
-
-	static company_selected () { return isset (this.active_company ()) }
-
-
-	static active_company () { return this.get ("active_company") }
 
 
 	static selected () { 

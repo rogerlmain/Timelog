@@ -11,6 +11,7 @@ import AccountOptionsData from "./server/models/options.mjs";
 import AddressData from "./server/models/addresses.mjs";
 import ClientData from "./server/models/clients.mjs";
 import CompanyData from "./server/models/companies.mjs";
+import CompanyAccountsData from "./server/models/company.accounts.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import LookupsData from "./server/models/lookups.mjs";
 import ProjectData from "./server/models/projects.mjs";
@@ -107,6 +108,16 @@ app.post ("/companies", function (request, response) {
 		let company_data = new CompanyData ();
 		switch (fields.action) {
 			case "save": company_data.save_company (fields); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/company_accounts", function (request, response) {
+	app.process (request, response, (fields) => {
+		let company_accounts_data = new CompanyAccountsData ();
+		switch (fields.action) {
+			case "save": company_accounts_data.save_company_account (fields); break;
 		}// switch;
 	});
 });

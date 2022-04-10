@@ -198,7 +198,9 @@ defaultValue="+1 (720) 322-5154"
 			<label htmlFor="email">Email</label>
 			<input type="email" id="email_address" name="email_address" className="full-width" maxLength={255} required={true}
 			
-defaultValue="rex@rogerlmain.com" />
+//defaultValue="rex@rogerlmain.com" />
+defaultValue="joe@bloggs.com" />
+
 
 		</div>
 	}// render;

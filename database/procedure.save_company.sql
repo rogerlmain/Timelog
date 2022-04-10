@@ -16,14 +16,12 @@ create procedure save_company (
 	if ((company_id is null) or (company_id = 0)) then
     
 		insert into companies (
-			company_id,
 			`name`,
 			address_id,
 			primary_contact_id,
 			secondary_contact_id,
 			square_id
 		) values (
-			company_id,
 			company_name,
 			address_id,
 			primary_contact_id,

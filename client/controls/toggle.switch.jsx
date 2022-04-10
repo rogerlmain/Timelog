@@ -57,6 +57,12 @@ export default class ToggleSwitch extends BaseControl {
 	}// selection;
 
 
+	selected_value = () => { 
+		let element = this.option_elements () [this.state.option];
+		return  common.isset (element.value) ? element.value : this.state.option;
+	}// selected_value;
+
+
 	stop_dragging = event => {
 		for (let option of this.option_elements ()) {
 			if (option.getBoundingClientRect ().contains ({ x: event.clientX })) this.setState ({ option: this.selection (option) })
@@ -67,7 +73,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	transition_end = event => {
 		if (event.propertyName != "left") return;
-		if (this.state.process_change) this.execute (this.props.onChange, this.state).then (() => this.setState ({ process_change: false }));
+		if (this.state.process_change) this.execute (this.props.onChange, this.selected_value ()).then (() => this.setState ({ process_change: false }));
 	}// transition_end;
 
 

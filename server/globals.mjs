@@ -31,6 +31,9 @@ global.not_empty = value => { return !is_empty (value) }
 global.is_boolean = value => { return typeof value == "boolean" }
 global.not_boolean = value => { return !is_boolean (value) }
 
+global.integer_value = value => { return global.isset (value) ? parseInt (value) : null }
+
+global.null_if = (value, comparison) => { return (value == comparison) ? null : value }
 
 /********/
 

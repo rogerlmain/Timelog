@@ -63,7 +63,7 @@ class Main extends BaseControl {
 						idField="company_id" textField="company_name" hasHeader={true}
 						
 						onChange={event => {
-							Companies.set ("active_company", event.target.value);
+							Companies.set_active_company (event.target.value);
 							this.setState ({ company_id: event.target.value });
 						}}>
 							
@@ -98,7 +98,7 @@ error_handler (message, url, line) { notify (message, url, line) }
 
     render () {
 		return (
-			<MainContext.Provider value={{ company_id: this.state.company_id }}>
+			<MainContext.Provider value={{ company_id: this.state.company_id, main_page: this }}>
 				<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
 
 					<div className="horizontally-spaced-out">

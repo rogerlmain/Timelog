@@ -47,7 +47,7 @@ export default class SigninPage extends BaseControl {
 				localStorage.setItem (key, JSON.stringify (info [key]));
 			}// for;
 
-			if (CurrentAccount.paid_account () && (Companies.list ().length == 1)) Companies.set ("active_company", Companies.list () [0].company_id);
+			if (CurrentAccount.paid_account () && (Companies.list ().length == 1)) Companies.set_active_company (Companies.list () [0].company_id);
 			if (this.signed_in ()) return globals.main.forceUpdate ();
 
 			this.setState ({ 
@@ -75,7 +75,9 @@ export default class SigninPage extends BaseControl {
 					<div className="one-piece-form form-table">
 
 						<label htmlFor="username">Username or email</label>
-						<input name="username" type="text" defaultValue="rex@rogerlmain.com" />
+						<input name="username" type="text"
+// defaultValue="rex@rogerlmain.com" />
+defaultValue="joe@bloggs.com" />
 
 						<label htmlFor="password">Password</label>
 						<div style={{display: 'flex', flexDirection: 'row'}}>

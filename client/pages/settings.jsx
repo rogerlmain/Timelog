@@ -19,6 +19,8 @@ import { isset } from "classes/common";
 import { option_types, date_rounding, default_options, globals } from "classes/types/constants";
 import { resize_direction } from "controls/panels/resize.panel";
 
+import { MainContext } from "client/classes/types/contexts";
+
 import "client/resources/styles/pages.css";
 
 
@@ -35,6 +37,7 @@ export default class SettingsPage extends BaseControl {
 	}/* state */;
 
 
+	static contextType = MainContext;
 	static defaultProps = { id: "settings_page" }
 
 
@@ -60,10 +63,8 @@ export default class SettingsPage extends BaseControl {
 
 	deluxe_account_form () {
 		return <DeluxeAccountForm visible={isset (this.state.cc_form)}
-
-			onCancel={() => this.setState ({ [this.state.cc_form.option]: this.state.cc_form.previous }, () => this.setState ({ cc_form: null }))} 
-			onSubmit={() => this.set_option (this.state.cc_form.option, this.state.cc_form.value).then (() => this.execute (this.state.cc_form.onSubmit).then (() => this.setState ({ cc_form: null })))}>
-
+			onCancel={() => this.execute (this.state.cc_form.onCancel).then (() => this.setState ({ cc_form: null }))} 
+			onSubmit={() => this.execute (this.state.cc_form.onSubmit).then (() => this.setState ({ cc_form: null }))}>
 		</DeluxeAccountForm>
 	}// deluxe_account_form;
 
@@ -200,6 +201,9 @@ export default class SettingsPage extends BaseControl {
 	}// project_limit_switch;
 
 
+	/********/
+
+
 	shouldComponentUpdate (new_props) {
 		if (new_props.companyId != this.props.companyId) {
 			this.setState ({
@@ -239,11 +243,13 @@ export default class SettingsPage extends BaseControl {
 				<div>
 					<ToggleOption id="granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
 						option={option_types.granularity} parent={this} 
-						onPaymentConfirmed={option => this.setState ({
-							start_rounding: date_rounding.off,
-							end_rounding: date_rounding.off,
-							value: option
-						})}>
+						onPaymentConfirmed={selected_option => {
+							this.set_option (option_types.granularity, selected_option).then (() => this.setState ({
+								start_rounding: date_rounding.off,
+								end_rounding: date_rounding.off,
+								value: selected_option
+							}, this.context.main_page.forceRefresh));
+						}}>
 					</ToggleOption>
 {/*
 					{/* Date.minute_increments = [5, 6, 10, 12, 15, 20, 30] * /}
