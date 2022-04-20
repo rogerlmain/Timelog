@@ -1,9 +1,8 @@
 import * as React from "react";
-import * as common from "classes/common";
 
 import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
-import Permissions from "classes/storage/settings";
+import Settings from "classes/storage/settings";
 
 
 export default class SlideshowPanel extends BaseControl {
@@ -17,7 +16,7 @@ export default class SlideshowPanel extends BaseControl {
 		
 		index: 0,
 
-		speed: Permissions.animation_speed (),
+		speed: Settings.animation_speed (),
 
 		stretchOnly: false,
 

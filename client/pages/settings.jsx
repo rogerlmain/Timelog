@@ -1,25 +1,26 @@
+import * as constants from "classes/types/constants";
+import * as common from "classes/common";
+
 import React from "react";
 
 import Settings from "classes/storage/settings";
+import Options from "classes/storage/options";
 
+import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 import ExplodingPanel from "controls/panels/exploding.panel";
-import BaseControl from "controls/abstract/base.control";
-import ToggleSwitch from "controls/toggle.switch";
+import Slider from "controls/slider";
 
 import DeluxeAccountForm from "pages/forms/deluxe.account.form";
 
+import SettingsModel from "models/settings";
 import OptionsModel from "models/options";
 
 import ToggleOption from "pages/gadgets/settings/toggle.option";
 
-import Options, { boundaries } from "classes/storage/options";
-
-import { isset } from "classes/common";
-import { option_types, date_rounding, default_options, globals } from "classes/types/constants";
+import { MainContext } from "classes/types/contexts";
+import { boundaries } from "classes/storage/options";
 import { resize_direction } from "controls/panels/resize.panel";
-
-import { MainContext } from "client/classes/types/contexts";
 
 import "client/resources/styles/pages.css";
 
@@ -28,11 +29,12 @@ export default class SettingsPage extends BaseControl {
 
 
 	state = { 
-		granularity: 0,
-		start_rounding: date_rounding.off,
-		end_rounding: date_rounding.off,
-		client_limit: 0,
-		project_limit: 0,
+		company_id: null,
+		granularity: 1,
+		start_rounding: constants.date_rounding.off,
+		end_rounding: constants.date_rounding.off,
+		client_limit: 1,
+		project_limit: 1,
 		cc_form: null 
 	}/* state */;
 
@@ -41,16 +43,7 @@ export default class SettingsPage extends BaseControl {
 	static defaultProps = { id: "settings_page" }
 
 
-	constructor (props) {
-		super (props);
-		this.state = { ...this.state,
-			granularity: Options.granularity () ?? this.state.granularity,
-			start_rounding: Options.rounding (boundaries.start) ?? this.state.start_rounding,
-			end_rounding: Options.rounding (boundaries.end) ?? this.state.end_rounding,
-			client_limit: Options.client_limit () ?? this.state.client_limit,
-			project_limit: Options.project_limit () ?? this.state.project_limit,
-		};
-	}// constructor;
+	/********/
 
 
 	set_option (option, value) {
@@ -62,176 +55,85 @@ export default class SettingsPage extends BaseControl {
 
 
 	deluxe_account_form () {
-		return <DeluxeAccountForm visible={isset (this.state.cc_form)}
+		return <DeluxeAccountForm visible={common.isset (this.state.cc_form)}
 			onCancel={() => this.execute (this.state.cc_form.onCancel).then (() => this.setState ({ cc_form: null }))} 
 			onSubmit={() => this.execute (this.state.cc_form.onSubmit).then (() => this.setState ({ cc_form: null }))}>
 		</DeluxeAccountForm>
 	}// deluxe_account_form;
 
 
-	rounding_switch (rounding_end) {
-
-		let label = `${rounding_end}_rounding`;
-		let id = `${label}_switch`;
-		let rounding = Options.rounding (rounding_end) ?? default_options.rounding;
-
-		return <Container contentsOnly={true}>
-			<label htmlFor={id}>{rounding_end.charAt (0).toUpperCase () + rounding_end.slice (1)} time rounding</label>
-			<div className="right-justified-container">
-				<ToggleSwitch id={id} speed={Settings.animation_speed ()} value={this.state [label]} singleStep={true}
-
-					onChange={(data) => {
-
-						this.state [label] = data.option;
-
-						if (this.state [label] == rounding) return;
-
-						if (!Options.subscribed (option_types.rounding)) {
-							this.setState ({ 
-								cc_form: {
-									option: option_types [label],
-									previous: rounding,
-									value: this.state [label]
-								}
-							}) 
-						} else {
-							this.set_option (label, this.state [label]);
-						}// if;
-
-					}}>
-
-					<option value={date_rounding.down}>Round down</option>
-					<option value={date_rounding.off}>Round off</option>
-					<option value={date_rounding.up}>Round up</option>
-
-				</ToggleSwitch>
-			</div>
-		</Container>
-	}// rounding_switch;
-
-
 	rounding_switches () {
 		return <ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
-			<Container id="rounding_options_container" condition={ Options.granularity () > 1} 
-				className="one-piece-form with-headspace" inline={true}>
+			<Container id="rounding_options_container" condition={ this.state.granularity > 1} 
+				className="one-piece-form with-headspace" inline={true} contentsOnly={false}>
 
-				{this.rounding_switch (boundaries.start)}
-				{this.rounding_switch (boundaries.end)}
+				<ToggleOption id="start_time_rounding" title="Start time rounding"
+					values={["Round down", "Round off", "Round up"]} value={this.state.start_rounding + 2}
+					option={constants.option_types.start_rounding} parent={this} billable={false}
+					onChange={selected_value => this.set_option (constants.option_types.start_rounding, selected_value - 1)}>
+				</ToggleOption>					
+
+				<ToggleOption id="end_time_rounding" title="End time rounding"
+					values={["Round down", "Round off", "Round up"]} value={this.state.end_rounding + 2}
+					option={constants.option_types.end_rounding} parent={this} billable={false}
+					onChange={selected_value => this.set_option (constants.option_types.end_rounding, selected_value - 2)}>
+				</ToggleOption>					
 
 			</Container>
 		</ExplodingPanel>
 	}// rounding_switches;
 
 
-	client_limit_switch () {
-		return <Container contentsOnly={true}>
-			<label htmlFor="client_limit_setting">Number of clients</label>
-			<div className="right-justified-container">
-				<ToggleSwitch id="client_limit" value={this.state.client_limit - 1} singleStep={true}
+	update_state () {
 
-					onChange={(data) => { 
+		let options = Options.get_options (this.state.company_id);
+		let option_value = option => { return common.isset (options, options [option]) ? parseInt (options [option]) : constants.default_options [common.get_key (constants.option_types, option)] }
 
-						let client_limit = Options.client_limit ();
+		this.setState ({
+			granularity: option_value (constants.option_types.granularity),
+			start_rounding: option_value (constants.option_types.start_rounding),
+			end_rounding:  option_value (constants.option_types.end_rounding),
+			client_limit:  option_value (constants.option_types.client_limit),
+			project_limit: option_value (constants.option_types.project_limit)
+		});
 
-						this.state.client_limit = data.option + 1;
-
-						if (this.state.client_limit > client_limit) {
-							this.setState ({ 
-								cc_form: { 
-									option: option_types.client_limit, 
-									previous: client_limit,
-									value: this.state.client_limit
-								}/* cc_form */
-							});
-							return true;
-						}// if;
-
-						this.set_option (option_types.client_limit, this.state.client_limit);
-
-					}}>
-
-					<option>0</option>
-					<option>5</option>
-					<option>10</option>
-					<option>50</option>
-					<option>Unlimited</option>
-
-				</ToggleSwitch>
-			</div>
-		</Container>
-	}// client_limit_switch;
-
-
-	project_limit_switch () {
-		return <Container contentsOnly={true}>
-			<label htmlFor="project_limit_setting">Number of projects</label>
-			<div className="right-justified-container">
-				<ToggleSwitch id="granularity" value={this.state.project_limit - 1} singleStep={true}
-
-					onChange={(data) => { 
-
-						let project_limit = Options.project_limit ();
-
-						this.state.project_limit = data.option + 1;
-
-						if (this.state.project_limit > project_limit) {
-							this.setState ({ 
-								cc_form: { 
-									option: option_types.project_limit, 
-									previous: project_limit,
-									value: this.state.project_limit
-								}/* cc_form */
-							});
-							return true;
-						}// if;
-
-						this.set_option (option_types.project_limit, this.state.project_limit);
-
-					}}>
-
-					<option>0</option>
-					<option>5</option>
-					<option>10</option>
-					<option>50</option>
-					<option>Unlimited</option>
-
-				</ToggleSwitch>
-			</div>
-		</Container>
-	}// project_limit_switch;
+	}// update_state;
 
 
 	/********/
 
 
-	shouldComponentUpdate (new_props) {
-		if (new_props.companyId != this.props.companyId) {
-			this.setState ({
-				granularity: Options.granularity () ?? default_options.granularity,
-				start_rounding: Options.rounding (boundaries.start) ?? default_options.rounding,
-				end_rounding: Options.rounding (boundaries.end) ?? default_options.rounding
-			});
-			return false;
-		}// if;
-		return true;
-	}// shouldComponentUpdate;
+	componentDidMount () {
+		if (this.state.company_id != this.context.company_id) return this.setState ({ company_id: this.context.company_id }, this.update_state);
+	}// componentDidMount;
 
+	
+	componentDidUpdate () { this.componentDidMount () };
 
+	
 	render () {
-		return <Container>
-			<div id={this.props.id} className="one-piece-form">
 
-				{this.deluxe_account_form ()}
+		return <Container>
+
+			{this.deluxe_account_form ()}
+
+<div style={{ border: "solid 1px blue" }}>
+	{common.isset (this.context) ? (common.isset (this.context.company_id) ? this.context.company_id : "none") : "none"}<br />
+	{this.state.granularity}
+</div>
+
+			<div id={this.props.id}>
 
 				<div className="full-row section-header">User Settings</div>
 
-				<label htmlFor="animation_speed">Animation Speed</label>
-				<input type="text" id="animation_speed" defaultValue={Settings.animation_speed ()} style={{ textAlign: "right" }}
-					onChange={(event) => {
-						globals.set_setting ("animation_speed", parseInt (event.target.value));
-						globals.master_panel.forceUpdate ();
-					}}>
-				</input>
+				<div className="one-piece-form">
+					<label>Animation Speed</label>
+					<Slider id="animation_speed" min={0} max={5000} width={"100%"} value={Settings.animation_speed ()} onChange={value => {
+						SettingsModel.save_setting (constants.setting_types.animation_speed, value);
+						Settings.animation_speed (value);
+						this.forceUpdate ();
+					}} showValue={true} />
+				</div>
 
 				<div className="full-row section-header">Account Options</div>
 
@@ -240,31 +142,54 @@ export default class SettingsPage extends BaseControl {
 			<br />
 
 			<div className=" with-headspace two-column-newspaper">
-				<div>
-					<ToggleOption id="granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
-						option={option_types.granularity} parent={this} 
-						onPaymentConfirmed={selected_option => {
-							this.set_option (option_types.granularity, selected_option).then (() => this.setState ({
-								start_rounding: date_rounding.off,
-								end_rounding: date_rounding.off,
-								value: selected_option
-							}, this.context.main_page.forceRefresh));
-						}}>
-					</ToggleOption>
-{/*
-					{/* Date.minute_increments = [5, 6, 10, 12, 15, 20, 30] * /}
+
+				<div className="right-justified-column">
+
+					<div className="one-piece-form" style={{ display: "inline-grid" }}>
+
+						<ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
+							option={constants.option_types.granularity} parent={this} 
+							onPaymentConfirmed={selected_option => {
+								this.set_option (constants.option_types.granularity, selected_option).then (() => this.setState ({
+									start_rounding: constants.date_rounding.off,
+									end_rounding: constants.date_rounding.off,
+									value: selected_option
+								}, this.context.main_page.forceRefresh));
+							}}>
+						</ToggleOption>
+
+					</div>
+
+					{/* Date.minute_increments = [5, 6, 10, 12, 15, 20, 30] */}
+
 					{this.rounding_switches ()}
+
 				</div>
+
 				<div>
 					<div className="one-piece-form" >
-						{this.client_limit_switch ()}
-						{this.project_limit_switch ()}
+
+						<ToggleOption id="client_limit" title="Number of clients" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.client_limit}
+							option={constants.option_types.client_limit} parent={this} 
+							onPaymentConfirmed={selected_option => {
+								this.set_option (constants.option_types.client_limit, selected_option).then (() => this.setState ({ client_limit: selected_option }, this.context.main_page.forceRefresh));
+							}}>
+						</ToggleOption>
+
+						<ToggleOption id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.project_limit}
+							option={constants.option_types.project_limit} parent={this} 
+							onPaymentConfirmed={selected_option => {
+								this.set_option (constants.option_types.project_limit, selected_option).then (() => this.setState ({ project_limit: selected_option }, this.context.main_page.forceRefresh));
+							}}>
+						</ToggleOption>
+
 					</div>
-*/}
 				</div>
+
 			</div>
 
 		</Container>
+
 	}// render;
 
 

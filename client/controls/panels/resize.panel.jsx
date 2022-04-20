@@ -1,6 +1,6 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
-import Permissions from "classes/storage/settings";
+import Settings from "classes/storage/settings";
 
 import { globals } from "client/classes/types/constants";
 
@@ -96,7 +96,7 @@ export default class ResizePanel extends BaseControl {
 		resize: resize_state.false,
 		direction: resize_direction.both,
 
-		speed: Permissions.animation_speed (),
+		speed: Settings.animation_speed (),
 
 		stretchOnly: false
 	}// defaultProps;
@@ -176,11 +176,10 @@ export default class ResizePanel extends BaseControl {
 			display: this.props.stretchOnly ? "block" : "inline-block"
 		}// inner_style;
 
-		if (this.props.resize == resize_state.animate) {
-			let speed = this.props.speed ?? globals.settings.animation_speed;
-			outer_style = { ...outer_style, transition: `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out` };
-		}// if;
-
+		if (this.props.resize == resize_state.animate) outer_style = { 
+			...outer_style, 
+			transition: `width ${this.props.speed}ms ease-in-out, height ${this.props.speed}ms ease-in-out` 
+		};
 
 		if (this.props.stretchOnly) {
 			outer_style = { ...outer_style, display: "flex" },

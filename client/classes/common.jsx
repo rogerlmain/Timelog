@@ -1,11 +1,14 @@
 import * as consts from "client/classes/types/constants";
 
 
+export function get_key (object, value) { return Object.keys (object).find (key => object [key] === value) }
 export function notify () { alert (isset (arguments) ? Array.from (arguments).join ("\n") : "paused") }
-export const pause = notify;
 
 
 /********/
+
+
+export const pause = notify;
 
 
 export function scroll_sizes (control) {
@@ -82,8 +85,11 @@ export function is_undefined (value) {
 }// is_undefined;
 
 
-export function isset (value, ...nullables) {
-	return !null_or_undefined (value) && !nullables.includes (value);
+export function isset () {
+	for (let item of Array.from (arguments)) {
+		if (null_or_undefined (item)) return false;
+	}// for;
+	return true;
 }// isset;
 
 

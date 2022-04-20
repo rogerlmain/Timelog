@@ -4,9 +4,12 @@ import * as common from "classes/common";
 import React from "react";
 
 import BaseControl from "controls/abstract/base.control";
+import Container from "controls/container";
 import ToggleSwitch from "controls/toggle.switch";
 
 import Options from "classes/storage/options";
+
+import { MainContext } from "client/classes/types/contexts";
 
 
 export default class ToggleOption extends BaseControl {
@@ -15,12 +18,22 @@ export default class ToggleOption extends BaseControl {
 	state = { value: null }
 
 
+	static contextType = MainContext;
+
 	static defaultProps = {
+
 		id: null,
 		option: null,
+
 		parent: null,
+		title: null,
+
+		billable: true,
+
 		values: null,
 		value: 0,
+
+		onChange: null,
 		onPaymentConfirmed: null
 	}/* defaultProps */;
 
@@ -30,11 +43,12 @@ export default class ToggleOption extends BaseControl {
 
 	change_handler = new_value => {
 
-		let current_value = Options [this.props.option] ();
+		let key_name = common.get_key (constants.option_types, this.props.option);
+		let current_value = Options [key_name] (this.context.company_id);
 
 		this.state.value = new_value + 1;
 
-		if (this.state.value > current_value) {
+		if (this.props.billable && (this.state.value > current_value)) {
 			this.props.parent.setState ({ 
 				cc_form: { 
 					onSubmit: () => this.props.onPaymentConfirmed (this.state.value),
@@ -43,6 +57,8 @@ export default class ToggleOption extends BaseControl {
 			});
 			return true;
 		}// if;
+
+		this.execute (this.props.onChange, new_value);
 
 	}// change_handler;
 
@@ -68,17 +84,33 @@ export default class ToggleOption extends BaseControl {
 
 	componentDidMount () { 
 		if (common.not_set (this.props.id)) throw "ToggleOption requires an ID";
-		this.setState ({ value: Options [this.props.option] () });
+		this.setState ({ value: this.props.value ?? Options.get (this.props.option) });
 	}// componentDidMount;
 
 
+	shouldComponentUpdate (new_props) {
+		if (new_props.value != this.props.value) {
+			this.setState ({ value: new_props.value });
+			return false;
+		}// if;
+		return true;
+	}// shouldComponentUpdate;
+
+
 	render () {
-		return <div className="one-piece-form">
-			<label htmlFor="granularity_setting">Granularity</label>
+
+		if (common.is_null (this.props.id)) throw "ToggleOption requires an ID";
+		if (common.is_null (this.props.option)) throw `ToggleOption "${id}" requires an option`;
+
+		let id = `${this.props.id}_toggle_option`;
+
+		return <Container contentsOnly={true}>
+			<label htmlFor={id}>{this.props.title}</label>
 			<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-				<ToggleSwitch id="granularity" value={this.state.value - 1} singleStep={true} onChange={this.change_handler}>{this.option_items ()}</ToggleSwitch>
+				<ToggleSwitch id={id} value={this.state.value - 1} singleStep={true} onChange={this.change_handler}>{this.option_items ()}</ToggleSwitch>
 			</div>
-		</div>
+		</Container>
+
 	}// render;
 
 }// ToggleOption;

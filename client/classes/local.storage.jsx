@@ -25,7 +25,7 @@ export default class LocalStorage {
 
 	static set_item (store, name, value) {
 		let values = this.get_all (store);
-		if (is_null (values)) values = [];
+		if (is_null (values)) values = {};
 		values [name] = value;
 		this.set_store (store, values);
 	}// set_item;

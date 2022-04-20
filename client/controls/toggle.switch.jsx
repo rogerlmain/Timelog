@@ -7,7 +7,7 @@ import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 import Settings from "classes/storage/settings";
 
-import { globals, horizontal_alignment } from "client/classes/types/constants";
+import { default_settings, globals, horizontal_alignment } from "client/classes/types/constants";
 
 import "client/resources/styles/controls/toggle.switch.css";
 
@@ -97,11 +97,10 @@ export default class ToggleSwitch extends BaseControl {
 
 	render () {
 
-		let speed = this.props.speed ?? globals.settings.animation_speed;
 		let index = (common.is_empty (this.props.children) || common.not_set (this.state.option)) ? 0 : this.state.option;
 		let control_style = { left: ((item_width + 2) * index) + this.state.drag_offset }
 
-		if (common.is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${speed}ms ease-in-out`}
+		if (common.is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.props.speed}ms ease-in-out`}
 
 		return <div style={{ position: "relative" }}>
 			<div ref={this.switch_control} className={this.props.showText ? "two-column-grid" : null} style={{ ...this.props.style, position: "relative" }}>

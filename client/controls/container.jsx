@@ -6,7 +6,7 @@ export default class Container extends BaseControl {
 
 	static defaultProps = { 
 		condition: true,
-		contentsOnly: false,
+		contentsOnly: true,
 		inline: false
 	}// defaultProps;
 

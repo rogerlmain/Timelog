@@ -145,7 +145,7 @@ defaultValue={123} />
 
 			<div className="break" />
 
-			<div className="flex-aligned-right">
+			<div className="right-justified-column">
 				<div className="one-piece-form">
 					<label htmlFor="reuse_card" style={{ margin: 0 }}>Keep my card on file</label>
 					<input id="keep_card" name="keep_card" type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />

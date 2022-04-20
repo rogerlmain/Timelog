@@ -13,12 +13,12 @@ create procedure save_setting (
 	declare account_setting_id int;
     
     select
-		acs.id into account_setting_id
+		stg.id into account_setting_id
 	from
-		settings as acs
+		settings as stg
 	where
-		(acs.account_id = account_id) and
-        (acs.`code` = setting_code);
+		(stg.account_id = account_id) and
+        (stg.`code` = setting_code);
         
 	if (account_setting_id is null) then
     
@@ -36,11 +36,11 @@ create procedure save_setting (
         
     else
     
-		update settings as aop set
-            acs.`value` = coalesce (setting_value, acs.`value`),
-            acs.last_updated = current_timestamp()
+		update settings as stg set
+            stg.`value` = coalesce (setting_value, stg.`value`),
+            stg.last_updated = current_timestamp()
 		where
-			acs.id = account_setting_id;
+			stg.id = account_setting_id;
     
     end if;
 

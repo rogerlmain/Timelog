@@ -47,9 +47,9 @@ export const date_formats = {
 
 
 export const date_rounding = {
-	down	: "down",
-	off		: "off",
-	up		: "up"
+	down	: -1,
+	off		: 0,
+	up		: 1
 }// date_rounding;
 
 
@@ -130,16 +130,16 @@ export const credential_types = {
 }// credential_types;
 
 export const setting_types = {
-	animation_speed: "animation_speed"
+	animation_speed: 1
 }// setting_types;
 
 
 export const option_types = {
-	granularity		: "granularity",
-	rounding		: "rounding",
-	start_rounding	: "start_rounding",
-	end_rounding	: "end_rounding",
-	multiple_clients: "multiple_clients"
+	granularity		: 1,
+	start_rounding	: 2,
+	end_rounding	: 3,
+	client_limit	: 4,
+	project_limit	: 5
 }// option_types;
 
 
@@ -153,7 +153,10 @@ export const default_settings = {
 
 export const default_options = {
 	granularity: 1,
-	rounding: date_rounding.off
+	start_rounding: date_rounding.off,
+	end_rounding: date_rounding.off,
+	client_limit: 1,
+	project_limit: 1
 }// default_options;
 
 

@@ -63,14 +63,22 @@ export default class AccountData extends Database {
 	signin = (fields, response) => {
 		this.data_query ("get_account_by_credentials", [fields ["username"], fields ["password"]]).then (async results => {
 
-			global.account = (global.is_null (results) || (results.length > 1)) ? null : results [0];
-			if (global.is_null (account)) throw "Invalid data response: models.signin";
+			global.account = (global.is_null (results) || (results.length < 1)) ? null : results [0];
+			
+			if (global.is_null (account)) {
+				response.send ({ 
+					error: 1,
+					error_message: "Unknown account"
+				});
+				this.connection.end ();
+				return;
+			}// if;
 
 			let result = { credentials: account };
 
 			let companies = await (new CompanyData ().get_companies_by_account (global.account.account_id));
 			let settings = await (new SettingsData ().get_settings ());
-			let logging = (await (new LoggingData ().latest_log_entry ())) [0];
+			let logging = (await (new LoggingData ().latest_log_entry ()));
 
 			if (companies.length > 0) {
 				
@@ -90,8 +98,14 @@ export default class AccountData extends Database {
 
 			}// if;
 
-			if (settings.length > 0) result.settings = settings;
-			if (global.isset (logging)) result.logging = logging;
+			if (companies.length == 1) result.companies.active_company = companies [0].company_id;
+
+			for (let setting of settings) {
+				if (not_set (result.settings)) result.settings = {};
+				result.settings [setting.id] = setting.value;
+			}// for;
+
+			if (logging.length > 0) result.logging = logging [0];
 
 			response.send (result);
 			this.connection.end ();

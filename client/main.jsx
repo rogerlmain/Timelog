@@ -3,13 +3,15 @@ import "classes/types/prototypes";
 
 import "client/resources/styles/main.css";
 
+import * as common from "classes/common";
+
 import React from "react";
 import ReactDOM from "react-dom";
 
-import SelectList from "controls/select.list";
 import Container from "controls/container";
 
 import BaseControl from "controls/abstract/base.control";
+import SelectList from "controls/select.list";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
 import Companies from "classes/storage/companies";
@@ -19,14 +21,15 @@ import MasterPanel from "client/master";
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
+import Settings from "pages/settings";
+
 import { globals } from "classes/types/constants";
-import { isset, is_empty, not_empty, notify } from "classes/common";
 
 import { MainContext } from "classes/types/contexts.jsx";
 
 
 // Special Guest Import
-import ToggleSwitch from "controls/toggle.switch";
+// import Slider from "controls/slider";
 
 
 
@@ -42,10 +45,16 @@ class Main extends BaseControl {
 
 
 	constructor (props) {
+
+		let company_list = Companies.list ();
+		let active_company = Companies.active_company_id ();
+
 		super (props);
 		globals.main = this;
 		window.onerror = this.error_handler;
-		this.state.company_id = Companies.active_company_id ();
+
+		this.state.company_id = common.isset (company_list) ? (((active_company == 0) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : 0;
+
 	}// constructor;
 
 
@@ -57,24 +66,24 @@ class Main extends BaseControl {
 
 		return (
 			<div>
-				<Container condition={(isset (companies) && (companies.length > 1))}>
+				<Container condition={(common.isset (companies) && (companies.length > 1))}>
 					<SelectList value={Companies.active_company_id ()} data={companies}
 					
 						idField="company_id" textField="company_name" hasHeader={true}
 						
 						onChange={event => {
 							Companies.set_active_company (event.target.value);
-							this.setState ({ company_id: event.target.value });
+							this.setState ({ company_id: event.target.value }, this.forceRefresh);
 						}}>
 							
 					</SelectList>
 				</Container>
 
-				<Container condition={(isset (companies) && (companies.length == 1))}>
-					<div>{not_empty (companies) ? companies [0].company_name : null}</div>
+				<Container condition={(common.isset (companies) && (companies.length == 1))}>
+					<div>{common.not_empty (companies) ? companies [0].company_name : null}</div>
 				</Container>
 
-				<Container condition={is_empty (companies)}>
+				<Container condition={common.is_empty (companies)}>
 					<div>Guest Account</div>
 				</Container>
 			</div>
@@ -83,7 +92,7 @@ class Main extends BaseControl {
 	}// company_header;
 
 
-error_handler (message, url, line) { notify (message, url, line) }
+error_handler (message, url, line) { common.notify (message, url, line) }
 
 
 	main_page () {
@@ -151,20 +160,16 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
-	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
+ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-	// ReactDOM.render (<ToggleSwitch value={1} singleStep={true} id="special_guest_import">
-	// 	<option>One</option>
-	// 	<option>Two</option>
-	// 	<option>Three</option>
-	// 	<option>Four</option>
-	// 	<option>Fve</option>
-	// 	<option>Six</option>
-	// 	<option>Seven</option>
-	// 	<option>Eight</option>
-	// 	<option>Nine</option>
-	// </ToggleSwitch>, document.getElementById ("main_page"));
+	// ReactDOM.render (<div>
+		
+	// 	<MainContext.Provider value={{ company_id: 3, main_page: this }}>
+	// 		<Settings id="special_guest_import" />
+	// 	</MainContext.Provider>
+			
+	// </div>, document.getElementById ("main_page"));
 
 //	Quick Test Render
 //	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));

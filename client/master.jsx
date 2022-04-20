@@ -23,8 +23,8 @@ import { is_empty, is_null } from "classes/common";
 
 const master_pages = { 
 	home	: { name: "Home", permission: true }, 
-	clients	: { name: "Clients", permission: (Options.client_limit () > 0) }, 
-	projects: { name: "Projects", permission: (Options.project_limit () > 0) }, 
+	clients	: { name: "Clients", permission: (Options.client_limit () > 1) }, 
+	projects: { name: "Projects", permission: (Options.project_limit () > 1) }, 
 	logging	: { name: "Logging", permission: true }, 
 	reports	: { name: "Reports", permission: true },
 	account	: { name: "Account", permission: true }, 

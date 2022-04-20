@@ -487,3 +487,6 @@ String.prototype.splice = function (start_index, end_index, replacement = null) 
 	return `${this.substring (0, start)}${replacement}${this.substring (finish)}`;
 	
 }// splice;
+
+
+String.prototype.titled = function () { return this.charAt (0).toUpperCase () + this.slice (1) }

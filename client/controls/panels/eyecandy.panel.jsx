@@ -2,7 +2,7 @@ import BaseControl from "client/controls/abstract/base.control";
 
 import React from "react";
 import SlideshowPanel from "./slideshow.panel";
-import Permissions from "classes/storage/settings";
+import Settings from "classes/storage/settings";
 
 import * as common from "classes/common";
 
@@ -16,7 +16,7 @@ export default class EyecandyPanel extends BaseControl {
 
 	static defaultProps = { 
 		id: null,
-		speed: Permissions.animation_speed (),
+		speed: Settings.animation_speed (),
 		stretchOnly: false
 	};
 	
