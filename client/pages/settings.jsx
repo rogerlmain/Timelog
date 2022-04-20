@@ -19,7 +19,6 @@ import OptionsModel from "models/options";
 import ToggleOption from "pages/gadgets/settings/toggle.option";
 
 import { MainContext } from "classes/types/contexts";
-import { boundaries } from "classes/storage/options";
 import { resize_direction } from "controls/panels/resize.panel";
 
 import "client/resources/styles/pages.css";
@@ -87,7 +86,11 @@ export default class SettingsPage extends BaseControl {
 	update_state () {
 
 		let options = Options.get_options (this.state.company_id);
-		let option_value = option => { return common.isset (options, options [option]) ? parseInt (options [option]) : constants.default_options [common.get_key (constants.option_types, option)] }
+		
+		let option_value = option => { 
+			if (common.isset (options) && common.isset (options [option])) return parseInt (options [option]);
+			return constants.default_options [common.get_key (constants.option_types, option)];
+		}// option_value;
 
 		this.setState ({
 			granularity: option_value (constants.option_types.granularity),

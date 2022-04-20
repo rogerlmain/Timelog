@@ -85,11 +85,8 @@ export function is_undefined (value) {
 }// is_undefined;
 
 
-export function isset () {
-	for (let item of Array.from (arguments)) {
-		if (null_or_undefined (item)) return false;
-	}// for;
-	return true;
+export function isset (value) {
+	return (!null_or_undefined (value));
 }// isset;
 
 

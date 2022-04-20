@@ -53,7 +53,7 @@ class Main extends BaseControl {
 		globals.main = this;
 		window.onerror = this.error_handler;
 
-		this.state.company_id = common.isset (company_list) ? (((active_company == 0) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : 0;
+		this.state.company_id = common.isset (company_list) ? (((active_company == 0) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
 
 	}// constructor;
 

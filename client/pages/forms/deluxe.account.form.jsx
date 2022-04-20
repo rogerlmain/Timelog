@@ -5,17 +5,26 @@ import React from "react";
 
 import PaymentHandler from "classes/payment.handler";
 import Account from "classes/storage/account";
-import Companies from "client/classes/storage/companies";
+import Companies from "classes/storage/companies";
 
+import Container from "controls/container";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import PopupWindow from "pages/gadgets/popup.window";
 
 import AddressForm from "pages/forms/address.form"
 import CreditCardForm from "pages/forms/credit.card.form";
-import BaseControl from "client/controls/abstract/base.control";
+import BaseControl from "controls/abstract/base.control";
 
-import { dynamic_input_classname } from "client/controls/inputs/dynamic.input";
+import { dynamic_input_classname } from "controls/inputs/dynamic.input";
+import { MainContext } from "classes/types/contexts";
+
+
+const greetings = {
+	new_customer		: "Tell us a little about yourself",
+	existing_customer	: "Should we use the same card?"
+}// greetings;
+
 
 export default class DeluxeAccountForm extends BaseControl {
 
@@ -29,6 +38,9 @@ export default class DeluxeAccountForm extends BaseControl {
 		active_card: null,
 		keep_card: true
 	}/* state */;
+
+
+	static contextType = MainContext;
 
 
 	static defaultProps = {  
@@ -134,16 +146,22 @@ export default class DeluxeAccountForm extends BaseControl {
 
 
 	render () {
+
+		let company_id = this.context_item ("company_id");
+		let new_customer = common.not_set (company_id);
+
 		return <PopupWindow id="deluxe_account_window" visible={this.state.visible}>
 			<form ref={this.deluxe_account_form} id="deluxe_account_form" onSubmit={event => event.preventDefault ()}>
 
-				<label className="header">Tell us a little about yourself</label>
+				<label className="header">{new_customer ? greetings.new_customer : greetings.existing_customer}</label>
 
 				<br className="half" />
 				
-				<div className="two-column-newspaper">
+				<div className={new_customer ? "two-column-newspaper" : null}>
 
-					<AddressForm ref={this.address_form} />
+					<Container condition={new_customer}>
+						<AddressForm ref={this.address_form} />
+					</Container>
 
 					<div className="vertically-spaced-out">
 						<div><CreditCardForm /></div>

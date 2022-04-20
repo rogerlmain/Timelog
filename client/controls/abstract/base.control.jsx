@@ -19,7 +19,11 @@ export default class BaseControl extends React.Component {
 
 
 	compare_elements = (first_element, second_element) => { return ReactDOMServer.renderToString (first_element) == ReactDOMServer.renderToString (second_element) }
+	context_item = (name) => { return common.isset (this.context) ? this.context [name] : null }
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
+
+	// Like forceUpdate except calls shouldComponentUpdate
+	forceRefresh = () => { this.setState (this.state) }
 
 
 	/********/
@@ -61,10 +65,6 @@ export default class BaseControl extends React.Component {
 			};
 		});
 	}// execute;
-
-
-	// Like forceUpdate except calls shouldComponentUpdate
-	forceRefresh = () => { this.setState (this.state) }
 
 
 	id_badge (stub = null) {
