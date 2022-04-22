@@ -30,14 +30,19 @@ export default class SettingsPage extends BaseControl {
 
 
 	state = { 
+
 		account_type: constants.account_types.deadbeat,
 		company_id: null,
+
 		granularity: 1,
 		start_rounding: constants.date_rounding.off,
 		end_rounding: constants.date_rounding.off,
 		client_limit: 1,
 		project_limit: 1,
-		cc_form: null 
+
+		cc_form: null,
+		pricing: null
+
 	}/* state */;
 
 
@@ -62,14 +67,6 @@ export default class SettingsPage extends BaseControl {
 
 		return options;
 
-		// return <Container>
-		// 							<option key="deadbeat_option" value={constants.account_types.deadbeat}>{constants.account_types.deadbeat.title}</option>
-		// 				<option key="freelance_option" value={constants.account_types.freelance}>{constants.account_types.freelance.title}</option>
-		// 				<option key="company_option" value={constants.account_types.company}>{constants.account_types.company.title}</option>
-		// 				<option key="corporate_option" value={constants.account_types.corporate}>{constants.account_types.corporate.title}</option>
-		// 				<option key="enterprise_option" value={constants.account_types.enterprise}>{constants.account_types.enterprise.title}</option>
-
-		// </Container>
 	}// account_options;
 
 
@@ -83,9 +80,9 @@ export default class SettingsPage extends BaseControl {
 
 	deluxe_account_form () {
 		return <DeluxeAccountForm visible={common.isset (this.state.cc_form)}
-			onCancel={() => this.execute (this.state.cc_form.onCancel).then (() => this.setState ({ cc_form: null }))} 
-			onSubmit={() => this.execute (this.state.cc_form.onSubmit).then (() => this.setState ({ cc_form: null }))}>
-		</DeluxeAccountForm>
+				onCancel={() => this.execute (this.state.cc_form.onCancel).then (() => this.setState ({ cc_form: null }))} 
+				onSubmit={() => this.execute (this.state.cc_form.onSubmit).then (() => this.setState ({ cc_form: null }))}>
+			</DeluxeAccountForm>
 	}// deluxe_account_form;
 
 
