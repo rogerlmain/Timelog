@@ -14,6 +14,12 @@ import { add } from "date-fns";
 
 const transaction_id_field = "transaction_id";
 
+const square_hostname = "connect.squareupsandbox.com";
+
+const customer_path	= "v2/customers";
+const card_path 	= "v2/cards";
+
+
 
 export default class PaymentHandler {
 
@@ -21,10 +27,19 @@ export default class PaymentHandler {
 	state = { output: null }
 
 
-	static send_square_request (data) {
+	static extract_address (data) {
+		return {
+			address_line_1: form_data.street_address,
+			address_line_2: form_data.additional_address,
+			administrative_district_level_1: form_data.city,
+			locality: form_data.district_name,
+			postal_code: form_data.zip,
+			country: form_data.country_name
+		};
+	}// extract_address;
 
-		const hostname = "connect.squareupsandbox.com";
-		const hostpath = "v2/customers";
+
+	static send_square_request (path, data) {
 
 		data.idempotency_key = localStorage.getItem (transaction_id_field);
 
@@ -33,7 +48,7 @@ export default class PaymentHandler {
 			localStorage.setItem (transaction_id_field, data.idempotency_key);
 		}// if;
 
-		return new Promise ((resolve, reject) => fetch (`https://${hostname}/${hostpath}`, {
+		return new Promise ((resolve, reject) => fetch (`https://${square_host}/${path}`, {
 			method: "post",
 			headers: {
 				"Content-Type": "application/json",
@@ -47,18 +62,11 @@ export default class PaymentHandler {
 
 
 	static async save_square_account (data) {
-//		return this.send_square_request ({
+//		return this.send_square_request (customer_path, {
 //			given_name: account_data [constants.credential_types.first_name],
 //			family_name: account_data [constants.credential_types.last_name],
 //			company_name: form_data.company_name,
-//			address: {
-//				address_line_1: form_data.street_address,
-//				address_line_2: form_data.additional_address,
-//				administrative_district_level_1: form_data.city,
-//				locality: form_data.district_name,
-//				postal_code: form_data.zip,
-//				country: form_data.country_name
-//			}/* address */,
+//			address: this.extract_address (data),
 //			email_address: form_data [constants.credential_types.email_address],
 //			phone_number: form_data.primary_phone
 //		});
@@ -80,6 +88,21 @@ return new Promise ((resolve, reject) => resolve ({ customer: { id: "4RR7K1JTH4Y
 		}// address_data;
 		return { ...(await AddressesModel.save_address (FormData.fromObject (address_data))), ...address_data };
 	}// save_address;
+
+
+	static async save_card (data) {
+		return new Promise ((resolve, reject) => {
+			this.send_square_request (card_path, {
+				"card": {
+					"billing_address": this.extract_address (data),
+					"source_id": "some number",
+					"customer_id": "VDKXEEKPJN48QDG3BGGFAK05P8",
+					"reference_id": "user-id-1"
+				}
+			});
+			resolve (true);
+		});
+	}// save_card;
 
 
 	static async save_company (data) {

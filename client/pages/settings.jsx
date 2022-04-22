@@ -6,12 +6,14 @@ import React from "react";
 import Settings from "classes/storage/settings";
 import Options from "classes/storage/options";
 
-import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
-import ExplodingPanel from "controls/panels/exploding.panel";
 import Slider from "controls/slider";
+import ToggleSwitch from "controls/toggle.switch";
 
-import DeluxeAccountForm from "pages/forms/deluxe.account.form";
+import BaseControl from "controls/abstract/base.control";
+import ExplodingPanel from "controls/panels/exploding.panel";
+
+import DeluxeAccountForm from "forms/deluxe.account.form";
 
 import SettingsModel from "models/settings";
 import OptionsModel from "models/options";
@@ -28,6 +30,7 @@ export default class SettingsPage extends BaseControl {
 
 
 	state = { 
+		account_type: constants.account_types.deadbeat,
 		company_id: null,
 		granularity: 1,
 		start_rounding: constants.date_rounding.off,
@@ -43,6 +46,31 @@ export default class SettingsPage extends BaseControl {
 
 
 	/********/
+
+
+	account_options () {
+
+		let options = null;
+
+		Object.keys (constants.account_types).map (key => {
+
+			let next_item = <option key={`${key}_option`} value={constants.account_types [key]}>{key.titled ()}</option>
+			if (common.is_null (options)) options = new Array ();
+			options.push (next_item);
+
+		})
+
+		return options;
+
+		// return <Container>
+		// 							<option key="deadbeat_option" value={constants.account_types.deadbeat}>{constants.account_types.deadbeat.title}</option>
+		// 				<option key="freelance_option" value={constants.account_types.freelance}>{constants.account_types.freelance.title}</option>
+		// 				<option key="company_option" value={constants.account_types.company}>{constants.account_types.company.title}</option>
+		// 				<option key="corporate_option" value={constants.account_types.corporate}>{constants.account_types.corporate.title}</option>
+		// 				<option key="enterprise_option" value={constants.account_types.enterprise}>{constants.account_types.enterprise.title}</option>
+
+		// </Container>
+	}// account_options;
 
 
 	set_option (option, value) {
@@ -124,6 +152,7 @@ export default class SettingsPage extends BaseControl {
 	{common.isset (this.context) ? (common.isset (this.context.company_id) ? this.context.company_id : "none") : "none"}<br />
 	{this.state.granularity}
 </div>
+<br />
 
 			<div id={this.props.id}>
 
@@ -138,55 +167,74 @@ export default class SettingsPage extends BaseControl {
 					}} showValue={true} />
 				</div>
 
-				<div className="full-row section-header">Account Options</div>
-
 			</div>
 
 			<br />
 
-			<div className=" with-headspace two-column-newspaper">
+			<div>
 
-				<div className="right-justified-column">
+				<div className="full-row horizontally-spaced-out section-header" style={{ marginTop: "3em" }}>
 
-					<div className="one-piece-form" style={{ display: "inline-grid" }}>
+					<div className="bottom-justified">Account Options</div>
 
-						<ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
-							option={constants.option_types.granularity} parent={this} 
-							onPaymentConfirmed={selected_option => {
-								this.set_option (constants.option_types.granularity, selected_option).then (() => this.setState ({
-									start_rounding: constants.date_rounding.off,
-									end_rounding: constants.date_rounding.off,
-									value: selected_option
-								}, this.context.main_page.forceRefresh));
-							}}>
-						</ToggleOption>
+					<div className="bottom-justified" style={{ fontWeight: "normal", fontStyle: "italic" }}>
+						{common.get_key (constants.account_types, this.state.account_type).titled ()} account
+					</div>	
 
-					</div>
-
-					{/* Date.minute_increments = [5, 6, 10, 12, 15, 20, 30] */}
-
-					{this.rounding_switches ()}
+					<ToggleSwitch id="package" onChange={option => this.setState ({ account_type: parseInt (option) })}>
+						{this.account_options ()}
+					</ToggleSwitch>
 
 				</div>
 
-				<div>
-					<div className="one-piece-form" >
+				<div className=" with-headspace two-column-newspaper">
 
-						<ToggleOption id="client_limit" title="Number of clients" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.client_limit}
-							option={constants.option_types.client_limit} parent={this} 
-							onPaymentConfirmed={selected_option => {
-								this.set_option (constants.option_types.client_limit, selected_option).then (() => this.setState ({ client_limit: selected_option }, this.context.main_page.forceRefresh));
-							}}>
-						</ToggleOption>
+					<div className="right-justified-column">
 
-						<ToggleOption id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.project_limit}
-							option={constants.option_types.project_limit} parent={this} 
-							onPaymentConfirmed={selected_option => {
-								this.set_option (constants.option_types.project_limit, selected_option).then (() => this.setState ({ project_limit: selected_option }, this.context.main_page.forceRefresh));
-							}}>
-						</ToggleOption>
+						<div className="one-piece-form" style={{ display: "inline-grid" }}>
+
+							<ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
+								option={constants.option_types.granularity} parent={this} 
+								onPaymentConfirmed={selected_option => {
+
+	return;
+
+									this.set_option (constants.option_types.granularity, selected_option).then (() => this.setState ({
+										start_rounding: constants.date_rounding.off,
+										end_rounding: constants.date_rounding.off,
+										value: selected_option
+									}, this.context.main_page.forceRefresh));
+								}}>
+							</ToggleOption>
+
+						</div>
+
+						{/* Date.minute_increments = [5, 6, 10, 12, 15, 20, 30] */}
+
+						{this.rounding_switches ()}
 
 					</div>
+
+					<div>
+						<div className="one-piece-form" >
+
+							<ToggleOption id="client_limit" title="Number of clients" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.client_limit}
+								option={constants.option_types.client_limit} parent={this} 
+								onPaymentConfirmed={selected_option => {
+									this.set_option (constants.option_types.client_limit, selected_option).then (() => this.setState ({ client_limit: selected_option }, this.context.main_page.forceRefresh));
+								}}>
+							</ToggleOption>
+
+							<ToggleOption id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.project_limit}
+								option={constants.option_types.project_limit} parent={this} 
+								onPaymentConfirmed={selected_option => {
+									this.set_option (constants.option_types.project_limit, selected_option).then (() => this.setState ({ project_limit: selected_option }, this.context.main_page.forceRefresh));
+								}}>
+							</ToggleOption>
+
+						</div>
+					</div>
+
 				</div>
 
 			</div>

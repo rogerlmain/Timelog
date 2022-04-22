@@ -8,7 +8,7 @@ import AccountsModel from "models/accounts";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
-import PasswordForm from "pages/forms/password.form";
+import PasswordForm from "client/forms/password.form";
 
 import { account_types } from "client/classes/types/constants";
 
@@ -91,8 +91,8 @@ export default class SignupPage extends BaseControl {
 								});
 							}}>
 
-							{Object.entries (account_types).map (item => { return (
-								<option key={item [1].title} value={item [1].value} style={{ textTransform: "capitalize" }}>{item [1].title}</option>
+							{Object.keys (account_types).map (key => { return (
+								<option key={key} value={account_types [key]} style={{ textTransform: "capitalize" }}>{key.titled ()}</option>
 							)} )}
 
 						</select>
@@ -114,7 +114,7 @@ export default class SignupPage extends BaseControl {
 
 				</form>
 
-				<div className={`${this.signed_out () ? "horizontally-spaced-out" : "right-justified-container"} button-bar`}>
+				<div className={`${this.signed_out () ? "horizontally-spaced-out" : "right-justify"} button-bar`}>
 
 					<Container condition={this.signed_out ()}>
 						<div className="aside">

@@ -59,7 +59,8 @@ export default class ToggleSwitch extends BaseControl {
 
 	selected_value = () => { 
 		let element = this.option_elements () [this.state.option];
-		return  common.isset (element.value) ? element.value : this.state.option;
+		let value = element.getAttribute ("value");
+		return  common.isset (value) ? value : this.state.option;
 	}// selected_value;
 
 
@@ -110,7 +111,7 @@ export default class ToggleSwitch extends BaseControl {
 				<div id={this.props.id} className="toggle-switch unselectable">
 
 					{common.is_empty (this.props.children) ? null : this.props.children.map (child => {
-						return <div id={child.props.id} className="item" key={child.props.children} title={child.props.children} 
+						return <div id={child.props.id} className="item" key={child.props.children} value={child.props.value} title={child.props.children} 
 						
 							onClick={event => this.setState ({ 
 								process_change: true, 

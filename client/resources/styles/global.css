@@ -144,7 +144,7 @@ input, select {
 }/* input, select */
 
 
-input {
+input:not([type="checkbox"]):not([type="radio"]) {
 	height: 2em;
 	padding: 1em;
 	padding: 0.01em 0.5em;

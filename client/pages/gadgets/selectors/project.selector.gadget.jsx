@@ -83,7 +83,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 						
 				</ClientSelectorGadget>
 
-				<FadePanel id={`${this.props.id}_projects_label`} visible={client_loaded} className="vertical-centering-container">
+				<FadePanel id={`${this.props.id}_projects_label`} visible={client_loaded} className="vertically_centered">
 					<label htmlFor={this.project_selector_id}>Project</label>
 				</FadePanel>
 

@@ -381,7 +381,7 @@ HTMLElement.prototype.validate = function () {
 		if (!this.hasAttribute ("required")) return true;
 
 		switch (this.hasAttribute ("pattern")) {
-			case true: if (!this.getAttribute ("input_mask").replaceAll ("9","*").equals (this.value)) return true; break;
+			case true: if (this.value.indexOf ("*") < 0) return true; break;
 			default: if (this.value.not_empty ()) return true; break;
 		}// switch;
 
@@ -392,7 +392,7 @@ HTMLElement.prototype.validate = function () {
 
 	const pattern_match = () => {
 		if (!this.hasAttribute ("pattern")) return true;
-		if (this.isComplete ()) return true;
+		if (this.value.matches (this.getAttribute ("pattern"))) return true;
 		return false;
 	}/* pattern_match */;
 
@@ -400,8 +400,8 @@ HTMLElement.prototype.validate = function () {
 	let labels = common.not_empty (this.id) ? document.querySelectorAll (`[for=${this.id}]`) : null;
 	let field_name = (common.isset (labels) && (labels.length > 0)) ? labels [0].innerText : "This field";
 
-	this.setValidity (provided (), `${field_name} is a required value.`);
-	this.setValidity (pattern_match (), "Please match the pattern provided.");
+	if (!this.setValidity (provided (), `${field_name} is a required value.`)) return false;
+	if (!this.setValidity (pattern_match (), "Please match the pattern provided.")) return false;
 	
 	return true;
 	

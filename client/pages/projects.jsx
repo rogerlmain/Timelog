@@ -4,7 +4,7 @@ import BaseControl from "client/controls/abstract/base.control";
 
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 import ProjectsModel from "models/projects";
-import ProjectForm from "pages/forms/project.form";
+import ProjectForm from "forms/project.form";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import { isset } from "classes/common";

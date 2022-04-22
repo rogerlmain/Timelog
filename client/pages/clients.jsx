@@ -5,7 +5,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import ClientSelectorGadget from "./gadgets/selectors/client.selector.gadget";
-import ClientForm from "pages/forms/client.form";
+import ClientForm from "forms/client.form";
 import ClientModel from "models/clients";
 
 import { globals } from "client/classes/types/constants";

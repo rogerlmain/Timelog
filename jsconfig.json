@@ -20,6 +20,7 @@
 			"client/*"		: ["client/*"],
 			"classes/*"		: ["client/classes/*"],
 			"controls/*"	: ["client/controls/*"],
+			"forms/*"		: ["client/forms/*"],
 			"models/*"		: ["client/models/*"],
 			"pages/*"		: ["client/pages/*"],
 			"panels/*"		: ["client/panels/*"],

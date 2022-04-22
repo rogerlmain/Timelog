@@ -1,6 +1,9 @@
 import * as consts from "client/classes/types/constants";
 
 
+export function boolean_value (value) { return (is_string (value) && (value.equals ("true"))) }
+export function integer_value (value) { return isset (value) ? parseInt (value) : null }
+
 export function get_key (object, value) { return Object.keys (object).find (key => object [key] === value) }
 export function notify () { alert (isset (arguments) ? Array.from (arguments).join ("\n") : "paused") }
 
@@ -9,14 +12,6 @@ export function notify () { alert (isset (arguments) ? Array.from (arguments).jo
 
 
 export const pause = notify;
-
-
-export function scroll_sizes (control) {
-	return {
-		width: control.scrollWidth,
-		height: control.scrollHeight
-	};
-}// scroll_sizes;
 
 
 export function coalesce (...values) {
@@ -34,6 +29,14 @@ export function computed_sizes (control) {
 		height: Math.ceil (parseFloat (computed_styles.height))
 	};
 }// computed_sizes;
+
+
+export function scroll_sizes (control) {
+	return {
+		width: control.scrollWidth,
+		height: control.scrollHeight
+	};
+}// scroll_sizes;
 
 
 export function styled_sizes (control) {

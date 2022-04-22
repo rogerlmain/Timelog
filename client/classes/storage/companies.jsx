@@ -1,6 +1,6 @@
-import LocalStorage from "classes/local.storage"
+import * as common from "classes/common";
 
-import { isset, is_null } from "classes/common";
+import LocalStorage from "classes/local.storage"
 
 
 const store_name = "companies";
@@ -16,13 +16,13 @@ export default class Companies extends LocalStorage {
 
 
 	static active_company () { return this.get ("active_company") }
-	static company_selected () { return isset (this.active_company ()) }
+	static company_selected () { return common.isset (this.active_company ()) }
 	static get (name) { return LocalStorage.get (store_name, name) }
 	
 
 	static list () { 
 		let companies = LocalStorage.get_all (store_name);
-		return isset (companies) ? companies.list : null;
+		return common.isset (companies) ? companies.list : null;
 	}// list;
 
 
@@ -31,16 +31,20 @@ export default class Companies extends LocalStorage {
 		let companies = this.list ();
 		let selected_id = this.get ("active_company");
 
-		if (is_null (companies) || is_null (selected_id)) return null;
+		if (common.is_null (companies) || common.is_null (selected_id)) return null;
+
 		for (let company of companies) {
 			if (company.company_id == selected_id) return company;
 		}// if;
+
 		return null;
+
 	}// selected;
+
 
 	static active_company_id () {
 		let active_company = this.selected ();
-		return is_null (active_company) ? 0 : active_company.company_id;
+		return common.isset (active_company) ? active_company.company_id : null;
 	}// active_company_id;
 
 }// Companies;

@@ -75,11 +75,11 @@ export const credit_card_images = {
 
 
 export const account_types = {
-	free		: {value: 10, title: "Free"},
-	freelance	: {value: 20, title: "Freelance"},
-	company		: {value: 30, title: "Company"},
-	corporate	: {value: 40, title: "Corporate"},
-	enterprise	: {value: 50, title: "Enterprise"}
+	deadbeat	: 10,
+	freelance	: 20,
+	company		: 30,
+	corporate	: 40,
+	enterprise	: 50,
 }// account_types;
 
 

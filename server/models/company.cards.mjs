@@ -1,0 +1,23 @@
+import Database from "../database.mjs";
+
+
+export default class CompanyCardData extends Database {
+
+
+	save_company_card = (data) => {
+
+		let parameters = {
+			company_id: global.integer_value (data.company_id),
+			last_few: global.integer_value (data.last_few),
+			expiration: global.integer_value (data.expiration),
+			card_type: global.integer_value (data.card_type)
+		}// parameters;
+
+		this.execute_query ("save_company_card", parameters);
+
+	}// save_company_card;
+
+
+
+}// CompanyCardData;
+

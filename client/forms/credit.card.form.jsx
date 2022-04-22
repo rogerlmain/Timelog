@@ -67,7 +67,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 			<div className="horizontally-spaced-out">
 				<img src={"client/resources/images/logos/square.png"} className="square-logo" />
-				<div className="credit-card-logos right-justified-container">
+				<div className="credit-card-logos right-justify">
 					<img src={"client/resources/images/logos/mastercard.svg"} />
 					<img src={"client/resources/images/logos/visa.png"} />
 					<img src={"client/resources/images/logos/discover.svg"} />
@@ -105,14 +105,16 @@ defaultValue="Rex Strange">
 				</div>
 
 				<label htmlFor="cc_number">Card number</label>
+
 				<CreditCardInput id="cc_number" name="cc_number" required={true} parent={this} />
+				<input type="hidden" id="cc_type" name="cc_type" value={this.state.card_type ?? constants.blank} />
 
 				<div className="break" />
 
-				<label htmlFor="cc_expire">Expiration Date</label>
+				<label htmlFor="cc_month">Expiration Date</label>
 				<div className="horizontally-spaced-out">
 
-					<select id="cc_expire_month" ref={this.month_field} required={true} onChange={this.validate_date}
+					<select id="cc_month" name="cc_month" ref={this.month_field} required={true} onChange={this.validate_date}
 defaultValue={5}>
 						<option />
 						<option value="1">January</option>
@@ -148,7 +150,7 @@ defaultValue={123} />
 			<div className="right-justified-column">
 				<div className="one-piece-form">
 					<label htmlFor="reuse_card" style={{ margin: 0 }}>Keep my card on file</label>
-					<input id="keep_card" name="keep_card" type="checkbox" defaultValue={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
+					<input type="checkbox" id="keep_card" name="keep_card" defaultChecked={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
 				</div>
 			</div>
 

@@ -1,0 +1,23 @@
+div.pricing-table {
+	display: inline-grid;
+	margin: 1em 0;
+	justify-self: center;
+}/* div.pricing-table */
+
+
+div.pricing-table > div {
+	display: flex;
+	align-items: center;
+	margin: 0 0.25em;
+}/* div.pricing-table > div */
+
+
+/*div.pricing-table > div:nth-child(3n+1) {
+	margin-left: 2em;
+}/* div.pricing-table > div:nth-child(3n+1) */
+
+
+div.pricing-table > div:nth-child(3n+3) {
+	display: flex;
+	justify-content: flex-end;
+}/* div.pricing-table > div:nth-child(3n+1) */

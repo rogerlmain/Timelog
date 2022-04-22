@@ -106,7 +106,7 @@ export default class Slider extends BaseControl {
 	render () {
 		return <div className={this.props.showValue ? "two-column-grid" : null} style={{ display: "flex" }}>
 
-			<div className="vertical-centering-container" style={{ flexGrow: 1 }}>
+			<div className="vertically_centered" style={{ flexGrow: 1 }}>
 				<div id={this.props.id} className="slider">
 					<div id={`${this.props.id}_track`} ref={this.slider_track} className="slider-track" />
 					<div id={`${this.props.id}_button`} ref={this.slider_button} className="slider-button" style={{ left: this.state.button_position - this.state.button_offset }} onMouseDown={this.start_dragging} />

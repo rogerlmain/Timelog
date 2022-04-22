@@ -53,6 +53,9 @@ export const card_type = {
 export default class CreditCardInput extends InputControl {
 
 
+	input_field = React.createRef ();
+
+
 	state = { 
 		current_card: null,
 		mask: null 
@@ -75,30 +78,31 @@ export default class CreditCardInput extends InputControl {
 	}// get_card_type;
 
 
-	update_mask (event) {
+	update_mask (control) {
 
-		let current_card = this.get_card_type (event.target.value);
+		let current_card = this.get_card_type (control.value);
 		let mask_type = (current_card == card_type.amex) ? card_type.amex : card_type.other;
 
 		let mask = (common.isset (current_card) ? card_mask [mask_type] : null); 
-		let value_empty = (event.target.value.empty () || Object.values (card_mask).includes (event.target.value))
+		let value_empty = (control.value.empty () || Object.values (card_mask).includes (control.value))
 
 		this.setState ({ 
-			mask: value_empty ? null : mask,
+			mask: value_empty ? null : mask.replaceAll ("*", "9"),
 			current_card: current_card
+		}, () => {
+			control.setAttribute ("input_mask", mask);
+			control.validate (control);
 		});
 
 		switch (common.isset (current_card)) {
-			case true: event.target.setAttribute ("pattern", card_validator [mask_type]); break;
+			case true: control.setAttribute ("pattern", card_validator [mask_type]); break;
 			default: {
-				event.target.removeAttribute ("pattern"); 
-				event.target.value = event.target.value.extractNumber ();
+				control.removeAttribute ("pattern"); 
+				control.value = control.value.extractNumber ();
 				break;
 			}// default;
 		}// switch;
 		
-		event.target.validate ();
-
 		this.props.parent.setState ({ card_type: current_card });
 
 		return true;
@@ -106,16 +110,21 @@ export default class CreditCardInput extends InputControl {
 	}// update_mask;
 
 
+	componentDidMount () {
+		this.update_mask (this.input_field.current.getInputDOMNode ());
+	}// componentDidMount;
+
+
 	render () { 
 		return <div className="flex-row">
 		
-			<InputMask id={this.props.id} name={this.props.id} 
+			<InputMask id={this.props.id} name={this.props.id} ref={this.input_field}
 
 defaultValue="5412 3456 7890 1234"
 
-				mask={this.state.mask} maskChar="*" 
+				mask={this.state.mask} maskChar="*" required={true}
 				pattern={card_validator [this.state.current_card]} 
-				onChange={this.update_mask.bind (this)} required={true}
+				onChange={event => this.update_mask (event.target)} 
 				style={{ textAlign: "center", width: "100%" }}>
 			</InputMask>
 

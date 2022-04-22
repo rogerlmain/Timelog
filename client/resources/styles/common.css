@@ -66,30 +66,28 @@
 }/* .centering-container */
 
 
-.horizontal-centering-container {
+.horizontally_centered {
 	display: inline-flex;
 	flex-direction: row;
 	justify-content: center;
-}/* .horizontal-centering-container */
+}/* .horizontally_centered */
 
 
-.vertical-centering-container {
+.vertically_centered {
 	display: inline-flex;
 	flex-direction: column;
 	justify-content: center;
-}/* .vertical-centering-container */
+}/* .vertically_centered */
 
 
-/** Flex **/
-
-/* row */
+/** Flex Row **/
 
 
-.right-justified-container {
+.right-justify {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
-}/* .right-justified-container */
+}/* .right-justify */
 
 
 .horizontally-spaced-out {
@@ -99,7 +97,7 @@
 }/* .horizontally-spaced-out */
 
 
-/* col */
+/** Flex Column **/
 
 
 .right-justified-column {
@@ -122,6 +120,13 @@
 	flex-direction: column;
 	justify-content: space-between
 }/* .vertically-spaced-out */
+
+
+.bottom-justified {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}/* .bottom-justified */
 
 
 /**** Line Breaks ****/
@@ -346,7 +351,6 @@ div[class*="four-column-"]	{ grid-template-columns: repeat(4, min-content) }
 
 div[class*="-column-newspaper"], div[class*="-column-grid"] {
 	display: grid;
-	flex-direction: row;
 	row-gap: 0.2em;
 }/* div[class*="-column-newspaper"], div[class*="-column-grid"] */
 

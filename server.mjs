@@ -123,6 +123,16 @@ app.post ("/company_accounts", function (request, response) {
 });
 
 
+app.post ("/company_card", function (request, response) {
+	app.process (request, response, (fields) => {
+		let company_card_data = new CompanyCardData ();
+		switch (fields.action) {
+			case "save": company_card_data.save_company_card (fields); break;
+		}// switch;
+	});
+});
+
+
 app.post ("/logging", function (request, response) {
 	app.process (request, response, async fields => {
 		let logging_data = new LoggingData ();
@@ -165,6 +175,11 @@ app.post ("/options", function (request, response) {
 			}// switch;
 		});
 	} catch (except) { console.log (except) }
+});
+
+
+app.get ("/packages", function (request, response) {
+	response.sendFile (`${root_path}/client/pages/static/packages.html`);
 });
 
 

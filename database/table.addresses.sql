@@ -12,7 +12,7 @@ create table addresses (
     country_id		integer,
     postcode		varchar (16),
 	date_created	datetime,
-	last_updated	datetime
+	last_updated	datetime,
     
     foreign key (company_id) references companies (id),
     foreign key (state_id) references lookups (id),

@@ -1,4 +1,6 @@
-import * as React from "react";
+import * as common from "classes/common";
+
+import React from "react";
 
 import CurrentAccount from "classes/storage/account";
 import Companies from "classes/storage/companies";
@@ -8,7 +10,7 @@ import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import { globals } from "client/classes/types/constants";
-import { isset } from "classes/common";
+import { MainContext } from "classes/types/contexts";
 
 
 const bad_credentials = <div id="bad_credentials" className="login-error">
@@ -18,9 +20,6 @@ const bad_credentials = <div id="bad_credentials" className="login-error">
 
 
 export default class SigninPage extends BaseControl {
-
-
-	static defaultProps = { id: "signin_page" }
 
 
 	state = { 
@@ -34,6 +33,10 @@ export default class SigninPage extends BaseControl {
 	}// state;
 
 
+	static contextType= MainContext;
+	static defaultProps = { id: "signin_page" }
+
+
 	sign_in () {
 		fetch ("/signin", {
 			method: "post",
@@ -41,14 +44,19 @@ export default class SigninPage extends BaseControl {
 			credentials: "same-origin"
 		}).then (response => response.json ()).then (info => {
 
-			if (isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
+			if (common.isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
 
 			for (let key of Object.keys (info)) {
 				localStorage.setItem (key, JSON.stringify (info [key]));
 			}// for;
 
-			if (CurrentAccount.paid_account () && (Companies.list ().length == 1)) Companies.set_active_company (Companies.list () [0].company_id);
-			if (this.signed_in ()) return globals.main.forceUpdate ();
+			if (this.signed_in ()) {
+
+				if (CurrentAccount.paid_account () && (Companies.list ().length == 1)) Companies.set_active_company (Companies.list () [0].company_id);
+				this.context.main_page.setState ({ company_id: Companies.active_company_id () });
+				return globals.main.forceUpdate ();
+
+			}// if;
 
 			this.setState ({ 
 				eyecandy_visible: false,
@@ -77,7 +85,10 @@ export default class SigninPage extends BaseControl {
 						<label htmlFor="username">Username or email</label>
 						<input name="username" type="text"
 // defaultValue="rex@rogerlmain.com" />
-defaultValue="joe@bloggs.com" />
+// defaultValue="joe@bloggs.com" />
+// defaultValue="dmitry@kgb.gov.ru" />
+defaultValue="rex@rexthestrange.com" />
+
 
 						<label htmlFor="password">Password</label>
 						<div style={{display: 'flex', flexDirection: 'row'}}>
