@@ -35,6 +35,7 @@ export default class ToggleOption extends BaseControl {
 
 		onChange: null,
 		onPaymentConfirmed: null
+		
 	}/* defaultProps */;
 
 
