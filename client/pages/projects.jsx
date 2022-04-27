@@ -61,7 +61,7 @@ export default class ProjectsPage extends BaseControl {
 					</ProjectSelectorGadget>
 				</div>	
 
-				{isset (this.state.selected_client) && <EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} eyecandyText="Loading..." 
+				{isset (this.state.selected_client) && <EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." 
 
 					onEyecandy={() => {
 						if (this.state.updating) ProjectsModel.fetch_by_id (this.state.selected_project).then ((data) => this.setState ({

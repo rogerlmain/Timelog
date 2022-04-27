@@ -11,4 +11,13 @@ div.credit-card-logos img {
 }/* div.credit-card-logos img */
 
 
+div.keep-card-checkbox {
+	font-size: 14px; /* consistent with Square */
+	position: relative;
+	top: -28px;
+}/* div.keep-card-checkbox */
+
+
 img.square-logo { height: 2em }
+
+

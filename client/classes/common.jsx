@@ -1,7 +1,7 @@
 import * as consts from "client/classes/types/constants";
 
 
-export function boolean_value (value) { return (is_string (value) && (value.equals ("true"))) }
+export function boolean_value (value) { return (is_string (value) && (value.equals ("true") || value.equals ("on"))) }
 export function integer_value (value) { return isset (value) ? parseInt (value) : null }
 
 export function get_key (object, value) { return Object.keys (object).find (key => object [key] === value) }

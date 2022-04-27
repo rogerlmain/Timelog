@@ -14,6 +14,7 @@ import CompanyData from "./server/models/companies.mjs";
 import CompanyAccountsData from "./server/models/company.accounts.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import LookupsData from "./server/models/lookups.mjs";
+import PricingData from "./server/models/pricing.mjs";
 import ProjectData from "./server/models/projects.mjs";
 import ReportData from "./server/models/reports.mjs";
 import TaskData from "./server/models/tasks.mjs";
@@ -180,6 +181,16 @@ app.post ("/options", function (request, response) {
 
 app.get ("/packages", function (request, response) {
 	response.sendFile (`${root_path}/client/pages/static/packages.html`);
+});
+
+
+app.post ("/pricing", function (request, response) {
+	app.process (request, response, (fields) => {
+		let project_data = new PricingData ();
+		switch (fields.action) {
+			case "get": project_data.get_pricing_by_option (fields.option, fields.value); break;
+		}// switch;
+	});
 });
 
 

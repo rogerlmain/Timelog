@@ -11,7 +11,7 @@ export default class ProjectData extends Database {
 			client_id: data.client_id,
 			project_id: data.project_id,
 			project_name: data.project_name, 
-			derscription: data.project_description,
+			description: data.project_description,
 			deleted: false
 		}// parameters;
 

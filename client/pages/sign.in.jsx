@@ -84,10 +84,13 @@ export default class SigninPage extends BaseControl {
 
 						<label htmlFor="username">Username or email</label>
 						<input name="username" type="text"
-// defaultValue="rex@rogerlmain.com" />
-// defaultValue="joe@bloggs.com" />
-// defaultValue="dmitry@kgb.gov.ru" />
-defaultValue="rex@rexthestrange.com" />
+
+//defaultValue="rex@rogerlmain.com"
+//defaultValue="joe@bloggs.com"
+defaultValue="dmitry@kgb.gov.ru"
+//defaultValue="rex@rexthestrange.com"
+
+						/>
 
 
 						<label htmlFor="password">Password</label>
@@ -108,7 +111,7 @@ defaultValue="rex@rexthestrange.com" />
 						<a onClick={() => parent.setState ({ signing_up: true })}>Sign up</a>
 					</div>
 
-					<EyecandyPanel id="signin_eyecandy" eyecandyText="Signing you in." eyecandyVisible={this.state.eyecandy_visible} onEyecandy={this.sign_in.bind (this)}>
+					<EyecandyPanel id="signin_eyecandy" text="Signing you in." eyecandyVisible={this.state.eyecandy_visible} onEyecandy={this.sign_in.bind (this)}>
 						<button onClick={() => this.setState ({ 
 							error_message: null,
 							eyecandy_visible: true 

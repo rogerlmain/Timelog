@@ -50,7 +50,7 @@ export default class ClientsPage extends BaseControl {
 					</ClientSelectorGadget>
 				</div>
 
-				<EyecandyPanel id="edit_client_panel" eyecandyText="Loading..." eyecandyVisible={this.state.updating} 
+				<EyecandyPanel id="edit_client_panel" text="Loading..." eyecandyVisible={this.state.updating} 
 				
 					onEyecandy={() => { 
 						if (this.state.updating) ClientModel.fetch_by_id (this.state.selected_client).then (data => this.setState ({

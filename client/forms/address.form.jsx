@@ -104,72 +104,80 @@ this.setState ({
 
 	render () {
 
-		return <div className="one-piece-form">
-
-			<label htmlFor="company_name">Company name</label>
-			<div className="horizontally-spaced-out">
-
-				<DynamicInput id="company_name" value={this.state.company_name} required={true} style={{ width: "16em", marginRight: "1em" }} 
-					onChange={event => this.name_checkbox.current.checked = event.target.value.equals (CurrentAccount.username ())}>
-				</DynamicInput>
-
+		return <div className="vertically-spaced-out">
+		
+			<div className="full-row centering-container">
 				<div className="one-piece-form">
-					<label htmlFor="use_account_name_for_company" className="mini-title">Just use<br />my name</label>
-					<input id="use_account_name_for_company" name="use_account_name_for_company" ref={this.name_checkbox}
-						type="checkbox" style={{ columnWidth: "min-content" }}
-						onChange={event => this.setState ({ company_name: event.target.checked ? CurrentAccount.username () : constants.blank })}>
-					</input>
-				</div>
 
+					<label htmlFor="company_name">Company name</label>
+					<div className="horizontally-spaced-out">
+
+						<DynamicInput id="company_name" value={this.state.company_name} required={true} style={{ width: "16em", marginRight: "1em" }} 
+							onChange={event => this.name_checkbox.current.checked = event.target.value.equals (CurrentAccount.username ())}>
+						</DynamicInput>
+
+						<div className="one-piece-form">
+							<label htmlFor="use_account_name_for_company" className="mini-title">Just use<br />my name</label>
+							<input id="use_account_name_for_company" name="use_account_name_for_company" ref={this.name_checkbox}
+								type="checkbox" style={{ columnWidth: "min-content" }}
+								onChange={event => this.setState ({ company_name: event.target.checked ? CurrentAccount.username () : constants.blank })}>
+							</input>
+						</div>
+
+					</div>
+
+				</div>
 			</div>
 
-			<div className="break" />
-
-			<label htmlFor="street_address">Street address</label>
-			<input type="text" id="street_address" name="street_address" required={true}
-			
-defaultValue="6795 West 19th Pl." />
-
-			<input type="text" id="additional_address" name="additional_address" style={{ gridColumn: "2" }}
-			
-defaultValue="108" />
-
-			<label htmlFor="state">City</label>
-			<div className="horizontally-spaced-out">
-
-				<input type="text" id="city" name="city" style={{ width: "10em" }} maxLength={85} required={true}
-				
-defaultValue="Lakewood" />
-
+			<div className="full-row centering-container">
 				<div className="one-piece-form">
-					<label htmlFor="zip" title="Zip or Postal Code">Post Code</label>
-					<input type="text" id="zip" name="zip"  style={{ width: "5em" }} maxLength={16} required={true} 
-defaultValue="80214" />
+					
+					<label htmlFor="street_address">Street address</label>
+					<input type="text" id="street_address" name="street_address" required={true}
+					
+		defaultValue="6795 West 19th Pl." />
+
+					<input type="text" id="additional_address" name="additional_address" style={{ gridColumn: "2" }}
+					
+		defaultValue="108" />
+
+					<label htmlFor="state">City</label>
+					<div className="horizontally-spaced-out">
+
+						<input type="text" id="city" name="city" style={{ width: "10em" }} maxLength={85} required={true}
+						
+		defaultValue="Lakewood" />
+
+						<div className="one-piece-form">
+							<label htmlFor="zip" title="Zip or Postal Code">Post Code</label>
+							<input type="text" id="zip" name="zip"  style={{ width: "5em" }} maxLength={16} required={true} 
+		defaultValue="80214" />
+						</div>
+
+					</div>
+
+					<label htmlFor="district" title="District, state or province">{this.district_name ()}</label>
+					<Container condition={common.not_set (this.state.active_districts)}>
+						<input type="text" id="district" name="district" maxLength={255} />
+					</Container>
+					<Container condition={common.isset (this.state.active_districts)}>
+						<SelectList id="district" data={this.state.active_districts} idField="id" textField="long_name" 
+							style={{ width: "100%" }} required={true} hasHeader={true}
+							value={this.state.district_id} onChange={event => this.setState ({ district_id: event.target.value })}>
+						</SelectList>
+					</Container>
+
+					<label htmlFor="country">Country</label>
+					<SelectList id="country" data={this.state.countries} idField="id" textField="long_name" 
+						style={{ width: "100%" }} required={true}
+						value={this.state.country_id} onChange={event => this.setState ({ 
+							country_id: event.target.value,
+							district_id: null
+						})}>
+					</SelectList>
+
 				</div>
-
 			</div>
-
-			<label htmlFor="district" title="District, state or province">{this.district_name ()}</label>
-			<Container condition={common.not_set (this.state.active_districts)}>
-				<input type="text" id="district" name="district" maxLength={255} />
-			</Container>
-			<Container condition={common.isset (this.state.active_districts)}>
-				<SelectList id="district" data={this.state.active_districts} idField="id" textField="long_name" 
-					style={{ width: "100%" }} required={true} hasHeader={true}
-					value={this.state.district_id} onChange={event => this.setState ({ district_id: event.target.value })}>
-				</SelectList>
-			</Container>
-
-			<label htmlFor="country">Country</label>
-			<SelectList id="country" data={this.state.countries} idField="id" textField="long_name" 
-				style={{ width: "100%" }} required={true}
-				value={this.state.country_id} onChange={event => this.setState ({ 
-					country_id: event.target.value,
-					district_id: null
-				})}>
-			</SelectList>
-
-			<div className="break" />
 
 			<div className="full-row centering-container">
 				<div className="one-piece-form">
@@ -179,7 +187,7 @@ defaultValue="80214" />
 						className="full-width" style={{ width: "10em" }} maxLength={85} 
 						country_id={this.state.country_id} required={true}
 						
-defaultValue="+1 (720) 322-5154"
+	defaultValue="+1 (720) 322-5154"
 						
 						>
 					</PhoneNumberInput>
@@ -193,14 +201,17 @@ defaultValue="+1 (720) 322-5154"
 				</div>
 			</div>
 
-			<div className="break" />
 
-			<label htmlFor="email">Email</label>
-			<input type="email" id="email_address" name="email_address" className="full-width" maxLength={255} required={true}
-			
-//defaultValue="rex@rogerlmain.com" />
-defaultValue="joe@bloggs.com" />
+			<div className="one-piece-form">
 
+				<label htmlFor="email">Email</label>
+				<input type="email" id="email_address" name="email_address" className="full-width" maxLength={255} required={true}
+				
+	//defaultValue="rex@rogerlmain.com" />
+	defaultValue="joe@bloggs.com" />
+
+
+			</div>
 
 		</div>
 	}// render;

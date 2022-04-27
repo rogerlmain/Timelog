@@ -269,7 +269,7 @@ export default class LoggingPage extends BaseControl {
 		return (
 			<div id="log_panel">
 
-				<EyecandyPanel id="log_form_eyecandy" eyecandyText="Loading..." eyecandyVisible={!this.state.initialized}>
+				<EyecandyPanel id="log_form_eyecandy" text="Loading..." eyecandyVisible={!this.state.initialized}>
 
 					{logged_in ? entry_details () : <div>
 
@@ -285,7 +285,7 @@ export default class LoggingPage extends BaseControl {
 				<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 					<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 					
-						eyecandyText={`Logging you ${logged_in ? "out" : "in"}...`} 
+						text={`Logging you ${logged_in ? "out" : "in"}...`} 
 						eyecandyVisible={this.state.updating}
 						eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
 

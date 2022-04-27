@@ -437,6 +437,13 @@ Number.prototype.padded = function (length) {
 }// if;
 
 
+Number.prototype.toCurrency = function () {
+	let dollars = parseInt (this / 100).toLocaleString ("en-US");  // TODO : Modify to allow international customers
+	let cents = this % 100;
+	return `${dollars}.${cents}`;
+}// toCurrency;
+
+
 /********/
 
 

@@ -88,7 +88,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 				</FadePanel>
 
 				<FadePanel id={`${this.props.id}_projects_list`} visible={client_loaded}>
-					<EyecandyPanel id={`${this.props.id}_select_list`} eyecandyText="Loading..." eyecandyVisible={!projects_loaded} stretchOnly={true}>
+					<EyecandyPanel id={`${this.props.id}_select_list`} text="Loading..." eyecandyVisible={!projects_loaded} stretchOnly={true}>
 						<div style={{ display: "flex" }}>
 							<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}
 							

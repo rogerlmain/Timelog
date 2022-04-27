@@ -7,7 +7,10 @@ import InputControl from "controls/abstract/input.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
 
-const card_names = {
+/// DEPRECATED! - DO NOT USE - FOR CANNIBALIZATION ONLY!!!
+
+
+export const card_names = {
 	amex		: "American Express",
 	visa		: "Visa",
 	mastercard	: "Mastercard",

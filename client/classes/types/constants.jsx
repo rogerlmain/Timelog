@@ -1,23 +1,12 @@
-export const vertical_alignment = {
-	top: "flex-start",
-	middle: "center",
-	center: "center",
-	bottom: "flex-end"
-}// vertical_alignment;
-
-
-export const horizontal_alignment = {
-	left: "left",
-	center: "center",
-	right: "right"
-}// horizontal_alignment;
-
-
 /********/
 
 
-export const debugging = true;
+export const access_token = "EAAAENzB7zMQb2M5FW6MpbnIMXfvwLdonwGI9XxqtkwT86LvxuWpW4N_SyI67cjJ";
 
+export const application_id = "sandbox-sq0idb-i9_IjjiYVUfBsBoNCFh9LA";
+export const location_id = "RMPCInc";
+
+export const debugging = true;
 
 export const space = " ";
 export const blank = "";
@@ -32,6 +21,23 @@ export const minus = dash;
 export const hidden_zindex = -1;	// zIndex to put unseen items behind the page
 export const visible_zindex = 1;
 
+
+/********/
+
+
+export const vertical_alignment = {
+	top: "flex-start",
+	middle: "center",
+	center: "center",
+	bottom: "flex-end"
+}// vertical_alignment;
+
+
+export const horizontal_alignment = {
+	left: "left",
+	center: "center",
+	right: "right"
+}// horizontal_alignment;
 
 
 /**** Dates ****/
@@ -57,7 +63,8 @@ export const date_rounding = {
 
 
 export const eyecandy_images = {
-	small: "client/resources/images/data.indicator.gif"
+	small: "client/resources/images/indicators/small.gif",
+	medium: "client/resources/images/indicators/medium.gif"
 }// eyecandy_images;
 
 
@@ -139,7 +146,7 @@ export const option_types = {
 	start_rounding	: 2,
 	end_rounding	: 3,
 	client_limit	: 4,
-	project_limit	: 5
+	project_limit	: 5,
 }// option_types;
 
 

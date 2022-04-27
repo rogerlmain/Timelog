@@ -1,6 +1,6 @@
 div.pricing-table {
 	display: inline-grid;
-	margin: 1em 0;
+	margin-bottom: 1em;
 	justify-self: center;
 }/* div.pricing-table */
 
@@ -12,9 +12,15 @@ div.pricing-table > div {
 }/* div.pricing-table > div */
 
 
-/*div.pricing-table > div:nth-child(3n+1) {
-	margin-left: 2em;
-}/* div.pricing-table > div:nth-child(3n+1) */
+div.pricing-table {
+	grid-template-columns: repeat(2, min-content) 6em;
+	column-gap: 0.5em;
+}/* div.pricing-table */
+
+
+div.pricing-table input[type=radio] {
+	align-self: center
+}/* div.pricing-table input[type=radio] */
 
 
 div.pricing-table > div:nth-child(3n+3) {

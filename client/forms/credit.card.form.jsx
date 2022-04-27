@@ -3,11 +3,10 @@ import * as constants from "classes/types/constants";
 import React from "react";
 
 import CurrentAccount from "classes/storage/account";
+import SquareHandler from "classes/square.handler";
 
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
-import CreditCardInput, { card_type } from "controls/inputs/credit.card.input";
-import NumericInput from "controls/inputs/numeric.input";
 
 import "client/resources/styles/pages/forms.css";
 
@@ -15,7 +14,18 @@ import "client/resources/styles/pages/forms.css";
 const expired_message = "Card expired\nWhat are you trying to pull?";
 
 
-export default class DeluxeAccountForm extends BaseControl {
+const card_type = {
+	amex		: "amex",
+	visa		: "visa",
+	mastercard	: "mastercard",
+	discover	: "discover",
+	jcb			: "jcb",
+	unionpay	: "unionpay",
+	other		: "other"
+}// card_type;
+
+
+export default class CreditCardForm extends BaseControl {
 
 
 	name_checkbox = React.createRef ();
@@ -26,7 +36,8 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	state = { 
 		cc_name: constants.blank,
-		card_type: null
+		card_type: null,
+		parent: null
 	}/* state */
 
 
@@ -53,8 +64,11 @@ export default class DeluxeAccountForm extends BaseControl {
 
 
 	componentDidMount () { 
-		this.month_field.current.addValidator (this.validate_date);
-		this.year_field.current.input_field.current.addValidator (this.validate_date);
+		let square_handler = new SquareHandler ();
+		square_handler.create_card_form ("#square_form").then (card => this.props.parent.setState ({ 
+			square_handler: square_handler,
+			square_card: card
+		}));
 	}// componentDidMount;
 
 
@@ -104,53 +118,16 @@ defaultValue="Rex Strange">
 
 				</div>
 
-				<label htmlFor="cc_number">Card number</label>
-
-				<CreditCardInput id="cc_number" name="cc_number" required={true} parent={this} />
-				<input type="hidden" id="cc_type" name="cc_type" value={this.state.card_type ?? constants.blank} />
-
-				<div className="break" />
-
-				<label htmlFor="cc_month">Expiration Date</label>
-				<div className="horizontally-spaced-out">
-
-					<select id="cc_month" name="cc_month" ref={this.month_field} required={true} onChange={this.validate_date}
-defaultValue={5}>
-						<option />
-						<option value="1">January</option>
-						<option value="2">February</option>
-						<option value="3">March</option>
-						<option value="4">April</option>
-						<option value="5">May</option>
-						<option value="6">June</option>
-						<option value="7">July</option>
-						<option value="8">August</option>
-						<option value="9">September</option>
-						<option value="10">October</option>
-						<option value="11">November</option>
-						<option value="12">December</option>
-					</select>
-
-					<NumericInput id="cc_year" ref={this.year_field} required={true} placeholder="Year" min={this_year} max={this_year + 10} onChange={this.validate_date}
-defaultValue={2022} />
-
-
-					<div className="one-piece-form">
-						<label htmlFor="cc_cvv" style={{ marginLeft: "0.5em" }}>CVV</label>
-						<NumericInput id="cc_cvv" required={true} length={cvv_length}
-defaultValue={123} />
-					</div>
-
-				</div>
-
 			</div>
 
-			<div className="break" />
+			<div><br /></div>
 
-			<div className="right-justified-column">
-				<div className="one-piece-form">
-					<label htmlFor="reuse_card" style={{ margin: 0 }}>Keep my card on file</label>
-					<input type="checkbox" id="keep_card" name="keep_card" defaultChecked={true} onClick={event => this.setState ({ keep_card: event.target.checked })} />
+			<div id="square_form" />
+
+			<div className="right-justified-column keep-card-checkbox">
+				<div className="two-column-grid">
+					<label htmlFor="reuse_card" style={{ margin: 0, marginRight: "0.25em" }}>Keep my card on file</label>
+					<div className="vertically_centered"><input type="checkbox" id="keep_card" name="keep_card" defaultChecked={true} onClick={event => this.setState ({ keep_card: event.target.checked })} /></div>
 				</div>
 			</div>
 

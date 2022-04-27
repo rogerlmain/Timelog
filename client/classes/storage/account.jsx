@@ -22,9 +22,15 @@ export default class Account extends LocalStorage {
 
 	
 	static account_id = () => { return Account.get (credential_types.account_id ) }
+
 	static first_name = () => { return Account.get (credential_types.first_name) }
 	static last_name = () => { return Account.get (credential_types.last_name) }
+
+	static full_name = () => { return `${Account.first_name ()} ${Account.last_name ()}` }
 	static username = () => { return Account.get (credential_types.username) }
+
+	static email_address = () => { return Account.get (credential_types.email_address) }
+
 	static square_id = ()  => { return Account.get (credential_types.square_id ) }
 
 	static paid_account = () => { return isset (this.square_id ()) }

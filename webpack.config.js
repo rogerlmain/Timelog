@@ -26,6 +26,8 @@ tests: path.resolve (__dirname, "client/tests"),
 			models: path.resolve (__dirname, "client/models"),
 			pages: path.resolve (__dirname, "client/pages"),
 			panels: path.resolve (__dirname, "client/panels"),
+			popups: path.resolve (__dirname, "client/popups"),
+			tests: path.resolve (__dirname, "client/tests"),
 			types: path.resolve (__dirname, "client/types"),
 
 			resources: path.resolve (__dirname, "client/resources")

@@ -1,14 +1,22 @@
-import BaseControl from "client/controls/abstract/base.control";
+import * as constants from "classes/types/constants";
+import * as common from "classes/common";
 
 import React from "react";
-import SlideshowPanel from "./slideshow.panel";
+
 import Settings from "classes/storage/settings";
 
-import * as common from "classes/common";
+import BaseControl from "controls/abstract/base.control";
+import SlideshowPanel from "controls/panels/slideshow.panel";
 
 
 const eyecandy_index = 1;
 const contents_index = 2;
+
+
+export const eyecandy_sizes = {
+	small	: "small",
+	medium	: "medium"
+}// eyecandy_sizes;
 
 
 export default class EyecandyPanel extends BaseControl {
@@ -17,11 +25,16 @@ export default class EyecandyPanel extends BaseControl {
 	static defaultProps = { 
 		id: null,
 		speed: Settings.animation_speed (),
-		stretchOnly: false
-	};
-	
+		stretchOnly: false,
 
-	state = { eyecandy_image_name: "client/resources/images/data.indicator.gif" };
+		text: null,
+
+		eyecandySize: eyecandy_sizes.small,
+		eyecandyVisible: true
+	};
+
+
+	/********/
 
 
 	render () {
@@ -48,8 +61,8 @@ export default class EyecandyPanel extends BaseControl {
 				}}>
 
 				<div id={`${id}_eyecandy`} style={eyecandy_style}>
-					<img src={this.state.eyecandy_image_name} style={{ marginRight: "0.5em" }} />
-					{this.props.eyecandyText}
+					<img src={constants.eyecandy_images [this.props.eyecandySize]} style={{ marginRight: "0.5em", alignSelf: "center" }} />
+					{this.props.text}
 				</div>
 
 				<div id={`${id}_container`}>{this.props.children}</div>

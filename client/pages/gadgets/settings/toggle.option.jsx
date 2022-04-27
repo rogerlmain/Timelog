@@ -51,7 +51,9 @@ export default class ToggleOption extends BaseControl {
 
 		if (this.props.billable && (this.state.value > current_value)) {
 			this.props.parent.setState ({ 
-				cc_form: { 
+				cc_form: {
+					option: this.props.option,
+					value: this.state.value,
 					onSubmit: () => this.props.onPaymentConfirmed (this.state.value),
 					onCancel: () => this.setState ({ value: current_value })
 				}/* cc_form */

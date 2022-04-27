@@ -125,7 +125,7 @@ export default class SignupPage extends BaseControl {
 					
 					<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible}
 					
-						eyecandyText={this.signed_in () ? "Saving your information" : "Creating your account"}
+						text={this.signed_in () ? "Saving your information" : "Creating your account"}
 
 						afterEyecandy = {() => AccountsModel.save_account (new FormData (document.getElementById ("account_form"))).then (data => {
 							if (this.signed_in ()) {

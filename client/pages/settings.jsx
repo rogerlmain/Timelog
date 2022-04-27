@@ -13,7 +13,7 @@ import ToggleSwitch from "controls/toggle.switch";
 import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
-import DeluxeAccountForm from "forms/deluxe.account.form";
+import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
 import SettingsModel from "models/settings";
 import OptionsModel from "models/options";
@@ -79,10 +79,13 @@ export default class SettingsPage extends BaseControl {
 
 
 	deluxe_account_form () {
-		return <DeluxeAccountForm visible={common.isset (this.state.cc_form)}
+
+		const form_value = (field) => { return common.isset (this.state.cc_form) ? this.state.cc_form [field] : null };
+
+		return <DeluxeAccountPopup visible={common.isset (this.state.cc_form)} option={form_value ("option")} value={form_value ("value")}
 				onCancel={() => this.execute (this.state.cc_form.onCancel).then (() => this.setState ({ cc_form: null }))} 
 				onSubmit={() => this.execute (this.state.cc_form.onSubmit).then (() => this.setState ({ cc_form: null }))}>
-			</DeluxeAccountForm>
+			</DeluxeAccountPopup>
 	}// deluxe_account_form;
 
 
@@ -193,9 +196,6 @@ export default class SettingsPage extends BaseControl {
 							<ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
 								option={constants.option_types.granularity} parent={this} 
 								onPaymentConfirmed={selected_option => {
-
-	return;
-
 									this.set_option (constants.option_types.granularity, selected_option).then (() => this.setState ({
 										start_rounding: constants.date_rounding.off,
 										end_rounding: constants.date_rounding.off,

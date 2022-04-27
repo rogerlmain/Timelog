@@ -28,8 +28,8 @@ import { globals } from "classes/types/constants";
 import { MainContext } from "classes/types/contexts.jsx";
 
 
-// Special Guest Import
-// import Slider from "controls/slider";
+//Special Guest Import
+import DeluxeAccountForm from "./forms/deluxe.account.form";
 
 
 
@@ -136,40 +136,12 @@ error_handler (message, url, line) { common.notify (message, url, line) }
 /*********/
 
 
-class QuickTest extends BaseControl {
-
-
-	input_field = React.createRef ();
-
-
-	componentDidMount () {
-		this.input_field.current.addEventListener ("keydown", event => alert ("listener"));
-	}// componentDidMount;
-
-
-	render () {
-		return <input ref={this.input_field} onKeyDown={event => alert ("inline")} />
-	}// render;
-
-
-}// QuickTest;
-
-
-/*********/
-
-
 document.onreadystatechange = () => {
 
 ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-	// ReactDOM.render (<div>
-		
-	// 	<MainContext.Provider value={{ company_id: 3, main_page: this }}>
-	// 		<Settings id="special_guest_import" />
-	// 	</MainContext.Provider>
-			
-	// </div>, document.getElementById ("main_page"));
+//	ReactDOM.render (<DeluxeAccountForm option="granularity" optionPrice={299} />, document.getElementById ("main_page"));
 
 //	Quick Test Render
 //	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));
