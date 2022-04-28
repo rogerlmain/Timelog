@@ -102,6 +102,8 @@ export default class CustomerHandler {
 						address_data: address_data,
 					});
 
+					constants.globals.main.setState ({ company_id: company_data.company_id });
+
 				});
 
 			});

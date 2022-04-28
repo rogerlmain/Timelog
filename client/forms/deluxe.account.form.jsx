@@ -93,9 +93,9 @@ export default class DeluxeAccountForm extends BaseControl {
 				additional: data.address_data.additional,
 				city: data.address_data.city,
 				state_id: data.address_data.state_id,
-				state_name: document.getElementById ("district").selectedText (),
+				state_name: data.form_data.state_name,
 				country_id: data.address_data.country_id,
-				country_name: document.getElementById ("country").selectedText (),
+				country_name: data.form_data.full_country_name,
 				postcode: data.address_data.postcode
 			}]
 		});
@@ -137,7 +137,11 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	submit_payment = async event => {
 
-		let data = { form_data: this.get_form_data () }
+		let data = { form_data: {
+			...this.get_form_data (),
+			full_country_name: document.getElementById ("country").selectedText (),			
+		}}/* data */;
+		
 		let square_id = Account.square_id ();
 		
 		data.keep_card = common.boolean_value (data.form_data.keep_card);
