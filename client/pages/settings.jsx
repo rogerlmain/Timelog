@@ -199,7 +199,7 @@ export default class SettingsPage extends BaseControl {
 									this.set_option (constants.option_types.granularity, selected_option).then (() => this.setState ({
 										start_rounding: constants.date_rounding.off,
 										end_rounding: constants.date_rounding.off,
-										value: selected_option
+										granularity: selected_option
 									}, this.context.main_page.forceRefresh));
 								}}>
 							</ToggleOption>
