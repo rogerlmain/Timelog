@@ -87,7 +87,7 @@ export default class CustomerHandler {
 
 				transaction_data.company_data = company_data;
 
-				this.save_card (transaction_data);
+				if (transaction_data.keep_card) this.save_card (transaction_data);
 				this.save_company_association (company_data);
 
 				this.save_address (transaction_data).then (address_data => {

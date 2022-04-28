@@ -137,14 +137,14 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	submit_payment = async event => {
 
-		let data = { form_data: this.get_form_data () };
-		let keep_card = common.boolean_value (data.form_data.keep_card);
-
+		let data = { form_data: this.get_form_data () }
 		let square_id = Account.square_id ();
+		
+		data.keep_card = common.boolean_value (data.form_data.keep_card);
 
 		if (common.is_null (square_id)) {
 			data.square_data = await this.state.square_handler.create_square_account (data.form_data);
-			data.credit_card = (keep_card) ? await this.state.square_handler.save_card (data.form_data, data.square_data) : null;
+			data.credit_card = (data.keep_card) ? await this.state.square_handler.save_card (data.form_data, data.square_data) : null;
 		}// if;
 
 		data.payment_data = await this.create_payment (data.credit_card, data.square_data);
