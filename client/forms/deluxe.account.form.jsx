@@ -251,23 +251,21 @@ export default class DeluxeAccountForm extends BaseControl {
 
 								<input type="radio" id="package_option" name="price_option" value={purchase_options.package} 
 									checked={this.state.selected_item == purchase_options.package} 
-									onChange={event => { this.setState ({ selected_item: event.target.value}, ) }}>
+									onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
 								</input>
-								<select id="package_list" name="package_selection" ref={this.package_list} onChange={event => 
-								
-{								
-								this.setState ({ 
-									package_price: JSON.parse (event.target.value).price,
-									selected_item: purchase_options.package
-								})
-}
 
+								<select id="package_list" name="package_selection" ref={this.package_list} 
 
-								}>
+									onChange={event => this.setState ({ 
+										package_price: JSON.parse (event.target.value).price,
+										selected_item: purchase_options.package
+									})}>
+
 									<option value={`{ "id": ${constants.account_types.freelance}, "price": 9999 }`}>Freelance package</option>
 									<option value={`{ "id": ${constants.account_types.company}, "price": 69999 }`}>Company package</option>
 									<option value={`{ "id": ${constants.account_types.corporate}, "price": 179999 }`}>Corporate package</option>
 									<option value={`{ "id": ${constants.account_types.enterprise}, "price": 359999 }`}>Enterprise package</option>
+
 								</select>
 
 								<div>{common.isset (this.state.package_price) ? "$" : null}{common.isset (this.state.package_price) ? this.state.package_price.toCurrency () : null}</div>
