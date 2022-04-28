@@ -8,7 +8,8 @@ create procedure save_company_card (
     company_id		integer,
 	last_few		integer,
 	expiration		integer,
-	card_type		varchar (16)
+	card_type		varchar (16),
+    square_id		varchar (64)
 ) begin
 
 
@@ -20,10 +21,7 @@ create procedure save_company_card (
     from 
 		company_cards as ccs
 	where
-		(ccs.company_id = company_id) and
-		(ccs.last_few = last_few) and
-		(ccs.expiration = expiration) and
-		(ccs.card_type = card_type);
+		(ccs.square_id = square_id);
 
 
 	if (card_id is null) then
@@ -32,12 +30,14 @@ create procedure save_company_card (
 			company_id,
 			last_few,
 			expiration,
-			card_type
+			card_type,
+            square_id
 		) values (
 			company_id,
 			last_few,
 			expiration,
-			card_type
+			card_type,
+            square_id
 		);
             
         select last_insert_id () into card_id;
@@ -45,10 +45,12 @@ create procedure save_company_card (
     else
     
 		update company_cards as ccs set 
-			company_id = coalesce (company_id, css.company_id),
-			last_few = coalesce (last_few, css.last_few),
-			expiration = coalesce (expiration, css.expiration),
-			card_type = coalesce (card_type, css.card_type)
+			company_id = coalesce (company_id, ccs.company_id),
+			last_few = coalesce (last_few, ccs.last_few),
+			expiration = coalesce (expiration, ccs.expiration),
+			card_type = coalesce (card_type, ccs.card_type),
+            square_id = coalesce (square_id, ccs.square_id),
+            last_updated = now()
 		where
 			id = card_id;
 

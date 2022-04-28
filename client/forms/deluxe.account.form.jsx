@@ -88,28 +88,24 @@ export default class DeluxeAccountForm extends BaseControl {
 	/********/
 
 
-	async create_customer_data (data) {
-
+	async update_local_data (data) {
 		Companies.set ({
 			active_company: data.company_data.company_id,
 			list: [{
-				company_id: customer_data.company_data.company_id,
-				company_name: customer_data.company_data.name,
-				address_id: customer_data.address_data.address_id,
-				street_address: customer_data.address_data.street_address,
-				additional: customer_data.address_data.additional,
-				city: customer_data.address_data.city,
-				state_id: customer_data.address_data.state_id,
+				company_id: data.company_data.company_id,
+				company_name: data.company_data.name,
+				address_id: data.address_data.address_id,
+				street_address: data.address_data.street_address,
+				additional: data.address_data.additional,
+				city: data.address_data.city,
+				state_id: data.address_data.state_id,
 				state_name: document.getElementById ("district").selectedText (),
-				country_id: customer_data.address_data.country_id,
+				country_id: data.address_data.country_id,
 				country_name: document.getElementById ("country").selectedText (),
-				postcode: customer_data.address_data.postcode
+				postcode: data.address_data.postcode
 			}]
 		});
-
-		return customer_data;
-
-	}// create_customer_data;
+	}// update_local_data;
 
 
 	async create_payment (credit_card, square_data) {
@@ -157,12 +153,12 @@ export default class DeluxeAccountForm extends BaseControl {
 			data.credit_card = (keep_card) ? await this.state.square_handler.save_card (data.form_data, data.square_data) : null;
 		}// if;
 
-		data.payment_data = await this.create_payment (data.credit_card, data.square_data),
+		data.payment_data = await this.create_payment (data.credit_card, data.square_data);
 
-		new CustomerHandler ().save_customer (data);
+		data = { ...data, ...await new CustomerHandler ().save_customer (data) };
 
-		this.create_customer_data (data);
-		this.execute (this.props.onSubmit);
+		this.update_local_data (data);
+//		this.execute (this.props.onSubmit);
 
 	}// submit_payment
 	
@@ -296,6 +292,10 @@ export default class DeluxeAccountForm extends BaseControl {
 							
 						</EyecandyPanel>
 					</div>
+
+
+<button onClick={() => this.setState ({ processing: false })}>Reset</button>
+
 				</div>
 
 			</div>

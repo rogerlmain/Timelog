@@ -6,19 +6,13 @@ export default class ClientData extends Database {
 
 	get_clients_by_company (company_id) {
 		let parameters = [company_id];
-		this.data_query ("get_clients_by_company", parameters).then (data => {
-			global.response.send (data);
-			this.connection.end ();
-		});
+		this.execute_query ("get_clients_by_company", parameters);
 	}// get_clients;
 
 
 	get_client_by_id (client_id) {
 		let parameters = [client_id];
-		this.data_query ("get_client_by_id", parameters).then (data => {
-			global.response.send (data);
-			this.connection.end ();
-		});
+		this.execute_query ("get_client_by_id", parameters);
 	}// get_client_by_id;
 
 

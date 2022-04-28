@@ -10,10 +10,10 @@ export default class SettingsData extends Database {
 	}/* get_settings */;
 
 
-	save_setting (setting_id, value) {
+	save_setting (account_id, setting_id, value) {
 
 		let procedure = "save_setting";
-		let parameters = [global.account_id, setting_id, value];
+		let parameters = [account_id, setting_id, value];
 
 		this.execute_query (procedure, parameters);
 

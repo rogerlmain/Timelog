@@ -32,13 +32,13 @@ export default class CustomerHandler {
 	async save_address (data) {
 
 		let address_data = {
-			company_id: data.company_id,
-			street_address: data.street_address,
-			additional: data.additional_address,
-			city: data.city,
-			state_id: data.district,
-			country_id: data.country,
-			postcode: data.zip
+			company_id: data.company_data.company_id,
+			street_address: data.form_data.street_address,
+			additional: data.form_data.additional_address,
+			city: data.form_data.city,
+			state_id: data.form_data.district,
+			country_id: data.form_data.country,
+			postcode: data.form_data.zip
 		}// address_data;
 
 		return { ...(await AddressesModel.save_address (FormData.fromObject (address_data))), ...address_data };
@@ -48,14 +48,12 @@ export default class CustomerHandler {
 
 	async save_company (data) {
 
-		let company_data = {
-			name: data.company_name,
-			primary_contact_id: Account.account_id (),
-			square_id: data.square_id
-		}// company_data;
+		let company_data = { primary_contact_id: Account.account_id () }
 
 		if (common.isset (data.company_id)) company_data.company_id = data.company_id;
 		if (common.isset (data.address_id)) company_data.address_id = data.address_id;
+		if (common.isset (data.company_name)) company_data.name = data.company_name;
+		if (common.isset (data.square_id)) company_data.square_id = data.square_id;
 
 		return { ...(await CompaniesModel.save_company (FormData.fromObject (company_data))), ...company_data };
 
@@ -71,12 +69,13 @@ export default class CustomerHandler {
 
 
 	async save_card (data) {
-		CompanyCardModel.save_card ({
-			company_id: customer_data.company_data.company_id,
-			last_few: common.integer_value (form_data.cc_number.substring (form_data.cc_number.lastIndexOf (constants.space) + 1)),
-			expiration: (common.integer_value (form_data.get ("cc_year")) * 100) + common.integer_value (form_data.get ("cc_month")),
-			card_type: form_data.get ("cc_type")
-		});
+		CompanyCardModel.save_card (FormData.fromObject ({
+			company_id: data.company_data.company_id,
+			last_few: data.credit_card.card.last_4,
+			expiration: (parseInt (data.credit_card.card.exp_year) * 100) + parseInt (data.credit_card.card.exp_month),
+			card_type: data.credit_card.card.card_brand.toLowerCase (),
+			square_id: data.credit_card.card.id
+		}));
 	}// save_card;
 
 
@@ -84,20 +83,28 @@ export default class CustomerHandler {
 
 		return new Promise (async (resolve, reject) => {
 
-			let result = {
-				company_data: await this.save_company ({ ...transaction_data.form_data, square_id: transaction_data.square_data.customer.id }),
-				address_data: await this.save_address ({ ...transaction_data.form_data, company_id: transaction_data.company_data.company_id}),
-				company_data: await this.save_company ({ // add the address ID
-					...transaction_data.form_data, 
-					company_id: transaction_data.company_data.company_id,
-					address_id: transaction_data.address_data.address_id,
-				}),
-				card_data: await this.save_card ({ ...transaction_data.form_data, card: transaction_data.card_data })
-			};
-			
-			await this.save_company_association (result.company_data);
+			this.save_company ({ ...transaction_data.form_data, square_id: transaction_data.square_data.customer.id }).then (company_data => {
 
-			resolve (result);
+				transaction_data.company_data = company_data;
+
+				this.save_card (transaction_data);
+				this.save_company_association (company_data);
+
+				this.save_address (transaction_data).then (address_data => {
+
+					this.save_company ({ // add the address ID
+						company_id: company_data.company_id,
+						address_id: address_data.address_id,
+					});
+
+					resolve ({
+						company_data: company_data,
+						address_data: address_data,
+					});
+
+				});
+
+			});
 
 		});
 

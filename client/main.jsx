@@ -66,6 +66,7 @@ class Main extends BaseControl {
 
 		return (
 			<div>
+
 				<Container condition={(common.isset (companies) && (companies.length > 1))}>
 					<SelectList value={Companies.active_company_id ()} data={companies}
 					
@@ -86,6 +87,7 @@ class Main extends BaseControl {
 				<Container condition={common.is_empty (companies)}>
 					<div>Guest Account</div>
 				</Container>
+				
 			</div>
 		);
 

@@ -73,10 +73,6 @@ export default class CreditCardForm extends BaseControl {
 
 
 	render () {
-
-		let this_year = new Date ().getFullYear ();
-		let cvv_length = (this.state.card_type == card_type.amex) ? 4 : 3;
-
 		return <Container>
 
 			<div className="horizontally-spaced-out">

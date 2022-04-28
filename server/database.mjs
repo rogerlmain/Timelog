@@ -5,9 +5,9 @@ class Database {
 
 	connection = null;
 
+	request = null;
+	resposne = null;
 
-	cookie_string = (value) => JSON.stringify (value).slice (1, -1);
-	
 
 	parse_integer (value) {
 		let parsed_value = parseInt (value);
@@ -25,9 +25,9 @@ class Database {
 	}// normalized;
 
 
-	// Use in conjunction with data_query for specialized, post query / pre-send handling
+	// Standard response
 	send_result_data (data) {
-		global.response.send (data);
+		this.response.send (data);
 		this.connection.end ();
 	}// send_result_data;
 
@@ -51,7 +51,11 @@ class Database {
 	}// execute_query;
 
 
-	constructor () {
+	constructor (request, response) {
+
+		this.request = request;
+		this.response = response;
+
 		try {
 			this.connection = createConnection ({
 				host: "localhost",
@@ -62,7 +66,8 @@ class Database {
 			this.connection.connect ((error) => { if (isset (error)) console.log (error) });
 		} catch (except) {
 			console.log (except);
-		}
+		}// try;
+
 	}// constructor;
 
 }// Databases;
