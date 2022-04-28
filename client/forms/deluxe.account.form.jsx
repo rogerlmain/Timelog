@@ -3,8 +3,6 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import FormHandler from "client/classes/form.handler";
-
 import CustomerHandler from "classes/customer.handler";
 
 import Account from "classes/storage/account";
@@ -13,10 +11,6 @@ import Companies from "classes/storage/companies";
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
-
-import CompanyCardModel from "models/company.cards";
-
-import PopupWindow from "pages/gadgets/popup.window";
 
 import AddressForm from "forms/address.form"
 import CreditCardForm from "forms/credit.card.form";
@@ -158,7 +152,7 @@ export default class DeluxeAccountForm extends BaseControl {
 		data = { ...data, ...await new CustomerHandler ().save_customer (data) };
 
 		this.update_local_data (data);
-//		this.execute (this.props.onSubmit);
+		this.execute (this.props.onSubmit);
 
 	}// submit_payment
 	
