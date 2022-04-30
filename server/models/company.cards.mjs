@@ -4,6 +4,11 @@ import Database from "../database.mjs";
 export default class CompanyCardData extends Database {
 
 
+	get_company_cards = (company_id) => {
+		this.execute_query ("get_company_cards", { company_id: company_id });
+	}// get_company_cards;
+
+
 	save_company_card = (data) => {
 
 		let parameters = {

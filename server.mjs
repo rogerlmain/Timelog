@@ -125,6 +125,7 @@ app.post ("/company_cards", function (request, response) {
 	app.process (request, response, (fields) => {
 		let company_card_data = new CompanyCardData (request, response);
 		switch (fields.action) {
+			case "get": company_card_data.get_company_cards (fields.company_id); break;
 			case "save": company_card_data.save_company_card (fields); break;
 		}// switch;
 	});

@@ -136,15 +136,6 @@ export default class BaseControl extends React.Component {
 	}// same_element;
 
 
-	select_options (list, id_field, text_field) {
-		if (common.is_null (list) || (list.then)) return null;
-		let result = list.map ((item) => {
-			return <option value={item [id_field]} key={item [id_field]}>{item [text_field]}</option>
-		});
-		return result;
-	}// select_options;
-
-
 	state_size (control = null) {
 		if (common.is_null (control)) control = this;
 		return {

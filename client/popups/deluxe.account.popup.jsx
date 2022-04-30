@@ -6,11 +6,14 @@ import React from "react";
 import BaseControl from "controls/abstract/base.control";
 import EyecandyPanel, { eyecandy_sizes } from "controls/panels/eyecandy.panel";
 
+import CompanyCardModel from "models/company.cards";
 import PricingModel from "models/pricing";
 
 import PopupWindow from "pages/gadgets/popup.window";
 
 import DeluxeAccountForm from "forms/deluxe.account.form";
+
+import { MainContext } from "client/classes/types/contexts";
 
 import "client/resources/styles/forms/deluxe.account.form.css";
 
@@ -18,8 +21,17 @@ import "client/resources/styles/forms/deluxe.account.form.css";
 export default class DeluxeAccountPopup extends BaseControl {
 
 
-	state = {  loading: true }
+	state = {  
 
+		price: null,
+		company_cards: null,
+
+		loading: true,
+
+	}/* state */;
+	
+
+	static contextType = MainContext;
 
 	static defaultProps = {  
 
@@ -28,8 +40,6 @@ export default class DeluxeAccountPopup extends BaseControl {
 
 		option: null,
 		value: null,
-
-		price: null,
 
 		visible: false
 
@@ -45,25 +55,29 @@ export default class DeluxeAccountPopup extends BaseControl {
 	/********/
 
 
-	load_prices = () => {
-		PricingModel.load_price (this.props.option, this.props.value).then (result => {
-			this.setState ({ 
-				price: common.is_empty (result) ? null : result [0].price,
-				loading: false
-			});
-		});
-	}// load_prices;
+	load_details = () => {
+
+		const load_price = result => this.setState ({ price: common.is_empty (result) ? "Market Price" : result [0].price }, update_load_status);
+		const update_load_status = () => this.setState ({ loading: (common.is_null (this.state.price) || common.is_null (this.state.company_cards)) });
+
+		CompanyCardModel.get_cards (this.context.company_id).then (result => this.setState ({ company_cards : result }, update_load_status));
+		PricingModel.load_price (this.props.option, this.props.value).then (load_price);
+
+	}// load_details;
 
 
 	/********/
 
 
 	render () {
-		return <PopupWindow id="deluxe_account_window" visible={this.props.visible} afterOpening={this.load_prices} afterClosing={() => this.setState ({ loading: true })}>
+		return <PopupWindow id="deluxe_account_window" visible={this.props.visible} afterOpening={this.load_details} afterClosing={() => this.setState ({ loading: true })}>
 			<EyecandyPanel id="payment_eyecandy" text={<div>Loading. <br />One moment, please...</div>} 
 				eyecandyVisible={this.state.loading} eyecandySize={eyecandy_sizes.medium}>
 
-				<DeluxeAccountForm onCancel={this.props.onCancel} onSubmit={this.props.onSubmit} option={this.props.option} optionPrice={this.state.price} />
+				<DeluxeAccountForm onCancel={this.props.onCancel} onSubmit={this.props.onSubmit} 
+					option={this.props.option} optionPrice={this.state.price} 
+					creditCards={this.state.company_cards}>
+				</DeluxeAccountForm>
 
 			</EyecandyPanel>
 		</PopupWindow>

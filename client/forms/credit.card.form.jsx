@@ -14,17 +14,6 @@ import "client/resources/styles/pages/forms.css";
 const expired_message = "Card expired\nWhat are you trying to pull?";
 
 
-const card_type = {
-	amex		: "amex",
-	visa		: "visa",
-	mastercard	: "mastercard",
-	discover	: "discover",
-	jcb			: "jcb",
-	unionpay	: "unionpay",
-	other		: "other"
-}// card_type;
-
-
 export default class CreditCardForm extends BaseControl {
 
 
@@ -36,7 +25,6 @@ export default class CreditCardForm extends BaseControl {
 
 	state = { 
 		cc_name: constants.blank,
-		card_type: null,
 		parent: null
 	}/* state */
 

@@ -31,9 +31,5 @@ export default class Account extends LocalStorage {
 
 	static email_address = () => { return Account.get (credential_types.email_address) }
 
-	static square_id = ()  => { return Account.get (credential_types.square_id ) }
-
-	static paid_account = () => { return isset (this.square_id ()) }
-
 
 }// Account;

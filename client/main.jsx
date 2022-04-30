@@ -46,7 +46,7 @@ class Main extends BaseControl {
 
 	constructor (props) {
 
-		let company_list = Companies.list ();
+		let company_list = Companies.company_list ();
 		let active_company = Companies.active_company_id ();
 
 		super (props);
@@ -60,17 +60,17 @@ class Main extends BaseControl {
 
 	company_header () {
 
-		let companies = Companies.list ();
+		let companies = Companies.company_list ();
 
 		if (!this.signed_in ()) return null
 
 		return (
 			<div>
 
-				<Container condition={(common.isset (companies) && (companies.length > 1))}>
+				<Container condition={Companies.company_count () > 1}>
 					<SelectList value={Companies.active_company_id ()} data={companies}
 					
-						idField="company_id" textField="company_name" hasHeader={true}
+						textField="company_name" hasHeader={true}
 						
 						onChange={event => {
 							Companies.set_active_company (event.target.value);
@@ -80,8 +80,8 @@ class Main extends BaseControl {
 					</SelectList>
 				</Container>
 
-				<Container condition={(common.isset (companies) && (companies.length == 1))}>
-					<div>{common.not_empty (companies) ? companies [0].company_name : null}</div>
+				<Container condition={Companies.company_count () == 1}>
+					<div>{common.nested_value (Companies.active_company (), "company_name")}</div>
 				</Container>
 
 				<Container condition={common.is_empty (companies)}>

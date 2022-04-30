@@ -164,10 +164,23 @@ export function exists (object, ...methods) {
 }// exists;
 
 
-export function nested_value (object, ...methods) {
-	if (is_null (object)) return null;
-	if (not_empty (methods)) return nested_value (object [methods [0]], ...(methods.slice (1)));
-	return object;
+export function nested_value () {
+
+	if (is_null (arguments [0])) return null;
+
+	if (arguments.length < 2) throw "nested_value requires at least two parameters";
+	if (!is_object (arguments [0])) throw "first parameter in nested_value must be an object";
+
+	let next_object = arguments [0] [arguments [1]];
+	let remaining_parameters = Array.from (arguments).slice (2);
+
+	if (is_empty (remaining_parameters)) return next_object;
+
+	if (is_function (next_object)) return nested_value (next_object.bind (arguments [0]) (), remaining_parameters);
+	if (is_object (next_object)) return nested_value (next_object, remaining_parameters);
+
+	return null;
+
 }// nested_value;
 
 

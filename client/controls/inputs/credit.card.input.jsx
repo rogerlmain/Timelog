@@ -10,16 +10,6 @@ import ExplodingPanel from "controls/panels/exploding.panel";
 /// DEPRECATED! - DO NOT USE - FOR CANNIBALIZATION ONLY!!!
 
 
-export const card_names = {
-	amex		: "American Express",
-	visa		: "Visa",
-	mastercard	: "Mastercard",
-	discover	: "Discover",
-	jcb			: "JCB",
-	unionpay	: "UnionPay"
-}// card_names;
-
-
 const number_patterns = {
 	amex		: [34, 37],
 	visa		: [4],
@@ -28,12 +18,6 @@ const number_patterns = {
 	jcb			: Array.range (3528, 3589),
 	unionpay	: [62]
 }// number_patterns;
-
-
-const card_mask = {
-	amex	: "**** ****** *****",
-	other	: "**** **** **** ****"
-}// card_mask;
 
 
 const card_validator = {

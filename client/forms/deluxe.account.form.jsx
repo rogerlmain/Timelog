@@ -9,8 +9,10 @@ import Account from "classes/storage/account";
 import Companies from "classes/storage/companies";
 
 import BaseControl from "controls/abstract/base.control";
-import Container from "controls/container";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
+
+import Container from "controls/container";
+import SelectList from "controls/select.list";
 
 import AddressForm from "forms/address.form"
 import CreditCardForm from "forms/credit.card.form";
@@ -68,6 +70,8 @@ export default class DeluxeAccountForm extends BaseControl {
 		option: null,
 		optionPrice: null,
 
+		creditCards: null,
+
 		visible: false
 
 	}/* defaultProps */;
@@ -85,8 +89,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	async update_local_data (data) {
 		Companies.set ({
 			active_company: data.company_data.company_id,
-			list: [{
-				company_id: data.company_data.company_id,
+			[data.company_data.company_id]: [{
 				company_name: data.company_data.name,
 				address_id: data.address_data.address_id,
 				street_address: data.address_data.street_address,
@@ -96,20 +99,21 @@ export default class DeluxeAccountForm extends BaseControl {
 				state_name: data.form_data.state_name,
 				country_id: data.address_data.country_id,
 				country_name: data.form_data.full_country_name,
-				postcode: data.address_data.postcode
+				postcode: data.address_data.postcode,
+				square_id: data.square_data.customer.id,
 			}]
 		});
 	}// update_local_data;
 
 
-	async create_payment (credit_card, square_data) {
+	async create_payment (credit_card, square_id) {
 
 		let option_name = common.isset (this.props.option) ? common.get_key (constants.option_types, this.props.option).titled () : null;
 
 		return await this.state.square_handler.create_payment ({
 			amount: this.state.selected_item.equals (purchase_options.item) ? this.props.optionPrice : JSON.parse (this.package_list.current.value).price,
 			source_id: common.isset (credit_card) ? credit_card.card.id : null,
-			customer_id: square_data.customer.id,
+			customer_id: square_id,
 			note: `${Account.full_name ()}: ${option_name} (${this.props.option})`
 		});
 
@@ -122,10 +126,13 @@ export default class DeluxeAccountForm extends BaseControl {
 	get_form_data () {
 
 		let form_data = new FormData (this.deluxe_account_form.current).toObject ();
-		let address = this.address_form.current.state;
 
-		form_data.district_name = address.districts.extract (address.district_id).long_name;
-		form_data.country_name = address.countries.extract (address.country_id).short_name;
+		let address = common.nested_value (this.address_form.current, "state");
+
+		if (common.isset (address)) {
+			form_data.district_name = address.districts.extract (address.district_id).long_name;
+			form_data.country_name = address.countries.extract (address.country_id).short_name;
+		}// form_data;
 
 		return form_data;
 
@@ -139,10 +146,10 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		let data = { form_data: {
 			...this.get_form_data (),
-			full_country_name: document.getElementById ("country").selectedText (),			
+			full_country_name: common.nested_value (document.getElementById ("country"), "selectedText"),
 		}}/* data */;
 		
-		let square_id = Account.square_id ();
+		let square_id = Companies.square_id ();
 		
 		data.keep_card = common.boolean_value (data.form_data.keep_card);
 
@@ -151,7 +158,7 @@ export default class DeluxeAccountForm extends BaseControl {
 			data.credit_card = (data.keep_card) ? await this.state.square_handler.save_card (data.form_data, data.square_data) : null;
 		}// if;
 
-		data.payment_data = await this.create_payment (data.credit_card, data.square_data);
+		data.payment_data = await this.create_payment (data.credit_card, common.isset (square_id) ? square_id : data.square_data);
 
 		data = { ...data, ...await new CustomerHandler ().save_customer (data) };
 
@@ -208,11 +215,13 @@ export default class DeluxeAccountForm extends BaseControl {
 	render () {
 
 		let company_id = this.context_item ("company_id");
+		
 		let new_customer = common.not_set (company_id);
+		let has_credit = common.isset (this.props.creditCards);
 
 		return <form ref={this.deluxe_account_form} id="deluxe_account_form" onSubmit={event => event.preventDefault ()}>
 
-			<label className="header">{new_customer ? greetings.new_customer : greetings.existing_customer}</label>
+			<label className="header">{has_credit ? greetings.existing_customer : greetings.new_customer}</label>
 
 			<br className="half" />
 			
@@ -224,14 +233,32 @@ export default class DeluxeAccountForm extends BaseControl {
 
 				<div className="vertically-spaced-out">
 
-					<Container condition={!new_customer}>
-						<select>
-							<option>Pick a card (any card)</option>
-						</select>
-					</Container>
+					<Container contentsOnly={false} inline={true}>
 
-					<Container condition={new_customer} contentsOnly={false} inline={true}>
+						<Container condition={has_credit}>
 
+<div style={{ border: "solid 1px red" }}>
+
+		<div>CC SELECT OPTIONS</div>
+
+							<SelectList data={this.props.creditCards} idField="square_id" 
+								textField={item => { 
+
+									let expiration = `${item.expiration % 100}/${Math.floor (item.expiration / 100)}`;
+									let is_amex = constants.credit_card_types.amex.matches (item.card_type);
+
+									let card_mask = constants.credit_card_masks [is_amex ? constants.credit_card_types.amex : constants.credit_card_types.other];
+									let card_number = card_mask.substring (0, card_mask.length - item.last_few.toString ().length) + item.last_few.toString ();
+
+									return `${card_number} (${constants.credit_card_names [item.card_type]} - ${expiration})`;
+
+								}}>
+							</SelectList>
+
+</div>
+
+						</Container>
+{/* 
 						<CreditCardForm parent={this} />
 
 						<div className="horizontally_centered full-width">
@@ -274,7 +301,7 @@ export default class DeluxeAccountForm extends BaseControl {
 						</div>
 
 						<div className="right-justify" style={{ marginBottom: "1em" }}><a href="packages" target="packages">Compare packages</a></div>
-
+*/}
 					</Container>
 						
 					<div className="right-justify">

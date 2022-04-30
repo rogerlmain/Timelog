@@ -78,6 +78,33 @@ export const credit_card_images = {
 }// credit_card_images;
 
 
+export const credit_card_masks = {
+	amex	: "**** ****** *****",
+	other	: "**** **** **** ****"
+}// card_masks;
+
+
+export const credit_card_names = {
+	amex		: "American Express",
+	visa		: "Visa",
+	mastercard	: "Mastercard",
+	discover	: "Discover",
+	jcb			: "JCB",
+	unionpay	: "UnionPay"
+}// credit_card_names;
+
+
+export const credit_card_types = {
+	amex		: "amex",
+	visa		: "visa",
+	mastercard	: "mastercard",
+	discover	: "discover",
+	jcb			: "jcb",
+	unionpay	: "unionpay",
+	other		: "other"
+}// credit_card_types;
+
+
 /********/
 
 

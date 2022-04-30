@@ -17,7 +17,8 @@ create procedure get_companies_by_account (account_id integer) begin
         lks.long_name as state_name,
         adr.country_id,
         lkc.long_name as country_name,
-        adr.postcode
+        adr.postcode,
+        cpy.square_id
 	from 
 		companies cpy
 	join 

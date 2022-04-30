@@ -91,10 +91,11 @@ export default class AccountData extends Database {
 						if (not_set (result.options [company.company_id])) result.options [company.company_id] = {};
 						result.options [company.company_id][option.id] = option.value;
 					}// if;
+
+					result.companies = { ...result.companies, [company.company_id]: company }
+					delete company.company_id;
 						
 				}// for;
-
-				result.companies = { list: companies }
 
 			}// if;
 

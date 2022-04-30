@@ -59,7 +59,7 @@ export default class MasterPanel extends BaseControl {
 
 
 	buttons_disabled () {
-		let company_list = Companies.list ();
+		let company_list = Companies.company_list ();
 		if (is_empty (company_list) || (company_list.length == 1)) return false;
 		if (Companies.company_selected ()) return false;
 		return true;
