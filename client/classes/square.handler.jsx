@@ -121,16 +121,16 @@ export default class SquareHandler {
 	/********/
 
 
-	async save_card (form_data, square_data) {
+	async save_card (data) {
 
 		let card_token = (await this.create_token ()).token;
 
 		let card_data = { 
 			source_id: card_token,
 			card: {
-				billing_address: FormHandler.extract_address (form_data),
-				customer_id: square_data.customer.id,
-				cardholder_name: form_data.cc_name,
+				billing_address: FormHandler.extract_address (data),
+				customer_id: data.customer_id,
+				cardholder_name: data.cc_name,
 			}/* card */
 		}/* card_data */;
 

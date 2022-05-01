@@ -14,6 +14,7 @@ import BaseControl from "controls/abstract/base.control";
 import SelectList from "controls/select.list";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
+import Account from "classes/storage/account";;
 import Companies from "classes/storage/companies";
 
 import MasterPanel from "client/master";
@@ -64,8 +65,9 @@ class Main extends BaseControl {
 
 		if (!this.signed_in ()) return null
 
-		return (
-			<div>
+		return <div>
+			<div className="right-aligned">{Account.full_name ()}</div>
+			<div className="right-aligned">
 
 				<Container condition={Companies.company_count () > 1}>
 					<SelectList value={Companies.active_company_id ()} data={companies}
@@ -89,7 +91,7 @@ class Main extends BaseControl {
 				</Container>
 				
 			</div>
-		);
+		</div>
 
 	}// company_header;
 

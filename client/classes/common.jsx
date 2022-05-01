@@ -174,12 +174,11 @@ export function nested_value () {
 	let next_object = arguments [0] [arguments [1]];
 	let remaining_parameters = Array.from (arguments).slice (2);
 
-	if (is_empty (remaining_parameters)) return next_object;
+	let funky = is_function (next_object);
 
-	if (is_function (next_object)) return nested_value (next_object.bind (arguments [0]) (), remaining_parameters);
-	if (is_object (next_object)) return nested_value (next_object, remaining_parameters);
+	if (is_empty (remaining_parameters)) return funky ? next_object.bind (arguments [0]) () : next_object;
 
-	return null;
+	return nested_value (funky? next_object.bind (arguments [0]) () : next_object, ...remaining_parameters);
 
 }// nested_value;
 

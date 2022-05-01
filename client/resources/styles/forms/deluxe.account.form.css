@@ -1,29 +1,11 @@
 div.pricing-table {
-	display: inline-grid;
 	margin-bottom: 1em;
 	justify-self: center;
 }/* div.pricing-table */
 
 
-div.pricing-table > div {
-	display: flex;
-	align-items: center;
-	margin: 0 0.25em;
-}/* div.pricing-table > div */
+div.pricing-table > * { margin: 0 0.25em }
+div.pricing-table input[type=radio] { align-self: center }
+div.pricing-table a { justify-self: center }
 
-
-div.pricing-table {
-	grid-template-columns: repeat(2, min-content) 6em;
-	column-gap: 0.5em;
-}/* div.pricing-table */
-
-
-div.pricing-table input[type=radio] {
-	align-self: center
-}/* div.pricing-table input[type=radio] */
-
-
-div.pricing-table > div:nth-child(3n+3) {
-	display: flex;
-	justify-content: flex-end;
-}/* div.pricing-table > div:nth-child(3n+1) */
+div.pricing-table > div:nth-child(3n+3) { justify-self: flex-end }

@@ -49,7 +49,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	state = {
 
 		active_card: null,
-		package_price: null,
+		package_price: 9999,	// TODO: Read from database
 
 		square_handler: null,
 		square_card: null,
@@ -94,43 +94,6 @@ export default class DeluxeAccountForm extends BaseControl {
 	/********/
 
 
-	async update_local_data (data) {
-		Companies.set ({
-			active_company: data.company_data.company_id,
-			[data.company_data.company_id]: [{
-				company_name: data.company_data.name,
-				address_id: data.address_data.address_id,
-				street_address: data.address_data.street_address,
-				additional: data.address_data.additional,
-				city: data.address_data.city,
-				state_id: data.address_data.state_id,
-				state_name: data.form_data.state_name,
-				country_id: data.address_data.country_id,
-				country_name: data.form_data.full_country_name,
-				postcode: data.address_data.postcode,
-				square_id: data.square_data.customer.id,
-			}]
-		});
-	}// update_local_data;
-
-
-	async create_payment (credit_card, square_id) {
-
-		let option_name = common.isset (this.props.option) ? common.get_key (constants.option_types, this.props.option).titled () : null;
-
-		return await this.state.square_handler.create_payment ({
-			amount: this.state.selected_item.equals (purchase_options.item) ? this.props.optionPrice : JSON.parse (this.package_list.current.value).price,
-			source_id: common.isset (credit_card) ? credit_card.card.id : null,
-			customer_id: square_id,
-			note: `${Account.full_name ()}: ${option_name} (${this.props.option})`
-		});
-
-	}// create_payment;
-
-
-	/********/
-
-
 	get_form_data () {
 
 		let form_data = new FormData (this.deluxe_account_form.current).toObject ();
@@ -150,36 +113,63 @@ export default class DeluxeAccountForm extends BaseControl {
 	/********/
 
 
-	submit_payment = async event => {
+	create_payment = async (data) => {
+
+		let option_name = common.isset (this.props.option) ? common.get_key (constants.option_types, this.props.option).titled () : null;
+
+		return await this.state.square_handler.create_payment ({
+			amount: this.state.selected_item.equals (purchase_options.item) ? this.props.optionPrice : JSON.parse (this.package_list.current.value).price,
+			customer_id: data.customer_id,
+			source_id: data.card_id ?? data.token,
+			note: `${Account.full_name ()}: ${option_name} (${this.props.option})`
+		});
+
+	}// create_payment;
+
+
+	get_customer_id = async (data) => {
+
+		let customer_id = Companies.square_id ();
+		
+		if (common.isset (customer_id)) return { customer_id: customer_id }; 
+		
+		let square_data = await this.state.square_handler.create_square_account (data);
+		let company_data = await new CustomerHandler ().save_customer ({...data, customer_id: square_data.customer.id });
+
+		return {
+			customer_id: square_data.customer.id,
+			company: company_data
+		};
+
+	}// get_customer_id;
+
+
+	get_card_id = async (data) => {
+
+		let card_id = common.nested_value (this.credit_card_list.current, "list", "current", "selectedValue");
+		let new_card = (!this.props.hasCredit) || this.state.new_card;
+
+		if ((common.isset (card_id) && !new_card)) return card_id;
+		
+		if (data.keep_card) {
+			let card_data = await this.state.square_handler.save_card (data);
+			new CustomerHandler ().save_card (data.company.company_data.company_id, card_data.card);
+			return card_data.card.id;
+		}// if;
+
+		return (await this.state.square_handler.create_token ()).token;
+
+	}// get_card_id;
+	
+
+	submit_payment = async (event) => {
 
 		let form_data = this.get_form_data ();
 
-		let data = { 
-			form_data: { ...form_data, full_country_name: common.nested_value (document.getElementById ("country"), "selectedText") },
-			keep_card: common.boolean_value (form_data.keep_card)
-		}/* data */;
+		form_data = { ...form_data, ...await this.get_customer_id (form_data) };
+		form_data.card_id = await this.get_card_id (form_data);
 
-		// let new_customer = (Companies.company_count == 0);
-		// let new_card = (common.is_empty (this.props.creditCards) || data.form_data.new_card);
-
-		// let company_square_id = Companies.square_id ();
-
-
-		// if (new_customer) {
-		// 	data.square_data = await this.state.square_handler.create_square_account (data.form_data);
-		// 	data = { ...data, ...await new CustomerHandler ().save_customer (data) };
-		// 	this.update_local_data (data);
-		// }// if;
-
-		let selected_card = this.credit_card_list.current.list.current.selectedValue ();
-
-alert (the_number);		
-
-		// if (new_card) data.credit_card = (data.keep_card) ? await this.state.square_handler.save_card (data.form_data, data.square_data) : null;
-
-		data.payment_data = await this.create_payment (data.credit_card, common.isset (square_id) ? square_id : data.square_data);
-
-		// this.execute (this.props.onSubmit);
+		this.execute (this.props.onSubmit, await this.create_payment (form_data));
 
 	}// submit_payment
 	
@@ -288,46 +278,47 @@ alert (the_number);
 						</ExplodingPanel>
 
 
-						<div className="horizontally_centered full-width">
+						<div className="horizontally-centered full-width">
 							<div className="three-column-grid pricing-table vertically-centered">
 
+								<Container id="item_options" condition={common.isset (this.props.optionPrice)}>
+									<input type="radio" id="item_price" name="price_option" value={purchase_options.item} 
+										checked={this.state.selected_item == purchase_options.item} 
+										onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
+									</input>
+									<label htmlFor="item_price">Just this item</label>
+									<div>${common.isset (this.props.optionPrice) ? this.props.optionPrice.toCurrency () : null}</div>
+								</Container>
 
-								{common.isset (this.props.optionPrice) ? 
-									<Container>
-										<input type="radio" id="item_price" name="price_option" value={purchase_options.item} 
-											checked={this.state.selected_item == purchase_options.item} 
-											onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
-										</input>
-										<div>Just this item</div>
-										<div>${common.isset (this.props.optionPrice) ? this.props.optionPrice.toCurrency () : null}</div>
-									</Container>
-								: null}
+								<Container id="package_options">
 
-								<input type="radio" id="package_option" name="price_option" value={purchase_options.package} 
-									checked={this.state.selected_item == purchase_options.package} 
-									onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
-								</input>
+									<input type="radio" id="package_option" name="price_option" value={purchase_options.package} 
+										checked={this.state.selected_item == purchase_options.package} 
+										onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
+									</input>
 
-								<select id="package_list" name="package_selection" ref={this.package_list} 
+									<select id="package_list" name="package_selection" ref={this.package_list} 
 
-									onChange={event => this.setState ({ 
-										package_price: JSON.parse (event.target.value).price,
-										selected_item: purchase_options.package
-									})}>
+										onChange={event => this.setState ({ 
+											package_price: JSON.parse (event.target.value).price,
+											selected_item: purchase_options.package
+										})}>
 
-									<option value={`{ "id": ${constants.account_types.freelance}, "price": 9999 }`}>Freelance package</option>
-									<option value={`{ "id": ${constants.account_types.company}, "price": 69999 }`}>Company package</option>
-									<option value={`{ "id": ${constants.account_types.corporate}, "price": 179999 }`}>Corporate package</option>
-									<option value={`{ "id": ${constants.account_types.enterprise}, "price": 359999 }`}>Enterprise package</option>
+										<option value={`{ "id": ${constants.account_types.freelance}, "price": 9999 }`}>Freelance package</option>
+										<option value={`{ "id": ${constants.account_types.company}, "price": 69999 }`}>Company package</option>
+										<option value={`{ "id": ${constants.account_types.corporate}, "price": 179999 }`}>Corporate package</option>
+										<option value={`{ "id": ${constants.account_types.enterprise}, "price": 359999 }`}>Enterprise package</option>
 
-								</select>
+									</select>
 
-								<div>{common.isset (this.state.package_price) ? "$" : null}{common.isset (this.state.package_price) ? this.state.package_price.toCurrency () : null}</div>
+									<div>{common.isset (this.state.package_price) ? "$" : null}{common.isset (this.state.package_price) ? this.state.package_price.toCurrency () : null}</div>
+
+								</Container>
+
+								<a href="packages" target="packages" style={{ gridColumn: 2 }}>Compare packages</a>
 
 							</div>
 						</div>
-
-						<div className="right-justify" style={{ marginBottom: "1em" }}><a href="packages" target="packages">Compare packages</a></div>
 
 					</Container>
 						

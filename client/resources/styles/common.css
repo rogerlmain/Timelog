@@ -66,11 +66,11 @@
 }/* .centering-container */
 
 
-.horizontally_centered {
+.horizontally-centered {
 	display: inline-flex;
 	flex-direction: row;
 	justify-content: center;
-}/* .horizontally_centered */
+}/* .horizontally-centered */
 
 
 .vertically_centered {

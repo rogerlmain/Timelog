@@ -55,7 +55,7 @@ export default class SelectList extends BaseControl {
 
 		let result = option_list.map (item => {
 
-			let text_field = common.is_function (this.props.textField) ? this.props.textField (item) : this.props.textField;
+			let text_field = common.is_function (this.props.textField) ? this.props.textField (item) : item [this.props.textField];
 			let key = is_array ? item [this.props.idField] : common.get_key (this.props.data, item);
 
 			return <option value={key} key={key}>{text_field}</option>
