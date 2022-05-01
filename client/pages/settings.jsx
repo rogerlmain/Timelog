@@ -92,7 +92,7 @@ export default class SettingsPage extends BaseControl {
 	rounding_switches () {
 		return <ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
 			<Container id="rounding_options_container" condition={ this.state.granularity > 1} 
-				className="one-piece-form with-headspace" inline={true} contentsOnly={false}>
+				className="one-piece-form with-headspace" inline={true}>
 
 				<ToggleOption id="start_time_rounding" title="Start time rounding"
 					values={["Round down", "Round off", "Round up"]} value={this.state.start_rounding + 2}

@@ -10,3 +10,4 @@ select * from addresses;
 select * from company_cards;
 select * from company_accounts;
 select * from companies;
+

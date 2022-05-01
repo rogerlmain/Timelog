@@ -1,3 +1,4 @@
+import * as common from "classes/common";
 import Database from "classes/database";
 
 

@@ -24,9 +24,12 @@ export default class DeluxeAccountPopup extends BaseControl {
 	state = {  
 
 		price: null,
-		company_cards: null,
+		credit_cards: null,
 
 		loading: true,
+		credit_cards_loading: true,
+
+		has_credit: false,
 
 	}/* state */;
 	
@@ -58,9 +61,19 @@ export default class DeluxeAccountPopup extends BaseControl {
 	load_details = () => {
 
 		const load_price = result => this.setState ({ price: common.is_empty (result) ? "Market Price" : result [0].price }, update_load_status);
-		const update_load_status = () => this.setState ({ loading: (common.is_null (this.state.price) || common.is_null (this.state.company_cards)) });
+		const update_load_status = () => this.setState ({ loading: (common.is_null (this.state.price) || this.state.credit_cards_loading) });
 
-		CompanyCardModel.get_cards (this.context.company_id).then (result => this.setState ({ company_cards : result }, update_load_status));
+		switch (common.isset (this.context.company_id)) {
+			case true: CompanyCardModel.get_cards (this.context.company_id).then (result => this.setState ({ 
+				credit_cards : result,
+				credit_cards_loading: false,
+			}, () => {
+				this.setState ({ has_credit: common.not_empty (result) });
+				update_load_status ();
+			})); break;
+			default: this.setState ({ credit_cards_loading: false });
+		}// switch;
+		
 		PricingModel.load_price (this.props.option, this.props.value).then (load_price);
 
 	}// load_details;
@@ -75,8 +88,8 @@ export default class DeluxeAccountPopup extends BaseControl {
 				eyecandyVisible={this.state.loading} eyecandySize={eyecandy_sizes.medium}>
 
 				<DeluxeAccountForm onCancel={this.props.onCancel} onSubmit={this.props.onSubmit} 
-					option={this.props.option} optionPrice={this.state.price} 
-					creditCards={this.state.company_cards}>
+					option={this.props.option} optionPrice={this.state.price} hasCredit={this.state.has_credit}
+					creditCards={this.state.credit_cards}>
 				</DeluxeAccountForm>
 
 			</EyecandyPanel>

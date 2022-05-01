@@ -148,7 +148,7 @@ this.setState ({
 						
 		defaultValue="Lakewood" />
 
-						<div className="one-piece-form">
+						<div className="one-piece-form" style={{ marginLeft: "1em" }}>
 							<label htmlFor="zip" title="Zip or Postal Code">Post Code</label>
 							<input type="text" id="zip" name="zip"  style={{ width: "5em" }} maxLength={16} required={true} 
 		defaultValue="80214" />

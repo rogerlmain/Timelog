@@ -111,7 +111,7 @@ defaultValue="Rex Strange">
 			<div className="right-justified-column keep-card-checkbox">
 				<div className="two-column-grid">
 					<label htmlFor="reuse_card" style={{ margin: 0, marginRight: "0.25em" }}>Keep my card on file</label>
-					<div className="vertically_centered"><input type="checkbox" id="keep_card" name="keep_card" defaultChecked={true} onClick={event => this.setState ({ keep_card: event.target.checked })} /></div>
+					<div className="vertically_centered"><input type="checkbox" id="keep_card" name="keep_card" defaultChecked={true} /></div>
 				</div>
 			</div>
 
