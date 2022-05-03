@@ -2,16 +2,19 @@ import * as common from "classes/common";
 import * as constants from "client/classes/types/constants";
 
 import React from "react";
+
 import FormControl from "controls/form.control";
 import Container from "controls/container";
 
 import Database from "classes/database";
 
 import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
-import CurrentAccount from "classes/storage/account";
-
+import { MainContext } from "classes/types/contexts";
 
 export default class ClientForm extends FormControl {
+
+
+	static contextType = MainContext;
 
 	client_form = React.createRef ();
 
@@ -30,7 +33,7 @@ export default class ClientForm extends FormControl {
 		let form_data = new FormData (this.client_form.current);
 
 		form_data.append ("action", "save");
-		form_data.append ("company_id", CurrentAccount.company_id ());
+		form_data.append ("company_id", this.context.company_id);
 
 		this.setState ({ status: "Saving..." }, () => Database.save_data ("clients", form_data).then (data => {
 			this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));

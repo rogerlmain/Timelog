@@ -1,3 +1,5 @@
+import * as common from "classes/common";
+
 import React from "react";
 
 import Companies from "classes/storage/companies";
@@ -18,13 +20,12 @@ import SettingsPage from "pages/settings";
 import BaseControl from "controls/abstract/base.control";
 
 import { globals } from "classes/types/constants";
-import { is_empty, is_null } from "classes/common";
 
 
 const master_pages = { 
 	home	: { name: "Home", permission: true }, 
-	clients	: { name: "Clients", permission: (Options.client_limit () > 1) }, 
-	projects: { name: "Projects", permission: (Options.project_limit () > 1) }, 
+	clients	: { name: "Clients", permission: () => { return Options.client_limit () > 1 } }, 
+	projects: { name: "Projects", permission: () => { return Options.project_limit () > 1 } }, 
 	logging	: { name: "Logging", permission: true }, 
 	reports	: { name: "Reports", permission: true },
 	account	: { name: "Account", permission: true }, 
@@ -60,7 +61,7 @@ export default class MasterPanel extends BaseControl {
 
 	buttons_disabled () {
 		let company_list = Companies.company_list ();
-		if (is_empty (company_list) || (company_list.length == 1)) return false;
+		if (common.is_empty (company_list) || (company_list.length == 1)) return false;
 		if (Companies.company_selected ()) return false;
 		return true;
 	}// buttons_disabled;
@@ -69,11 +70,12 @@ export default class MasterPanel extends BaseControl {
 	button_list () {
 		let result = null;
 		for (let key in master_pages) {
+
 			let name = `${key}_button`;
 			let value = master_pages [key].name;
 
-			if (!master_pages [key].permission) continue;
-			if (is_null (result)) result = [];
+			if (!(common.is_function (master_pages [key].permission) ? master_pages [key].permission () : master_pages [key].permission)) continue;
+			if (common.is_null (result)) result = [];
 
 			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP (when needed)
 			result.push (<SelectButton id={name} name={name} key={name} sticky={false}

@@ -47,7 +47,7 @@ export default class ToggleOption extends BaseControl {
 		let key_name = common.get_key (constants.option_types, this.props.option);
 		let current_value = Options [key_name] (this.context.company_id);
 
-		this.state.value = new_value + 1;
+		this.state.value = new_value;
 
 		if (this.props.billable && (this.state.value > current_value)) {
 			this.props.parent.setState ({ 
@@ -73,10 +73,13 @@ export default class ToggleOption extends BaseControl {
 
 		let result = null;
 		let index = 0;
+		let has_values = common.is_object (this.props.values);
 
-		for (let value of this.props.values) {
+		for (let value of (has_values ? Object.keys (this.props.values) : this.props.values)) {
+
 			if (common.is_null (result)) result = new Array ();
-			result.push (<option key={`${this.props.id}_${index}`}>{value}</option>);
+			result.push (<option key={`${this.props.id}_${index}`} value={has_values ? this.props.values [value] : null}>{value}</option>);
+
 		}// for;
 		return result;
 	}// option_items;
@@ -84,7 +87,7 @@ export default class ToggleOption extends BaseControl {
 
 	/********/
 
-
+b
 	componentDidMount () { 
 		if (common.not_set (this.props.id)) throw "ToggleOption requires an ID";
 		this.setState ({ value: this.props.value ?? Options.get (this.props.option) });
@@ -110,7 +113,7 @@ export default class ToggleOption extends BaseControl {
 		return <Container contentsOnly={true}>
 			<label htmlFor={id}>{this.props.title}</label>
 			<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-				<ToggleSwitch id={id} value={this.state.value - 1} singleStep={true} onChange={this.change_handler}>{this.option_items ()}</ToggleSwitch>
+				<ToggleSwitch id={id} value={this.state.value} singleStep={true} onChange={this.change_handler}>{this.option_items ()}</ToggleSwitch>
 			</div>
 		</Container>
 

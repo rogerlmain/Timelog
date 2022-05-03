@@ -78,7 +78,8 @@ export function is_null (value) {
 }// is_null;
 
 
-export function is_object (value) { return value instanceof Object }
+export function is_array (value) { return Array.isArray (value) }
+export function is_object (value) { return ((value instanceof Object) && not_array (value)) }
 export function is_string (value) { return typeof value == "string" }
 export function is_number (value) { return !isNaN (parseInt (value))}
 
@@ -93,32 +94,14 @@ export function isset (value) {
 }// isset;
 
 
-export function not_empty (value) {
-	return !is_empty (value);
-}// not_empty;
-
-
-export function not_set (value, ...nullables) {
-	return !isset (value, ...nullables);
-}// not_set;
-
-
-export function not_null (value) {
-	return !is_null (value);
-}// not_null;
-
-
-export function not_undefined (value) {
-	return !is_undefined (value);
-}// not_undefined;
-
+export function not_array (value) { return !is_array (value) }
+export function not_empty (value) { return !is_empty (value) }
+export function not_set (value, ...nullables) { return !isset (value, ...nullables) }
+export function not_null (value) { return !is_null (value) }
+export function not_undefined (value) { return !is_undefined (value) }
 
 export function null_value (value) { return isset (value) ? value : null }
-
-
-export function null_or_undefined (value) {
-	return (is_null (value) || (value == undefined));
-}// null_or_undefined;
+export function null_or_undefined (value) { return (is_null (value) || (value == undefined)) }
 
 
 export function matching_objects (first_object, second_object) {

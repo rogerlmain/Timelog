@@ -26,6 +26,24 @@ import { resize_direction } from "controls/panels/resize.panel";
 import "client/resources/styles/pages.css";
 
 
+const client_limit_values = {
+	"1": 1,
+	"5": 5,
+	"10": 10,
+	"50": 50,
+	"Unlimited": -1,
+}// client_limit_values;
+
+
+const project_limit_values = {
+	"1": 1,
+	"5": 5,
+	"10": 10,
+	"50": 50,
+	"Unlimited": -1,
+}// project_limit_values;
+
+
 export default class SettingsPage extends BaseControl {
 
 
@@ -215,14 +233,14 @@ export default class SettingsPage extends BaseControl {
 					<div>
 						<div className="one-piece-form" >
 
-							<ToggleOption id="client_limit" title="Number of clients" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.client_limit}
+							<ToggleOption id="client_limit" title="Number of clients" values={client_limit_values} value={this.state.client_limit}
 								option={constants.option_types.client_limit} parent={this} 
 								onPaymentConfirmed={selected_option => {
 									this.set_option (constants.option_types.client_limit, selected_option).then (() => this.setState ({ client_limit: selected_option }, this.context.main_page.forceRefresh));
 								}}>
 							</ToggleOption>
 
-							<ToggleOption id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.project_limit}
+							<ToggleOption id="project_limit" title="Number of projects" values={project_limit_values} value={this.state.project_limit}
 								option={constants.option_types.project_limit} parent={this} 
 								onPaymentConfirmed={selected_option => {
 									this.set_option (constants.option_types.project_limit, selected_option).then (() => this.setState ({ project_limit: selected_option }, this.context.main_page.forceRefresh));

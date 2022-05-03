@@ -1,10 +1,10 @@
 import React from "react";
 
-import BaseControl from "client/controls/abstract/base.control";
+import BaseControl from "controls/abstract/base.control";
+import EyecandyPanel from "controls/panels/eyecandy.panel";
 
-import EyecandyPanel from "client/controls/panels/eyecandy.panel";
+import ClientSelectorGadget from "pages/gadgets/selectors/client.selector.gadget";
 
-import ClientSelectorGadget from "./gadgets/selectors/client.selector.gadget";
 import ClientForm from "forms/client.form";
 import ClientModel from "models/clients";
 
@@ -30,49 +30,50 @@ export default class ClientsPage extends BaseControl {
 
 
 	render () {
- 		return (
-			<div id={this.props.id} className="top-center-container row-spaced">
 
-				<div className="two-column-grid">
-					<ClientSelectorGadget id="client_selector" parent={this} companyId={this.props.companyId}
-					
-						hasHeader={true} 
-						headerSelectable={true}
-						headerText="New client"
+		let can_create = true; //Options.
 
-						selectedClient={this.state.selected_client}
+ 		return <div id={this.props.id} className="top-center-container row-spaced">
 
-						onClientChange={(event) => this.setState ({ 
-							selected_client: event.target.value,
-							updating: true 
-						})}>
-
-					</ClientSelectorGadget>
-				</div>
-
-				<EyecandyPanel id="edit_client_panel" text="Loading..." eyecandyVisible={this.state.updating} 
+			<div className="two-column-grid">
+				<ClientSelectorGadget id="client_selector" parent={this} companyId={this.props.companyId}
 				
-					onEyecandy={() => { 
-						if (this.state.updating) ClientModel.fetch_by_id (this.state.selected_client).then (data => this.setState ({
-							client_data: data,
-							updating: false
-						}));
-					}}>
+					hasHeader={true} 
+					headerSelectable={can_create}
+					headerText={can_create ? "New client" : "Select one"}
 
-					<ClientForm formData={this.state.client_data}
+					selectedClient={this.state.selected_client}
 
-					// onDelete={async () => {
-					// 	this.setState ({ selected_client: null });
-					// 	await this.load_clients ();
-					// }} 
-					
-					// onSave={async () => await this.load_clients () } 
-					
-					/>
-				</EyecandyPanel>
+					onClientChange={(event) => this.setState ({ 
+						selected_client: event.target.value,
+						updating: true 
+					})}>
 
+				</ClientSelectorGadget>
 			</div>
-		);
+
+			<EyecandyPanel id="edit_client_panel" text="Loading..." eyecandyVisible={this.state.updating} 
+			
+				onEyecandy={() => { 
+					if (this.state.updating) ClientModel.fetch_by_id (this.state.selected_client).then (data => this.setState ({
+						client_data: data,
+						updating: false
+					}));
+				}}>
+
+				<ClientForm formData={this.state.client_data}
+
+				// onDelete={async () => {
+				// 	this.setState ({ selected_client: null });
+				// 	await this.load_clients ();
+				// }} 
+				
+				// onSave={async () => await this.load_clients () } 
+				
+				/>
+			</EyecandyPanel>
+
+		</div>
 	}// render;
 
 

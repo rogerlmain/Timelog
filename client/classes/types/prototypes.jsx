@@ -325,6 +325,9 @@ HTMLElement.prototype.setAttributes = function (attributes) { for (let key in at
 HTMLElement.prototype.removeAttributes = function (/* keys */) { for (let attribute of arguments) this.removeAttribute (attribute) }
 
 
+HTMLElement.prototype.index = function () { return common.isset (this.parent) ? Array.from (this.parent.children).indexOf (this) : 0 }
+
+
 HTMLElement.prototype.isComplete = function () {
 
 	let input_mask = this.getAttribute ("input_mask");

@@ -5,10 +5,11 @@ import BaseControl from "client/controls/abstract/base.control";
 import Container from "controls/container";
 
 import SelectList from "controls/select.list";
-import EyecandyPanel from "client/controls/panels/eyecandy.panel";
-import ClientsModel from "client/models/clients";
+import EyecandyPanel from "controls/panels/eyecandy.panel";
 
-import { MainContext } from "client/classes/types/contexts";
+import ClientsModel from "models/clients";
+
+import { MainContext } from "classes/types/contexts";
 
 
 export default class ClientSelectorGadget extends BaseControl {
