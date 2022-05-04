@@ -23,40 +23,19 @@ export default class Companies extends LocalStorage {
 
 	static company_selected () { return common.isset (this.active_company_id ()) }
 	static paid_account () { return common.isset (this.square_id ()) }
+	
+	static company_list () { return LocalStorage.get_all (store_name) }
 
+	
 	static active_company () { 
 		return common.nested_value (this.company_list (), this.active_company_id ());
 	}// active_company;
 
 
 	static company_count () { 
-		let companies = this.company_ids ();
-		return (common.isset (companies) ? companies.length : 0);
+		let companies = Object.keys (this.company_list ());
+		return (common.isset (companies) ? (companies.length - 1) : 0);
 	}// company_count;
 	
-	static company_ids () { 
-		let companies = LocalStorage.get_all (store_name);
-		let keys = common.is_object (companies) ? Object.keys (companies) : null;
-		return common.is_object (keys) ? keys.filter (item => common.is_number (item)) : null;
-	}// company_ids;
-
-
-	static company_list () {
-
-		let result = null;
-		let companies = LocalStorage.get_all (store_name);
-		let ids = this.company_ids ();
-
-		if (common.is_null (ids)) return result;
-
-		for (let company_id of ids) {
-			if (common.is_null (result)) result = {}
-			result [company_id] = companies [company_id];
-		}// for;
-
-		return result;
-
-	}// company_list;
-
 
 }// Companies;

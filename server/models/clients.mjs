@@ -20,7 +20,7 @@ export default class ClientData extends Database {
 
 		let parameters = {
 			client_id: global.isset (data.client_id) ? parseInt (data.client_id) : null,
-			company_id: data.company_id,
+			company_id: parseInt (data.company_id),
 			client_name: data.client_name,
 			client_description: data.client_description,
 			deleted: Boolean (data.deleted)

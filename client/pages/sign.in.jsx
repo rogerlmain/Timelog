@@ -53,7 +53,7 @@ export default class SigninPage extends BaseControl {
 			if (this.signed_in ()) {
 
 				let companies = Companies.company_list ();
-				let ids = Companies.company_ids ();
+				let ids = Object.keys (companies);
 
 				if (common.isset (ids) && (ids.length == 1)) Companies.set_active_company (ids [0]);
 				this.context.main_page.setState ({ company_id: Companies.active_company_id () });

@@ -278,8 +278,8 @@ export default class DeluxeAccountForm extends BaseControl {
 						</ExplodingPanel>
 
 
-						<div className="horizontally-centered full-width">
-							<div className="three-column-grid pricing-table vertically-centered">
+						<div className="horizontally-center full-width">
+							<div className="three-column-grid pricing-table vertically-center">
 
 								<Container id="item_options" condition={common.isset (this.props.optionPrice)}>
 									<input type="radio" id="item_price" name="price_option" value={purchase_options.item} 

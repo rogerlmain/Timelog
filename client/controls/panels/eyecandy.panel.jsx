@@ -30,7 +30,7 @@ export default class EyecandyPanel extends BaseControl {
 		text: null,
 
 		eyecandySize: eyecandy_sizes.small,
-		eyecandyVisible: true
+		eyecandyVisible: true,
 	};
 
 

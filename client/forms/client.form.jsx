@@ -2,18 +2,42 @@ import * as common from "classes/common";
 import * as constants from "client/classes/types/constants";
 
 import React from "react";
+
 import FormControl from "controls/form.control";
 import Container from "controls/container";
 
-import Database from "classes/database";
+import FadePanel from "controls/panels/fade.panel";
 
-import { LeftHand, SmallProgressMeter } from "controls/progress.meter";
-import CurrentAccount from "classes/storage/account";
+import Clients from "classes/storage/clients";
+
+import ClientModel from "models/clients";
+
+import { RightHand, SmallProgressMeter } from "controls/progress.meter";
+import { MainContext } from "classes/types/contexts";
 
 
 export default class ClientForm extends FormControl {
 
+
+	static contextType = MainContext;
+
+
+	static defaultProps = {
+		disabled: false,
+		formData: null,
+		onLoad: null,
+		onSave: null,
+		onDelete: null
+	}// defaultProps;
+
+
 	client_form = React.createRef ();
+
+
+	state = { 
+		status: null,
+		saved: false
+	}// ClientFormState;
 
 
 	/********/
@@ -30,10 +54,22 @@ export default class ClientForm extends FormControl {
 		let form_data = new FormData (this.client_form.current);
 
 		form_data.append ("action", "save");
-		form_data.append ("company_id", CurrentAccount.company_id ());
+		form_data.append ("company_id", this.context.company_id);
 
-		this.setState ({ status: "Saving..." }, () => Database.save_data ("clients", form_data).then (data => {
-			this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
+		this.setState ({ status: "Saving..." }, () => ClientModel.save_client (form_data).then (data => {
+			this.execute (this.props.onSave, data).then (() => {
+				
+				Clients.set_client (data);
+				
+				this.props.parent.setState ({ 
+					client_data: data,
+					selected_client: data.client_id
+				}, () => {
+					this.props.parent.load_client_list ();
+					this.setState ({ status: null });
+				});
+				
+			});
 		}));
 
 	}// save_client;
@@ -51,7 +87,7 @@ export default class ClientForm extends FormControl {
 		form_data.append ("deleted", "true");
 		form_data.append ("client_id", this.client_data ("client_id"));
 
-		this.setState ({ status: `Deleting ${this.client_data ("name")}...` }, () => Database.save_data ("clients", form_data).then (data => {
+		this.setState ({ status: `Deleting ${this.client_data ("name")}...` }, () => ClientModel.save_client (form_data).then (data => {
 			this.execute (this.props.onDelete, data).then (() => this.setState ({ status: null }));
 		}));
 
@@ -61,20 +97,6 @@ export default class ClientForm extends FormControl {
  
 
 	/********/
-
-
-	static defaultProps = {
-		formData: null,
-		onLoad: null,
-		onSave: null,
-		onDelete: null
-	}// defaultProps;
-
-
-	state = { 
-		status: null,
-		saved: false
-	}// ClientFormState;
 
 
 	shouldComponentUpdate (next_props) {
@@ -89,39 +111,49 @@ export default class ClientForm extends FormControl {
 	render () {
 
 		let client_id = this.client_data ("client_id");
-		let editing = common.isset (client_id);
 
-		return (
-			<Container>
+		return <Container>
 
-				<form id="client_form" ref={this.client_form}>
+			<form id="client_form" ref={this.client_form}>
 
-					<input type="hidden" id="client_id" name="client_id" value={client_id || constants.blank} />
+				<input type="hidden" id="client_id" name="client_id" value={client_id || constants.blank} />
 
-					<div className="two-column-grid">
+				<div className="two-column-grid">
 
-						<label htmlFor="client_name">Client Name</label>
-						<input type="text" id="client_name" name="client_name" defaultValue={this.client_data ("name") || constants.blank} required={true} 
-							onBlur={this.save_client.bind (this)}>
-						</input>
+					<label htmlFor="client_name">Client Name</label>
+					<input type="text" id="client_name" name="client_name" 
+						defaultValue={this.client_data ("name") || constants.blank} 
+						required={true} disabled={this.props.disabled}
+						onBlur={this.save_client.bind (this)}>
+					</input>
 
-						<label htmlFor="client_description">Description</label>
-						<textarea  id="client_description" name="client_description" defaultValue={this.client_data ("description")}  placeholder="(optional)" 
-							onBlur={this.save_client.bind (this)}>
-						</textarea>
+					<label htmlFor="client_description">Description</label>
+					<textarea  id="client_description" name="client_description" style={{ width: "24em", height: "12em"}}
+						defaultValue={this.client_data ("description")}  
+						placeholder="(optional)" disabled={this.props.disabled}
+						onBlur={this.save_client.bind (this)}>
+					</textarea>
 
-						{editing && <button className="double-column" onClick={this.delete_client.bind (this)} style={{ marginTop: "1em" }}>Delete</button>}
-
-					</div>
-					
-				</form>
-
-				<div className="button-bar">
-					<SmallProgressMeter visible={common.isset (this.state.status)} alignment={LeftHand}>{this.state.status}</SmallProgressMeter>
 				</div>
+				
+			</form>
 
-			</Container>
-		);
+			<div className="horizontally-spaced-out vertically-center" style={{ marginTop: "1em" }}>
+
+				<SmallProgressMeter id="client_progress_meter" visible={common.isset (this.state.status)} 
+					alignment={constants.horizontal_alignment.right}>
+					{/* {this.state.status} */}
+					Doing shit
+				</SmallProgressMeter>
+
+				<FadePanel id="edit_options_panel" visible={common.isset (client_id)}>
+					<button className="double-column" onClick={this.delete_client.bind (this)}>Delete</button>
+				</FadePanel>
+
+			</div>
+
+		</Container>
+		
 	}// render;
 
 }// ClientForm;

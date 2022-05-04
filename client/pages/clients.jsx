@@ -1,19 +1,36 @@
+import * as constants from "client/classes/types/constants";
+import * as common from "classes/common";
+
 import React from "react";
 
-import BaseControl from "client/controls/abstract/base.control";
+import Options from "classes/storage/options";
+import Clients from "classes/storage/clients";
 
-import EyecandyPanel from "client/controls/panels/eyecandy.panel";
+import BaseControl from "controls/abstract/base.control";
+import EyecandyPanel from "controls/panels/eyecandy.panel";
 
-import ClientSelectorGadget from "./gadgets/selectors/client.selector.gadget";
+import ClientSelectorGadget from "pages/gadgets/selectors/client.selector.gadget";
+
 import ClientForm from "forms/client.form";
 import ClientModel from "models/clients";
 
-import { globals } from "client/classes/types/constants";
+
+import { is_null } from "classes/common";
+
+
+export const client_limit_options = {
+	"1": 1,
+	"5": 5,
+	"10": 10,
+	"50": 50,
+	"Unlimited": 0,
+}// client_limit_options;
 
 
 export default class ClientsPage extends BaseControl {
 
 	state = {
+		client_list: null,
 		client_data: null,
 		selected_client: null,
 		updating: false
@@ -25,41 +42,55 @@ export default class ClientsPage extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		globals.clients_page = this;
+		constants.globals.clients_page = this;
 	}// constructor;
 
 
+	load_client_list () { Clients.get_all ().then (data => this.setState ({ client_list: data }, () => {
+
+// alert (JSON.stringify (this.state.client_list));
+
+	})) }
+
+
+	componentDidMount = this.load_client_list;
+
+
 	render () {
- 		return (
-			<div id={this.props.id} className="top-center-container row-spaced">
 
-				<div className="two-column-grid">
-					<ClientSelectorGadget id="client_selector" parent={this} companyId={this.props.companyId}
-					
-						hasHeader={true} 
-						headerSelectable={true}
-						headerText="New client"
+		let limit = Options.client_limit ();
+		let option_value = Object.values (client_limit_options) [limit - 1];
+		let can_create = ((limit > 1) && (common.not_set (this.state.client_list) || (this.state.client_list.length < option_value) || (option_value == 0)))
 
-						selectedClient={this.state.selected_client}
+ 		return <div id={this.props.id} className="top-center-container row-spaced">
 
-						onClientChange={(event) => this.setState ({ 
-							selected_client: event.target.value,
-							updating: true 
-						})}>
-
-					</ClientSelectorGadget>
-				</div>
-
-				<EyecandyPanel id="edit_client_panel" text="Loading..." eyecandyVisible={this.state.updating} 
+			<div className="two-column-grid">
+				<ClientSelectorGadget id="client_selector" parent={this} companyId={this.props.companyId}
 				
-					onEyecandy={() => { 
-						if (this.state.updating) ClientModel.fetch_by_id (this.state.selected_client).then (data => this.setState ({
-							client_data: data,
-							updating: false
-						}));
-					}}>
+					hasHeader={true} 
+					headerSelectable={can_create}
+					headerText={can_create ? "New client" : "Select one"}
 
-					<ClientForm formData={this.state.client_data}
+					selectedClient={this.state.selected_client}
+
+					onClientChange={(event) => this.setState ({ 
+						selected_client: event.target.value,
+						updating: true 
+					})}>
+
+				</ClientSelectorGadget>
+			</div>
+
+			<EyecandyPanel id="edit_client_panel" text="Loading..." eyecandyVisible={this.state.updating} 
+			
+				onEyecandy={() => { 
+					if (this.state.updating) ClientModel.fetch_by_id (this.state.selected_client).then (data => this.setState ({
+						client_data: data,
+						updating: false
+					}));
+				}}>
+
+				<ClientForm formData={this.state.client_data} parent={this}
 
 					// onDelete={async () => {
 					// 	this.setState ({ selected_client: null });
@@ -68,11 +99,12 @@ export default class ClientsPage extends BaseControl {
 					
 					// onSave={async () => await this.load_clients () } 
 					
-					/>
-				</EyecandyPanel>
+					disabled={(!can_create) && (is_null (this.state.client_data))}>
+				</ClientForm>
 
-			</div>
-		);
+			</EyecandyPanel>
+
+		</div>
 	}// render;
 
 

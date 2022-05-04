@@ -2,8 +2,6 @@ import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 import Settings from "classes/storage/settings";
 
-import { globals } from "client/classes/types/constants";
-
 import * as common from "classes/common";
 
 
@@ -29,58 +27,6 @@ export default class ResizePanel extends BaseControl {
 
 	outer_control = React.createRef ();
 	inner_control = React.createRef ();
-
-
-	null_if = (value, threshold) => { return (value == threshold ? null : value) }
-
-	horizontal = () => { return ((this.props.direction == resize_direction.horizontal) || (this.props.direction == resize_direction.both)) }
-	vertical = () => { return ((this.props.direction == resize_direction.vertical) || (this.props.direction == resize_direction.both)) }
-
-
-	get_size = (control) => {
-		return common.isset (control.current) ? {
-			width: control.current.scrollWidth,
-			height: control.current.scrollHeight
-		} : null;
-	}/* inner_size */;
-
-
-	end_resizing () {
-		this.props.parent.setState ({ resize: resize_state.false });
-		this.setState ({ width: null, height: null }, () => this.transitioning = false);
-	}// end_resizing;
-
-
-	transition_start (event) {
-
-		let size = this.get_size (this.inner_control);
-
-		if (!["width", "height"].includes (event.propertyName)) return;
-
-		if ((size.width < size.height) && event.propertyName.equals ("width")) return;
-		if ((size.width >= size.height) && event.propertyName.equals ("height")) return;
-
-		this.execute (this.props.beforeResizing ? this.props.beforeResizing.bind (this) : null);
-
-	}//transition_start;
-
-
-	transition_end (event) {
-
-		if (!["width", "height"].includes (event.propertyName)) return;
-
-		let outer_size = this.get_size (this.outer_control);		
-		let inner_size = this.get_size (this.inner_control);
-
-		if (common.matching_objects (inner_size, outer_size)) {
-			this.execute (this.props.afterResizing ? this.props.afterResizing.bind (this) : null);
-			this.end_resizing ();
-		}// if;
-
-	}// transition_end;
-
-	
-	/********/
 
 
 	state = {
@@ -109,9 +55,61 @@ export default class ResizePanel extends BaseControl {
 	}// constructor;
 
 
+	null_if = (value, threshold) => { return (value == threshold ? null : value) }
+
+	horizontal = () => { return ((this.props.direction == resize_direction.horizontal) || (this.props.direction == resize_direction.both)) }
+	vertical = () => { return ((this.props.direction == resize_direction.vertical) || (this.props.direction == resize_direction.both)) }
+
+
+	get_size = (control) => {
+		return common.isset (control.current) ? {
+			width: control.current.scrollWidth,
+			height: control.current.scrollHeight
+		} : null;
+	}/* inner_size */;
+
+
+	end_resizing = () => {
+		this.props.parent.setState ({ resize: resize_state.false });
+		this.setState ({ width: null, height: null }, () => {
+			this.transitioning = false;
+			this.execute (this.props.afterResizing);
+		});
+	}// end_resizing;
+
+
+	transition_start = (event) => {
+
+		let size = this.get_size (this.inner_control);
+
+		if (!["width", "height"].includes (event.propertyName)) return;
+
+		if ((size.width < size.height) && event.propertyName.equals ("width")) return;
+		if ((size.width >= size.height) && event.propertyName.equals ("height")) return;
+
+		this.execute (this.props.beforeResizing ? this.props.beforeResizing.bind (this) : null);
+
+	}//transition_start;
+
+
+	transition_end = (event) => {
+
+		if (!["width", "height"].includes (event.propertyName)) return;
+
+		let outer_size = this.get_size (this.outer_control);		
+		let inner_size = this.get_size (this.inner_control);
+
+		if (common.matching_objects (inner_size, outer_size)) this.end_resizing ();
+
+	}// transition_end;
+
+	
+	/********/
+
+
 	componentDidMount () {
-		if (this.props.beforeResizing) this.outer_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
-		this.outer_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
+		if (this.props.beforeResizing) this.outer_control.current.addEventListener ("transitionstart", this.transition_start);
+		this.outer_control.current.addEventListener ("transitionend", this.transition_end);
 	}// componentDidMount;
 
 
@@ -137,14 +135,14 @@ export default class ResizePanel extends BaseControl {
 			if (this.transitioning) return true;
 			
 			if (common.matching_objects (inner_size, outer_size)) {
-				this.props.parent.setState ({ resize: resize_state.false }, () => this.execute (this.props.afterResizing));
+				this.props.parent.setState ({ resize: resize_state.false }, this.end_resizing);
 				return true;
 			}// if;
 
 			this.transitioning = true;
 
 			if ((this.props.stretchOnly) && (!common.matching_objects (inner_size, new_size))) {
-				this.props.parent.setState ({ resize: resize_state.false }, () => this.execute (this.props.afterResizing));
+				this.props.parent.setState ({ resize: resize_state.false }, this.end_resizing);
 				return false;
 			}// if;
 
@@ -176,16 +174,12 @@ export default class ResizePanel extends BaseControl {
 			display: this.props.stretchOnly ? "block" : "inline-block"
 		}// inner_style;
 
-		if (this.props.resize == resize_state.animate) outer_style = { 
-			...outer_style, 
-			transition: `width ${this.props.speed}ms ease-in-out, height ${this.props.speed}ms ease-in-out` 
-		};
+		if (this.props.resize == resize_state.animate) outer_style.transition = `width ${this.props.speed}ms ease-in-out, height ${this.props.speed}ms ease-in-out`;
 
 		if (this.props.stretchOnly) {
-			outer_style = { ...outer_style, display: "flex" },
-			inner_style = { ...inner_style, flex: "1"}
+			outer_style.display = "flex";
+			inner_style.flex = "1"
 		}// if;
-
 
 		if (common.isset (this.state.width) && this.horizontal ()) outer_style = { ...outer_style, width: this.state.width  };
 		if (common.isset (this.state.height) && this.vertical ()) outer_style = { ...outer_style, height: this.state.height };

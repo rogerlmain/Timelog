@@ -1,14 +1,18 @@
 import * as common from "classes/common";
 
 import React from "react";
-import BaseControl from "client/controls/abstract/base.control";
+
+
+import Clients from "classes/storage/clients";
+import ClientsModel from "models/clients";
+
+import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 
 import SelectList from "controls/select.list";
-import EyecandyPanel from "client/controls/panels/eyecandy.panel";
-import ClientsModel from "client/models/clients";
+import EyecandyPanel from "controls/panels/eyecandy.panel";
 
-import { MainContext } from "client/classes/types/contexts";
+import { MainContext } from "classes/types/contexts";
 
 
 export default class ClientSelectorGadget extends BaseControl {
@@ -21,7 +25,7 @@ export default class ClientSelectorGadget extends BaseControl {
 
 
 	 state = { 
-		clients: null ,
+		clients: null,
 		client_selected: false,
 	}// state;
 
@@ -46,18 +50,32 @@ export default class ClientSelectorGadget extends BaseControl {
 	}// constructor;
 
 
+	/*********/
+
+
 	componentDidMount () {
-		ClientsModel.fetch_by_company (this.context.company_id).then (data => this.setState ({ clients: data }));
+		Clients.get_all (this.context.company_id).then (data => 
+			this.setState ({ 
+				company_id: this.context.company_id,
+				clients: data
+			})
+		);
 	}// componentDidMount;
 
 
-	componentDidUpdate () {
+	async componentDidUpdate () { 
+
 		if (this.context.company_id != this.state.company_id) {
-			ClientsModel.fetch_by_company (this.context.company_id).then (data => this.setState ({
-				company_id: this.context.company_id,
-				clients: data 
-			}));
+			this.componentDidMount ();
+			return false;
 		}// if;
+
+		let data = await Clients.get_all (this.context.company_id);
+		
+		if (common.matching_objects (this.state.clients, data)) return true;
+		
+		this.setState ({ clients: data });
+		return false;
 	}// componentDidUpdate;
 
 

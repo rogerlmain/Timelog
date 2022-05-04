@@ -25,6 +25,14 @@ export const visible_zindex = 1;
 /********/
 
 
+export const stores = {
+	clients: "clients"
+}// stores;
+
+
+/********/
+
+
 export const vertical_alignment = {
 	top: "flex-start",
 	middle: "center",

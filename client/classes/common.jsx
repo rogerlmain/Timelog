@@ -5,7 +5,7 @@ export function boolean_value (value) { return (is_string (value) && (value.equa
 export function integer_value (value) { return isset (value) ? parseInt (value) : null }
 
 export function get_key (object, value) { return Object.keys (object).find (key => object [key] === value) }
-export function notify () { alert (isset (arguments) ? Array.from (arguments).join ("\n") : "paused") }
+export function notify () { alert (not_empty (arguments) ? Array.from (arguments).join ("\n") : "paused") }
 
 
 /********/
@@ -78,7 +78,10 @@ export function is_null (value) {
 }// is_null;
 
 
-export function is_object (value) { return value instanceof Object }
+export function is_array (value) { return Array.isArray (value) }
+export function is_object (value) { return ((value instanceof Object) && not_array (value)) }
+
+
 export function is_string (value) { return typeof value == "string" }
 export function is_number (value) { return !isNaN (parseInt (value))}
 
@@ -93,35 +96,21 @@ export function isset (value) {
 }// isset;
 
 
-export function not_empty (value) {
-	return !is_empty (value);
-}// not_empty;
-
-
-export function not_set (value, ...nullables) {
-	return !isset (value, ...nullables);
-}// not_set;
-
-
-export function not_null (value) {
-	return !is_null (value);
-}// not_null;
-
-
-export function not_undefined (value) {
-	return !is_undefined (value);
-}// not_undefined;
-
+export function not_array (value) { return !is_array (value) }
+export function not_empty (value) { return !is_empty (value) }
+export function not_set (value, ...nullables) { return !isset (value, ...nullables) }
+export function not_null (value) { return !is_null (value) }
+export function not_undefined (value) { return !is_undefined (value) }
 
 export function null_value (value) { return isset (value) ? value : null }
-
-
-export function null_or_undefined (value) {
-	return (is_null (value) || (value == undefined));
-}// null_or_undefined;
+export function null_or_undefined (value) { return (is_null (value) || (value == undefined)) }
 
 
 export function matching_objects (first_object, second_object) {
+
+	if (not_set (first_object)) return not_set (second_object);
+	return (JSON.stringify (first_object).equals (JSON.stringify (second_object)));
+
 
 	if (null_or_undefined (first_object) || null_or_undefined (second_object)) return false;
 	if (is_object (first_object) && is_object (second_object)) return (JSON.stringify (first_object) == JSON.stringify (second_object));

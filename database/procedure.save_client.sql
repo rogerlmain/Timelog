@@ -30,8 +30,6 @@ create procedure save_client (
         
         select last_insert_id () into client_id;
         
-        call get_client (client_id);
-    
     else
     
 		if (deleted) then
@@ -50,8 +48,8 @@ create procedure save_client (
 
         end if;
     
-		select client_id;
-    
     end if;
 
+	call get_client_by_id (client_id);
+    
 end??

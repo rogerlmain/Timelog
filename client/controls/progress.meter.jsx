@@ -1,10 +1,9 @@
 import React from "react";
+
 import BaseControl from "controls/abstract/base.control";
 import FadePanel from "controls/panels/fade.panel";
 
-
-export const LeftHand = "left";
-export const RightHand = "right";
+import { horizontal_alignment } from "classes/types/constants";
 
 
 export class SmallProgressMeter extends BaseControl {
@@ -12,20 +11,19 @@ export class SmallProgressMeter extends BaseControl {
 
 	static defaultProps = { 
 		visible: false,
-		alignment: LeftHand
+		alignment: horizontal_alignment.left
 	}/* defaultProps */
 
 	
 	render () {
-		return (
-			<FadePanel id="progress_meter" visible={this.props.visible}>
-				<div className="two-column-grid unselectable">
-					{this.props.alignment == LeftHand && <img className="progress-image" src="client/resources/images/save.indicator.gif" />}
-					{this.props.children}
-					{this.props.alignment == RightHand && <img className="progress-image" src="client/resources/images/save.indicator.gif" />}
-				</div>
-			</FadePanel>
-		);
+		return <FadePanel condition={this.props.visible} {...this.filtered_properties ()}>
+			<div className="two-column-grid unselectable">
+				{this.props.alignment == horizontal_alignment.left && <img className="progress-image" src="client/resources/images/save.indicator.gif" />}
+				{this.props.children}
+				{this.props.alignment == horizontal_alignment.right && <img className="progress-image" src="client/resources/images/save.indicator.gif" />}
+			</div>
+		</FadePanel>
 	}// render;
+
 
 }// SmallProgressMeter;

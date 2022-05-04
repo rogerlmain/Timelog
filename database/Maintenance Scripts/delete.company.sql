@@ -9,5 +9,5 @@ delete from companies where id > 2;
 select * from company_cards;
 select * from company_accounts;
 select * from addresses;
-
 select * from companies;
+select * from options;

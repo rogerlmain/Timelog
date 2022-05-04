@@ -4,6 +4,9 @@ import Database from "classes/database";
 export default class ClientsModel {
 
 
+	static save_client (data) { return Database.save_data ("clients", data) }
+
+
 	static fetch_by_company (company_id) {
 		let parameters = new FormData ();
 		parameters.set ("action", "list_by_company");

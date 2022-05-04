@@ -26,6 +26,13 @@ export default class BaseControl extends React.Component {
 	forceRefresh = () => { this.setState (this.state) }
 
 
+	filtered_properties = (...used_properties) => {
+		let properties = {...this.props};
+		used_properties.forEach (property => delete properties [property]);
+		return properties;
+	}// filtered_properties;
+
+
 	/********/
 
 

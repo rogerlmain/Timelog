@@ -1,3 +1,5 @@
+import * as common from "classes/common";
+
 import React from "react";
 
 import Companies from "classes/storage/companies";
@@ -18,13 +20,12 @@ import SettingsPage from "pages/settings";
 import BaseControl from "controls/abstract/base.control";
 
 import { globals } from "classes/types/constants";
-import { is_empty, is_null } from "classes/common";
 
 
 const master_pages = { 
 	home	: { name: "Home", permission: true }, 
-	clients	: { name: "Clients", permission: (Options.client_limit () > 1) }, 
-	projects: { name: "Projects", permission: (Options.project_limit () > 1) }, 
+	clients	: { name: "Clients", permission: () => { return Options.client_limit () > 1 } }, 
+	projects: { name: "Projects", permission: () => { return Options.project_limit () > 1 } }, 
 	logging	: { name: "Logging", permission: true }, 
 	reports	: { name: "Reports", permission: true },
 	account	: { name: "Account", permission: true }, 
@@ -60,7 +61,7 @@ export default class MasterPanel extends BaseControl {
 
 	buttons_disabled () {
 		let company_list = Companies.company_list ();
-		if (is_empty (company_list) || (company_list.length == 1)) return false;
+		if (common.is_empty (company_list) || (company_list.length == 1)) return false;
 		if (Companies.company_selected ()) return false;
 		return true;
 	}// buttons_disabled;
@@ -69,11 +70,12 @@ export default class MasterPanel extends BaseControl {
 	button_list () {
 		let result = null;
 		for (let key in master_pages) {
+
 			let name = `${key}_button`;
 			let value = master_pages [key].name;
 
-			if (!master_pages [key].permission) continue;
-			if (is_null (result)) result = [];
+			if (!(common.is_function (master_pages [key].permission) ? master_pages [key].permission () : master_pages [key].permission)) continue;
+			if (common.is_null (result)) result = [];
 
 			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP (when needed)
 			result.push (<SelectButton id={name} name={name} key={name} sticky={false}
@@ -130,21 +132,58 @@ export default class MasterPanel extends BaseControl {
 					{this.button_list ()}
 					{this.signout_button ()}
 
-					<SelectButton onClick={() => {
-					//	alert ("waiting for something to test")
 
-						this.forceRefresh ();
+<SelectButton onClick={() => {
+//	alert ("waiting for something to test")
 
+	// test nulls
+	common.notify (common.matching_objects (null, null), true);
+	common.notify (common.matching_objects (null, undefined), true);
+	common.notify (common.matching_objects (undefined, undefined), true);
 
-					}} style={{ 
-						position: "absolute",
-						right: "1em",
-						top: "1em"
-					}}>TEST</SelectButton>
+	// test objects
+	common.notify (common.matching_objects (null, { first: "one" }), false);
+	common.notify (common.matching_objects (undefined, { first: "one" }), false);
+	common.notify (common.matching_objects ({ first: "one" }, { first: "one" }), true);
+	common.notify (common.matching_objects ({ first: "one" }, { first: "two" }), false);
+	common.notify (common.matching_objects ({ first: "one" }, { second: "one" }), false);
+	common.notify (common.matching_objects ({ first: "one" }, { second: "two" }), false);
+
+	// test arrays
+	common.notify (common.matching_objects (null, ["one"]), false);
+	common.notify (common.matching_objects (undefined, ["one"]), false);
+	common.notify (common.matching_objects (["one"], ["one"]), true);
+	common.notify (common.matching_objects (["one"], ["two"]), false);
+	common.notify (common.matching_objects (["one"], { first: "one" }), false);
+	common.notify (common.matching_objects (["one"], { first: "two" }), false);
+	common.notify (common.matching_objects (["one"], { second: "one" }), false);
+	common.notify (common.matching_objects (["one"], { second: "two" }), false);
+
+	// test arrays of objects
+	common.notify (common.matching_objects (null, [{ first: "one" }]), false);
+	common.notify (common.matching_objects (undefined, [{ first: "one" }]), false);
+	common.notify (common.matching_objects ([{ first: "one" }], [{ first: "one" }]), true);
+	common.notify (common.matching_objects ([{ first: "one" }], ["two"]), false);
+	common.notify (common.matching_objects ([{ first: "one" }], { first: "one" }), false);
+	common.notify (common.matching_objects ([{ first: "one" }], { first: "two" }), false);
+	common.notify (common.matching_objects ([{ first: "one" }], { second: "one" }), false);
+	common.notify (common.matching_objects ([{ first: "one" }], { second: "two" }), false);
+
+	common.notify (common.matching_objects ([{ first: "one" }], [{ first: "one" }]), true);
+	common.notify (common.matching_objects ([{ first: "one" }], [{ first: "two" }]), false);
+	common.notify (common.matching_objects ([{ first: "one" }], [{ second: "one" }]), false);
+	common.notify (common.matching_objects ([{ first: "one" }], [{ second: "two" }]), false);
+
+}} style={{ 
+	position: "absolute",
+	right: "1em",
+	top: "1em"
+}}>TEST</SelectButton>
+
 
 				</div>
 
-				<div className="full-screen horizontally-centered" style={{ marginTop: "1em" }}>
+				<div className="full-screen horizontally-center" style={{ marginTop: "1em" }}>
 					<ExplodingPanel id="details_panel">{this.page_item ()}</ExplodingPanel>
 				</div>
 

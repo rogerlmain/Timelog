@@ -36,8 +36,8 @@ Array.prototype.prepend = function (item) {
 
 Array.prototype.remove = function (element) {
 	let index = this.indexOf (element);
-	if (index < 0) return;
-	this.splice (index, 1);
+	if (index >= 0) this.splice (index, 1);
+	return this;
 }// remove;
 
 
@@ -323,6 +323,9 @@ HTMLElement.prototype.property = function (property_name) {
 
 HTMLElement.prototype.setAttributes = function (attributes) { for (let key in attributes) this.setAttribute (key, attributes [key]) }
 HTMLElement.prototype.removeAttributes = function (/* keys */) { for (let attribute of arguments) this.removeAttribute (attribute) }
+
+
+HTMLElement.prototype.index = function () { return common.isset (this.parent) ? Array.from (this.parent.children).indexOf (this) : 0 }
 
 
 HTMLElement.prototype.isComplete = function () {
