@@ -12,13 +12,16 @@ const store_name = constants.stores.clients;
 export default class Clients extends LocalStorage {
 
 
+	static set (values) { super.set_store (store_name, values) }
+
+
 	static set_client (client) {
 
 		let values = LocalStorage.get_all (store_name);
 
 		if (isset (values)) {
 			let value = values.find (candidate => candidate.client_id == client.client_id);
-			return LocalStorage.set_store (store_name, values.remove (value).concat ([client]));
+			return LocalStorage.set_store (store_name, values.replace (value, client));
 		}// if;
 
 		LocalStorage.set_store (store_name, [client]);
@@ -26,7 +29,16 @@ export default class Clients extends LocalStorage {
 	}// set_client;
 
 
-	static set (values) { super.set_store (store_name, values) }
+	static remove_client (client_id) {
+
+		let values = LocalStorage.get_all (store_name);
+
+		if (isset (values)) {
+			let value = values.find (candidate => candidate.client_id == client_id);
+			return LocalStorage.set_store (store_name, values.remove (value));
+		}// if;
+
+	}// remove_client;
 
 
 	/********/

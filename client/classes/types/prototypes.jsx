@@ -41,6 +41,12 @@ Array.prototype.remove = function (element) {
 }// remove;
 
 
+Array.prototype.replace = function (element, replacement) {
+	this.remove (element).push (replacement);
+	return this;
+}// replace;
+
+
 Array.prototype.extract = function (value, name = "id") {
 	for (let item of this) {
 		if (common.is_object (item) && (item [name] == value)) return item;
@@ -253,8 +259,8 @@ FormData.fromObject = function (object) {
 
 
 FormData.prototype.appendAll = function (object) { Object.keys (object).forEach (key => this.append (key, object [key])) }
+FormData.prototype.toJsonString = function () { return JSON.stringify (this.toObject ()) }
 FormData.prototype.toObject = function () { return Object.fromEntries (this) }
-FormData.prototype.toJson = function () { return JSON.stringify (this.toObject ()) }
 
 
 /**** HTMLElement ****/

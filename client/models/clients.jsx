@@ -4,6 +4,14 @@ import Database from "classes/database";
 export default class ClientsModel {
 
 
+	static delete_client (client_id) {
+		let parameters = new FormData ();
+		parameters.set ("action", "delete");
+		parameters.set ("client_id", client_id);
+		return Database.save_data ("clients", parameters);
+	}// delete_client;
+
+
 	static save_client (data) { return Database.save_data ("clients", data) }
 
 

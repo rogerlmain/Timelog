@@ -12,7 +12,7 @@ import Clients from "classes/storage/clients";
 
 import ClientModel from "models/clients";
 
-import { RightHand, SmallProgressMeter } from "controls/progress.meter";
+import { SmallProgressMeter } from "controls/progress.meter";
 import { MainContext } from "classes/types/contexts";
 
 
@@ -40,13 +40,38 @@ export default class ClientForm extends FormControl {
 	}// ClientFormState;
 
 
-	/********/
+	client_data = (field) => { return common.isset (this.props.formData) ? this.props.formData [field] : null }
 
 
-	client_data (field) { return common.isset (this.props.formData) ? this.props.formData [field] : null }
+	delete_client = event => {
 
+		let client_id = this.client_data ("client_id");
 
-	save_client () {
+		event.preventDefault ();
+
+		if (!confirm (`Delete ${this.client_data ("name")}.\nAre you sure?`)) return false;
+
+		this.setState ({ status: `Deleting ${this.client_data ("name")}...` }, () => ClientModel.delete_client (client_id).then (data => {
+
+			Clients.remove_client (client_id);
+
+			this.execute (this.props.onDelete, data).then (() => this.props.parent.setState ({ 
+				client_data: null,
+				selected_client: null,
+				updating: true,
+			}, () => {
+				this.props.parent.update_client_list ();
+				this.setState ({ status: null });
+			}));
+
+		}));
+
+		return false;
+
+	}/* delete */;
+ 
+
+	save_client = () => {
 
 		if (this.state.saved) return;
 		if (!this.validate (this.client_form)) return;
@@ -65,7 +90,7 @@ export default class ClientForm extends FormControl {
 					client_data: data,
 					selected_client: data.client_id
 				}, () => {
-					this.props.parent.load_client_list ();
+					this.props.parent.update_client_list ();
 					this.setState ({ status: null });
 				});
 				
@@ -74,27 +99,6 @@ export default class ClientForm extends FormControl {
 
 	}// save_client;
 
-
-	delete_client () {
-
-		event.preventDefault ();
-
-		if (!confirm (`Delete ${this.client_data ("name")}.\nAre you sure?`)) return false;
-
-		let form_data = new FormData (this.client_form.current);
-
-		form_data.append ("action", "save");
-		form_data.append ("deleted", "true");
-		form_data.append ("client_id", this.client_data ("client_id"));
-
-		this.setState ({ status: `Deleting ${this.client_data ("name")}...` }, () => ClientModel.save_client (form_data).then (data => {
-			this.execute (this.props.onDelete, data).then (() => this.setState ({ status: null }));
-		}));
-
-		return false;
-
-	}// delete;
- 
 
 	/********/
 
@@ -122,7 +126,7 @@ export default class ClientForm extends FormControl {
 
 					<label htmlFor="client_name">Client Name</label>
 					<input type="text" id="client_name" name="client_name" 
-						defaultValue={this.client_data ("name") || constants.blank} 
+						defaultValue={this.client_data ("name") ?? constants.blank} 
 						required={true} disabled={this.props.disabled}
 						onBlur={this.save_client.bind (this)}>
 					</input>
@@ -142,12 +146,11 @@ export default class ClientForm extends FormControl {
 
 				<SmallProgressMeter id="client_progress_meter" visible={common.isset (this.state.status)} 
 					alignment={constants.horizontal_alignment.right}>
-					{/* {this.state.status} */}
-					Doing shit
+					{this.state.status}
 				</SmallProgressMeter>
 
 				<FadePanel id="edit_options_panel" visible={common.isset (client_id)}>
-					<button className="double-column" onClick={this.delete_client.bind (this)}>Delete</button>
+					<button className="double-column" onClick={this.delete_client}>Delete</button>
 				</FadePanel>
 
 			</div>

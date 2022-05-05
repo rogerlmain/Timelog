@@ -46,14 +46,10 @@ export default class ClientsPage extends BaseControl {
 	}// constructor;
 
 
-	load_client_list () { Clients.get_all ().then (data => this.setState ({ client_list: data }, () => {
+	update_client_list () { Clients.get_all ().then (data => this.setState ({ client_list: data })) }
+	
 
-// alert (JSON.stringify (this.state.client_list));
-
-	})) }
-
-
-	componentDidMount = this.load_client_list;
+	componentDidMount = this.update_client_list;
 
 
 	render () {
@@ -83,24 +79,23 @@ export default class ClientsPage extends BaseControl {
 
 			<EyecandyPanel id="edit_client_panel" text="Loading..." eyecandyVisible={this.state.updating} 
 			
-				onEyecandy={() => { 
-					if (this.state.updating) ClientModel.fetch_by_id (this.state.selected_client).then (data => this.setState ({
-						client_data: data,
-						updating: false
-					}));
+				onEyecandy={() => {
+					if (this.state.updating) {
+
+						if (is_null (this.state.selected_client)) return this.setState ({
+							client_data: null,
+							updating: false
+						});
+
+						ClientModel.fetch_by_id (this.state.selected_client).then (data => this.setState ({
+							client_data: data,
+							updating: false
+						}));
+
+					}// if;
 				}}>
 
-				<ClientForm formData={this.state.client_data} parent={this}
-
-					// onDelete={async () => {
-					// 	this.setState ({ selected_client: null });
-					// 	await this.load_clients ();
-					// }} 
-					
-					// onSave={async () => await this.load_clients () } 
-					
-					disabled={(!can_create) && (is_null (this.state.client_data))}>
-				</ClientForm>
+				<ClientForm formData={this.state.client_data} parent={this} disabled={(!can_create) && (is_null (this.state.client_data))} />
 
 			</EyecandyPanel>
 

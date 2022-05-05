@@ -95,6 +95,7 @@ app.post ("/clients", function (request, response) {
 		switch (fields.action) {
 			case "list_by_company": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
 			case "details": client_data.get_client_by_id (fields.client_id); break;
+			case "delete": client_data.delete_client (fields.client_id); break;
 			case "save": client_data.save_client (fields); break;
 		}// switch;
 	});

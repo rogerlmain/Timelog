@@ -39,10 +39,10 @@ create procedure save_client (
 		else
         
 			update clients set 
-				company_id = company_id,
-				`name` = client_name,
-				`description` = client_description,
-				last_updated = current_timestamp()
+				company_id 		= coalesce (company_id, clients.company_id),
+				`name`			= coalesce (client_name, clients.name),
+				`description`	= coalesce (client_description, clients.description),
+				last_updated 	= coalesce (current_timestamp(), clients.last_updated)
 			where
 				id = client_id;
 

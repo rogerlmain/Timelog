@@ -16,6 +16,9 @@ export default class ClientData extends Database {
 	}// get_client_by_id;
 
 
+	delete_client (client_id) { this.execute_query ("save_client", [client_id, null, null, null, true]) }
+
+
 	save_client (data) {
 
 		let parameters = {
@@ -23,7 +26,7 @@ export default class ClientData extends Database {
 			company_id: parseInt (data.company_id),
 			client_name: data.client_name,
 			client_description: data.client_description,
-			deleted: Boolean (data.deleted)
+			deleted: false,
 		}// parameters;
 
 		this.execute_query ("save_client", parameters);
