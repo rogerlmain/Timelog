@@ -2,6 +2,8 @@ import * as common from "classes/common";
 
 import LocalStorage from "classes/local.storage"
 
+import { isset } from "classes/common";
+
 
 const store_name = "companies";
 
@@ -16,15 +18,21 @@ export default class Companies extends LocalStorage {
 	/********/
 
 
-	static get (name) { return LocalStorage.get (store_name, name) }
-
 	static active_company_id () { return this.get ("active_company") }
 	static square_id () { return common.nested_value (this.active_company (), "square_id") }
 
 	static company_selected () { return common.isset (this.active_company_id ()) }
 	static paid_account () { return common.isset (this.square_id ()) }
+
+
+	static get (company_id) { return LocalStorage.get (store_name, company_id) }
+
 	
-	static company_list () { return LocalStorage.get_all (store_name) }
+	static company_list () { 
+		let result = LocalStorage.get_all (store_name);
+		if (isset (result)) delete result.active_company;
+		return result;
+	}// company_list;
 
 	
 	static active_company () { 
@@ -32,9 +40,9 @@ export default class Companies extends LocalStorage {
 	}// active_company;
 
 
-	static company_count () { 
-		let companies = Object.keys (this.company_list ());
-		return (common.isset (companies) ? (companies.length - 1) : 0);
+	static company_count () {
+		let companies = Object.values (this.company_list ());
+		return common.isset (companies) ? companies.length : 0;
 	}// company_count;
 	
 

@@ -16,7 +16,7 @@ export class SmallProgressMeter extends BaseControl {
 
 	
 	render () {
-		return <FadePanel condition={this.props.visible} {...this.filtered_properties ()}>
+		return <FadePanel {...this.filtered_properties ("alignment")}>
 			<div className="two-column-grid unselectable">
 				{this.props.alignment == horizontal_alignment.left && <img className="progress-image" src="client/resources/images/save.indicator.gif" />}
 				{this.props.children}

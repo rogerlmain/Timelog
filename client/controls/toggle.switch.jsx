@@ -1,13 +1,13 @@
 import * as common from "classes/common";
 
 import React from "react";
-import ReactDOM from "react-dom";
 
 import BaseControl from "controls/abstract/base.control";
-import Container from "controls/container";
 import Settings from "classes/storage/settings";
 
-import { default_settings, globals, horizontal_alignment } from "client/classes/types/constants";
+import { horizontal_alignment } from "client/classes/types/constants";
+import { isset, is_number } from "classes/common";
+
 
 import "client/resources/styles/controls/toggle.switch.css";
 
@@ -47,7 +47,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	option_elements = () => { return Array.from (this.switch_control.current.querySelectorAll ("div.item")) }
 
-	dragging = () => { return common.isset (this.state.drag_position) }
+	dragging = () => { return isset (this.state.drag_position) }
 
 
 	selection = element => {
@@ -60,7 +60,7 @@ export default class ToggleSwitch extends BaseControl {
 	selected_value = () => { 
 		let element = this.option_elements () [this.state.option];
 		let value = element.getAttribute ("value");
-		return  common.isset (value) ? value : this.state.option;
+		return  isset (value) ? value : this.state.option;
 	}// selected_value;
 
 
@@ -76,6 +76,13 @@ export default class ToggleSwitch extends BaseControl {
 		if (event.propertyName != "left") return;
 		if (this.state.process_change) this.execute (this.props.onChange, this.selected_value ()).then (() => this.setState ({ process_change: false }));
 	}// transition_end;
+
+
+	option_index = () => {
+		if (is_number (this.state.option)) return parseInt (this.state.option);
+		let result = this.props.children.find (child => child.props.value == this.state.option);
+		return (isset (result)) ? this.props.children.indexOf (result) : 0;
+	}// option_index;
 
 
 	/********/
@@ -98,7 +105,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	render () {
 
-		let index = (common.is_empty (this.props.children) || common.not_set (this.state.option)) ? 0 : this.state.option;
+		let index = (common.is_empty (this.props.children) || common.not_set (this.state.option)) ? 0 : this.option_index ();
 		let control_style = { left: ((item_width + 2) * index) + this.state.drag_offset }
 
 		if (common.is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.props.speed}ms ease-in-out`}

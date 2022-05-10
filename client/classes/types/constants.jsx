@@ -26,7 +26,8 @@ export const visible_zindex = 1;
 
 
 export const stores = {
-	clients: "clients"
+	clients: "clients",
+	projects: "projects",
 }// stores;
 
 
@@ -208,8 +209,6 @@ export const globals = {
 
 	main: null,
 	master: null,
-	clients_page: null,
-	projects_page: null,
 
 }// globals;
 

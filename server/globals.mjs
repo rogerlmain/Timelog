@@ -17,7 +17,7 @@ global.not_empty = value => { return !is_empty (value) }
 global.is_boolean = value => { return typeof value == "boolean" }
 global.not_boolean = value => { return !is_boolean (value) }
 
-global.is_number = value => { return !isNaN (parseInt (value)) }
+global.is_number = value => { return !isNaN (Number (value)) }
 global.not_number = value => { return !is_number (value) }
 
 global.integer_value = value => { return global.isset (value) ? parseInt (value) : null }

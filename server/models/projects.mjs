@@ -8,9 +8,10 @@ export default class ProjectData extends Database {
 		let procedure = "save_project";
 
 		let parameters = {
-			client_id: data.client_id,
-			project_id: data.project_id,
+			client_id: parseInt (data.client_id),
+			project_id: global.isset (data.project_id) ? parseInt (data.project_id) : null,
 			project_name: data.project_name, 
+			project_code: data.project_code,
 			description: data.project_description,
 			deleted: false
 		}// parameters;

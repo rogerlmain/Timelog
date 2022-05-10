@@ -5,11 +5,10 @@ drop procedure if exists save_entry;
 delimiter ??
 
 create procedure save_entry (
-	account_id integer, 
-	project_id integer,
-    time_stamp datetime
-)
-BEGIN
+	account_id	integer, 
+	project_id	integer,
+    time_stamp	datetime
+) begin
 
 	declare last_entry integer;
     

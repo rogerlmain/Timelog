@@ -40,9 +40,6 @@ export const card_type = {
 export default class CreditCardInput extends InputControl {
 
 
-	input_field = React.createRef ();
-
-
 	state = { 
 		current_card: null,
 		mask: null 

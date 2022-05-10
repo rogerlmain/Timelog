@@ -8,7 +8,8 @@ create procedure save_project (
     client_id int,
     project_id int,
 	project_name varchar (50),
-    `description` text,
+	project_code varchar (5),
+    project_description text,
     deleted boolean
 ) begin
 
@@ -19,39 +20,32 @@ create procedure save_project (
 			insert into projects (
 				client_id,
 				`name`,
+				`code`,
 				`description`
 			) values (
 				client_id,
 				project_name,
-				`description`
+				project_code,
+				project_description
 			);
             
 		end if;
 
 		select last_insert_id () into project_id;
         
-        call get_project (project_id);
-    
 	else
     
-		if (deleted) then
-        
-			update projects set deleted = true where projects.id = project_id;
-            
-		else
-        
-			update projects set
-				client_id = client_id,
-				`name` = project_name,
-				`description` = `description`,
-				last_updated = current_timestamp()
-			where
-				id = project_id;
+		update projects set
+			client_id 		= coalesce (client_id, projects.client_id), 
+			`name` 			= coalesce (project_name, projects.name), 
+			`code` 			= coalesce (project_code, projects.code),
+			`description` 	= coalesce (project_description, projects.description), 
+			last_updated 	= current_timestamp()
+		where
+			id = project_id;
                 
-		end if;
-    
-		select project_id;
-
 	end if;
 
+	call get_project_by_id (project_id);
+    
 end??

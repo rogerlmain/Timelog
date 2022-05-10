@@ -19,7 +19,7 @@ class Database {
 		let result = null;
 		for (let next of parameters) {
 			if (is_null (result)) result = [];
-			result.push (isset (next) ? (is_number (next) ? parseInt (next) : next) : null);
+			result.push (isset (next) || is_boolean (next) ? (is_number (next) ? parseInt (next) : next) : null);
 		}// for;
 		return result;
 	}// normalized;

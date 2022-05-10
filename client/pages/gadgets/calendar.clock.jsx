@@ -52,7 +52,7 @@ export default class CalendarClock extends BaseControl {
 
 				<div className="three-column-grid boundary-toggle-switch">
 					<ToggleButton htmlFor="log_boundary_start" className="centering-container">Start</ToggleButton>
-					<ToggleSwitch id="log_boundary_toggle" value={boundaries.end} onChange={data => this.setState ({ boundary: data.option })}>
+					<ToggleSwitch id="log_boundary_toggle" value={boundaries.end} onChange={data => this.setState ({ boundary: data })}>
 						<option id="log_boundary_start" value={boundaries.start}>Start</option>
 						<option id="log_boundary_end" value={boundaries.end}>End</option>
 					</ToggleSwitch>
@@ -69,7 +69,7 @@ export default class CalendarClock extends BaseControl {
 						})}>
 					</Calendar>
 
-					<TimePicker id="time_picker" value={this.props [this.state.boundary]} 
+					<TimePicker id="time_picker" value={this.props [this.state.boundary]}
 						onChange={value => this.execute (this.props.onChange, {
 							date: this.time_value (value),
 							boundary: this.state.boundary

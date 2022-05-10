@@ -20,6 +20,7 @@ import LoggingModel from "models/logging";
 
 import { blank, date_formats, date_rounding } from "classes/types/constants";
 import { isset, is_null, is_empty } from "classes/common";
+import { MainContext } from "classes/types/contexts";
 
 import "client/resources/styles/pages/logging.css";
 
@@ -38,13 +39,9 @@ export default class LoggingPage extends BaseControl {
 	}/* state */;
 
 
+	static contextType = MainContext;
+
 	static defaultProps = { id: "logging_page" }
-
-
-	constructor (props) {
-		super (props);
-		this.update_current_entry ();
-	}// constructor;
 
 
 	project_selected = () => { return this.state.project_id > 0 }
@@ -83,7 +80,7 @@ export default class LoggingPage extends BaseControl {
 
 		this.update_current_entry ();
 
-		LoggingModel.log (this.props.companyId, parseInt (this.state.project_id)).then (entry => {
+		LoggingModel.log (this.context.company_id, this.state.project_id).then (entry => {
 
 			if (is_empty (entry)) {
 				entry = null;
@@ -141,11 +138,11 @@ export default class LoggingPage extends BaseControl {
 	}// billable_time;
 
 
-	invalid_entry () {
+	invalid_entry = () => {
 
 		let entry = this.state.current_entry;
 		let now = new Date ();
-		let granularity = Options.granularity (this.props.companyId);
+		let granularity = Options.granularity (this.context.company_id);
 
 		if (is_null (entry.end_time)) return false;
 
@@ -166,6 +163,7 @@ export default class LoggingPage extends BaseControl {
 
 
 	componentDidMount () {
+		this.update_current_entry ();
 		this.setState ({ initialized: true });
 	}// componentDidMount;
 
@@ -227,9 +225,10 @@ export default class LoggingPage extends BaseControl {
 		const entry_details = () => {
 	
 			entry.end_time = this.end_time ();
-			setTimeout (() => {
-				this.forceUpdate ();
-			}, 1000 + (new Date ().getMilliseconds () % 1000));
+
+			// setTimeout (() => {
+			// 	this.forceUpdate ();
+			// }, 1000 + (new Date ().getMilliseconds () % 1000));
 	
 			return <div id={this.props.id} className="row-container">
 			
@@ -266,42 +265,43 @@ export default class LoggingPage extends BaseControl {
 		}/* entry_details */;
 	
 	
-		return (
-			<div id="log_panel">
+		return <div id="log_panel">
 
-				<EyecandyPanel id="log_form_eyecandy" text="Loading..." eyecandyVisible={!this.state.initialized}>
+			<EyecandyPanel id="log_form_eyecandy" text="Loading..." eyecandyVisible={!this.state.initialized}>
 
-					{logged_in ? entry_details () : <div>
+				{logged_in ? entry_details () : <div>
 
-						<ProjectSelectorGadget id="logging_project_selector" companyId={this.props.companyId} parent={this} 
-							hasHeader={true} headerSelectable={false} headerText={blank}
-							onProjectChange={event => this.setState ({ project_id: event.target.value })}>
-						</ProjectSelectorGadget>
-					
-					</div>}
+					<ProjectSelectorGadget id="logging_project_selector" parent={this} 
+						hasHeader={true} headerSelectable={false} headerText={blank}
+						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
+					</ProjectSelectorGadget>
+				
+				</div>}
+
+			</EyecandyPanel>
+
+			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
+				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
+				
+					text={`Logging you ${logged_in ? "out" : "in"}...`} 
+					eyecandyVisible={this.state.updating}
+					eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
+
+					onEyecandy={this.log_entry.bind (this)}>
+
+					<FadePanel id="login_button" visible={this.project_selected () || logged_in} style={{ display: "flex" }}>
+						<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }} disabled={logged_in && this.invalid_entry ()}>
+							{logged_in ? (elapsed_time == 0 ? "Cancel log entry" : "Log out") : "Log in"}
+						</button>
+					</FadePanel>
 
 				</EyecandyPanel>
 
-				<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
-					<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
-					
-						text={`Logging you ${logged_in ? "out" : "in"}...`} 
-						eyecandyVisible={this.state.updating}
-						eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
-
-						onEyecandy={this.log_entry.bind (this)}>
-
-						<FadePanel id="login_button" visible={this.project_selected () || logged_in} style={{ display: "flex" }}>
-							<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }} disabled={logged_in && this.invalid_entry ()}>
-								{logged_in ? (elapsed_time == 0 ? "Cancel log entry" : "Log out") : "Log in"}
-							</button>
-						</FadePanel>
-
-					</EyecandyPanel>
-				</div>
+<button id="reset_logging_button" onClick={() => this.setState ({ updating: false })}>Reset</button>
 
 			</div>
-		);
+
+		</div>
 		
 	}// render;
 

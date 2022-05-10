@@ -9,9 +9,6 @@ import Container from "controls/container";
 export default class NumericInput extends InputControl {
 
 
-	input_field = React.createRef ();
-
-
 	static defaultProps = {
 
 		id: null,

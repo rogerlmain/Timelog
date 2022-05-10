@@ -26,6 +26,8 @@
 	--standard-column-gap: 0.5em;
 	--standard-row-gap: 0.2em;
 
+	--disabled-field: #EAE8E8;
+
 }/* root */
 
 
@@ -203,6 +205,8 @@ textarea {
 	border-color: black;
 	border-radius: 1em;
 	border-bottom-right-radius: 0;
+	width: 24em;
+	height: 12em;
 }/* textarea */
 
 

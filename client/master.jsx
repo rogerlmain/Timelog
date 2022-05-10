@@ -183,7 +183,7 @@ export default class MasterPanel extends BaseControl {
 
 				</div>
 
-				<div className="full-screen horizontally-center" style={{ marginTop: "1em" }}>
+				<div className="full-screen horizontally-center" style={{ marginTop: "2em" }}>
 					<ExplodingPanel id="details_panel">{this.page_item ()}</ExplodingPanel>
 				</div>
 

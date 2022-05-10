@@ -9,6 +9,7 @@ import Account from "classes/storage/account";
 import Companies from "classes/storage/companies";
 
 import BaseControl from "controls/abstract/base.control";
+import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import Container from "controls/container";
@@ -20,8 +21,9 @@ import CreditCardForm from "forms/credit.card.form";
 import { MainContext } from "classes/types/contexts";
 import { dynamic_input_classname } from "controls/inputs/dynamic.input";
 
+import { isset, nested_value } from "classes/common";
+
 import "client/resources/styles/forms/deluxe.account.form.css";
-import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 
 const greetings = {
@@ -100,7 +102,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		let address = common.nested_value (this.address_form.current, "state");
 
-		if (common.isset (address)) {
+		if (isset (address)) {
 			form_data.district_name = address.districts.extract (address.district_id).long_name;
 			form_data.country_name = address.countries.extract (address.country_id).short_name;
 		}// form_data;
@@ -115,7 +117,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	create_payment = async (data) => {
 
-		let option_name = common.isset (this.props.option) ? common.get_key (constants.option_types, this.props.option).titled () : null;
+		let option_name = isset (this.props.option) ? common.get_key (constants.option_types, this.props.option).titled () : null;
 
 		return await this.state.square_handler.create_payment ({
 			amount: this.state.selected_item.equals (purchase_options.item) ? this.props.optionPrice : JSON.parse (this.package_list.current.value).price,
@@ -131,10 +133,10 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		let customer_id = Companies.square_id ();
 		
-		if (common.isset (customer_id)) return { customer_id: customer_id }; 
+		if (isset (customer_id)) return { customer_id: customer_id }; 
 		
 		let square_data = await this.state.square_handler.create_square_account (data);
-		let company_data = await new CustomerHandler ().save_customer ({...data, customer_id: square_data.customer.id });
+		let company_data = Companies.get (this.context.company_id) ?? await new CustomerHandler ().save_customer ({...data, customer_id: square_data.customer.id });
 
 		return {
 			customer_id: square_data.customer.id,
@@ -149,11 +151,11 @@ export default class DeluxeAccountForm extends BaseControl {
 		let card_id = common.nested_value (this.credit_card_list.current, "list", "current", "selectedValue");
 		let new_card = (!this.props.hasCredit) || this.state.new_card;
 
-		if ((common.isset (card_id) && !new_card)) return card_id;
+		if ((isset (card_id) && !new_card)) return card_id;
 		
 		if (data.keep_card) {
 			let card_data = await this.state.square_handler.save_card (data);
-			new CustomerHandler ().save_card (data.company.company_data.company_id, card_data.card);
+			new CustomerHandler ().save_card (nested_value (data, "company_id") ?? nested_value (data, "company", "company_data", "company_id"), card_data.card);
 			return card_data.card.id;
 		}// if;
 
@@ -166,6 +168,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		let form_data = this.get_form_data ();
 
+		if (isset (this.context.company_id)) form_data.company_id = this.context.company_id;
 		form_data = { ...form_data, ...await this.get_customer_id (form_data) };
 		form_data.card_id = await this.get_card_id (form_data);
 
@@ -206,7 +209,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		let pattern_elements = this.deluxe_account_form.current.querySelectorAll ("[required], [pattern]");
 
-		if (common.isset (pattern_elements)) for (let element of pattern_elements) {
+		if (isset (pattern_elements)) for (let element of pattern_elements) {
 
 			if (element.parentNode.classList.contains (dynamic_input_classname)) continue;
 
@@ -281,13 +284,13 @@ export default class DeluxeAccountForm extends BaseControl {
 						<div className="horizontally-center full-width">
 							<div className="three-column-grid pricing-table vertically-center">
 
-								<Container id="item_options" condition={common.isset (this.props.optionPrice)}>
+								<Container id="item_options" condition={isset (this.props.optionPrice)}>
 									<input type="radio" id="item_price" name="price_option" value={purchase_options.item} 
 										checked={this.state.selected_item == purchase_options.item} 
 										onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
 									</input>
 									<label htmlFor="item_price">Just this item</label>
-									<div>${common.isset (this.props.optionPrice) ? this.props.optionPrice.toCurrency () : null}</div>
+									<div>${isset (this.props.optionPrice) ? this.props.optionPrice.toCurrency () : null}</div>
 								</Container>
 
 								<Container id="package_options">
@@ -311,7 +314,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 									</select>
 
-									<div>{common.isset (this.state.package_price) ? "$" : null}{common.isset (this.state.package_price) ? this.state.package_price.toCurrency () : null}</div>
+									<div>{isset (this.state.package_price) ? "$" : null}{isset (this.state.package_price) ? this.state.package_price.toCurrency () : null}</div>
 
 								</Container>
 

@@ -23,21 +23,23 @@ export default class ClientForm extends FormControl {
 
 
 	static defaultProps = {
+
 		disabled: false,
+
 		formData: null,
+		parent: null,
+
 		onLoad: null,
 		onSave: null,
 		onDelete: null
+
 	}// defaultProps;
 
 
 	client_form = React.createRef ();
 
 
-	state = { 
-		status: null,
-		saved: false
-	}// ClientFormState;
+	state = { status: null }
 
 
 	client_data = (field) => { return common.isset (this.props.formData) ? this.props.formData [field] : null }
@@ -73,7 +75,6 @@ export default class ClientForm extends FormControl {
 
 	save_client = () => {
 
-		if (this.state.saved) return;
 		if (!this.validate (this.client_form)) return;
 
 		let form_data = new FormData (this.client_form.current);
@@ -84,7 +85,7 @@ export default class ClientForm extends FormControl {
 		this.setState ({ status: "Saving..." }, () => ClientModel.save_client (form_data).then (data => {
 			this.execute (this.props.onSave, data).then (() => {
 				
-				Clients.set_client (data);
+				Clients.set_client (this.context.company_id, data);
 				
 				this.props.parent.setState ({ 
 					client_data: data,
@@ -101,15 +102,6 @@ export default class ClientForm extends FormControl {
 
 
 	/********/
-
-
-	shouldComponentUpdate (next_props) {
-		if (this.props.formData != next_props.formData) {
-			this.setState ({ saved: common.matching_objects (this.props.formData, next_props.formData) });
-			return false;
-		}// if;
-		return true;
-	}// shouldComponentUpdate;
 
 
 	render () {
@@ -132,7 +124,7 @@ export default class ClientForm extends FormControl {
 					</input>
 
 					<label htmlFor="client_description">Description</label>
-					<textarea  id="client_description" name="client_description" style={{ width: "24em", height: "12em"}}
+					<textarea  id="client_description" name="client_description"
 						defaultValue={this.client_data ("description")}  
 						placeholder="(optional)" disabled={this.props.disabled}
 						onBlur={this.save_client.bind (this)}>
@@ -149,7 +141,7 @@ export default class ClientForm extends FormControl {
 					{this.state.status}
 				</SmallProgressMeter>
 
-				<FadePanel id="edit_options_panel" visible={common.isset (client_id)}>
+				<FadePanel id="delete_button_panel" visible={common.isset (client_id)}>
 					<button className="double-column" onClick={this.delete_client}>Delete</button>
 				</FadePanel>
 

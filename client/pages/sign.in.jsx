@@ -88,9 +88,9 @@ export default class SigninPage extends BaseControl {
 						<label htmlFor="username">Username or email</label>
 						<input name="username" type="text"
 
-//defaultValue="rex@rogerlmain.com"
+defaultValue="rex@rogerlmain.com"
 //defaultValue="joe@bloggs.com"
-defaultValue="dmitry@kgb.gov.ru"
+//defaultValue="dmitry@kgb.gov.ru"
 //defaultValue="rex@rexthestrange.com"
 
 						/>

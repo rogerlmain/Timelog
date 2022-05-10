@@ -2,7 +2,6 @@ import * as common from "classes/common";
 
 import React from "react";
 
-
 import Clients from "classes/storage/clients";
 import ClientsModel from "models/clients";
 
@@ -12,6 +11,7 @@ import Container from "controls/container";
 import SelectList from "controls/select.list";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
+import { is_null } from "classes/common";
 import { MainContext } from "classes/types/contexts";
 
 
@@ -54,7 +54,7 @@ export default class ClientSelectorGadget extends BaseControl {
 
 
 	componentDidMount () {
-		Clients.get_all (this.context.company_id).then (data => 
+		Clients.get_by_company (this.context.company_id).then (data => 
 			this.setState ({ 
 				company_id: this.context.company_id,
 				clients: data
@@ -70,7 +70,7 @@ export default class ClientSelectorGadget extends BaseControl {
 			return false;
 		}// if;
 
-		let data = await Clients.get_all (this.context.company_id);
+		let data = await Clients.get_by_company (this.context.company_id);
 		
 		if (common.matching_objects (this.state.clients, data)) return true;
 		
@@ -85,7 +85,7 @@ export default class ClientSelectorGadget extends BaseControl {
 
 				<label htmlFor={this.client_selector_id}>Client</label>
 
-				<EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} text="Loading..." eyecandyVisible={common.is_null (this.state.clients)}>
+				<EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} text="Loading..." eyecandyVisible={is_null (this.state.clients)}>
 					<SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient}
 					
 						hasHeader={this.props.hasHeader}

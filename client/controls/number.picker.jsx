@@ -2,7 +2,8 @@ import React from "react";
 import BaseControl from "controls/abstract/base.control";
 import NumberRangeInput from "controls/inputs/number.range.input";
 
-import { is_number } from "classes/common";
+import { blank } from "classes/types/constants";
+import { is_number, isset } from "classes/common";
 
 import "client/resources/styles/controls/number.picker.css";
 
@@ -65,11 +66,17 @@ export default class NumberPicker extends BaseControl {
 
 
 	render () {
-
 		return <div className="number-picker">
+
 			<div className="up-arrow" onClick={() => this.update_value (1)} />
-			<NumberRangeInput value={this.state.value.padded (this.props.padding)} min={this.props.min} max={this.props.max} onChange={data => this.save_selection (data.new_value)} />
+
+			<NumberRangeInput min={this.props.min} max={this.props.max} 
+				value={isset (this.state.value) ? this.state.value.padded (this.props.padding) : blank} 
+				onChange={data => this.save_selection (data.new_value)}>
+			</NumberRangeInput>
+
 			<div className="down-arrow" onClick={() => this.update_value (-1)} />
+
 		</div>
 	}// render;
 

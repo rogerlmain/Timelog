@@ -42,7 +42,7 @@ Array.prototype.remove = function (element) {
 
 
 Array.prototype.replace = function (element, replacement) {
-	this.remove (element).push (replacement);
+	this.splice (this.indexOf (element), 1, replacement);
 	return this;
 }// replace;
 

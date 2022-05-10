@@ -3,6 +3,7 @@ import Options from "classes/storage/options";
 
 import Logging from "classes/storage/logging";
 
+import { isset } from "classes/common";
 import { date_formats } from "classes/types/constants";
 
 
@@ -27,7 +28,7 @@ export default class LoggingModel {
 		}// switch;
 
 		parameters.set ("action", "logging");
-		parameters.set ("project_id", project_id.toString ());
+		parameters.set ("project_id", isset (project_id) ? project_id.toString () : null);
 		parameters.set ("time_stamp", time_stamp.format (date_formats.database_timestamp));
 
 		return Database.fetch_row ("logging", parameters);
@@ -36,4 +37,3 @@ export default class LoggingModel {
 
 	
 }// ProjectsModel;
-

@@ -76,7 +76,7 @@ export default class NumberRangeInput extends BaseControl {
 		let max_length = this.max_length ();
 
 		return <input className="number-input" maxLength={max_length} 
-			style={{ width: `${max_length}ch` }} 
+			style={{ width: `${max_length * 1.1}em` }} 
 			value={this.state.value} readOnly={true}
 			onKeyDown={this.keystroke_handler.bind (this)}>
 		</input>

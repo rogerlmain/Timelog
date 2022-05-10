@@ -32,22 +32,14 @@ create procedure save_client (
         
     else
     
-		if (deleted) then
-        
-			update clients set deleted = true where clients.id = client_id;
-            
-		else
-        
-			update clients set 
-				company_id 		= coalesce (company_id, clients.company_id),
-				`name`			= coalesce (client_name, clients.name),
-				`description`	= coalesce (client_description, clients.description),
-				last_updated 	= coalesce (current_timestamp(), clients.last_updated)
-			where
-				id = client_id;
+		update clients set 
+			company_id 		= coalesce (company_id, clients.company_id),
+			`name`			= coalesce (client_name, clients.name),
+			`description`	= coalesce (client_description, clients.description),
+			last_updated 	= current_timestamp()
+		where
+			id = client_id;
 
-        end if;
-    
     end if;
 
 	call get_client_by_id (client_id);

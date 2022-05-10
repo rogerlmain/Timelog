@@ -1,30 +1,32 @@
-import * as constants from "classes/types/constants";
-import * as common from "classes/common";
-
 import LocalStorage from "classes/local.storage"
 import ClientsModel from "models/clients";
 
-import { isset, not_set } from "classes/common";
+import { stores } from "classes/types/constants";
+import { isset, not_set, not_empty, nested_value } from "classes/common";
 
-const store_name = constants.stores.clients;
+
+const store_name = stores.clients;
 
 
 export default class Clients extends LocalStorage {
 
 
-	static set (values) { super.set_store (store_name, values) }
+	static set (values) { LocalStorage.set_store (store_name, values) }
 
 
-	static set_client (client) {
+	static set_client (company_id, client) {
 
 		let values = LocalStorage.get_all (store_name);
+		let items = nested_value (values, company_id);
+		let value = isset (items) ? items.find (item => item.client_id == client.client_id) : null;
 
-		if (isset (values)) {
-			let value = values.find (candidate => candidate.client_id == client.client_id);
-			return LocalStorage.set_store (store_name, values.replace (value, client));
-		}// if;
+		if (not_set (values)) values = {};
+		if (not_set (values [company_id])) values [company_id] = new Array ();
 
-		LocalStorage.set_store (store_name, [client]);
+		if (isset (value)) values [company_id].remove (value);
+		values [company_id].push (client); 
+
+		Clients.set (values);
 
 	}// set_client;
 
@@ -32,6 +34,9 @@ export default class Clients extends LocalStorage {
 	static remove_client (client_id) {
 
 		let values = LocalStorage.get_all (store_name);
+
+alert ("fix this!");
+puke ();
 
 		if (isset (values)) {
 			let value = values.find (candidate => candidate.client_id == client_id);
@@ -44,15 +49,22 @@ export default class Clients extends LocalStorage {
 	/********/
 
 
-	static get_all = (company_id) => { 
+	static get_by_company = (company_id) => { 
+
 		return new Promise ((resolve, reject) => {
-			let result = LocalStorage.get_all (store_name);
+
+			let store = LocalStorage.get_all (store_name);
+			let result = nested_value (store, company_id);
+
 			if (isset (result)) return resolve (result);
+
 			ClientsModel.fetch_by_company (company_id).then (data => {
-				if (common.not_empty (data)) Clients.set (data);
+				if (not_empty (data)) Clients.set ({ ...LocalStorage.get_all (store_name), [company_id]: data });
 				resolve (data);
 			}).catch (reject);
+
 		});
+
 	}// get_all;
 
 

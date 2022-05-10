@@ -29,6 +29,7 @@ export const client_limit_options = {
 
 export default class ClientsPage extends BaseControl {
 
+
 	state = {
 		client_list: null,
 		client_data: null,
@@ -40,13 +41,10 @@ export default class ClientsPage extends BaseControl {
 	static defaultProps = { id: "clients_page" }
 
 
-	constructor (props) {
-		super (props);
-		constants.globals.clients_page = this;
-	}// constructor;
+	/********/
 
 
-	update_client_list () { Clients.get_all ().then (data => this.setState ({ client_list: data })) }
+	update_client_list = () => { Clients.get_by_company (this.context.company_id).then (data => this.setState ({ client_list: data })) }
 	
 
 	componentDidMount = this.update_client_list;
@@ -56,7 +54,7 @@ export default class ClientsPage extends BaseControl {
 
 		let limit = Options.client_limit ();
 		let option_value = Object.values (client_limit_options) [limit - 1];
-		let can_create = ((limit > 1) && (common.not_set (this.state.client_list) || (this.state.client_list.length < option_value) || (option_value == 0)))
+		let can_create = ((limit > 1) && (common.not_set (this.state.client_list) || (this.state.client_list.length < option_value) || (option_value == 0)));
 
  		return <div id={this.props.id} className="top-center-container row-spaced">
 
@@ -65,7 +63,7 @@ export default class ClientsPage extends BaseControl {
 				
 					hasHeader={true} 
 					headerSelectable={can_create}
-					headerText={can_create ? "New client" : "Select one"}
+					headerText={can_create ? "New client" : "Select a client"}
 
 					selectedClient={this.state.selected_client}
 
