@@ -115,7 +115,7 @@ export default class LoggingPage extends BaseControl {
 	elapsed_time () {
 
 		let end_time = this.state.current_entry.end_time ?? this.end_time ();
-		let result = 1000;//Math.floor ((end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000);
+		let result = Math.floor ((end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000);
 
 		return result;
 
