@@ -19,7 +19,7 @@ import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadg
 import LoggingModel from "models/logging";
 
 import { blank, date_formats, date_rounding } from "classes/types/constants";
-import { isset, is_null, is_empty } from "classes/common";
+import { clone, isset, is_null, is_empty, nested_value } from "classes/common";
 import { MainContext } from "classes/types/contexts";
 
 import "client/resources/styles/pages/logging.css";
@@ -57,22 +57,20 @@ export default class LoggingPage extends BaseControl {
 			entry.start_time = Date.validated (entry.start_time);
 			entry.end_time = this.end_time ();
 			this.state.project_id = entry.project_id;
-			this.state.editable = this.needs_editing (entry);
+			this.state.editable = this.needs_editing ();
 			if (this.state.editable) this.state.editing = true;
 		}// if;
 
-	}// local_storage_entry;
+	}// update_current_entry;
 
 
-	needs_editing (entry = null) { 
-		if (is_null (entry)) entry = this.state.current_entry;
-		if (is_null (entry)) return false
+	needs_editing () { 
 
-		let same_day = entry.start_time.same_day (entry.end_time);
-		let elapsed_time = this.elapsed_time (entry);
-		
-		let result = (!same_day || (elapsed_time > (8 * Date.hour_coef)));
+		let same_day = this.state.current_entry.start_time.same_day (this.state.current_entry.end_time);
+		let result = (!same_day || (this.elapsed_time () > (8 * Date.hour_coef)));
+
 		return result;
+
 	}// needs_editing;
 
 	
@@ -114,17 +112,12 @@ export default class LoggingPage extends BaseControl {
 	}// end_time;
 
 
-	elapsed_time (entry = null) {
+	elapsed_time () {
 
-		entry = entry ?? this.state.current_entry;
-		entry.end_time = entry.end_time ?? this.end_time ();
+		let end_time = this.state.current_entry.end_time ?? this.end_time ();
+		let result = 1000;//Math.floor ((end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000);
 
-		switch (Options.granularity (entry.granularity)) {
-			case 1: return Math.floor ((entry.end_time.getTime () - entry.start_time.getTime ()) / 1000);
-			case 2: return Math.floor ((entry.end_time.getTime () - entry.start_time.getTime ()) / 1000);
-			case 3: return 0; // Level 3 Granularity - any number of minutes
-			case 4: return 0; // Level 4 Granularity - truetime: down to the second
-		}// switch;
+		return result;
 
 	}// elapsed_time;
 
@@ -177,8 +170,7 @@ export default class LoggingPage extends BaseControl {
 
 	render () {
 
-		let entry = this.state.current_entry;
-		let logged_in = isset (entry);
+		let logged_in = isset (this.state.current_entry);
 		let elapsed_time = logged_in ? this.elapsed_time () : null;
 
 		const overtime_notice = () => {
@@ -187,11 +179,11 @@ export default class LoggingPage extends BaseControl {
 	
 					<Container id="calendar_clock" condition={this.state.fixing}>
 						<CalendarClock id="log_calendar_clock"
-							start={entry.start_time} end={entry.end_time}
-							onChange={data => this.setState ({ current_entry: { 
-								...this.state.current_entry,
-								[`${data.boundary}_time`]: data.date
-							}})}>
+							start={this.state.current_entry.start_time} end={this.state.current_entry.end_time}
+							onChange={data => {
+								this.state.current_entry [`${data.boundary}_time`] = data.date;
+								this.forceUpdate ();
+							}}>
 						</CalendarClock>
 
 						<div className="button-panel">
@@ -224,7 +216,7 @@ export default class LoggingPage extends BaseControl {
 	
 		const entry_details = () => {
 	
-			entry.end_time = this.end_time ();
+			let end_time = nested_value (this, "state", "current_entry", "end_time") ?? this.end_time ();
 
 			// setTimeout (() => {
 			// 	this.forceUpdate ();
@@ -232,21 +224,21 @@ export default class LoggingPage extends BaseControl {
 	
 			return <div id={this.props.id} className="row-container">
 			
-				<div className="log-details two-column-grid">
+				<div className="log-details one-piece-form">
 	
 					<label>Client</label>
-					<div>{entry.client_name}</div>
+					<div>{this.state.current_entry.client_name}</div>
 	
 					<label>Project</label>
-					<div>{entry.project_name}</div>
+					<div>{this.state.current_entry.project_name}</div>
 	
 					<Break />
 	
 					<label>Start</label>
-					<div>{entry.start_time.format (date_formats.full_datetime)}</div>
+					<div>{this.state.current_entry.start_time.format (date_formats.full_datetime)}</div>
 	
 					<label>Stop</label>
-					{this.link_cell (entry.end_time.format (entry.start_time.same_day (entry.end_time) ? date_formats.timestamp : date_formats.full_datetime))}
+					{this.link_cell (end_time.format (this.state.current_entry.start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime))}
 	
 					<label>Elapsed</label>
 					{this.link_cell (elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)) }
@@ -258,7 +250,7 @@ export default class LoggingPage extends BaseControl {
 	
 				</div>
 	
-				<div>{overtime_notice ()}</div>
+				<div style={{ width: 0 }}>{overtime_notice ()}</div>
 	
 			</div>
 	
@@ -267,7 +259,7 @@ export default class LoggingPage extends BaseControl {
 	
 		return <div id="log_panel">
 
-			<EyecandyPanel id="log_form_eyecandy" text="Loading..." eyecandyVisible={!this.state.initialized}>
+			<EyecandyPanel id="log_form_eyecandy" text="Loading..." eyecandyVisible={!this.state.initialized} stretchOnly={true}>
 
 				{logged_in ? entry_details () : <div>
 
@@ -296,9 +288,6 @@ export default class LoggingPage extends BaseControl {
 					</FadePanel>
 
 				</EyecandyPanel>
-
-<button id="reset_logging_button" onClick={() => this.setState ({ updating: false })}>Reset</button>
-
 			</div>
 
 		</div>

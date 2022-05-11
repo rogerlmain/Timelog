@@ -63,10 +63,16 @@ export default class CalendarClock extends BaseControl {
 
 					<Calendar id="test_calendar" calendarType="US" selectRange={false} 
 						value={this.props [this.state.boundary]} 
-						onChange={value => this.execute (this.props.onChange, {
+						onChange={value => 
+{							
+
+						this.execute (this.props.onChange, {
 							date: this.date_value (value),
 							boundary: this.state.boundary
-						})}>
+						})
+						
+}						
+						}>
 					</Calendar>
 
 					<TimePicker id="time_picker" value={this.props [this.state.boundary]}

@@ -20,6 +20,7 @@ import SettingsPage from "pages/settings";
 import BaseControl from "controls/abstract/base.control";
 
 import { globals } from "classes/types/constants";
+import { notify } from "classes/common";
 
 
 const master_pages = { 
@@ -134,46 +135,7 @@ export default class MasterPanel extends BaseControl {
 
 
 <SelectButton onClick={() => {
-//	alert ("waiting for something to test")
-
-	// test nulls
-	common.notify (common.matching_objects (null, null), true);
-	common.notify (common.matching_objects (null, undefined), true);
-	common.notify (common.matching_objects (undefined, undefined), true);
-
-	// test objects
-	common.notify (common.matching_objects (null, { first: "one" }), false);
-	common.notify (common.matching_objects (undefined, { first: "one" }), false);
-	common.notify (common.matching_objects ({ first: "one" }, { first: "one" }), true);
-	common.notify (common.matching_objects ({ first: "one" }, { first: "two" }), false);
-	common.notify (common.matching_objects ({ first: "one" }, { second: "one" }), false);
-	common.notify (common.matching_objects ({ first: "one" }, { second: "two" }), false);
-
-	// test arrays
-	common.notify (common.matching_objects (null, ["one"]), false);
-	common.notify (common.matching_objects (undefined, ["one"]), false);
-	common.notify (common.matching_objects (["one"], ["one"]), true);
-	common.notify (common.matching_objects (["one"], ["two"]), false);
-	common.notify (common.matching_objects (["one"], { first: "one" }), false);
-	common.notify (common.matching_objects (["one"], { first: "two" }), false);
-	common.notify (common.matching_objects (["one"], { second: "one" }), false);
-	common.notify (common.matching_objects (["one"], { second: "two" }), false);
-
-	// test arrays of objects
-	common.notify (common.matching_objects (null, [{ first: "one" }]), false);
-	common.notify (common.matching_objects (undefined, [{ first: "one" }]), false);
-	common.notify (common.matching_objects ([{ first: "one" }], [{ first: "one" }]), true);
-	common.notify (common.matching_objects ([{ first: "one" }], ["two"]), false);
-	common.notify (common.matching_objects ([{ first: "one" }], { first: "one" }), false);
-	common.notify (common.matching_objects ([{ first: "one" }], { first: "two" }), false);
-	common.notify (common.matching_objects ([{ first: "one" }], { second: "one" }), false);
-	common.notify (common.matching_objects ([{ first: "one" }], { second: "two" }), false);
-
-	common.notify (common.matching_objects ([{ first: "one" }], [{ first: "one" }]), true);
-	common.notify (common.matching_objects ([{ first: "one" }], [{ first: "two" }]), false);
-	common.notify (common.matching_objects ([{ first: "one" }], [{ second: "one" }]), false);
-	common.notify (common.matching_objects ([{ first: "one" }], [{ second: "two" }]), false);
-
+	alert ("waiting for something to test")
 }} style={{ 
 	position: "absolute",
 	right: "1em",

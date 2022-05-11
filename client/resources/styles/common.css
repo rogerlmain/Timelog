@@ -4,7 +4,7 @@
 .row-container {
 	display: flex;
 	flex-direction: row;
-}/* .row-container */
+align-self: stretch;}/* .row-container */
 
 
 .span-all, .span-all-columns { grid-column: 1 / -1 }

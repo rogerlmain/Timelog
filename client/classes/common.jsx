@@ -63,38 +63,17 @@ export function json_string (value) {
 /**** Type Test Routines ****/
 
 
-export function is_empty (value) {
-	return (not_set (value, consts.blank) || (value.length == 0));
-}// is_empty;
-
-
-export function is_function (value) {
-	return value instanceof Function;
-}// is_function;
-
-
-export function is_null (value) {
-	return value == null;
-}// is_null;
-
-
 export function is_array (value) { return Array.isArray (value) }
+export function is_date (value) { return value instanceof Date }
+export function is_empty (value) { return (not_set (value, consts.blank) || (value.length == 0)) }
+export function is_function (value) { return value instanceof Function }
+export function is_null (value) { return value == null }
+export function is_number (value) { return !isNaN (Number (value)) }
 export function is_object (value) { return ((value instanceof Object) && not_array (value)) }
-
-
+export function is_primitive (value) { return (value !== Object (value)) }
+export function isset (value) { return (!null_or_undefined (value)) }
 export function is_string (value) { return typeof value == "string" }
-export function is_number (value) { return !isNaN (Number (value))}
-
-
-export function is_undefined (value) {
-	return (value == undefined) && not_null (value);
-}// is_undefined;
-
-
-export function isset (value) {
-	return (!null_or_undefined (value));
-}// isset;
-
+export function is_undefined (value) { return (value == undefined) && not_null (value) }
 
 export function not_array (value) { return !is_array (value) }
 export function not_empty (value) { return !is_empty (value) }
@@ -107,17 +86,45 @@ export function null_or_undefined (value) { return (is_null (value) || (value ==
 
 
 export function matching_objects (first_object, second_object) {
-
 	if (not_set (first_object)) return not_set (second_object);
 	return (JSON.stringify (first_object).equals (JSON.stringify (second_object)));
-
-
-	if (null_or_undefined (first_object) || null_or_undefined (second_object)) return false;
-	if (is_object (first_object) && is_object (second_object)) return (JSON.stringify (first_object) == JSON.stringify (second_object));
-	
-	return (first_object == second_object);
-
 }// matching_objects;
+
+
+export function clone (object) { 
+
+	let result = null;
+
+	if (is_primitive (object)) return object;
+
+	if (is_date (object)) return new Date (object.getTime ());
+
+	if (is_object (object)) {
+
+		Object.keys (object).forEach (key => {
+
+			if (is_null (object [key])) return;
+			if (is_null (result)) result = {}
+
+			result [key] = clone (object [key]);
+
+		});
+
+		return isset (result) ? result : object;
+
+	}// if;
+
+	if (Array.isArray (object)) {
+		object.forEach (item => {
+			if (is_null (result)) result = [];
+			result.push (clone (item));
+		});
+		return result;
+	}// if;
+
+	return object;
+
+}// clone;
 
 
 export function zero_value (value) { return null_or_undefined (value) ? 0 : value }
