@@ -19,7 +19,7 @@ import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadg
 import LoggingModel from "models/logging";
 
 import { blank, date_formats, date_rounding } from "classes/types/constants";
-import { clone, isset, is_null, is_empty, nested_value } from "classes/common";
+import { clone, isset, is_null, is_empty, nested_value, not_set } from "classes/common";
 import { MainContext } from "classes/types/contexts";
 
 import "client/resources/styles/pages/logging.css";
@@ -65,6 +65,8 @@ export default class LoggingPage extends BaseControl {
 
 
 	needs_editing () { 
+
+		if (not_set (this.state.current_entry)) return false;
 
 		let same_day = this.state.current_entry.start_time.same_day (this.state.current_entry.end_time);
 		let result = (!same_day || (this.elapsed_time () > (8 * Date.hour_coef)));
