@@ -24,16 +24,16 @@ export default class PasswordForm extends BaseControl {
 		return <PopupWindow id="password_form" visible={this.state.visible}>
 
 			<div className="two-column-grid">
-				<label htmlFor="password">Previous password</label>
-				<input type="password" id="password" name="password" />
+				<label htmlFor="old_password">Previous password</label>
+				<input type="password" id="old_password" name="old_password" />
 
 				<Break span={2} />
 
-				<label htmlFor="password">New password</label>
-				<input type="password" id="password" name="password" />
+				<label htmlFor="new_password">New password</label>
+				<input type="password" id="new_password" name="password" />
 
-				<label htmlFor="confirm_password">Confirm new password</label>
-				<input type="password" id="confirm_password" name="confirm_password" />
+				<label htmlFor="confirm_new_password">Confirm new password</label>
+				<input type="password" id="confirm_new_password" name="confirm_new_password" />
 			</div>
 
 			<div className="button-bar">

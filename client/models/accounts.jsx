@@ -32,9 +32,9 @@ export default class AccountsModel extends DataModel {
 	}// fetch_by_task;
 
 
-	static save_account (data) {
-		data.append ("action", "save");
-		return Database.save_data ("accounts", data);
+	static save_account (form_data) {
+		form_data.append ("action", "save");
+		return Database.save_data ("accounts", form_data);
 	}// save_account;
 
 

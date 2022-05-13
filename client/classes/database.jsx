@@ -1,22 +1,22 @@
 import CurrentAccount from "client/classes/storage/account";
-import { isset, is_empty } from "classes/common";
+import { isset, not_null } from "classes/common";
 
 
 export default class Database {
 
 
-	static async fetch_data (name, parameters) {
+	static async fetch_data (name, form_data) {
 
 		let fetch_parameters = null;
+		let account_id = CurrentAccount.account_id ();
 
-		if (!(parameters instanceof FormData)) throw "Invalid data passed to Database.fetch_data";
-
-		parameters.set ("account_id", CurrentAccount.account_id ());
+		if (!(form_data instanceof FormData)) throw "Invalid data passed to Database.fetch_data";
+		if (not_null (account_id)) form_data.set ("account_id", account_id);
 		
 		fetch_parameters = {
 			method: "post",
 			credentials: "same-origin",
-			body: parameters
+			body: form_data
 		}// fetch_parameters;
 
 		return fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (response => { 

@@ -11,17 +11,11 @@ export default class Account extends LocalStorage {
 
 
 	static get (name) { return LocalStorage.get (storage_locker, name) }
-	static all () { return LocalStorage.get_all (storage_locker) }
+	static get_all () { return LocalStorage.get_all (storage_locker) }
 
-
-	static set (name, value) {
-		let credentials = this.all ();
-		credentials [name] = value;
-		LocalStorage.set_store (storage_locker, credentials);
-	}// set;
-
+	static set_all (credentials) { LocalStorage.set_store (storage_locker, credentials) }
 	
-	static account_id = () => { return Account.get (credential_types.account_id ) }
+	static account_id = () => { let result = Account.get (credential_types.account_id); return result; }
 
 	static first_name = () => { return Account.get (credential_types.first_name) }
 	static last_name = () => { return Account.get (credential_types.last_name) }

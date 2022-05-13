@@ -9,6 +9,8 @@ import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
+import { get_keys } from "classes/common";
+
 import { globals } from "client/classes/types/constants";
 import { MainContext } from "classes/types/contexts";
 
@@ -46,14 +48,17 @@ export default class SigninPage extends BaseControl {
 
 			if (common.isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
 
-			for (let key of Object.keys (info)) {
+			for (let key of get_keys (info)) {
+
+let value = JSON.stringify (info [key]);
+
 				localStorage.setItem (key, JSON.stringify (info [key]));
 			}// for;
 
 			if (this.signed_in ()) {
 
 				let companies = Companies.company_list ();
-				let ids = Object.keys (companies);
+				let ids = get_keys (companies);
 
 				if (common.isset (ids) && (ids.length == 1)) Companies.set_active_company (ids [0]);
 				this.context.main_page.setState ({ company_id: Companies.active_company_id () });

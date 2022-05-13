@@ -7,7 +7,7 @@ import Container from "controls/container";
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 import ReportsModel from "models/reports";
 
-import { isset, is_null, is_object, not_set } from "classes/common";
+import { get_keys, isset, is_null, is_object, not_set } from "classes/common";
 
 import "client/resources/styles/pages/reports.css";
 
@@ -123,7 +123,7 @@ export default class ReportsPage extends BaseControl {
 		});
 
 
-		return (Object.keys (entry_list).map (year => {
+		return (get_keys (entry_list).map (year => {
 			let value = entry_list [year];
 			return <Container>
 				<div className="entry" style={{ gridColumn: "1 / 4" }}>{year}</div>

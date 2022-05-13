@@ -31,16 +31,11 @@ export default class AccountData extends Database {
 
 	save_account = (fields) => {
 		
-		const numeric_value = (fieldname) => {
-			try {
-				let value = parseInt (fields [fieldname]);
-				return (isNaN (value) ? null : value);
-			} catch (except) { return null } // value doesn't exist
-		}/* numeric_value */;
-
 		let procedure = "save_account";
 
 		let parameters = [
+			
+			fields ["account_id"],
 
 			fields ["first_name"],
 			fields ["last_name"],
@@ -48,14 +43,11 @@ export default class AccountData extends Database {
 			fields ["email_address"],
 			fields ["password"],
 
-			fields ["square_id"],
-			
-			numeric_value ("account_type"),
-			numeric_value ("account_id")
+			fields ["account_type"],
 
 		];
 
-		this.data_query (procedure, parameters);
+		this.execute_query (procedure, parameters);
 
 	}// save_account;
 

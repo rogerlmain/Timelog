@@ -14,7 +14,7 @@ import ProjectsModel from "models/projects";
 
 import ProjectForm from "forms/project.form";
 
-import { isset, nested_value, not_set, not_empty } from "classes/common";
+import { isset, nested_value, not_set, not_empty, get_values } from "classes/common";
 
 import "client/resources/styles/pages/projects.css";
 
@@ -68,7 +68,7 @@ export default class ProjectsPage extends BaseControl {
 	render () {
 
 		let limit = Options.project_limit ();
-		let option_value = Object.values (project_limit_options) [limit - 1];
+		let option_value = get_values (project_limit_options) [limit - 1];
 		let can_create = ((limit > 1) && (not_set (this.state.project_list) || (this.state.project_list.length < option_value) || (option_value == 0)));
 
 		return <div id={this.props.id} className="top-center-container row-spaced">

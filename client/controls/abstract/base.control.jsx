@@ -4,6 +4,8 @@ import * as common from "classes/common";
 import React from "react";
 import ReactDOMServer, { renderToString } from "react-dom/server";
 
+import { get_keys } from "classes/common";
+
 import "classes/types/prototypes";
 
 
@@ -84,7 +86,7 @@ export default class BaseControl extends React.Component {
 
 		let properties = null;
 
-		for (let key of Object.keys (this.props)) {
+		for (let key of get_keys (this.props)) {
 			if (key in this.constructor.defaultProps) continue;
 			if (common.is_null (properties)) properties = {}
 			properties [key] = this.props [key];
@@ -256,7 +258,7 @@ export default class BaseControl extends React.Component {
 		let result = null;
 
 		if (common.isset (this.state)) {
-			Object.keys (this.state).forEach (key => {
+			get_keys (this.state).forEach (key => {
 				if (common.is_null (this.state [key])) return;
 				control_states = append (control_states, `\n${key}: ${this.state [key]}`);
 			});

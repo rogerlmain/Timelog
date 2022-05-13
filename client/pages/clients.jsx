@@ -15,8 +15,7 @@ import ClientForm from "forms/client.form";
 import ClientModel from "models/clients";
 
 
-import { is_null } from "classes/common";
-
+import { is_null, get_values } from "classes/common";
 
 export const client_limit_options = {
 	"1": 1,
@@ -53,7 +52,7 @@ export default class ClientsPage extends BaseControl {
 	render () {
 
 		let limit = Options.client_limit ();
-		let option_value = Object.values (client_limit_options) [limit - 1];
+		let option_value = get_values (client_limit_options) [limit - 1];
 		let can_create = ((limit > 1) && (common.not_set (this.state.client_list) || (this.state.client_list.length < option_value) || (option_value == 0)));
 
  		return <div id={this.props.id} className="top-center-container row-spaced">

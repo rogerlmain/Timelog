@@ -2,7 +2,7 @@ import * as common from "classes/common";
 
 import LocalStorage from "classes/local.storage"
 
-import { isset } from "classes/common";
+import { isset, get_values } from "classes/common";
 
 
 const store_name = "companies";
@@ -41,7 +41,7 @@ export default class Companies extends LocalStorage {
 
 
 	static company_count () {
-		let companies = Object.values (this.company_list ());
+		let companies = get_values (this.company_list ());
 		return common.isset (companies) ? companies.length : 0;
 	}// company_count;
 	

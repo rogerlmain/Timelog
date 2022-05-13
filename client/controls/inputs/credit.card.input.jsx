@@ -6,6 +6,8 @@ import InputMask from "react-input-mask";
 import InputControl from "controls/abstract/input.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
+import { get_keys, get_values } from "classes/common";
+
 
 /// DEPRECATED! - DO NOT USE - FOR CANNIBALIZATION ONLY!!!
 
@@ -53,7 +55,7 @@ export default class CreditCardInput extends InputControl {
 
 
 	get_card_type (card_number) {
-		for (let card of Object.keys (number_patterns)) {
+		for (let card of get_keys (number_patterns)) {
 			for (let prefix of number_patterns [card]) {	
 				if ((card_number.match (new RegExp (`^${prefix}`)) ?? []).length > 0) return card;
 			}// for;
@@ -68,7 +70,7 @@ export default class CreditCardInput extends InputControl {
 		let mask_type = (current_card == card_type.amex) ? card_type.amex : card_type.other;
 
 		let mask = (common.isset (current_card) ? card_mask [mask_type] : null); 
-		let value_empty = (control.value.empty () || Object.values (card_mask).includes (control.value))
+		let value_empty = (control.value.empty () || get_values (card_mask).includes (control.value))
 
 		this.setState ({ 
 			mask: value_empty ? null : mask.replaceAll ("*", "9"),

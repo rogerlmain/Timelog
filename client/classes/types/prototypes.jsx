@@ -1,6 +1,8 @@
 import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
+import { isset, not_empty, not_set, get_keys } from "classes/common";
+
 
 /**** Array Helper Functions ****/
 
@@ -155,7 +157,7 @@ Date.prototype.round_minutes = function (count, direction) {
 	let minutes = Math.floor (result.getMinutes () / count) * count;
 
 	// If not specified then round off
-	if (common.not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? constants.date_rounding.down : constants.date_rounding.up;
+	if (not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? constants.date_rounding.down : constants.date_rounding.up;
 
 	result.setMinutes (direction == constants.date_rounding.down ? minutes : minutes + count);
 	result.setSeconds (0);
@@ -238,9 +240,9 @@ Date.prototype.format = function (selected_format) {
 
 
 DOMRect.prototype.contains = function (point) {
-	if (common.not_set (point)) return false;
-	if (common.isset (point.x) && ((point.x < this.left) || (point.x > this.right))) return false;
-	if (common.isset (point.y) && ((point.y < this.top) || (point.y > this.bottom))) return false;
+	if (not_set (point)) return false;
+	if (isset (point.x) && ((point.x < this.left) || (point.x > this.right))) return false;
+	if (isset (point.y) && ((point.y < this.top) || (point.y > this.bottom))) return false;
 	return true;
 }// contains;
 
@@ -258,7 +260,7 @@ FormData.fromObject = function (object) {
 /****/
 
 
-FormData.prototype.appendAll = function (object) { Object.keys (object).forEach (key => this.append (key, object [key])) }
+FormData.prototype.appendAll = function (object) { get_keys (object).forEach (key => this.append (key, object [key])) }
 FormData.prototype.toJsonString = function () { return JSON.stringify (this.toObject ()) }
 FormData.prototype.toObject = function () { return Object.fromEntries (this) }
 
@@ -331,14 +333,14 @@ HTMLElement.prototype.setAttributes = function (attributes) { for (let key in at
 HTMLElement.prototype.removeAttributes = function (/* keys */) { for (let attribute of arguments) this.removeAttribute (attribute) }
 
 
-HTMLElement.prototype.index = function () { return common.isset (this.parent) ? Array.from (this.parent.children).indexOf (this) : 0 }
+HTMLElement.prototype.index = function () { return isset (this.parent) ? Array.from (this.parent.children).indexOf (this) : 0 }
 
 
 HTMLElement.prototype.isComplete = function () {
 
 	let input_mask = this.getAttribute ("input_mask");
 
-	if (common.isset (input_mask)) {
+	if (isset (input_mask)) {
 
 		let entry_length = this.value.extractNumber ().length;
 		let required_length = input_mask.extractNumber ().length;
@@ -391,7 +393,7 @@ HTMLElement.prototype.validate = function () {
 
 		switch (this.hasAttribute ("pattern")) {
 			case true: if (this.value.indexOf ("*") < 0) return true; break;
-			default: if (this.value.not_empty ()) return true; break;
+			default: if (not_empty (this.value)) return true; break;
 		}// switch;
 
 		return false;
@@ -407,13 +409,21 @@ HTMLElement.prototype.validate = function () {
 
 
 	let labels = common.not_empty (this.id) ? document.querySelectorAll (`[for=${this.id}]`) : null;
-	let field_name = (common.isset (labels) && (labels.length > 0)) ? labels [0].innerText : "This field";
+	let field_name = (isset (labels) && (labels.length > 0)) ? labels [0].innerText : "This field";
 
 	if (!this.setValidity (provided (), `${field_name} is a required value.`)) return false;
 	if (!this.setValidity (pattern_match (), "Please match the pattern provided.")) return false;
 	
 	return true;
 	
+}// validate;
+
+
+HTMLFormElement.prototype.validate = function () {
+	let result = true;
+	let items = this.querySelectorAll ("input, select, textarea");
+	for (let item of items) if (!item.validate ()) result = false;
+	return result;
 }// validate;
 
 
@@ -490,7 +500,7 @@ String.prototype.empty = function () { return this.trim () == constants.blank }
 String.prototype.not_empty = function () { return !this.empty () }
 
 
-String.prototype.matches = function (pattern) { return common.isset (this.match (pattern)) }
+String.prototype.matches = function (pattern) { return isset (this.match (pattern)) }
 
 
 String.prototype.splice = function (start_index, end_index, replacement = null) {

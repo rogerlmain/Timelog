@@ -3,6 +3,8 @@ import * as common from "classes/common";
 import React from "react";
 import BaseControl from "controls/abstract/base.control"
 
+import { get_values } from "classes/common";
+
 
 const header_value = -1;
 
@@ -51,7 +53,7 @@ export default class SelectList extends BaseControl {
 		if (common.is_null (this.props.data)) return null;
 
 		let is_array = Array.isArray (this.props.data);
-		let option_list = is_array ? this.props.data : (common.is_object (this.props.data) ? Object.values (this.props.data) : null);
+		let option_list = is_array ? this.props.data : (common.is_object (this.props.data) ? get_values (this.props.data) : null);
 
 		let result = option_list.map (item => {
 

@@ -4,7 +4,10 @@ import * as consts from "client/classes/types/constants";
 export function boolean_value (value) { return (is_string (value) && (value.equals ("true") || value.equals ("on"))) }
 export function integer_value (value) { return isset (value) ? parseInt (value) : null }
 
-export function get_key (object, value) { return Object.keys (object).find (key => object [key] === value) }
+export function get_key (object, value) { return get_keys (object).find (key => object [key] === value) }
+export function get_keys (object) { return is_object (object) ? Object.keys (object) : null }
+export function get_values (object) { return is_object (object) ? Object.values (object) : null }
+
 export function notify () { alert (not_empty (arguments) ? Array.from (arguments).join ("\n") : "paused") }
 
 
@@ -101,7 +104,7 @@ export function clone (object) {
 
 	if (is_object (object)) {
 
-		Object.keys (object).forEach (key => {
+		get_keys (object).forEach (key => {
 
 			if (is_null (object [key])) return;
 			if (is_null (result)) result = {}

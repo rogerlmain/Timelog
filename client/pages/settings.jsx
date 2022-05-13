@@ -20,9 +20,10 @@ import OptionsModel from "models/options";
 
 import ToggleOption from "pages/gadgets/settings/toggle.option";
 
+import { get_keys } from "classes/common";
 import { MainContext } from "classes/types/contexts";
-import { resize_direction } from "controls/panels/resize.panel";
 
+import { resize_direction } from "controls/panels/resize.panel";
 import { client_limit_options } from "pages/clients";
 
 import "client/resources/styles/pages.css";
@@ -59,7 +60,7 @@ export default class SettingsPage extends BaseControl {
 
 		let options = null;
 
-		Object.keys (constants.account_types).map (key => {
+		get_keys (constants.account_types).map (key => {
 
 			let next_item = <option key={`${key}_option`} value={constants.account_types [key]}>{key.titled ()}</option>
 			if (common.is_null (options)) options = new Array ();
@@ -217,7 +218,7 @@ export default class SettingsPage extends BaseControl {
 					<div>
 						<div className="one-piece-form" >
 
-							<ToggleOption id="client_limit" title="Number of clients" values={Object.keys (client_limit_options)} value={this.state.client_limit}
+							<ToggleOption id="client_limit" title="Number of clients" values={get_keys (client_limit_options)} value={this.state.client_limit}
 								option={constants.option_types.client_limit} parent={this} 
 								onPaymentConfirmed={selected_option => {
 									this.set_option (constants.option_types.client_limit, selected_option).then (() => this.setState ({ client_limit: selected_option }, this.context.main_page.forceRefresh));
