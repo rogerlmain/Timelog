@@ -69,7 +69,7 @@ class Main extends BaseControl {
 			<div className="right-aligned">{Account.full_name ()}</div>
 			<div className="right-aligned">
 
-				<Container condition={Companies.company_count () > 1}>
+				<Container visible={Companies.company_count () > 1}>
 					<SelectList value={Companies.active_company_id ()} data={companies}
 					
 						textField="company_name" hasHeader={true}
@@ -82,11 +82,11 @@ class Main extends BaseControl {
 					</SelectList>
 				</Container>
 
-				<Container condition={Companies.company_count () == 1}>
+				<Container visible={Companies.company_count () == 1}>
 					<div>{common.nested_value (Companies.active_company (), "company_name")}</div>
 				</Container>
 
-				<Container condition={common.is_empty (companies)}>
+				<Container visible={common.is_empty (companies)}>
 					<div>Guest Account</div>
 				</Container>
 				

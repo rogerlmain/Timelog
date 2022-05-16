@@ -48,7 +48,7 @@ export default class CalendarClock extends BaseControl {
 
 	render () {
 		return (
-			<Container condition={this.props.visible} id={this.props.id} inline={true}>
+			<Container visible={this.props.visible} id={this.props.id} inline={true}>
 
 				<div className="three-column-grid boundary-toggle-switch">
 					<ToggleButton htmlFor="log_boundary_start" className="centering-container">Start</ToggleButton>

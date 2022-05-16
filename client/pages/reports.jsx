@@ -7,6 +7,7 @@ import Container from "controls/container";
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 import ReportsModel from "models/reports";
 
+import { date_formats } from "classes/types/constants";
 import { get_keys, isset, is_null, is_object, not_set } from "classes/common";
 
 import "client/resources/styles/pages/reports.css";

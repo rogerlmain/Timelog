@@ -102,7 +102,7 @@ defaultValue={account_types.deadbeat}
 
 					</select>
 
-					<Container condition={this.signed_out ()}>
+					<Container visible={this.signed_out ()}>
 
 						<label htmlFor="password">Password</label>
 						<input type="password" id="password" ref={this.password_field} name="password" required={true} 
@@ -129,14 +129,14 @@ defaultValue={"tastetestdude@gmail.com"} />
 
 				<FadePanel id="signup_panel" visible={!this.state.eyecandy_visible}>
 
-					<Container condition={this.signed_out ()}>
+					<Container visible={this.signed_out ()}>
 						<div className="aside">
 							<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
 							<a onClick={() => { this.props.parent.setState ({ signing_up: false }) }}>Sign in</a>
 						</div>
 					</Container>
 
-					<Container condition={this.signed_in ()}>
+					<Container visible={this.signed_in ()}>
 						<button onClick={() => this.setState ({ changing_password: true })}>Change password</button>
 					</Container>	
 

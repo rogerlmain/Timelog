@@ -98,7 +98,7 @@ export default class ProjectsPage extends BaseControl {
 				</ProjectSelectorGadget>
 			</div>	
 
-			<Container condition={isset (this.state.selected_client)}>
+			<Container visible={isset (this.state.selected_client)}>
 				<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." 
 
 					onEyecandy={() => {

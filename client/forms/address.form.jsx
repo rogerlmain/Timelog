@@ -75,7 +75,7 @@ export default class AddressForm extends BaseControl {
 
 
 this.setState ({
-	company_name: "RMPC Inc",
+	company_name: "Betty's Boutique",
 	district_id: 277
 });
 
@@ -157,10 +157,10 @@ this.setState ({
 					</div>
 
 					<label htmlFor="district" title="District, state or province">{this.district_name ()}</label>
-					<Container condition={common.not_set (this.state.active_districts)}>
+					<Container visible={common.not_set (this.state.active_districts)}>
 						<input type="text" id="district" name="district" maxLength={255} />
 					</Container>
-					<Container condition={common.isset (this.state.active_districts)}>
+					<Container visible={common.isset (this.state.active_districts)}>
 						<SelectList id="district" data={this.state.active_districts} idField="id" textField="long_name" 
 							style={{ width: "100%" }} required={true} hasHeader={true}
 							value={this.state.district_id} onChange={event => this.setState ({ district_id: event.target.value })}>

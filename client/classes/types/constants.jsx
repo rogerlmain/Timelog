@@ -183,6 +183,7 @@ export const option_types = {
 	end_rounding	: 3,
 	client_limit	: 4,
 	project_limit	: 5,
+	billing_option	: 6,
 }// option_types;
 
 
@@ -199,7 +200,8 @@ export const default_options = {
 	start_rounding: date_rounding.off,
 	end_rounding: date_rounding.off,
 	client_limit: 1,
-	project_limit: 1
+	project_limit: 1,
+	billing_option: false,
 }// default_options;
 
 

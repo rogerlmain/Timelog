@@ -1,5 +1,3 @@
-import { isset, is_null, not_empty, not_set } from "classes/common";
-
 import React from "react";
 
 import Settings from "classes/storage/settings";
@@ -10,6 +8,7 @@ import FadePanel from "controls/panels/fade.panel";
 import ResizePanel, { resize_state, resize_direction } from "controls/panels/resize.panel";
 
 import { renderToString } from "react-dom/server";
+import { isset, is_null, not_empty, nested_value } from "classes/common";
 
 
 export default class ExplodingPanel extends BaseControl {
@@ -107,9 +106,15 @@ export default class ExplodingPanel extends BaseControl {
 
 		let target_speed = Math.floor (this.props.speed / 2);
 
+		let has_width = ((this.props.direction == resize_direction.vertical) && (isset (nested_value (this.props.style, "width"))));
+		let has_height = ((this.props.direction == resize_direction.horizontal) && (isset (nested_value (this.props.style, "height"))));
+
+		let panel_style = has_width ? { width: this.props.style.width } : (has_height ? { height: this.props.style.height } : null);
+
 		return (
 
-			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} visible={this.state.visible}
+			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} 
+				visible={this.state.visible} style={panel_style}
 
 				beforeHiding={this.props.beforeHiding}
 
@@ -124,7 +129,7 @@ export default class ExplodingPanel extends BaseControl {
 				}}>
 
 
-				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} direction={this.props.direction}
+				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} direction={this.props.direction} style={panel_style}
 					speed={target_speed} resize={this.state.resize} parent={this} stretchOnly={this.props.stretchOnly}
 
 					beforeResizing={() => this.execute (this.props.beforeShowing)}

@@ -3,7 +3,7 @@ import React from "react";
 import BaseControl from "controls/abstract/base.control";
 import PopupWindow from "pages/gadgets/popup.window";
 
-import Break from "controls/html/line.break";
+import { Break } from "controls/html/components";
 
 
 export default class PasswordForm extends BaseControl {

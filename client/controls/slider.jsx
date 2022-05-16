@@ -91,15 +91,15 @@ export default class Slider extends BaseControl {
 			value: this.props.value
 		}, () => this.setState ({ button_position: this.button_position () }));
 
-		document.addEventListener ("mousemove", this.drag_handler);
-		document.addEventListener ("mouseup", this.stop_dragging);
+		this.slider_button.current.addEventListener ("mousemove", this.drag_handler);
+		this.slider_button.current.addEventListener ("mouseup", this.stop_dragging);
 
 	}// componentDidMount;	
 
 
 	componentWillUnmount () {
-		document.removeEventListener ("mousemove", this.drag_handler);
-		document.removeEventListener ("mouseup", this.stop_dragging);
+		this.slider_button.current.removeEventListener ("mousemove", this.drag_handler);
+		this.slider_button.current.removeEventListener ("mouseup", this.stop_dragging);
 	}// componentWillUnmount;
 
 

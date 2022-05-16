@@ -2,7 +2,7 @@ import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 import Settings from "classes/storage/settings";
 
-import * as common from "classes/common";
+import { isset, is_null, matching_objects, nested_value } from "classes/common";
 
 
 export const resize_state = { 
@@ -50,8 +50,8 @@ export default class ResizePanel extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		if (common.is_null (this.props.id)) throw "ResizePanel requires an ID";
-		if (common.is_null (props.parent)) throw "ResizePanel requires a parent of type iResizable";
+		if (is_null (this.props.id)) throw "ResizePanel requires an ID";
+		if (is_null (props.parent)) throw "ResizePanel requires a parent of type iResizable";
 	}// constructor;
 
 
@@ -62,7 +62,7 @@ export default class ResizePanel extends BaseControl {
 
 
 	get_size = (control) => {
-		return common.isset (control.current) ? {
+		return isset (control.current) ? {
 			width: control.current.scrollWidth,
 			height: control.current.scrollHeight
 		} : null;
@@ -99,7 +99,7 @@ export default class ResizePanel extends BaseControl {
 		let outer_size = this.get_size (this.outer_control);		
 		let inner_size = this.get_size (this.inner_control);
 
-		if (common.matching_objects (inner_size, outer_size)) this.end_resizing ();
+		if (matching_objects (inner_size, outer_size)) this.end_resizing ();
 
 	}// transition_end;
 
@@ -134,14 +134,14 @@ export default class ResizePanel extends BaseControl {
 
 			if (this.transitioning) return true;
 			
-			if (common.matching_objects (inner_size, outer_size)) {
+			if (matching_objects (inner_size, outer_size)) {
 				this.props.parent.setState ({ resize: resize_state.false }, this.end_resizing);
 				return true;
 			}// if;
 
 			this.transitioning = true;
 
-			if ((this.props.stretchOnly) && (!common.matching_objects (inner_size, new_size))) {
+			if ((this.props.stretchOnly) && (!matching_objects (inner_size, new_size))) {
 				this.props.parent.setState ({ resize: resize_state.false }, this.end_resizing);
 				return false;
 			}// if;
@@ -163,6 +163,9 @@ export default class ResizePanel extends BaseControl {
 
 	render () {
 
+		let has_width = ((this.props.direction == resize_direction.vertical) && (isset (nested_value (this.props.style, "width"))));
+		let has_height = ((this.props.direction == resize_direction.horizontal) && (isset (nested_value (this.props.style, "height"))));
+
 		let outer_style = {
 			margin: 0, padding: 0,
 			overflow: "hidden"
@@ -171,18 +174,21 @@ export default class ResizePanel extends BaseControl {
 		let inner_style = {
 			margin: "none",
 			padding: "none",
-			display: this.props.stretchOnly ? "block" : "inline-block"
+			display: (this.props.stretchOnly || has_width || has_height) ? "block" : "inline-block"
 		}// inner_style;
 
 		if (this.props.resize == resize_state.animate) outer_style.transition = `width ${this.props.speed}ms ease-in-out, height ${this.props.speed}ms ease-in-out`;
+
+		if (has_width) outer_style.width = this.props.style.width;
+		if (has_height) outer_style.height = this.props.style.height;
 
 		if (this.props.stretchOnly) {
 			outer_style.display = "flex";
 			inner_style.flex = "1"
 		}// if;
 
-		if (common.isset (this.state.width) && this.horizontal ()) outer_style = { ...outer_style, width: this.state.width  };
-		if (common.isset (this.state.height) && this.vertical ()) outer_style = { ...outer_style, height: this.state.height };
+		if (isset (this.state.width) && this.horizontal ()) outer_style = { ...outer_style, width: this.state.width  };
+		if (isset (this.state.height) && this.vertical ()) outer_style = { ...outer_style, height: this.state.height };
 
 		return (
 			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={outer_style}>

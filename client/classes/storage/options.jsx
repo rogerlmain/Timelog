@@ -4,7 +4,7 @@ import * as common from "classes/common";
 import LocalStorage from "classes/local.storage";
 import Companies from "classes/storage/companies";
 
-import { MainContext } from "classes/types/contexts";
+import { isset } from "classes/common";
 
 
 const store_name = "options";
@@ -64,6 +64,7 @@ export default class Options extends LocalStorage {
 	static client_limit () { return Options.get (constants.option_types.client_limit) ?? 1 }
 	static project_limit () { return Options.get (constants.option_types.project_limit) ?? 1 }
 
+	static billing_option () { return isset (Options.get (constants.option_types.billing_option)) }
 
 	static subscribed (option) {
 		switch (option) {

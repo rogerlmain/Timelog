@@ -93,7 +93,8 @@ let value = JSON.stringify (info [key]);
 						<label htmlFor="username">Username or email</label>
 						<input name="username" type="text"
 
-defaultValue="rex@rogerlmain.com"
+defaultValue="betty@riverdale.edu"
+//defaultValue="rex@rogerlmain.com"
 //defaultValue="joe@bloggs.com"
 //defaultValue="dmitry@kgb.gov.ru"
 //defaultValue="rex@rexthestrange.com"

@@ -21,7 +21,7 @@ import CreditCardForm from "forms/credit.card.form";
 import { MainContext } from "classes/types/contexts";
 import { dynamic_input_classname } from "controls/inputs/dynamic.input";
 
-import { isset, nested_value } from "classes/common";
+import { isset, is_number, nested_value } from "classes/common";
 
 import "client/resources/styles/forms/deluxe.account.form.css";
 
@@ -172,7 +172,7 @@ export default class DeluxeAccountForm extends BaseControl {
 		form_data = { ...form_data, ...await this.get_customer_id (form_data) };
 		form_data.card_id = await this.get_card_id (form_data);
 
-		this.execute (this.props.onSubmit, await this.create_payment (form_data));
+		await this.execute (this.props.onSubmit, await this.create_payment (form_data));
 
 	}// submit_payment
 	
@@ -237,7 +237,7 @@ export default class DeluxeAccountForm extends BaseControl {
 			
 			<div className={new_customer ? "two-column-newspaper" : null}>
 
-				<Container condition={new_customer}>
+				<Container visible={new_customer}>
 					<AddressForm ref={this.address_form} />
 				</Container>
 
@@ -245,7 +245,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 					<Container contentsOnly={false} inline={true}>
 
-						<Container condition={this.props.hasCredit} inline={true}>
+						<Container visible={this.props.hasCredit} inline={true}>
 
 							<SelectList ref={this.credit_card_list} data={this.props.creditCards} idField="square_id" className="full-width" header={true}
 								textField={item => { 
@@ -284,13 +284,13 @@ export default class DeluxeAccountForm extends BaseControl {
 						<div className="horizontally-center full-width">
 							<div className="three-column-grid pricing-table vertically-center">
 
-								<Container id="item_options" condition={isset (this.props.optionPrice)}>
+								<Container id="item_options" visible={isset (this.props.optionPrice)}>
 									<input type="radio" id="item_price" name="price_option" value={purchase_options.item} 
 										checked={this.state.selected_item == purchase_options.item} 
 										onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
 									</input>
 									<label htmlFor="item_price">Just this item</label>
-									<div>${isset (this.props.optionPrice) ? this.props.optionPrice.toCurrency () : null}</div>
+									<div>${is_number (this.props.optionPrice) ? this.props.optionPrice.toCurrency () : this.props.optionPrice}</div>
 								</Container>
 
 								<Container id="package_options">

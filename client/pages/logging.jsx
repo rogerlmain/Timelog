@@ -3,8 +3,6 @@ import React from "react";
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 
-import Break from "controls/html/line.break";
-
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 import FadePanel from "controls/panels/fade.panel";
@@ -19,7 +17,11 @@ import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadg
 import LoggingModel from "models/logging";
 
 import { blank, date_formats, date_rounding } from "classes/types/constants";
-import { clone, isset, is_null, is_empty, nested_value, not_set } from "classes/common";
+import { isset, is_null, is_empty, nested_value, not_set } from "classes/common";
+
+import { Break } from "controls/html/components";
+
+
 import { MainContext } from "classes/types/contexts";
 
 import "client/resources/styles/pages/logging.css";
@@ -179,7 +181,7 @@ export default class LoggingPage extends BaseControl {
 			return <PopupNotice id="overtime_notice" visible={this.state.editing}>
 				<ExplodingPanel id="overtime_notice">
 	
-					<Container id="calendar_clock" condition={this.state.fixing}>
+					<Container id="calendar_clock" visible={this.state.fixing}>
 						<CalendarClock id="log_calendar_clock"
 							start={this.state.current_entry.start_time} end={this.state.current_entry.end_time}
 							onChange={data => {
@@ -194,7 +196,7 @@ export default class LoggingPage extends BaseControl {
 
 					</Container>
 	
-					<Container id="overtime_instructions" condition={!this.state.fixing}>
+					<Container id="overtime_instructions" visible={!this.state.fixing}>
 	
 						<div style={{ padding: "0.5em 0" }}>
 

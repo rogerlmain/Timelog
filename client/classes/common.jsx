@@ -94,42 +94,6 @@ export function matching_objects (first_object, second_object) {
 }// matching_objects;
 
 
-export function clone (object) { 
-
-	let result = null;
-
-	if (is_primitive (object)) return object;
-
-	if (is_date (object)) return new Date (object.getTime ());
-
-	if (is_object (object)) {
-
-		get_keys (object).forEach (key => {
-
-			if (is_null (object [key])) return;
-			if (is_null (result)) result = {}
-
-			result [key] = clone (object [key]);
-
-		});
-
-		return isset (result) ? result : object;
-
-	}// if;
-
-	if (Array.isArray (object)) {
-		object.forEach (item => {
-			if (is_null (result)) result = [];
-			result.push (clone (item));
-		});
-		return result;
-	}// if;
-
-	return object;
-
-}// clone;
-
-
 export function zero_value (value) { return null_or_undefined (value) ? 0 : value }
 
 

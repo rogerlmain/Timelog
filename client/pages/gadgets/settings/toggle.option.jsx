@@ -1,5 +1,4 @@
 import * as constants from "classes/types/constants";
-import * as common from "classes/common";
 
 import React from "react";
 
@@ -9,6 +8,7 @@ import ToggleSwitch from "controls/toggle.switch";
 
 import Options from "classes/storage/options";
 
+import { get_key, is_null, isset, not_set } from "classes/common";
 import { MainContext } from "client/classes/types/contexts";
 
 
@@ -44,7 +44,7 @@ export default class ToggleOption extends BaseControl {
 
 	change_handler = new_value => {
 
-		let key_name = common.get_key (constants.option_types, this.props.option);
+		let key_name = get_key (constants.option_types, this.props.option);
 		let current_value = Options [key_name] (this.context.company_id);
 
 		this.state.value = new_value + 1;
@@ -72,13 +72,22 @@ export default class ToggleOption extends BaseControl {
 	option_items () {
 
 		let result = null;
-		let index = 0;
+		let index = 1;
 
-		for (let value of this.props.values) {
-			if (common.is_null (result)) result = new Array ();
-			result.push (<option key={`${this.props.id}_${index}`}>{value}</option>);
-		}// for;
+		if (isset (this.props.values)) {
+			for (let value of this.props.values) {
+				if (is_null (result)) result = new Array ();
+				result.push (<option key={`${this.props.id}_${index++}`}>{value}</option>);
+			}// for;
+		}// if;
+
+		if (isset (this.props.children)) {
+			if (is_null (result)) result = new Array ();
+			this.props.children.map (child => result.push (<option key={`${this.props.id}_${index++}`}>{child.props.children}</option>));
+		}// if;
+
 		return result;
+
 	}// option_items;
 
 
@@ -86,7 +95,7 @@ export default class ToggleOption extends BaseControl {
 
 
 	componentDidMount () { 
-		if (common.not_set (this.props.id)) throw "ToggleOption requires an ID";
+		if (not_set (this.props.id)) throw "ToggleOption requires an ID";
 		this.setState ({ value: this.props.value ?? Options.get (this.props.option) });
 	}// componentDidMount;
 
@@ -102,8 +111,8 @@ export default class ToggleOption extends BaseControl {
 
 	render () {
 
-		if (common.is_null (this.props.id)) throw "ToggleOption requires an ID";
-		if (common.is_null (this.props.option)) throw `ToggleOption "${id}" requires an option`;
+		if (is_null (this.props.id)) throw "ToggleOption requires an ID";
+		if (is_null (this.props.option)) throw `ToggleOption "${id}" requires an option`;
 
 		let id = `${this.props.id}_toggle_option`;
 
