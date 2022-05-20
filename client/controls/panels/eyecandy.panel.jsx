@@ -56,25 +56,23 @@ export default class EyecandyPanel extends BaseControl {
 		let index = (this.props.eyecandyVisible) ? eyecandy_index : contents_index;
 		let id = `${this.props.id}_eyecandy_panel`;
 
-		return (
-			<SlideshowPanel id={id} index={index} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
+		return <SlideshowPanel id={id} index={index} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
 
-				beforeChanging={() => this.execute (this.props.beforeChanging)}
+			beforeChanging={() => this.execute (this.props.beforeChanging)}
 
-				afterChanging={() => {
-					this.execute ((index == eyecandy_index) ? this.props.onEyecandy : null);
-					this.execute (this.props.afterChanging);
-				}}>
+			afterChanging={() => {
+				this.execute ((index == eyecandy_index) ? this.props.onEyecandy : null);
+				this.execute (this.props.afterChanging);
+			}}>
 
-				<div id={`${id}_eyecandy`} style={eyecandy_style}>
-					<img src={constants.eyecandy_images [this.props.eyecandySize]} style={{ marginRight: "0.5em", alignSelf: "center" }} />
-					{this.props.text}
-				</div>
+			<div id={`${id}_eyecandy`} style={eyecandy_style}>
+				<img src={constants.eyecandy_images [this.props.eyecandySize]} style={{ marginRight: "0.5em", alignSelf: "center" }} />
+				{this.props.text}
+			</div>
 
-				<div id={`${id}_container`} ref={this.item_container}>{this.props.children}</div>
+			<div id={`${id}_container`} ref={this.item_container}>{this.props.children}</div>
 
-			</SlideshowPanel>
-		);
+		</SlideshowPanel>
 
 	}// render;
 

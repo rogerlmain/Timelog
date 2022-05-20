@@ -1,5 +1,5 @@
 import Database from "classes/database";
-import Companies from "classes/storage/companies";
+import CompanyStorage from "client/classes/storage/company.storage";
 import DataModel from "models/data.model";
 
 

@@ -19,6 +19,7 @@ class LoggingData extends Database {
 
 		let parameters = [
 			fields.account_id,
+			parseInt (fields.client_id),
 			parseInt (fields.project_id),
 			fields.time_stamp
 		];

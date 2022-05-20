@@ -132,14 +132,14 @@ export function nested_value () {
 	if (is_null (arguments [0])) return null;
 
 	if (arguments.length < 2) throw "nested_value requires at least two parameters";
-	if (!is_object (arguments [0])) throw "first parameter in nested_value must be an object";
+	if (!is_object (arguments [0]) && !is_array (arguments [0])) throw "first parameter in nested_value must be an object";
 
 	let next_object = arguments [0] [arguments [1]];
 	let remaining_parameters = Array.from (arguments).slice (2);
 
 	let funky = is_function (next_object);
 
-	if (is_empty (remaining_parameters)) return funky ? next_object.bind (arguments [0]) () : next_object;
+	if (is_empty (remaining_parameters)) return funky ? next_object.bind (arguments [0]) (...(Array.from (arguments).slice (2))) : next_object;
 
 	return nested_value (funky? next_object.bind (arguments [0]) () : next_object, ...remaining_parameters);
 

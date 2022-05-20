@@ -14,8 +14,8 @@ import BaseControl from "controls/abstract/base.control";
 import SelectList from "controls/select.list";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
-import Account from "classes/storage/account";;
-import Companies from "classes/storage/companies";
+import AccountStorage from "classes/storage/account.storage";
+import CompanyStorage from "classes/storage/company.storage";
 
 import MasterPanel from "client/master";
 
@@ -26,7 +26,7 @@ import Settings from "pages/settings";
 
 import { globals } from "classes/types/constants";
 
-import { MainContext } from "classes/types/contexts.jsx";
+import { MainContext } from "classes/types/contexts";
 
 
 //Special Guest Import
@@ -47,8 +47,8 @@ class Main extends BaseControl {
 
 	constructor (props) {
 
-		let company_list = Companies.company_list ();
-		let active_company = Companies.active_company_id ();
+		let company_list = CompanyStorage.company_list ();
+		let active_company = CompanyStorage.active_company_id ();
 
 		super (props);
 		globals.main = this;
@@ -61,29 +61,29 @@ class Main extends BaseControl {
 
 	company_header () {
 
-		let companies = Companies.company_list ();
+		let companies = CompanyStorage.company_list ();
 
 		if (!this.signed_in ()) return null
 
 		return <div>
-			<div className="right-aligned">{Account.full_name ()}</div>
+			<div className="right-aligned">{AccountStorage.full_name ()}</div>
 			<div className="right-aligned">
 
-				<Container visible={Companies.company_count () > 1}>
-					<SelectList value={Companies.active_company_id ()} data={companies}
+				<Container visible={CompanyStorage.company_count () > 1}>
+					<SelectList value={CompanyStorage.active_company_id ()} data={companies}
 					
 						textField="company_name" hasHeader={true}
 						
 						onChange={event => {
-							Companies.set_active_company (event.target.value);
+							CompanyStorage.set_active_company (event.target.value);
 							this.setState ({ company_id: event.target.value }, this.forceRefresh);
 						}}>
 							
 					</SelectList>
 				</Container>
 
-				<Container visible={Companies.company_count () == 1}>
-					<div>{common.nested_value (Companies.active_company (), "company_name")}</div>
+				<Container visible={CompanyStorage.company_count () == 1}>
+					<div>{common.nested_value (CompanyStorage.active_company (), "company_name")}</div>
 				</Container>
 
 				<Container visible={common.is_empty (companies)}>
@@ -110,28 +110,26 @@ error_handler (message, url, line) { common.notify (message, url, line) }
 
 
     render () {
-		return (
-			<MainContext.Provider value={{ company_id: this.state.company_id, main_page: this }}>
-				<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
+		return <MainContext.Provider value={{ company_id: this.state.company_id, main_page: this }}>
+			<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
 
-					<div className="horizontally-spaced-out">
+				<div className="horizontally-spaced-out">
 
-						<div className="page-header">
-							<div className="title">RMPC Timelog</div>
-							<div className="tagline">Make every second count</div>
-						</div>
-
-						{this.company_header ()}
-
+					<div className="page-header">
+						<div className="title">RMPC Timelog</div>
+						<div className="tagline">Make every second count</div>
 					</div>
-					
-					<ExplodingPanel id="main_panel">
-						{this.main_page ()}
-					</ExplodingPanel>
+
+					{this.company_header ()}
 
 				</div>
-			</MainContext.Provider>
- 		);
+				
+				<ExplodingPanel id="main_panel">
+					{this.main_page ()}
+				</ExplodingPanel>
+
+			</div>
+		</MainContext.Provider>
  	}// render;
 
 }// Main;

@@ -5,7 +5,7 @@ import { isset } from "classes/common";
 const store_name = "logging";
 
 
-export default class Logging extends LocalStorage {
+export default class LogStorage extends LocalStorage {
 
 	static get = () => { return super.get_all (store_name) }
 	static set = (value) => { return super.set_store (store_name, value) }
@@ -17,4 +17,4 @@ export default class Logging extends LocalStorage {
 	static client_name = () => { return this.get ("client_name") }
 	static project_name = () => { return this.get ("project_name") }
 
-}// Logging;
+}// LogStorage;

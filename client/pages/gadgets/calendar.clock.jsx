@@ -9,7 +9,7 @@ import Container from "controls/container";
 import ToggleButton from "client/controls/toggle.button";
 import ToggleSwitch from "client/controls/toggle.switch";
 
-import { boundaries } from "classes/storage/options";
+import { boundaries } from "classes/storage/option.storage";
 
 import "react-clock/dist/Clock.css";
 import "client/resources/styles/pages/gadgets/calendar.clock.css";

@@ -29,25 +29,19 @@ export default class SlideshowPanel extends BaseControl {
 	constructor (props) {
 		super (props);
 		this.validate_ids (props);
-	}// constructor;
+	}// constructor;	
 
 
 	render () {
-
-		return (
-			<ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
+		return <ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
 			
-				beforeShowing={() => {
-					if (this.props.index == 0) this.execute (this.props.beforeChanging);
-				}}
+			beforeShowing={() => { if (this.props.index == 0) this.execute (this.props.beforeChanging) }}
+			beforeHiding={this.props.beforeChanging}
+			afterShowing={this.props.afterChanging}>
 
-				beforeHiding={this.props.beforeChanging}
-				afterShowing={this.props.afterChanging}>
+			{(this.props.index == 0) ? null : this.props.children [this.props.index - 1]}
 
-				{(this.props.index == 0) ? null : this.props.children [this.props.index - 1]}
-
-			</ExplodingPanel>
-		);
+		</ExplodingPanel>
 	}// render;
 
 }// SlideshowPanel;

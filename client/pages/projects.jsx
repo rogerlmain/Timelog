@@ -1,7 +1,7 @@
 import React from "react";
 
-import Projects from "classes/storage/projects";
-import Options from "classes/storage/options";
+import ProjectStorage from "classes/storage/project.storage";
+import OptionStorage from "classes/storage/option.storage";
 
 import Container from "controls/container";
 
@@ -10,7 +10,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 
-import ProjectsModel from "models/projects";
+import ProjectModel from "models/project.model";
 
 import ProjectForm from "forms/project.form";
 
@@ -55,26 +55,16 @@ export default class ProjectsPage extends BaseControl {
 	/********/
 
 
-	update_project_list = () => {
-		if (isset (this.project_selector.current)) this.project_selector.current.reload_projects ();
-
-	//	if (not_null (this.state.selected_client)) Projects.get_all (this.state.selected_client).then (data => this.setState ({ project_list: data })) 
-	}
-
-
-	componentDidMount = this.update_project_list;
-
-
 	render () {
 
-		let limit = Options.project_limit ();
+		let limit = OptionStorage.project_limit ();
 		let option_value = get_values (project_limit_options) [limit - 1];
 		let can_create = ((limit > 1) && (not_set (this.state.project_list) || (this.state.project_list.length < option_value) || (option_value == 0)));
 
 		return <div id={this.props.id} className="top-center-container row-spaced">
 
 			<div className="project-select-form">
-				<ProjectSelectorGadget id="project_selector" ref={this.project_selector} parent={this} 
+				<ProjectSelectorGadget id="project_selector" ref={this.project_selector} parent={this}
 
 					hasHeader={true}
 					headerSelectable={can_create}
@@ -85,9 +75,7 @@ export default class ProjectsPage extends BaseControl {
 
 					onClientChange={(event) => this.setState ({
 						selected_client: event.target.value,
-						selected_project: 0,
-						project_data: null,
-						updating: isset (this.state.selected_project),
+						updating: true,
 					})}
 
 					onProjectChange={(event) => this.setState ({ 
@@ -98,22 +86,18 @@ export default class ProjectsPage extends BaseControl {
 				</ProjectSelectorGadget>
 			</div>	
 
-			<Container visible={isset (this.state.selected_client)}>
-				<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." 
+			<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." 
 
-					onEyecandy={() => {
-						if (this.state.updating) ProjectsModel.fetch_by_id (this.state.selected_project).then ((data) => this.setState ({
-							project_data: not_empty (data) ? data : null,
-							updating: false,
-						}));
-					}}>
+				onEyecandy={() => this.setState ({ updating: false }, () => {
+					if (this.state.selected_project == 0) return this.setState ({ project_data: null });
+					ProjectModel.fetch_by_id (this.state.selected_project).then ((data) => this.setState ({ project_data: data }));
+				})}>
 
-					<ProjectForm clientId={this.state.selected_client} formData={this.state.project_data} 
-						onSave={(data) => this.setState ({ project_data: data })} parent={this}>
-					</ProjectForm>
-					
-				</EyecandyPanel>
-			</Container>
+				<ProjectForm clientId={this.state.selected_client} formData={this.state.project_data} 
+					onSave={(data) => this.setState ({ project_data: data })} parent={this}>
+				</ProjectForm>
+				
+			</EyecandyPanel>
 
 		</div>
 	}// render;

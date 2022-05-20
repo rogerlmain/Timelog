@@ -10,6 +10,7 @@ BEGIN
 
 	select
 		id as project_id,
+        account_id,
         client_id,
         `name`,
         `code`,

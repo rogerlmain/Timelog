@@ -8,7 +8,9 @@ import FadePanel from "controls/panels/fade.panel";
 import ResizePanel, { resize_state, resize_direction } from "controls/panels/resize.panel";
 
 import { renderToString } from "react-dom/server";
+
 import { isset, is_null, not_empty, nested_value } from "classes/common";
+import { underscore } from "classes/types/constants";
 
 
 export default class ExplodingPanel extends BaseControl {
@@ -111,37 +113,33 @@ export default class ExplodingPanel extends BaseControl {
 
 		let panel_style = has_width ? { width: this.props.style.width } : (has_height ? { height: this.props.style.height } : null);
 
-		return (
+		return <FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} 
+			visible={this.state.visible} style={panel_style}
 
-			<FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} 
-				visible={this.state.visible} style={panel_style}
+			beforeHiding={this.props.beforeHiding}
 
-				beforeHiding={this.props.beforeHiding}
+			afterShowing={() => {
+				this.transitioning = false;
+				this.execute (this.props.afterShowing)
+			}}// afterShowing;
 
-				afterShowing={() => {
-					this.transitioning = false;
-					this.execute (this.props.afterShowing)
-				}}// afterShowing;
+			afterHiding={() => {
+				this.load_contents (this.props.children);
+				this.execute (this.props.afterHiding);
+			}}>
 
-				afterHiding={() => {
-					this.load_contents (this.props.children);
-					this.execute (this.props.afterHiding);
-				}}>
+			<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} direction={this.props.direction} style={panel_style}
+				speed={target_speed} resize={this.state.resize} parent={this} stretchOnly={this.props.stretchOnly}
 
+				beforeResizing={() => this.execute (this.props.beforeShowing)}
+				afterResizing={() => this.setState ({ visible: isset (this.state.children) })}>
 
-				<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} direction={this.props.direction} style={panel_style}
-					speed={target_speed} resize={this.state.resize} parent={this} stretchOnly={this.props.stretchOnly}
+				{this.transitioning ? this.state.children : this.props.children}
 
-					beforeResizing={() => this.execute (this.props.beforeShowing)}
-					afterResizing={() => this.setState ({ visible: isset (this.state.children) })}>
+			</ResizePanel>
+			
+		</FadePanel>
 
-					{this.transitioning ? this.state.children : this.props.children}
-
-				</ResizePanel>
-				
-			</FadePanel>
-
-		);
 	}// render;
 
 

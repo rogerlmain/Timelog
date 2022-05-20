@@ -8,7 +8,7 @@ import Container from "controls/container";
 
 import FadePanel from "controls/panels/fade.panel";
 
-import Clients from "classes/storage/clients";
+import ClientStorage from "classes/storage/client.storage";
 
 import ClientModel from "models/clients";
 
@@ -55,7 +55,7 @@ export default class ClientForm extends FormControl {
 
 		this.setState ({ status: `Deleting ${this.client_data ("name")}...` }, () => ClientModel.delete_client (client_id).then (data => {
 
-			Clients.remove_client (client_id);
+			ClientStorage.remove_client (client_id);
 
 			this.execute (this.props.onDelete, data).then (() => this.props.parent.setState ({ 
 				client_data: null,
@@ -85,7 +85,7 @@ export default class ClientForm extends FormControl {
 		this.setState ({ status: "Saving..." }, () => ClientModel.save_client (form_data).then (data => {
 			this.execute (this.props.onSave, data).then (() => {
 				
-				Clients.set_client (this.context.company_id, data);
+				ClientStorage.set_client (this.context.company_id, data);
 				
 				this.props.parent.setState ({ 
 					client_data: data,

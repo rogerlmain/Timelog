@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseControl from "controls/abstract/base.control";
-import CurrentAccount from "classes/storage/account";
+import AccountStorage from "classes/storage/account.storage";
 
 import { isset } from "classes/common";
 
@@ -17,7 +17,7 @@ export default class HomePage extends BaseControl {
 
 	render () {
 
-		let name = CurrentAccount.username ();
+		let name = AccountStorage.username ();
 
 		return (<div id={this.props.id} className="centering-cell">
 			<div>Welcome {isset (name) ? name : "person with money"}</div>

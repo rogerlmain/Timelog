@@ -4,7 +4,7 @@ import * as common from "classes/common";
 import React from "react";
 
 import Settings from "classes/storage/settings";
-import Options from "classes/storage/options";
+import OptionStorage from "classes/storage/option.storage";
 
 import Container from "controls/container";
 import Slider from "controls/slider";
@@ -79,7 +79,7 @@ export default class SettingsPage extends BaseControl {
 
 	set_option (option, value) {
 		return new Promise ((resolve, reject) => OptionsModel.save_option (option, value).then (response => {
-			Options.set (option, value);
+			OptionStorage.set (option, value);
 			this.setState ({ [option]: value }, resolve (response));
 		}).catch (reject));
 	}// set_option;
@@ -120,7 +120,7 @@ export default class SettingsPage extends BaseControl {
 
 	update_state () {
 
-		let options = Options.get_options (this.state.company_id);
+		let options = OptionStorage.get_options (this.state.company_id);
 		
 		let option_value = option => { 
 			if (common.isset (options) && common.isset (options [option])) return parseInt (options [option]);
@@ -153,7 +153,7 @@ export default class SettingsPage extends BaseControl {
 	render () {
 
 
-		let billing_option_available = ((Options.client_limit () > 1) || (Options.project_limit () > 1));
+		let billing_option_available = ((OptionStorage.client_limit () > 1) || (OptionStorage.project_limit () > 1));
 
 
 		return <Container>
@@ -181,7 +181,7 @@ export default class SettingsPage extends BaseControl {
 
 				<div className="full-row horizontally-spaced-out section-header" style={{ marginTop: "3em" }}>
 
-					<div className="bottom-justified">Account Options</div>
+					<div className="bottom-justified">Account OptionStorage</div>
 
 					<div className="bottom-justified" style={{ fontWeight: "normal", fontStyle: "italic" }}>
 						{common.get_key (constants.account_types, this.state.account_type).titled ()} account
@@ -242,7 +242,7 @@ export default class SettingsPage extends BaseControl {
 							<Container className="full-row" visible={billing_option_available} inline={true}>
 								<ExplodingPanel id="billing_option_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
 
-									<Container id="billing_option_container" visible={!Options.billing_option ()} inline={true} className="one-piece-form" style={{ display: "flex" }}>
+									<Container id="billing_option_container" visible={!OptionStorage.billing_option ()} inline={true} className="one-piece-form" style={{ display: "flex" }}>
 										<ToggleOption id="billing_option" title="Billing option" values={[1, 2]} value={this.state.billing_option + 1}
 											option={constants.option_types.billing_option} parent={this}
 											onPaymentConfirmed={selected_option => 
@@ -252,7 +252,7 @@ export default class SettingsPage extends BaseControl {
 										</ToggleOption>
 									</Container>
 
-									<Container id="billing_option_purchased" visible={Options.billing_option ()} contentsOnly={false} inline={true} 
+									<Container id="billing_option_purchased" visible={OptionStorage.billing_option ()} contentsOnly={false} inline={true} 
 										className="horizontally-spaced-out" style={{ border: "solid 1px blue !important" }}>
 										<label className="bordered">Billing option</label>
 										<div style={{ fontStyle: "italic" }}>Purchased</div>

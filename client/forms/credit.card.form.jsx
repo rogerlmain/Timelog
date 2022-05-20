@@ -2,7 +2,7 @@ import * as constants from "classes/types/constants";
 
 import React from "react";
 
-import CurrentAccount from "classes/storage/account";
+import AccountStorage from "classes/storage/account.storage";
 import SquareHandler from "classes/square.handler";
 
 import BaseControl from "controls/abstract/base.control";
@@ -85,7 +85,7 @@ export default class CreditCardForm extends BaseControl {
 					<div key={this.state.cc_name}>
 						<input type="text" id="cc_name" name="cc_name" style={{ width: "13em", marginRight: "1em" }} 
 							defaultValue={this.state.cc_name || constants.blank} required={true}
-							onChange={event => this.name_checkbox.current.checked = event.target.value.equals (CurrentAccount.username ())}
+							onChange={event => this.name_checkbox.current.checked = event.target.value.equals (AccountStorage.username ())}
 							
 defaultValue="Rex Strange">
 
@@ -96,7 +96,7 @@ defaultValue="Rex Strange">
 						<label htmlFor="use_account_name_for_cc" className="mini-title">Just use<br />my name</label>
 						<input id="use_account_name_for_cc" name="use_account_name_for_cc" ref={this.name_checkbox}
 							type="checkbox" style={{ columnWidth: "min-content" }}
-							onChange={event => this.setState ({ cc_name: event.target.checked ? CurrentAccount.username () : constants.blank })}>
+							onChange={event => this.setState ({ cc_name: event.target.checked ? AccountStorage.username () : constants.blank })}>
 						</input>
 					</div>
 

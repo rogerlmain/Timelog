@@ -1,6 +1,6 @@
 import React from "react";
 
-import Account from "client/classes/storage/account";
+import AccountStorage from "client/classes/storage/account.storage";
 
 import Container from "controls/container";
 import BaseControl from "controls/abstract/base.control";
@@ -81,7 +81,7 @@ defaultValue={"Dude"} />
 					
 defaultValue={"tastetestdude"} />
 
-					<label htmlFor="account_type">Account Type</label>
+					<label htmlFor="account_type">AccountStorage Type</label>
 
 					<select id="account_type" name="account_type" 
 					
@@ -160,7 +160,7 @@ defaultValue={"tastetestdude@gmail.com"} />
 							
 							if (is_null (account_id)) throw "Cannot create account.";
 
-							Account.set_all ({
+							AccountStorage.set_all ({
 								account_id		: account_id,
 								first_name		: form_data.get ("first_name"),
 								last_name		: form_data.get ("last_name"),

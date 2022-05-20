@@ -5,6 +5,8 @@ import React from "react";
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 
+import { not_set } from "classes/common";
+
 import "client/resources/styles/controls/slider.css";
 
 
@@ -91,6 +93,8 @@ export default class Slider extends BaseControl {
 			value: this.props.value
 		}, () => this.setState ({ button_position: this.button_position () }));
 
+		if (not_set (this.slider_button.current)) return;
+
 		this.slider_button.current.addEventListener ("mousemove", this.drag_handler);
 		this.slider_button.current.addEventListener ("mouseup", this.stop_dragging);
 
@@ -98,6 +102,7 @@ export default class Slider extends BaseControl {
 
 
 	componentWillUnmount () {
+		if (not_set (this.slider_button.current)) return;
 		this.slider_button.current.removeEventListener ("mousemove", this.drag_handler);
 		this.slider_button.current.removeEventListener ("mouseup", this.stop_dragging);
 	}// componentWillUnmount;
@@ -113,9 +118,11 @@ export default class Slider extends BaseControl {
 				</div>
 			</div>
 
-			{this.props.showValue &&<div style={{ padding: "0 0 0 1em" }}>
-				<div>{this.state.value}</div>
-			</div>}
+			<Container visible={this.props.showValue}>
+				<div style={{ padding: "0 0 0 1em" }}>
+					<div>{this.state.value}</div>
+				</div>
+			</Container>
 
 		</div>
 	}// render;

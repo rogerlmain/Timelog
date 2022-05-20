@@ -2,9 +2,10 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import Companies from "classes/storage/companies";
-import Options from "classes/storage/options";
+import CompanyStorage from "client/classes/storage/company.storage";
+import OptionStorage from "classes/storage/option.storage";
 
+import Container from "controls/container";
 import SelectButton from "controls/buttons/select.button";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
@@ -20,13 +21,14 @@ import SettingsPage from "pages/settings";
 import BaseControl from "controls/abstract/base.control";
 
 import { globals } from "classes/types/constants";
-import { notify } from "classes/common";
+
+import { MainContext, MasterContext } from "classes/types/contexts";
 
 
-const master_pages = { 
+export const master_pages = { 
 	home	: { name: "Home", permission: true }, 
-	clients	: { name: "Clients", permission: () => { return Options.client_limit () > 1 } }, 
-	projects: { name: "Projects", permission: () => { return Options.project_limit () > 1 } }, 
+	clients	: { name: "Clients", permission: () => { return OptionStorage.client_limit () > 1 } }, 
+	projects: { name: "Projects", permission: () => { return OptionStorage.project_limit () > 1 } }, 
 	logging	: { name: "Logging", permission: true }, 
 	reports	: { name: "Reports", permission: true },
 	account	: { name: "Account", permission: true }, 
@@ -47,6 +49,9 @@ export default class MasterPanel extends BaseControl {
 	}/* state */;
 
 
+	static contextType = MainContext;
+
+
 	static defaultProps = { 
 		id: "master_page",
 		parent: null
@@ -61,9 +66,9 @@ export default class MasterPanel extends BaseControl {
 
 
 	buttons_disabled () {
-		let company_list = Companies.company_list ();
+		let company_list = CompanyStorage.company_list ();
 		if (common.is_empty (company_list) || (company_list.length == 1)) return false;
-		if (Companies.company_selected ()) return false;
+		if (CompanyStorage.company_selected ()) return false;
 		return true;
 	}// buttons_disabled;
 
@@ -93,6 +98,7 @@ export default class MasterPanel extends BaseControl {
 
 	page_item () {
 		switch (this.state.page) {
+				
 			case master_pages.clients.name: return <ClientsPage />;
 			case master_pages.account.name: return <AccountPage parent={this.props.parent} />;
 			case master_pages.projects.name: return <ProjectsPage />;
@@ -105,6 +111,7 @@ export default class MasterPanel extends BaseControl {
 			// case master_pages.history: return <div>Placeholder for History</div>;
 
 			default: return <HomePage parent={this} />;
+				
 		}// switch;
 	}// page_item;
 
@@ -123,7 +130,8 @@ export default class MasterPanel extends BaseControl {
 
 
 	render () {
-		return (
+		return <MasterContext.Provider value={{ ...this.context, master_page: this }}>
+
 			<div ref={this.reference} id={this.props.id} className="full-screen">
 
 				<link rel="stylesheet" href="client/resources/styles/home.page.css" />
@@ -150,7 +158,8 @@ export default class MasterPanel extends BaseControl {
 				</div>
 
 			</div>
-		);
+
+		</MasterContext.Provider>
 	}// render;
 
 }// MasterPanel;

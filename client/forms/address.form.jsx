@@ -3,7 +3,7 @@ import * as constants from "classes/types/constants";
 
 import React from "react";
 
-import CurrentAccount from "classes/storage/account";
+import AccountStorage from "classes/storage/account.storage";
 
 import DynamicInput from "controls/inputs/dynamic.input";
 import SelectList from "controls/select.list";
@@ -113,14 +113,14 @@ this.setState ({
 					<div className="horizontally-spaced-out">
 
 						<DynamicInput id="company_name" value={this.state.company_name} required={true} style={{ width: "16em", marginRight: "1em" }} 
-							onChange={event => this.name_checkbox.current.checked = event.target.value.equals (CurrentAccount.username ())}>
+							onChange={event => this.name_checkbox.current.checked = event.target.value.equals (AccountStorage.username ())}>
 						</DynamicInput>
 
 						<div className="one-piece-form">
 							<label htmlFor="use_account_name_for_company" className="mini-title">Just use<br />my name</label>
 							<input id="use_account_name_for_company" name="use_account_name_for_company" ref={this.name_checkbox}
 								type="checkbox" style={{ columnWidth: "min-content" }}
-								onChange={event => this.setState ({ company_name: event.target.checked ? CurrentAccount.username () : constants.blank })}>
+								onChange={event => this.setState ({ company_name: event.target.checked ? AccountStorage.username () : constants.blank })}>
 							</input>
 						</div>
 

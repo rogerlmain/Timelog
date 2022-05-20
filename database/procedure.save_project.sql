@@ -5,8 +5,9 @@ drop procedure if exists save_project;
 delimiter ??
 
 create procedure save_project (
-    client_id int,
-    project_id int,
+    project_id	integer,
+    account_id	integer,
+    client_id	integer,
 	project_name varchar (50),
 	project_code varchar (5),
     project_description text,
@@ -18,12 +19,14 @@ create procedure save_project (
 		if (not deleted) then 
         
 			insert into projects (
-				client_id,
+				account_id,
+                client_id,
 				`name`,
 				`code`,
 				`description`
 			) values (
-				client_id,
+				account_id,
+                client_id,
 				project_name,
 				project_code,
 				project_description
@@ -36,6 +39,7 @@ create procedure save_project (
 	else
     
 		update projects set
+			account_id 		= coalesce (account_id, projects.account_id), 
 			client_id 		= coalesce (client_id, projects.client_id), 
 			`name` 			= coalesce (project_name, projects.name), 
 			`code` 			= coalesce (project_code, projects.code),

@@ -7,8 +7,8 @@ import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 import FadePanel from "controls/panels/fade.panel";
 
-import Logging from "classes/storage/logging";
-import Options from "classes/storage/options";
+import LogStorage from "classes/storage/log.storage";
+import OptionStorage from "classes/storage/option.storage";
 
 import CalendarClock from "pages/gadgets/calendar.clock";
 import PopupNotice from "pages/gadgets/popup.notice";
@@ -31,13 +31,18 @@ export default class LoggingPage extends BaseControl {
 
 
 	state = {
+
+		current_entry: null,
+
+		client_id: 0,
 		project_id: 0,
+
 		editable: false,
 		editing: false,
 		fixing: false,
 		initialized: false,
-		current_entry: null,
 		updating: false
+
 	}/* state */;
 
 
@@ -46,12 +51,13 @@ export default class LoggingPage extends BaseControl {
 	static defaultProps = { id: "logging_page" }
 
 
-	project_selected = () => { return this.state.project_id > 0 }
+	client_selected = () => { return (this.state.client_id > 0) || OptionStorage.single_client () }
+	project_selected = () => { return ((this.state.project_id > 0) || OptionStorage.single_project ()) && this.client_selected () }
 
 
 	update_current_entry () {
 
-		let entry = Logging.get ();
+		let entry = LogStorage.get ();
 
 		this.state.current_entry = entry;
 
@@ -82,14 +88,14 @@ export default class LoggingPage extends BaseControl {
 
 		this.update_current_entry ();
 
-		LoggingModel.log (this.context.company_id, this.state.project_id).then (entry => {
+		LoggingModel.log (this.context.company_id, this.state.client_id, this.state.project_id).then (entry => {
 
 			if (is_empty (entry)) {
 				entry = null;
-				Logging.delete ();
+				LogStorage.delete ();
 			} else {
 				entry.start_time = Date.validated (entry.start_time);
-				Logging.set (entry);
+				LogStorage.set (entry);
 			}// if;
 
 			this.setState ({ 
@@ -104,7 +110,7 @@ export default class LoggingPage extends BaseControl {
 
 	end_time () {
 
-		switch (Options.granularity (this.state.current_entry.company_id)) {
+		switch (OptionStorage.granularity (this.state.current_entry.company_id)) {
 			case 1: return new Date ().round_hours (date_rounding.down);
 			case 2: return new Date ().round_minutes (15);
 			case 3: return 0; // Level 3 Granularity - any number of minutes
@@ -139,7 +145,7 @@ export default class LoggingPage extends BaseControl {
 
 		let entry = this.state.current_entry;
 		let now = new Date ();
-		let granularity = Options.granularity (this.context.company_id);
+		let granularity = OptionStorage.granularity (this.context.company_id);
 
 		if (is_null (entry.end_time)) return false;
 
@@ -222,9 +228,7 @@ export default class LoggingPage extends BaseControl {
 	
 			let end_time = nested_value (this, "state", "current_entry", "end_time") ?? this.end_time ();
 
-			// setTimeout (() => {
-			// 	this.forceUpdate ();
-			// }, 1000 + (new Date ().getMilliseconds () % 1000));
+			setTimeout (() => this.forceUpdate (), 1000 + (new Date ().getMilliseconds () % 1000));
 	
 			return <div id={this.props.id} className="row-container">
 			
@@ -268,7 +272,8 @@ export default class LoggingPage extends BaseControl {
 				{logged_in ? entry_details () : <div>
 
 					<ProjectSelectorGadget id="logging_project_selector" parent={this} 
-						hasHeader={true} headerSelectable={false} headerText={blank}
+						hasHeader={true} headerSelectable={false} headerText={blank} newOption={true}
+						onClientChange={event => this.setState ({ client_id: event.target.value })}
 						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
 					</ProjectSelectorGadget>
 				
@@ -279,7 +284,7 @@ export default class LoggingPage extends BaseControl {
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 				
-					text={`Logging you ${logged_in ? "out" : "in"}...`} 
+					text={`LogStorage you ${logged_in ? "out" : "in"}...`} 
 					eyecandyVisible={this.state.updating}
 					eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
 

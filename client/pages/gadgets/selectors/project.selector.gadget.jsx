@@ -1,16 +1,21 @@
-import * as common from "classes/common";
+import React from "react";
 
-import React, { BaseSyntheticEvent } from "react";
+import OptionStorage from "client/classes/storage/option.storage";
+import ProjectStorage from "client/classes/storage/project.storage";
 
-import BaseControl, { DefaultProps } from "client/controls/abstract/base.control";
-import SelectList from "controls/select.list";
+import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
+import SelectList from "client/controls/select.list";
+
+import FadePanel from "client/controls/panels/fade.panel";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import ClientSelectorGadget from "client/pages/gadgets/selectors/client.selector.gadget";
-import EyecandyPanel from "client/controls/panels/eyecandy.panel";
-import FadePanel from "client/controls/panels/fade.panel";
-import ProjectsModel from "client/models/projects";
 
-import { isset, is_null } from "classes/common";
+import { isset, is_empty, integer_value, not_empty } from "classes/common";
+import { master_pages } from "client/master";
+
+import { MasterContext } from "client/classes/types/contexts";
 
 
 export default class ProjectSelectorGadget extends BaseControl {
@@ -24,14 +29,21 @@ export default class ProjectSelectorGadget extends BaseControl {
 		projects: null,
 
 		selected_project: 0,
-		selected_client: 0
+		selected_client: 0,
+
+		projects_loading: false,
 
 	}// state;
+
+
+	static contextType = MasterContext;
 
 
 	static defaultProps = {
 
 		id: null,
+
+		newOption: false,
 
 		selectedClient: null,
 		selectedProject: null,
@@ -58,52 +70,76 @@ export default class ProjectSelectorGadget extends BaseControl {
 	/********/
 
 
-	reload_projects = event => ProjectsModel.fetch_by_client (this.state.selected_client, data => this.setState ({ projects: data }));
+	load_projects = () => {
+		ProjectStorage.get_projects (this.context.company_id, this.state.selected_client).then (data => {
+			this.setState ({ 
+				projects: data,
+				projects_loading: false,
+			});
+		});
+	}/* load_projects */;
 
 
 	/********/
 
 
+	componentDidMount = this.load_projects;	
+
+
+	shouldComponentUpdate (next_props, next_state, next_context) {
+		let result = false;
+		if (this.context.company_id != next_context.company_id) result = !this.setState ({ selected_client: 0 });
+		if (this.props.selectedProject != next_props.selectedProject) result = !this.setState ({ selected_project: next_props.selectedProject});
+		return result;
+	}// shouldComponentUpdate;
+
+
 	render () {
 
-		let client_loaded = (this.state.selected_client != 0);
+		let single_client = OptionStorage.client_limit () == 1;
+		let single_project = OptionStorage.project_limit () == 1;
+
+		let client_loaded = (single_client || (this.state.selected_client > 0));
 
 		return <div id={this.props.id} className="two-column-grid project-selector-form">
 
-			<ClientSelectorGadget id="client_selector" companyId={this.props.companyId} 
+			<ClientSelectorGadget id="client_selector" companyId={this.props.companyId} newOption={this.props.newOption}
 				hasHeader={this.props.hasHeader} headerSelectable={false} headerText="Select a client" 
-				onClientChange={event => {
-					this.setState ({ 
-						projects: null,
-						selected_client: event.target.value 
-					}, () => {
-						this.reload_projects ();
-						this.execute (this.props.onClientChange, event);
-					});
-				}}>
+				onClientChange={event => this.setState ({ 
+					selected_client: integer_value (event.target.value),
+					projects_loading: true,
+				}, () => this.execute (this.props.onClientChange, event))}>
 			</ClientSelectorGadget>
 
-			<FadePanel id={`${this.props.id}_projects_label`} visible={client_loaded} className="vertically-center">
+			<FadePanel id={`${this.props.id}_projects_label`} visible={client_loaded || single_project} className="vertically-center">
 				<label htmlFor={this.project_selector_id}>Project</label>
 			</FadePanel>
 
-			<FadePanel id={`${this.props.id}_projects_list`} visible={client_loaded} style={{ display: "flex" }}>
-				<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}
-				
-					hasHeader={this.props.hasHeader || isset (this.props.headerText)}
-					headerSelectable={this.props.headerSelectable}
-					headerText={this.props.headerText}
+			{single_project ? "Default" : <EyecandyPanel id={`${this.project_selector_id}_eyecandy_panel`} text="Projects_loading..."
+				eyecandyVisible={this.state.projects_loading} onEyecandy={this.load_projects}>
 
-					idField="project_id" textField="project_name"
+				<Container visible={not_empty (this.state.projects) || !this.props.newOption}>
+					<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}
+					
+						hasHeader={this.props.hasHeader || isset (this.props.headerText)}
+						headerSelectable={this.props.headerSelectable}
+						headerText={this.props.headerText}
 
-					className="form-item" style={{ flex: 1 }}
-					onChange={this.props.onProjectChange}>
+						idField="project_id" textField="project_name"
 
-				</SelectList>
-			</FadePanel>
+						className="form-item" style={{ flex: 1 }}
+						onChange={this.props.onProjectChange}>
+
+					</SelectList>
+				</Container>
+
+				<Container visible={is_empty (this.state.projects) && this.props.newOption}>
+					<button onClick={() => { this.context.master_page.setState ({ page: master_pages.projects.name }) }}>New</button>
+				</Container>
+
+			</EyecandyPanel>}
 
 		</div>
 	}// render;
 
 }// ProjectSelectorGadget;
-

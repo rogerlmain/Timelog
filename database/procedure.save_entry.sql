@@ -6,6 +6,7 @@ delimiter ??
 
 create procedure save_entry (
 	account_id	integer, 
+    client_id	integer,
 	project_id	integer,
     time_stamp	datetime
 ) begin
@@ -25,6 +26,7 @@ create procedure save_entry (
 		insert into entries values (
 			null,
 			account_id,
+            client_id,
 			project_id,
 			time_stamp,
 			null

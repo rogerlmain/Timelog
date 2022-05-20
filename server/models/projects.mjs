@@ -8,8 +8,9 @@ export default class ProjectData extends Database {
 		let procedure = "save_project";
 
 		let parameters = {
-			client_id: parseInt (data.client_id),
 			project_id: global.isset (data.project_id) ? parseInt (data.project_id) : null,
+			account_id: parseInt (data.account_id),
+			client_id: parseInt (data.client_id),
 			project_name: data.project_name, 
 			project_code: data.project_code,
 			description: data.project_description,
@@ -31,14 +32,14 @@ export default class ProjectData extends Database {
 	}/* get_project_by_id */;
 
 
-	get_projects_by_client (client_id) {
+	get_projects (account_id, client_id) {
 
-		let procedure = "get_projects_by_client";
-		let parameters = [client_id];
+		let procedure = "get_projects";
+		let parameters = [account_id, client_id];
 
 		this.execute_query (procedure, parameters);
 		
-	}/* get_projects_by_client */;
+	}/* get_projects */;
 
 
 }/* ProjectData */;

@@ -9,8 +9,8 @@ import CompaniesModel from "models/companies";
 import CompanyAccountsModel from "models/company.accounts";
 import CompanyCardModel from "models/company.cards";
 
-import Account from "classes/storage/account";
-import Companies from "classes/storage/companies";
+import AccountStorage from "classes/storage/account.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 import { v4 as uuid } from "uuid";
 
@@ -48,7 +48,7 @@ export default class CustomerHandler {
 
 	async save_company (data) {
 
-		let company_data = { primary_contact_id: Account.account_id () }
+		let company_data = { primary_contact_id: AccountStorage.account_id () }
 
 		if (common.isset (data.company_id)) company_data.company_id = data.company_id;
 		if (common.isset (data.address_id)) company_data.address_id = data.address_id;
@@ -62,7 +62,7 @@ export default class CustomerHandler {
 
 	async save_company_association (data) {
 		await CompanyAccountsModel.save_company_account (FormData.fromObject ({
-			account_id: Account.account_id (),
+			account_id: AccountStorage.account_id (),
 			company_id: data.company_id
 		}));
 	}// save_company_association;
@@ -98,7 +98,7 @@ export default class CustomerHandler {
 				address_id: address_data.address_id,
 			});
 
-			Companies.set ({
+			CompanyStorage.set ({
 				active_company: data.company_id,
 				[data.company_id]: {
 					company_name: data.company_name,

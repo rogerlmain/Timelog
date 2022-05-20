@@ -3,8 +3,8 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import Options from "classes/storage/options";
-import Clients from "classes/storage/clients";
+import OptionStorage from "classes/storage/option.storage";
+import ClientStorage from "classes/storage/client.storage";
 
 import BaseControl from "controls/abstract/base.control";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
@@ -43,7 +43,7 @@ export default class ClientsPage extends BaseControl {
 	/********/
 
 
-	update_client_list = () => { Clients.get_by_company (this.context.company_id).then (data => this.setState ({ client_list: data })) }
+	update_client_list = () => { ClientStorage.get_by_company (this.context.company_id).then (data => this.setState ({ client_list: data })) }
 	
 
 	componentDidMount = this.update_client_list;
@@ -51,7 +51,7 @@ export default class ClientsPage extends BaseControl {
 
 	render () {
 
-		let limit = Options.client_limit ();
+		let limit = OptionStorage.client_limit ();
 		let option_value = get_values (client_limit_options) [limit - 1];
 		let can_create = ((limit > 1) && (common.not_set (this.state.client_list) || (this.state.client_list.length < option_value) || (option_value == 0)));
 

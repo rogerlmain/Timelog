@@ -3,7 +3,7 @@ import * as common from "classes/common";
 
 import FormHandler from "classes/form.handler";
 
-import Account from "classes/storage/account";
+import AccountStorage from "classes/storage/account.storage";
 
 import { v4 as uuid } from "uuid";
 
@@ -88,11 +88,11 @@ export default class SquareHandler {
 	async create_square_account (form_data) {
 		
 		let parameters = {
-			given_name: Account.first_name (),
-			family_name: Account.last_name (),
+			given_name: AccountStorage.first_name (),
+			family_name: AccountStorage.last_name (),
 			company_name: form_data.company_name,
 			address: FormHandler.extract_address (form_data),
-			email_address: Account.email_address (),
+			email_address: AccountStorage.email_address (),
 			phone_number: form_data.primary_phone
 		}/* parameters */;
 

@@ -31,6 +31,13 @@ Array.prototype.insert = function (item, index) {
 }// insert;
 
 
+Array.prototype.merge = function (new_values) {
+	if (!Array.isArray (new_values)) new_values = [new_values];
+	new_values.forEach (value => this.push (value));
+	return this;
+}// merge;
+
+
 Array.prototype.prepend = function (item) {
 	this.insert (item, 0);
 }// prepend;

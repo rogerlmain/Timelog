@@ -2,40 +2,47 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import Clients from "classes/storage/clients";
-import ClientsModel from "models/clients";
+import OptionStorage from "client/classes/storage/option.storage";
+import ClientStorage from "client/classes/storage/client.storage";
 
-import BaseControl from "controls/abstract/base.control";
-import Container from "controls/container";
+import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
 
-import SelectList from "controls/select.list";
-import EyecandyPanel from "controls/panels/eyecandy.panel";
+import SelectList from "client/controls/select.list";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
+import FadePanel from "client/controls/panels/fade.panel";
 
-import { is_null } from "classes/common";
-import { MainContext } from "classes/types/contexts";
+import { is_empty, is_null, not_empty } from "classes/common";
+import { master_pages } from "client/master";
+
+import { MasterContext } from "client/classes/types/contexts";
 
 
 export default class ClientSelectorGadget extends BaseControl {
 
 
-	static contextType = MainContext;
-
-
- 	/********/
-
-
 	 state = { 
+
 		clients: null,
+
 		client_selected: false,
+		clients_loading: false,
+
 	}// state;
+
+
+	static contextType = MasterContext;
 
 
 	static defaultProps = {
 
 		id: "client_selector",
 
+		newOption: false,
+
 		hasHeader: false,
 		headerSelectable: false,
+
 		headerText: null,
 
 		selectedClient: null,
@@ -53,41 +60,37 @@ export default class ClientSelectorGadget extends BaseControl {
 	/*********/
 
 
-	componentDidMount () {
-		Clients.get_by_company (this.context.company_id).then (data => 
-			this.setState ({ 
-				company_id: this.context.company_id,
-				clients: data
-			})
-		);
-	}// componentDidMount;
+	load_clients = () => ClientStorage.get_by_company (this.context.company_id).then (data => this.setState ({ 
+		clients: data,
+		clients_loading: false,
+	}));
 
 
-	async componentDidUpdate () { 
+	componentDidMount = () => this.setState ({ clients_loading: true });
 
-		if (this.context.company_id != this.state.company_id) {
-			this.componentDidMount ();
-			return false;
-		}// if;
 
-		let data = await Clients.get_by_company (this.context.company_id);
-		
-		if (common.matching_objects (this.state.clients, data)) return true;
-		
-		this.setState ({ clients: data });
-		return false;
-	}// componentDidUpdate;
+	/*********/
+
+
+	shouldComponentUpdate (next_props, next_state, next_context) {
+		if (this.context.company_id != next_context.company_id) this.setState ({ clients_loading: true });
+		return true;
+	}// shouldComponentUpdate;
 
 
 	render () {
-		return (
-			<Container>
 
-				<label htmlFor={this.client_selector_id}>Client</label>
+		let single_client = (OptionStorage.client_limit () == 1);
 
-				<EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} text="Loading..." eyecandyVisible={is_null (this.state.clients)}>
+		return <Container>
+
+			<label htmlFor={this.client_selector_id}>Client</label>
+
+			{ single_client ? "Default" : <EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} text="Loading..." eyecandyVisible={this.state.clients_loading} onEyecandy={this.load_clients}>
+
+				<Container visible={not_empty (this.state.clients) || !this.props.newOption}>
 					<SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient}
-					
+						
 						hasHeader={this.props.hasHeader}
 
 						headerText={this.props.hasHeader ? this.props.headerText : null} 
@@ -101,10 +104,16 @@ export default class ClientSelectorGadget extends BaseControl {
 						}}>
 
 					</SelectList>
-				</EyecandyPanel>
+				</Container>
 
-			</Container>
-		);
+				<Container visible={is_empty (this.state.clients) && this.props.newOption}>
+					<button onClick={() => { this.context.master_page.setState ({ page: master_pages.clients.name }) }}>New</button>
+				</Container>
+
+			</EyecandyPanel> }
+
+		</Container>
+
 	}// render;
 
 }// ClientSelectorGadget;

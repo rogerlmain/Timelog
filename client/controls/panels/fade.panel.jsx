@@ -3,13 +3,13 @@ import React from "react";
 
 import Settings from "classes/storage/settings";
 
-import * as common from "classes/common";
+import { is_null, not_set } from "classes/common";
 
 
 export default class FadePanel extends BaseControl {
 
 
-	dom_control = React.createRef ();
+	fade_panel = React.createRef ();
 
 
 	static defaultProps = {
@@ -22,21 +22,21 @@ export default class FadePanel extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		if (common.is_null (this.props.id)) throw "FadePanel requires an ID";
+		if (is_null (this.props.id)) throw "FadePanel requires an ID";
 	}// constructor;
 
 
-	transition_start (event) {
+	transition_start = (event) => {
 		if (event.propertyName != "opacity") return;
 		if (event.currentTarget != event.srcElement) return;
 		switch (this.props.visible) {
 			case true: this.execute (this.props.beforeShowing, event); break;
 			default: this.execute (this.props.beforeHiding, event); break;
 		}// switch;
-	}//transition_start;
+	}/* transition_start */;
 
 
-	transition_end (event) {
+	transition_end = (event) => {
 		if (event.propertyName != "opacity") return;
 		if (event.currentTarget != event.srcElement) return;
 		switch (this.props.visible) {
@@ -44,19 +44,30 @@ export default class FadePanel extends BaseControl {
 			default: this.execute (this.props.afterHiding, event); break;
 		}// switch;
 		this.forceUpdate ();
-	}// transition_end;
+	}/* transition_end */;
+
+
+	/********/
 
 
 	componentDidMount () {
-		this.dom_control.current.addEventListener ("transitionstart", this.transition_start.bind (this));
-		this.dom_control.current.addEventListener ("transitionend", this.transition_end.bind (this));
+		if (not_set (this.fade_panel.current)) return;
+		this.fade_panel.current.addEventListener ("transitionstart", this.transition_start);
+		this.fade_panel.current.addEventListener ("transitionend", this.transition_end);
 	}// componentDidMount;
+
+
+	componentWillUnmount () {
+		if (not_set (this.fade_panel.current)) return;
+		this.fade_panel.current.removeEventListener ("transitionstart", this.transition_start);
+		this.fade_panel.current.removeEventListener ("transitionend", this.transition_end);
+	}// componentWillUnmount;
 
 
 	render () {
 		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0)};
 		if (this.props.animate) style = { ...style, transition: `opacity ${this.props.speed}ms ease-in-out` }
-		return (<div id={this.props.id} ref={this.dom_control} style={style} className={this.props.className}>{this.props.children}</div>);
+		return <div id={this.props.id} ref={this.fade_panel} style={style} className={this.props.className}>{this.props.children}</div>
 	}// render;
 
 }// FadePanel;

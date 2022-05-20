@@ -8,7 +8,7 @@ import { isset, not_set, not_empty, nested_value } from "classes/common";
 const store_name = stores.clients;
 
 
-export default class Clients extends LocalStorage {
+export default class ClientStorage extends LocalStorage {
 
 
 	static set (values) { LocalStorage.set_store (store_name, values) }
@@ -68,4 +68,4 @@ puke ();
 	}// get_all;
 
 
-}// Clients;
+}// ClientStorage;

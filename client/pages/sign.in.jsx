@@ -2,8 +2,7 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import CurrentAccount from "classes/storage/account";
-import Companies from "classes/storage/companies";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
@@ -39,7 +38,7 @@ export default class SigninPage extends BaseControl {
 	static defaultProps = { id: "signin_page" }
 
 
-	sign_in () {
+	sign_in = () => {
 		fetch ("/signin", {
 			method: "post",
 			body: new FormData (document.getElementById ("signin_form")),
@@ -49,19 +48,16 @@ export default class SigninPage extends BaseControl {
 			if (common.isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
 
 			for (let key of get_keys (info)) {
-
-let value = JSON.stringify (info [key]);
-
 				localStorage.setItem (key, JSON.stringify (info [key]));
 			}// for;
 
 			if (this.signed_in ()) {
 
-				let companies = Companies.company_list ();
+				let companies = CompanyStorage.company_list ();
 				let ids = get_keys (companies);
 
-				if (common.isset (ids) && (ids.length == 1)) Companies.set_active_company (ids [0]);
-				this.context.main_page.setState ({ company_id: Companies.active_company_id () });
+				if (common.isset (ids) && (ids.length == 1)) CompanyStorage.set_active_company (ids [0]);
+				this.context.main_page.setState ({ company_id: CompanyStorage.active_company_id () });
 				return globals.main.forceUpdate ();
 
 			}// if;
@@ -120,7 +116,7 @@ defaultValue="betty@riverdale.edu"
 						<a onClick={() => parent.setState ({ signing_up: true })}>Sign up</a>
 					</div>
 
-					<EyecandyPanel id="signin_eyecandy" text="Signing you in." eyecandyVisible={this.state.eyecandy_visible} onEyecandy={this.sign_in.bind (this)}>
+					<EyecandyPanel id="signin_eyecandy" text="Signing you in." eyecandyVisible={this.state.eyecandy_visible} onEyecandy={this.sign_in}>
 						<button onClick={() => this.setState ({ 
 							error_message: null,
 							eyecandy_visible: true 

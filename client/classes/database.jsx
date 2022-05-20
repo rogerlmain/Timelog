@@ -1,4 +1,4 @@
-import CurrentAccount from "client/classes/storage/account";
+import AccountStorage from "client/classes/storage/account.storage";
 import { isset, not_null } from "classes/common";
 
 
@@ -8,7 +8,7 @@ export default class Database {
 	static async fetch_data (name, form_data) {
 
 		let fetch_parameters = null;
-		let account_id = CurrentAccount.account_id ();
+		let account_id = AccountStorage.account_id ();
 
 		if (!(form_data instanceof FormData)) throw "Invalid data passed to Database.fetch_data";
 		if (not_null (account_id)) form_data.set ("account_id", account_id);

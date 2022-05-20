@@ -1,11 +1,9 @@
-import * as constants from "client/classes/types/constants";
-import * as common from "classes/common";
-
 import React from "react";
 
 import Database from "classes/database";
 
-import Projects from "classes/storage/projects";
+import AccountStorage from "client/classes/storage/account.storage";
+import ProjectStorage from "classes/storage/project.storage";
 
 import FormControl from "controls/form.control";
 import Container from "controls/container";
@@ -13,7 +11,9 @@ import Container from "controls/container";
 import AlphaCapitalInput from "controls/inputs/alpha.capital.input";
 import FadePanel from "controls/panels/fade.panel";
 
-import { nested_value } from "classes/common";
+import { blank, space, horizontal_alignment } from "classes/types/constants";
+import { nested_value, is_blank, isset  } from "classes/common";
+
 import { SmallProgressMeter } from "controls/progress.meter";
 import { MainContext } from "classes/types/contexts";
 
@@ -52,7 +52,7 @@ export default class ProjectForm extends FormControl {
 	/********/
 
 
-	project_data = field => { return common.isset (this.props.formData) ? this.props.formData [field] : null }
+	project_data = field => { return isset (this.props.formData) ? this.props.formData [field] : null }
 
 
 	delete_project = event => {
@@ -78,7 +78,11 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 	}// delete;
  
 
-	update_code = event => this.setState ({ code: event.target.value.toUpperCase ().replace (/[AEIOU\s]/g, constants.blank).substr (0, max_code_length) });
+	update_code = event => {	
+		let codewords = event.target.value.toUpperCase ().replace (/[AEIOU]/g, blank).trim ().split (space);
+		codewords.forEach (word => codewords [codewords.indexOf (word)] = word.substr (0, Math.ceil (max_code_length / codewords.length)));
+		this.setState ({ code: codewords.join (blank).substr (0, 5) });
+	}// update_code;
 
 
 	save_project = () => {
@@ -89,20 +93,24 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 		let form_data = new FormData (this.project_form.current);
 
 		form_data.append ("action", "save");
-		form_data.append ("client_id", this.props.clientId.toString ());
+		form_data.append ("account_id", AccountStorage.account_id ());
+		form_data.append ("client_id", this.props.clientId);
 
 		this.setState ({ status: "Saving..." }, () => Database.save_data ("projects", form_data).then (data => {
 			this.execute (this.props.onSave, data).then (() => {
 				
-				Projects.set_project (this.context.company_id, data);
+				ProjectStorage.set_project (this.context.company_id, this.props.clientId, {
+					project_id: data.project_id,
+					project_name: data.name,
+					project_code: data.code
+				});
 				
 				this.props.parent.setState ({ 
-					client_data: data,
-					selected_client: data.client_id
-				}, () => {
-					this.props.parent.update_project_list ();
-					this.setState ({ status: null });
+					selected_project: data.project_id,
+					updating: true,
 				});
+				
+				this.setState ({ status: null });
 				
 			});
 		}));
@@ -123,7 +131,7 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 		return <Container>
 			<form id="project_form" ref={this.project_form}>
 
-				<input type="hidden" id="project_id" name="project_id" value={project_id || constants.blank} />
+				<input type="hidden" id="project_id" name="project_id" value={project_id || blank} />
 
 				<div className="two-column-grid" style={{  ...this.props.style, columnGap: "1em" }}>
 
@@ -135,7 +143,7 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 							gridGap: "0.25em" 
 						}}>
 
-						<input type="text" id="project_name" name="project_name" defaultValue={this.project_data ("name") || constants.blank} required={true}
+						<input type="text" id="project_name" name="project_name" defaultValue={this.project_data ("name") || blank} required={true}
 							onChange={this.update_code}
 							onBlur={this.save_project}>
 						</input>
@@ -182,12 +190,12 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 
 			<div className="horizontally-spaced-out vertically-center" style={{ marginTop: "1em" }}>
 
-				<SmallProgressMeter id="project_progress_meter" visible={common.isset (this.state.status)} 
-					alignment={constants.horizontal_alignment.right}>
+				<SmallProgressMeter id="project_progress_meter" visible={isset (this.state.status)} 
+					alignment={horizontal_alignment.right}>
 					{this.state.status}
 				</SmallProgressMeter>
 
-				<FadePanel id="delete_button_panel" visible={common.isset (project_id)}>
+				<FadePanel id="delete_button_panel" visible={isset (project_id)}>
 					<button className="double-column" onClick={this.delete_project}>Delete</button>
 				</FadePanel>
 

@@ -16,7 +16,7 @@ import CompanyCardData from "./server/models/company.cards.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import LookupsData from "./server/models/lookups.mjs";
 import PricingData from "./server/models/pricing.mjs";
-import ProjectData from "./server/models/projects.mjs";
+import ProjectData from "./server/models/project.model.mjs";
 import ReportData from "./server/models/reports.mjs";
 import TaskData from "./server/models/tasks.mjs";
 import MiscData from "./server/models/misc.mjs";
@@ -197,7 +197,7 @@ app.post ("/projects", function (request, response) {
 	app.process (request, response, (fields) => {
 		let project_data = new ProjectData (request, response);
 		switch (fields.action) {
-			case "list": project_data.get_projects_by_client (fields.client_id); break;
+			case "list": project_data.get_projects (fields.account_id, fields.client_id); break;
 			case "details": project_data.get_project_by_id (fields.project_id); break;
 			case "save": project_data.save_project (fields); break;
 		}// switch;

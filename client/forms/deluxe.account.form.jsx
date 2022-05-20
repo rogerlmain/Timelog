@@ -5,8 +5,8 @@ import React from "react";
 
 import CustomerHandler from "classes/customer.handler";
 
-import Account from "classes/storage/account";
-import Companies from "classes/storage/companies";
+import AccountStorage from "classes/storage/account.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
@@ -123,7 +123,7 @@ export default class DeluxeAccountForm extends BaseControl {
 			amount: this.state.selected_item.equals (purchase_options.item) ? this.props.optionPrice : JSON.parse (this.package_list.current.value).price,
 			customer_id: data.customer_id,
 			source_id: data.card_id ?? data.token,
-			note: `${Account.full_name ()}: ${option_name} (${this.props.option})`
+			note: `${AccountStorage.full_name ()}: ${option_name} (${this.props.option})`
 		});
 
 	}// create_payment;
@@ -131,12 +131,12 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	get_customer_id = async (data) => {
 
-		let customer_id = Companies.square_id ();
+		let customer_id = CompanyStorage.square_id ();
 		
 		if (isset (customer_id)) return { customer_id: customer_id }; 
 		
 		let square_data = await this.state.square_handler.create_square_account (data);
-		let company_data = Companies.get (this.context.company_id) ?? await new CustomerHandler ().save_customer ({...data, customer_id: square_data.customer.id });
+		let company_data = CompanyStorage.get (this.context.company_id) ?? await new CustomerHandler ().save_customer ({...data, customer_id: square_data.customer.id });
 
 		return {
 			customer_id: square_data.customer.id,

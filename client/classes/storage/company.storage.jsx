@@ -8,7 +8,7 @@ import { isset, get_values } from "classes/common";
 const store_name = "companies";
 
 
-export default class Companies extends LocalStorage {
+export default class CompanyStorage extends LocalStorage {
 
 
 	static set_active_company (value) { super.set_item (store_name, "active_company", value) }
@@ -46,4 +46,4 @@ export default class Companies extends LocalStorage {
 	}// company_count;
 	
 
-}// Companies;
+}// CompanyStorage;
