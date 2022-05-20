@@ -16,7 +16,7 @@ import CompanyCardData from "./server/models/company.cards.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import LookupsData from "./server/models/lookups.mjs";
 import PricingData from "./server/models/pricing.mjs";
-import ProjectData from "./server/models/project.mjs";
+import ProjectData from "./server/models/projects.mjs";
 import ReportData from "./server/models/reports.mjs";
 import TaskData from "./server/models/tasks.mjs";
 import MiscData from "./server/models/misc.mjs";
