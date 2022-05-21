@@ -94,7 +94,7 @@ export default class ProjectsPage extends BaseControl {
 				})}>
 
 				<ProjectForm clientId={this.state.selected_client} formData={this.state.project_data} 
-					onSave={(data) => this.setState ({ project_data: data })} parent={this}>
+					onSave={() => this.project_selector.current.setState ({ projects_loading: true })} parent={this}>
 				</ProjectForm>
 				
 			</EyecandyPanel>

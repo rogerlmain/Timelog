@@ -67,7 +67,7 @@ export default class ProjectForm extends FormControl {
 		form_data.append ("deleted", "true");
 		form_data.append ("project_id", this.project_data ("project_id"));
 
-this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
+		this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 
 		// this.setState ({ status: `Deleting ${this.project_data ("name")}...` }, () => Database.save_data ("projects", form_data).then (data => {
 		// 	this.execute (this.props.onDelete, data).then (() => this.setState ({ status: null }));
@@ -96,23 +96,18 @@ this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 		form_data.append ("account_id", AccountStorage.account_id ());
 		form_data.append ("client_id", this.props.clientId);
 
-		this.setState ({ status: "Saving..." }, () => Database.save_data ("projects", form_data).then (data => {
-			this.execute (this.props.onSave, data).then (() => {
-				
-				ProjectStorage.set_project (this.context.company_id, this.props.clientId, {
-					project_id: data.project_id,
-					project_name: data.name,
-					project_code: data.code
-				});
-				
-				this.props.parent.setState ({ 
-					selected_project: data.project_id,
-					updating: true,
-				});
-				
-				this.setState ({ status: null });
-				
+		this.setState ({ status: "Saving..." }, () => Database.save_data ("projects", form_data).then (async data => {
+
+			ProjectStorage.set_project (this.context.company_id, this.props.clientId, {
+				project_id: data.project_id,
+				project_name: data.name,
+				project_code: data.code
 			});
+
+			this.props.parent.setState ({ selected_project: data.project_id }, () => {
+				this.execute (this.props.onSave).then (() => this.setState ({ status: null }));
+			});
+
 		}));
 		
 	}/* save_project */;

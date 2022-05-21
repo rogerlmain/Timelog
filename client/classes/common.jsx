@@ -63,6 +63,24 @@ export function json_string (value) {
 }// json_string;
 
 
+export function jsonify (value) {
+
+	const visited = new WeakSet ();
+
+	const filter = (key, value) => {
+		if (is_object (value, true)) {
+			if (visited.has (value)) return;
+			visited.add (value);
+		}// if;
+		return value;
+	}/* filter */;
+
+	let result = JSON.stringify (value, filter);
+	return result;
+
+}// jsonify;
+
+
 /**** Type Test Routines ****/
 
 
@@ -72,7 +90,7 @@ export function is_empty (value) { return (not_set (value, consts.blank) || (val
 export function is_function (value) { return value instanceof Function }
 export function is_null (value) { return value == null }
 export function is_number (value) { return !isNaN (Number (value)) }
-export function is_object (value) { return ((value instanceof Object) && not_array (value)) }
+export function is_object (value, include_arrays = false) { return ((value instanceof Object) && (include_arrays || not_array (value))) }
 export function is_primitive (value) { return (value !== Object (value)) }
 export function isset (value) { return (!null_or_undefined (value)) }
 export function is_string (value) { return typeof value == "string" }
@@ -82,6 +100,7 @@ export function not_array (value) { return !is_array (value) }
 export function not_empty (value) { return !is_empty (value) }
 export function not_set (value, ...nullables) { return !isset (value, ...nullables) }
 export function not_null (value) { return !is_null (value) }
+export function not_object (value, include_arrays = false) { return !is_object (value, include_arrays) }
 export function not_undefined (value) { return !is_undefined (value) }
 
 export function null_value (value) { return isset (value) ? value : null }
@@ -132,7 +151,7 @@ export function nested_value () {
 	if (is_null (arguments [0])) return null;
 
 	if (arguments.length < 2) throw "nested_value requires at least two parameters";
-	if (!is_object (arguments [0]) && !is_array (arguments [0])) throw "first parameter in nested_value must be an object";
+	if (not_object (arguments [0], true)) throw "first parameter in nested_value must be an object";
 
 	let next_object = arguments [0] [arguments [1]];
 	let remaining_parameters = Array.from (arguments).slice (2);
@@ -173,4 +192,10 @@ export function next_integer () {
 
 export let is_blank = is_empty;
 export let not_blank = not_empty;
+
+
+
+/**** Operating Theatre ****/
+
+
 

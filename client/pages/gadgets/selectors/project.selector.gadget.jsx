@@ -72,10 +72,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 
 	load_projects = () => {
 		ProjectStorage.get_projects (this.context.company_id, this.state.selected_client).then (data => {
-			this.setState ({ 
-				projects: data,
-				projects_loading: false,
-			});
+			this.setState ({ projects: data }, this.setState ({ projects_loading: false }));
 		});
 	}/* load_projects */;
 
@@ -87,10 +84,10 @@ export default class ProjectSelectorGadget extends BaseControl {
 
 
 	shouldComponentUpdate (next_props, next_state, next_context) {
-		let result = false;
-		if (this.context.company_id != next_context.company_id) result = !this.setState ({ selected_client: 0 });
-		if (this.props.selectedProject != next_props.selectedProject) result = !this.setState ({ selected_project: next_props.selectedProject});
-		return result;
+		super.shouldComponentUpdate (next_props, next_state, next_context);
+		if (this.context.company_id != next_context.company_id) return !!this.setState ({ selected_client: 0 });
+		if (this.props.selectedProject != next_props.selectedProject) return !!this.setState ({ selected_project: next_props.selectedProject });
+		return true;
 	}// shouldComponentUpdate;
 
 
@@ -119,7 +116,11 @@ export default class ProjectSelectorGadget extends BaseControl {
 				eyecandyVisible={this.state.projects_loading} onEyecandy={this.load_projects}>
 
 				<Container visible={not_empty (this.state.projects) || !this.props.newOption}>
-					<SelectList id={this.project_selector_id} value={this.state.selected_project} data={this.state.projects}
+					<SelectList id={this.project_selector_id} value={((()=>{
+						return this.state.selected_project
+					})())} data={((()=>{
+						return this.state.projects
+					})())}
 					
 						hasHeader={this.props.hasHeader || isset (this.props.headerText)}
 						headerSelectable={this.props.headerSelectable}

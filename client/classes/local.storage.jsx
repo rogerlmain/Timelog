@@ -12,7 +12,7 @@ export default class LocalStorage {
 
 		if (is_object (object)) get_keys (object).forEach (key => { 
 			if (is_empty (object [key])) delete object [key] 
-			if (is_object (object [key]) || is_array (object [key])) object [key] = LocalStorage.stripped (object [key]);
+			if (is_object (object [key], true)) object [key] = LocalStorage.stripped (object [key]);
 		});
 
 		return object;
