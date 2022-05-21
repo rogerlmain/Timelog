@@ -2,7 +2,13 @@ import Database from "classes/database";
 import { nested_value } from "classes/common";
 
 
+const table_name = "clients";
+
+
 export default class ProjectModel {
+
+
+	static save_project (data) { return Database.save_data (table_name, data) }
 
 
 	static fetch (client_id) {

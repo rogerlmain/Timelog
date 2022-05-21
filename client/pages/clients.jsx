@@ -12,7 +12,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 import ClientSelectorGadget from "pages/gadgets/selectors/client.selector.gadget";
 
 import ClientForm from "forms/client.form";
-import ClientModel from "models/clients";
+import ClientModel from "models/client.model";
 
 
 import { is_null, get_values } from "classes/common";
@@ -29,6 +29,9 @@ export const client_limit_options = {
 export default class ClientsPage extends BaseControl {
 
 
+	client_selector = React.createRef ();
+
+
 	state = {
 		client_list: null,
 		client_data: null,
@@ -43,10 +46,10 @@ export default class ClientsPage extends BaseControl {
 	/********/
 
 
-	update_client_list = () => { ClientStorage.get_by_company (this.context.company_id).then (data => this.setState ({ client_list: data })) }
+	// update_client_list = () => { ClientStorage.get_by_company (this.context.company_id).then (data => this.setState ({ client_list: data })) }
 	
 
-	componentDidMount = this.update_client_list;
+	// componentDidMount = this.update_client_list;
 
 
 	render () {
@@ -58,7 +61,7 @@ export default class ClientsPage extends BaseControl {
  		return <div id={this.props.id} className="top-center-container row-spaced">
 
 			<div className="two-column-grid">
-				<ClientSelectorGadget id="client_selector" parent={this} companyId={this.props.companyId}
+				<ClientSelectorGadget id="client_selector" ref={this.client_selector} parent={this}
 				
 					hasHeader={true} 
 					headerSelectable={can_create}
@@ -92,7 +95,9 @@ export default class ClientsPage extends BaseControl {
 					}// if;
 				}}>
 
-				<ClientForm formData={this.state.client_data} parent={this} disabled={(!can_create) && (is_null (this.state.client_data))} />
+				<ClientForm formData={this.state.client_data} parent={this} disabled={(!can_create) && (is_null (this.state.client_data))}
+					onSave={() => this.client_selector.current.setState ({ clients_loading: true })}>
+				</ClientForm>
 
 			</EyecandyPanel>
 

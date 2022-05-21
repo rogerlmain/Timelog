@@ -10,7 +10,7 @@ import FadePanel from "controls/panels/fade.panel";
 
 import ClientStorage from "classes/storage/client.storage";
 
-import ClientModel from "models/clients";
+import ClientModel from "models/client.model";
 
 import { SmallProgressMeter } from "controls/progress.meter";
 import { MainContext } from "classes/types/contexts";
@@ -83,19 +83,13 @@ export default class ClientForm extends FormControl {
 		form_data.append ("company_id", this.context.company_id);
 
 		this.setState ({ status: "Saving..." }, () => ClientModel.save_client (form_data).then (data => {
-			this.execute (this.props.onSave, data).then (() => {
-				
-				ClientStorage.set_client (this.context.company_id, data);
-				
-				this.props.parent.setState ({ 
-					client_data: data,
-					selected_client: data.client_id
-				}, () => {
-					this.props.parent.update_client_list ();
-					this.setState ({ status: null });
-				});
-				
+
+			ClientStorage.set_client (this.context.company_id, data);
+
+			this.props.parent.setState ({ selected_client: data.client_id }, () => {
+				this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
 			});
+				
 		}));
 
 	}// save_client;

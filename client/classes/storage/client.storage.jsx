@@ -1,5 +1,5 @@
 import LocalStorage from "classes/local.storage"
-import ClientsModel from "models/clients";
+import ClientModel from "models/client.model";
 
 import { stores } from "classes/types/constants";
 import { isset, not_set, not_empty, nested_value } from "classes/common";
@@ -26,7 +26,7 @@ export default class ClientStorage extends LocalStorage {
 		if (isset (value)) values [company_id].remove (value);
 		values [company_id].push (client); 
 
-		Clients.set (values);
+		ClientStorage.set (values);
 
 	}// set_client;
 
@@ -58,8 +58,8 @@ puke ();
 
 			if (isset (result)) return resolve (result);
 
-			ClientsModel.fetch_by_company (company_id).then (data => {
-				if (not_empty (data)) Clients.set ({ ...LocalStorage.get_all (store_name), [company_id]: data });
+			ClientModel.fetch_by_company (company_id).then (data => {
+				if (not_empty (data)) ClientStorage.set ({ ...LocalStorage.get_all (store_name), [company_id]: data });
 				resolve (data);
 			}).catch (reject);
 

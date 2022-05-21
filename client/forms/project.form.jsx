@@ -16,6 +16,7 @@ import { nested_value, is_blank, isset  } from "classes/common";
 
 import { SmallProgressMeter } from "controls/progress.meter";
 import { MainContext } from "classes/types/contexts";
+import ProjectModel from "client/models/project.model";
 
 
 const max_code_length = 5;
@@ -96,7 +97,7 @@ export default class ProjectForm extends FormControl {
 		form_data.append ("account_id", AccountStorage.account_id ());
 		form_data.append ("client_id", this.props.clientId);
 
-		this.setState ({ status: "Saving..." }, () => Database.save_data ("projects", form_data).then (async data => {
+		this.setState ({ status: "Saving..." }, () => ProjectModel.save_project (form_data).then (async data => {
 
 			ProjectStorage.set_project (this.context.company_id, this.props.clientId, {
 				project_id: data.project_id,

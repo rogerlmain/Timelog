@@ -1,7 +1,10 @@
 import Database from "classes/database";
 
 
-export default class ClientsModel {
+const table_name = "clients";
+
+
+export default class ClientModel {
 
 
 	static delete_client (client_id) {
@@ -12,7 +15,7 @@ export default class ClientsModel {
 	}// delete_client;
 
 
-	static save_client (data) { return Database.save_data ("clients", data) }
+	static save_client (data) { return Database.save_data (table_name, data) }
 
 
 	static fetch_by_company (company_id) {
@@ -31,4 +34,4 @@ export default class ClientsModel {
 	}// fetch_by_id;
 
 	
-}// ClientsModel;
+}// ClientModel;
