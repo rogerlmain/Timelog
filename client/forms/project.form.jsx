@@ -96,14 +96,9 @@ export default class ProjectForm extends FormControl {
 		form_data.append ("action", "save");
 		form_data.append ("account_id", AccountStorage.account_id ());
 		form_data.append ("client_id", this.props.clientId);
+		form_data.append ("company_id", this.context.company_id);
 
-		this.setState ({ status: "Saving..." }, () => ProjectModel.save_project (form_data).then (async data => {
-
-			ProjectStorage.set_project (this.context.company_id, this.props.clientId, {
-				project_id: data.project_id,
-				project_name: data.name,
-				project_code: data.code
-			});
+		this.setState ({ status: "Saving..." }, () => ProjectStorage.save_project (form_data).then (data => {
 
 			this.props.parent.setState ({ selected_project: data.project_id }, () => {
 				this.execute (this.props.onSave).then (() => this.setState ({ status: null }));

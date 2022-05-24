@@ -38,7 +38,7 @@ export default class ClientSelectorGadget extends BaseControl {
 
 		id: "client_selector",
 
-		newOption: false,
+		newOption: true,
 
 		hasHeader: false,
 		headerSelectable: false,
@@ -81,6 +81,7 @@ export default class ClientSelectorGadget extends BaseControl {
 	render () {
 
 		let single_client = (OptionStorage.client_limit () == 1);
+		let has_clients = ((not_empty (this.state.clients) || !this.props.newOption) && !single_client);
 
 		return <Container>
 
@@ -88,9 +89,8 @@ export default class ClientSelectorGadget extends BaseControl {
 
 			{ single_client ? "Default" : <EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} text="Loading..." eyecandyVisible={this.state.clients_loading} onEyecandy={this.load_clients}>
 
-				<Container visible={not_empty (this.state.clients) || !this.props.newOption}>
-					<SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient}
-						
+				{ has_clients ? <SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient}
+							
 						hasHeader={this.props.hasHeader}
 
 						headerText={this.props.hasHeader ? this.props.headerText : null} 
@@ -103,12 +103,7 @@ export default class ClientSelectorGadget extends BaseControl {
 							this.execute (this.props.onClientChange, event);							
 						}}>
 
-					</SelectList>
-				</Container>
-
-				<Container visible={is_empty (this.state.clients) && this.props.newOption}>
-					<button onClick={() => { this.context.master_page.setState ({ page: master_pages.clients.name }) }}>New</button>
-				</Container>
+				</SelectList> : <button onClick={() => { this.context.master_page.setState ({ page: master_pages.clients.name }) }}>New</button> }
 
 			</EyecandyPanel> }
 

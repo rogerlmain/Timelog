@@ -25,6 +25,7 @@ import SignupPage from "pages/sign.up";
 import Settings from "pages/settings";
 
 import { globals } from "classes/types/constants";
+import { numeric_value } from "classes/common";
 
 import { MainContext } from "classes/types/contexts";
 
@@ -110,7 +111,7 @@ error_handler (message, url, line) { common.notify (message, url, line) }
 
 
     render () {
-		return <MainContext.Provider value={{ company_id: this.state.company_id, main_page: this }}>
+		return <MainContext.Provider value={{ company_id: numeric_value (this.state.company_id), main_page: this }}>
 			<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
 
 				<div className="horizontally-spaced-out">

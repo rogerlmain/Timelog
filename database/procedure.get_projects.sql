@@ -18,7 +18,6 @@ create procedure get_projects (
 	from
 		projects as prj
 	where
-		((account_id is not null) and (prj.account_id = account_id)) or
-		((client_id is not null) and (prj.client_id = client_id));
+		(prj.account_id = account_id) and (prj.client_id = client_id);
 
 end??

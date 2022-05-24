@@ -14,7 +14,7 @@ import ProjectModel from "models/project.model";
 
 import ProjectForm from "forms/project.form";
 
-import { isset, nested_value, not_set, not_empty, get_values } from "classes/common";
+import { numeric_value, nested_value, not_set, not_empty, get_values } from "classes/common";
 
 import "client/resources/styles/pages/projects.css";
 
@@ -64,7 +64,7 @@ export default class ProjectsPage extends BaseControl {
 		return <div id={this.props.id} className="top-center-container row-spaced">
 
 			<div className="project-select-form">
-				<ProjectSelectorGadget id="project_selector" ref={this.project_selector} parent={this}
+				<ProjectSelectorGadget id="project_selector" ref={this.project_selector} parent={this} newOption={false}
 
 					hasHeader={true}
 					headerSelectable={can_create}
@@ -74,12 +74,12 @@ export default class ProjectsPage extends BaseControl {
 					selectedProject={this.state.selected_project}
 
 					onClientChange={(event) => this.setState ({
-						selected_client: event.target.value,
+						selected_client: numeric_value (event.target.value),
 						updating: true,
 					})}
 
 					onProjectChange={(event) => this.setState ({ 
-						selected_project: parseInt (event.target.value),
+						selected_project: numeric_value (event.target.value),
 						updating: true,
 					})}>
 
@@ -88,14 +88,24 @@ export default class ProjectsPage extends BaseControl {
 
 			<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." 
 
-				onEyecandy={() => this.setState ({ updating: false }, () => {
-					if (this.state.selected_project == 0) return this.setState ({ project_data: null });
-					ProjectModel.fetch_by_id (this.state.selected_project).then ((data) => this.setState ({ project_data: data }));
-				})}>
+				onEyecandy={async () => {
 
-				<ProjectForm clientId={this.state.selected_client} formData={this.state.project_data} parent={this}
-					onSave={() => this.project_selector.current.setState ({ projects_loading: true })}>
-				</ProjectForm>
+					let data = null;
+
+					if (this.state.selected_project > 0) data = await ProjectStorage.get_by_project_id (this.state.selected_project);
+					
+					this.setState ({ 
+						project_data: data,
+						updating: false,
+					});
+				
+				}}>
+
+				<Container visible={this.state.selected_client > 0}>
+					<ProjectForm clientId={this.state.selected_client} formData={this.state.project_data} parent={this}
+						onSave={() => this.project_selector.current.setState ({ projects_loading: true })}>
+					</ProjectForm>
+				</Container>
 				
 			</EyecandyPanel>
 

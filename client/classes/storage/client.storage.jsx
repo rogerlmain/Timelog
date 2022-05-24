@@ -49,6 +49,30 @@ puke ();
 	/********/
 
 
+	static get_by_client_id = (company_id, client_id) => {
+		return new Promise ((resolve, reject) => {
+
+			let store = LocalStorage.get_all (store_name);
+			let result = nested_value (store, company_id, "find", item => { return item.client_id == client_id });
+
+			if (isset (result)) return resolve (result);
+
+			ClientModel.fetch_by_id (this.state.selected_client).then (data => {
+
+				if (not_empty (data)) {
+					if (not_set (store [company_id])) store [company_id] = [];
+					store [company_id].push (data);
+					LocalStorage.set (store_name, store);
+				}// if;
+				
+				resolve (data);
+			
+			});
+
+		});
+	}/* get_by_client_id */;
+
+
 	static get_by_company = (company_id) => { 
 
 		return new Promise ((resolve, reject) => {
@@ -65,7 +89,7 @@ puke ();
 
 		});
 
-	}// get_all;
+	}// get_by_company;
 
 
 }// ClientStorage;

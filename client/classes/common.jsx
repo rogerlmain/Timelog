@@ -98,13 +98,15 @@ export function is_undefined (value) { return (value == undefined) && not_null (
 
 export function not_array (value) { return !is_array (value) }
 export function not_empty (value) { return !is_empty (value) }
-export function not_set (value, ...nullables) { return !isset (value, ...nullables) }
+export function not_set (value, ...nullables) { return (!isset (value)) || Array.from (nullables).includes (value) }
 export function not_null (value) { return !is_null (value) }
 export function not_object (value, include_arrays = false) { return !is_object (value, include_arrays) }
 export function not_undefined (value) { return !is_undefined (value) }
 
 export function null_value (value) { return isset (value) ? value : null }
 export function null_or_undefined (value) { return (is_null (value) || (value == undefined)) }
+
+export function zero_value (value) { return null_or_undefined (value) ? 0 : value }
 
 
 export function matching_objects (first_object, second_object) {
@@ -113,7 +115,10 @@ export function matching_objects (first_object, second_object) {
 }// matching_objects;
 
 
-export function zero_value (value) { return null_or_undefined (value) ? 0 : value }
+export function numeric_value (value) { 
+	value = integer_value (value);
+	return isNaN (value) ? 0 : value;
+}// numeric_value;
 
 
 /********/
@@ -153,16 +158,28 @@ export function nested_value () {
 	if (arguments.length < 2) throw "nested_value requires at least two parameters";
 	if (not_object (arguments [0], true)) throw "first parameter in nested_value must be an object";
 
-	let next_object = arguments [0] [arguments [1]];
+	let next_object = arguments [0][arguments [1]];
 	let remaining_parameters = Array.from (arguments).slice (2);
 
-	let funky = is_function (next_object);
+	if (is_function (next_object)) return arguments [0][arguments [1]] (...remaining_parameters);
+	if (is_empty (remaining_parameters)) return next_object;
 
-	if (is_empty (remaining_parameters)) return funky ? next_object.bind (arguments [0]) (...(Array.from (arguments).slice (2))) : next_object;
-
-	return nested_value (funky? next_object.bind (arguments [0]) () : next_object, ...remaining_parameters);
+	return nested_value (next_object, ...remaining_parameters);
 
 }// nested_value;
+
+
+export function nested_object () {
+	
+	if (arguments.length == 0) return null;
+	if (arguments.length == 1) return arguments [0];
+
+	let next_item = arguments [0] ?? {};
+	next_item [arguments [1]] = nested_object (next_item [arguments [1]], ...(Array.from (arguments).slice (2)));
+
+	return next_item;
+
+}// set_nested_value;
 
 
 export function refresh (control, callback = null) {

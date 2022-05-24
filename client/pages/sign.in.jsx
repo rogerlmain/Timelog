@@ -90,8 +90,8 @@ export default class SigninPage extends BaseControl {
 						<input name="username" type="text"
 
 //defaultValue="betty@riverdale.edu"
-defaultValue="rex@rogerlmain.com"
-//defaultValue="joe@bloggs.com"
+//defaultValue="rex@rogerlmain.com"
+defaultValue="joe@bloggs.com"
 //defaultValue="dmitry@kgb.gov.ru"
 //defaultValue="rex@rexthestrange.com"
 //defaultValue="tastetestdude@gmail.com"

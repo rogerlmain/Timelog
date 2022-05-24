@@ -2,7 +2,7 @@ import Database from "classes/database";
 import { nested_value } from "classes/common";
 
 
-const table_name = "clients";
+const table_name = "projects";
 
 
 export default class ProjectModel {

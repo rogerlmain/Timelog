@@ -9,15 +9,20 @@ create procedure get_project_by_id (project_id integer)
 BEGIN
 
 	select
-		id as project_id,
-        account_id,
-        client_id,
-        `name`,
-        `code`,
-        `description`
+		clt.company_id,
+		prj.id as project_id,
+        prj.account_id,
+        prj.client_id,
+        prj.`name`,
+        prj.`code`,
+        prj.`description`
 	from
-		projects
+		projects as prj
+	join
+		clients as clt
+	on
+		clt.id = prj.client_id
 	where
-		id = project_id;
+		prj.id = project_id;
 
 end??

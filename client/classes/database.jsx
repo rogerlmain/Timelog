@@ -1,5 +1,5 @@
 import AccountStorage from "client/classes/storage/account.storage";
-import { isset, not_null } from "classes/common";
+import { is_empty, isset, not_null } from "classes/common";
 
 
 export default class Database {
@@ -20,7 +20,7 @@ export default class Database {
 		}// fetch_parameters;
 
 		return fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (response => { 
-			return response 
+			return is_empty (response) ? null : response;
 		}).catch (error => {
 			alert (error);
 			return null;
