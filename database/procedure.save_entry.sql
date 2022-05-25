@@ -16,14 +16,14 @@ create procedure save_entry (
 	select
 		max(id) into last_entry
 	from
-		entries
+		logging
 	where
-		(entries.account_id = account_id) and
-		(entries.end_time is null);
+		(logging.account_id = account_id) and
+		(logging.end_time is null);
 
 	if (last_entry is null) then
 
-		insert into entries values (
+		insert into logging values (
 			null,
 			account_id,
             client_id,
@@ -34,7 +34,7 @@ create procedure save_entry (
 
 	else
 
-		update entries set
+		update logging set
 			end_time = time_stamp
 		where
 			id = last_entry;

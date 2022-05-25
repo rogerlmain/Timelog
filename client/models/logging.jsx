@@ -3,8 +3,8 @@ import OptionStorage from "classes/storage/option.storage";
 
 import LogStorage from "classes/storage/log.storage";
 
+import { date_formats, date_rounding } from "classes/types/constants";
 import { isset } from "classes/common";
-import { date_formats } from "classes/types/constants";
 
 
 export default class LoggingModel {

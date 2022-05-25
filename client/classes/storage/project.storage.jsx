@@ -1,15 +1,17 @@
 import * as constants from "classes/types/constants";
-import * as common from "classes/common";
 
 import LocalStorage from "classes/local.storage";
 import ProjectModel from "client/models/project.model";
 
-import { isset, not_set, nested_object, nested_value } from "classes/common";
+import { isset, is_null, not_empty, not_set, nested_object, nested_value } from "classes/common";
 
 const store_name = constants.stores.projects;
 
 
 export default class ProjectStorage extends LocalStorage {
+
+
+	/**** Private Functions ****/
 
 
 	static #set = values => super.set_store (store_name, values);
@@ -22,18 +24,29 @@ export default class ProjectStorage extends LocalStorage {
 		let values = nested_object (LocalStorage.get_all (store_name), data.company_id, data.client_id);
 		if (not_set (values [data.company_id][data.client_id])) values [data.company_id][data.client_id] = [];
 
-		let item = values [data.company_id][data.client_id].find (next => next.project_id == data.project_id);
-		if (isset (item)) values [company_id][client_id].remove (item);
+		let item = values [data.company_id][data.client_id].find (next => next.id == data.project_id);
+		if (isset (item)) values [data.company_id][data.client_id].remove (item);
 
-		values [data.company_id][data.client_id].push (data);
+		values [data.company_id][data.client_id].push (ProjectStorage.project_store (data));
 
 		ProjectStorage.#set (values);
 
 	}// set_project;
 
 
-	/*********/	
-		
+	/*********/
+
+
+	static project_store = (data) => {
+		let result = is_null (data) ? null : {
+			id: data.project_id,
+			code: data.project_code,
+			name: data.project_name,
+			description: data.description,
+		}// return;
+		return result;
+	}/* project_store */;
+
 
 	static save_project = form_data => {
 		return new Promise ((resolve, reject) => {
@@ -66,16 +79,9 @@ export default class ProjectStorage extends LocalStorage {
 
 			if (isset (result)) return resolve (result);
 
-			ProjectModel.fetch_by_id (this.state.selected_project).then (data => {
-
-				if (not_empty (data)) {
-					if (not_set (store [company_id])) store [company_id] = [];
-					store [company_id].push (data);
-					LocalStorage.set (store_name, store);
-				}// if;
-				
+			ProjectModel.fetch_by_id (project_id).then (data => {
+				this.#set_project (data);
 				resolve (data);
-			
 			});
 
 		});
@@ -88,12 +94,17 @@ export default class ProjectStorage extends LocalStorage {
 			let data = nested_value (LocalStorage.get_all (store_name), company_id, client_id);
 
 			if (not_set (data)) {
-				data = await ProjectModel.fetch (client_id).catch (reject);
-				if (common.not_empty (data)) ProjectStorage.#set_project ({
-					company_id: company_id,
-					client_id: client_id,
-					...data [0]
+
+				let items = await ProjectModel.fetch (client_id).catch (reject);
+
+				data = null;
+				items.forEach (item => {
+					if (is_null (data)) data = [];
+					data.push (ProjectStorage.project_store (item));
 				});
+
+				ProjectStorage.#set_project (data);
+				
 			}// if;
 
 			resolve (data);
@@ -102,7 +113,5 @@ export default class ProjectStorage extends LocalStorage {
 	}// get_projects;
 
 
-	/********/
-
-
 }// ProjectStorage;
+

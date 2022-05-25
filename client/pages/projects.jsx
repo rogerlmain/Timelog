@@ -15,6 +15,7 @@ import ProjectModel from "models/project.model";
 import ProjectForm from "forms/project.form";
 
 import { numeric_value, nested_value, not_set, not_empty, get_values } from "classes/common";
+import { MasterContext } from "client/classes/types/contexts";
 
 import "client/resources/styles/pages/projects.css";
 
@@ -47,6 +48,9 @@ export default class ProjectsPage extends BaseControl {
 		updating: false
 
 	}// state;
+
+
+	static contextType = MasterContext;
 
 
 	static defaultProps = { id: "projects_page" }
@@ -92,10 +96,10 @@ export default class ProjectsPage extends BaseControl {
 
 					let data = null;
 
-					if (this.state.selected_project > 0) data = await ProjectStorage.get_by_project_id (this.state.selected_project);
+					if (this.state.selected_project > 0) data = await ProjectStorage.get_by_project_id (this.context.company_id, this.state.selected_project);
 					
 					this.setState ({ 
-						project_data: data,
+						project_data: ProjectStorage.project_store (data),
 						updating: false,
 					});
 				

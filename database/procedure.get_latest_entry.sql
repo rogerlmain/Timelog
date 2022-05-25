@@ -7,27 +7,27 @@ delimiter ??
 create procedure get_latest_entry (account_id integer) begin
 
 	select
-		etr.id as log_entry_id,
+		log.id as log_entry_id,
         clt.company_id,
         clt.id as client_id,
-		etr.project_id,
+		log.project_id,
 		clt.`name` as client_name,
 		prj.`name` as project_name,
-		etr.start_time,
-        etr.end_time
+		log.start_time,
+        log.end_time
 	from
-		entries as etr
+		logging as log
 	left outer join
         projects as prj
 	on
-        (etr.project_id = prj.id)
+        (log.project_id = prj.id)
 	left outer join
 		clients as clt
 	on
 		(prj.client_id = clt.id)
 	where
-		(etr.account_id  = account_id) and
-        (etr.end_time is null)
+		(log.account_id  = account_id) and
+        (log.end_time is null)
 	order by
 		start_time
 	limit 1;

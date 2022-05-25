@@ -6,7 +6,7 @@ export default class MiscData extends Database {
 
 	get_statuses () {
 		this.data_query ("call get_task_statuses ()");
-	}// get_entries;
+	}// get_statuses;
 
 
 }// MiscData;

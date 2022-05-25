@@ -11,7 +11,7 @@ export default class LogStorage extends LocalStorage {
 	static set = (value) => { return super.set_store (store_name, value) }
 	static delete = () => super.remove_store (store_name);	
 
-	static logged_in = () => { return isset (this.entry ()) }
+	static logged_in = () => { return isset (this.get ()) }
 
 	static start_time = () => { return this.get ("start_time") }
 	static client_name = () => { return this.get ("client_name") }

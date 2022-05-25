@@ -5,16 +5,15 @@ drop procedure if exists get_project_by_id;
 
 delimiter ??
 
-create procedure get_project_by_id (project_id integer)
-BEGIN
+create procedure get_project_by_id (project_id integer) begin
 
 	select
 		clt.company_id,
 		prj.id as project_id,
         prj.account_id,
         prj.client_id,
-        prj.`name`,
-        prj.`code`,
+        prj.`name` as project_name,
+        prj.`code` as project_code,
         prj.`description`
 	from
 		projects as prj

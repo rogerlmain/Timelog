@@ -13,7 +13,7 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import ClientSelectorGadget from "client/pages/gadgets/selectors/client.selector.gadget";
 
-import { isset, integer_value, not_set } from "classes/common";
+import { isset, is_null, integer_value, not_set } from "classes/common";
 import { master_pages } from "client/master";
 
 import { MasterContext } from "client/classes/types/contexts";
@@ -81,9 +81,6 @@ export default class ProjectSelectorGadget extends BaseControl {
 	/********/
 
 
-	componentDidMount = this.load_projects;	
-
-
 	shouldComponentUpdate (next_props, next_state, next_context) {
 		super.shouldComponentUpdate (next_props, next_state, next_context);
 		if (this.context.company_id != next_context.company_id) return !!this.setState ({ selected_client: 0 });
@@ -129,7 +126,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 							headerSelectable={this.props.headerSelectable}
 							headerText={this.props.headerText}
 
-							idField="project_id" textField="project_name"
+							idField="id" textField="name"
 
 							className="form-item" style={{ flex: 1 }}
 							onChange={this.props.onProjectChange}>

@@ -2,9 +2,10 @@ start transaction;
 
 
 drop table if exists entries;
+drop table if exists logging;
 
 
-create table entries (
+create table logging (
 
 	id integer primary key unique not null auto_increment,
 	account_id	int not null,
