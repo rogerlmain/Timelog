@@ -86,7 +86,10 @@ export default class ClientForm extends FormControl {
 
 			ClientStorage.set_client (this.context.company_id, data);
 
-			this.props.parent.setState ({ selected_client: data.client_id }, () => {
+			this.props.parent.setState ({ 
+				client_data: data,
+				selected_client: data.client_id,
+			}, () => {
 				this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
 			});
 				
