@@ -74,9 +74,9 @@ align-self: stretch;}/* .row-container */
 
 
 .vertically-center {
-	display: inline-flex;
+	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: flex-end;
 }/* .vertically-center */
 
 

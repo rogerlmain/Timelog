@@ -10,11 +10,9 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 
-import ProjectModel from "models/project.model";
-
 import ProjectForm from "forms/project.form";
 
-import { numeric_value, nested_value, not_set, not_empty, get_values } from "classes/common";
+import { numeric_value, not_null, not_set, get_values } from "classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 import "client/resources/styles/pages/projects.css";
@@ -105,7 +103,7 @@ export default class ProjectsPage extends BaseControl {
 				
 				}}>
 
-				<Container visible={this.state.selected_client > 0}>
+				<Container visible={not_null (this.state.selected_client)}>
 					<ProjectForm clientId={this.state.selected_client} formData={this.state.project_data} parent={this}
 						onSave={() => this.project_selector.current.setState ({ projects_loading: true })}>
 					</ProjectForm>

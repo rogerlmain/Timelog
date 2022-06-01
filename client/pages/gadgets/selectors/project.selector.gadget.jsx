@@ -18,6 +18,8 @@ import { master_pages } from "client/master";
 
 import { MasterContext } from "client/classes/types/contexts";
 
+import "client/resources/styles/gadgets/selector.gadget.css";
+
 
 export default class ProjectSelectorGadget extends BaseControl {
 
@@ -107,7 +109,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 				}, () => this.execute (this.props.onClientChange, event))}>
 			</ClientSelectorGadget>
 
-			<FadePanel id={`${this.props.id}_projects_label`} visible={client_selected} className="vertically-center">
+			<FadePanel id={`${this.props.id}_projects_label`} visible={client_selected || single_project} className="project-selector-label">
 				<label htmlFor={this.project_selector_id}>Project</label>
 			</FadePanel>
 

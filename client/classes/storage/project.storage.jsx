@@ -3,7 +3,7 @@ import * as constants from "classes/types/constants";
 import LocalStorage from "classes/local.storage";
 import ProjectModel from "client/models/project.model";
 
-import { isset, is_null, not_empty, not_set, nested_object, nested_value } from "classes/common";
+import { isset, is_array, is_null, not_empty, not_set, nested_object, nested_value } from "classes/common";
 
 const store_name = constants.stores.projects;
 
@@ -98,12 +98,12 @@ export default class ProjectStorage extends LocalStorage {
 				let items = await ProjectModel.fetch (client_id).catch (reject);
 
 				data = null;
-				items.forEach (item => {
+				if (is_array (items)) items.forEach (item => {
 					if (is_null (data)) data = [];
 					data.push (ProjectStorage.project_store (item));
 				});
 
-				ProjectStorage.#set_project (data);
+				if (isset (data)) ProjectStorage.#set_project (data);
 				
 			}// if;
 
