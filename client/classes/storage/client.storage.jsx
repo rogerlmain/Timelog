@@ -93,7 +93,7 @@ puke ();
 			if (isset (result)) return resolve (result);
 
 			ClientModel.fetch_by_company (company_id).then (data => {
-				if (not_empty (data)) ClientStorage.set ({ ...LocalStorage.get_all (store_name), [company_id]: data });
+				if (not_empty (data)) ClientStorage.#set ({ ...LocalStorage.get_all (store_name), [company_id]: data });
 				resolve (data);
 			}).catch (reject);
 

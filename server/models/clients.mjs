@@ -26,6 +26,7 @@ export default class ClientData extends Database {
 			company_id: parseInt (data.company_id),
 			client_name: data.client_name,
 			client_description: data.client_description,
+			billing_rate: data.billing_rate,
 			deleted: false,
 		}// parameters;
 

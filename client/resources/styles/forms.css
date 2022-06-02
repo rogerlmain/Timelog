@@ -1,0 +1,18 @@
+div.billing-option-form {
+	display: grid;
+	grid-template-columns: min-content 1fr repeat(2, min-content);
+	column-gap: 0.5em;
+	row-gap: 0.2em;
+}/* div.billing-option-form */
+
+
+div.billing-option-form label {
+	text-align: right;
+	align-self: center;
+}/* div.billing-option-form label */
+
+
+input[type=number].rate-field {
+	width: 4em;
+	text-align: right;
+}/* input[type=number].rate-field */

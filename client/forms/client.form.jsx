@@ -1,19 +1,24 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 import * as constants from "client/classes/types/constants";
 
 import React from "react";
 
 import FormControl from "controls/form.control";
 import Container from "controls/container";
+import CurrencyInput from "client/controls/inputs/currency.input";
 
 import FadePanel from "controls/panels/fade.panel";
 
-import ClientStorage from "classes/storage/client.storage";
+import ClientStorage from "client/classes/storage/client.storage";
+import OptionStorage from "client/classes/storage/option.storage";
 
 import ClientModel from "models/client.model";
 
 import { SmallProgressMeter } from "controls/progress.meter";
 import { MainContext } from "classes/types/contexts";
+
+
+import "client/resources/styles/forms.css";
 
 
 export default class ClientForm extends FormControl {
@@ -100,6 +105,7 @@ export default class ClientForm extends FormControl {
 	render () {
 
 		let client_id = this.client_data ("client_id");
+		let billing_option = OptionStorage.billing_option ();
 
 		return <Container>
 
@@ -107,17 +113,31 @@ export default class ClientForm extends FormControl {
 
 				<input type="hidden" id="client_id" name="client_id" value={client_id || constants.blank} />
 
-				<div className="two-column-grid">
+				<div className={billing_option ? "billing-option-form" : "one-piece-form"}>
 
 					<label htmlFor="client_name">Client Name</label>
+					
 					<input type="text" id="client_name" name="client_name" 
 						defaultValue={this.client_data ("name") ?? constants.blank} 
 						required={true} disabled={this.props.disabled}
 						onBlur={this.save_client.bind (this)}>
 					</input>
 
+					<Container visible={billing_option}>
+						<label htmlFor="billing_rate" style={{ marginLeft: "1em" }}>Rate</label>
+						<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
+							defaultValue={this.client_data ("billing_rate") ?? "0"}
+							disabled={this.props.disabled}
+							onBlur={this.save_client.bind (this)}>
+						</CurrencyInput>
+					</Container>
+
 					<label htmlFor="client_description">Description</label>
-					<textarea  id="client_description" name="client_description"
+					<textarea id="client_description" name="client_description" 
+						style={{
+							width: "100%",
+							gridColumn: (billing_option ? "2 / -1" : null),
+						}}
 						defaultValue={this.client_data ("description")}  
 						placeholder="(optional)" disabled={this.props.disabled}
 						onBlur={this.save_client.bind (this)}>

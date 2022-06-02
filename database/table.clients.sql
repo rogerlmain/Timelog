@@ -6,6 +6,7 @@ create table clients (
 	company_id		int default null,
 	name			varchar (64) not null,
 	description		varchar (255) default '',
+	billing_rate	numeric (3,2);
 	date_created	datetime not null default current_timestamp,
 	last_updated	datetime not null default current_timestamp,
 	deleted			boolean not null default false,

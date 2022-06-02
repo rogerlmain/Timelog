@@ -9,6 +9,7 @@ create procedure save_client (
     company_id int,
 	client_name varchar (64), 
     client_description varchar (255),
+	billing_rate numeric (5,2),
     deleted boolean
 ) begin
 
@@ -19,11 +20,13 @@ create procedure save_client (
 			insert into clients (
 				company_id, 
 				`name`, 
-				`description`
+				`description`,
+				rate
 			) values (
 				company_id,
 				client_name, 
-				client_description
+				client_description,
+				billing_rate
 			);
             
 		end if;
@@ -36,6 +39,7 @@ create procedure save_client (
 			company_id 		= coalesce (company_id, clients.company_id),
 			`name`			= coalesce (client_name, clients.name),
 			`description`	= coalesce (client_description, clients.description),
+			billing_rate	= coalesce (billing_rate, clients.billing_rate),
 			last_updated 	= current_timestamp()
 		where
 			id = client_id;
