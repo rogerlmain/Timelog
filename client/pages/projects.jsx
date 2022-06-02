@@ -77,6 +77,7 @@ export default class ProjectsPage extends BaseControl {
 
 					onClientChange={(event) => this.setState ({
 						selected_client: numeric_value (event.target.value),
+						selected_project: null,
 						updating: true,
 					})}
 
@@ -97,14 +98,14 @@ export default class ProjectsPage extends BaseControl {
 					if (this.state.selected_project > 0) data = await ProjectStorage.get_by_project_id (this.context.company_id, this.state.selected_project);
 					
 					this.setState ({ 
-						project_data: ProjectStorage.project_store (data),
+						project_data: data,
 						updating: false,
 					});
 				
 				}}>
 
 				<Container visible={not_null (this.state.selected_client)}>
-					<ProjectForm clientId={this.state.selected_client} formData={this.state.project_data} parent={this}
+					<ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
 						onSave={() => this.project_selector.current.setState ({ projects_loading: true })}>
 					</ProjectForm>
 				</Container>

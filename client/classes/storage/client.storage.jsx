@@ -11,10 +11,10 @@ const store_name = stores.clients;
 export default class ClientStorage extends LocalStorage {
 
 
-	static set (values) { LocalStorage.set_store (store_name, values) }
+	static #set = values => { LocalStorage.set_store (store_name, values) }
 
 
-	static set_client (company_id, client) {
+	static #set_client = (company_id, client) => {
 
 		let values = LocalStorage.get_all (store_name);
 		let items = nested_value (values, company_id);
@@ -26,9 +26,19 @@ export default class ClientStorage extends LocalStorage {
 		if (isset (value)) values [company_id].remove (value);
 		values [company_id].push (client); 
 
-		ClientStorage.set (values);
+		ClientStorage.#set (values);
 
-	}// set_client;
+	}/* set_client */;
+
+
+	static save_client = (company_id, form_data) => {
+		return new Promise ((resolve, reject) => {
+			ClientModel.save_client (form_data).then (data => {
+				this.#set_client (company_id, data);
+				resolve (data);
+			}).catch (reject);
+		});
+	}/* save_client */;
 
 
 	static remove_client (client_id) {

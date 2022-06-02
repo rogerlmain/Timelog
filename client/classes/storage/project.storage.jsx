@@ -52,7 +52,7 @@ export default class ProjectStorage extends LocalStorage {
 		return new Promise ((resolve, reject) => {
 			ProjectModel.save_project (form_data).then (data => {
 				this.#set_project (data);
-				resolve (data);
+				resolve (ProjectStorage.project_store (data));
 			}).catch (reject);
 		});
 	}/* save_project */;
@@ -81,7 +81,7 @@ export default class ProjectStorage extends LocalStorage {
 
 			ProjectModel.fetch_by_id (project_id).then (data => {
 				this.#set_project (data);
-				resolve (data);
+				resolve (ProjectStorage.project_store (data));
 			});
 
 		});

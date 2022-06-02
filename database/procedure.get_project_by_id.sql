@@ -10,7 +10,6 @@ create procedure get_project_by_id (project_id integer) begin
 	select
 		clt.company_id,
 		prj.id as project_id,
-        prj.account_id,
         prj.client_id,
         prj.`name` as project_name,
         prj.`code` as project_code,
