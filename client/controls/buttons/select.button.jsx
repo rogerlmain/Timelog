@@ -1,8 +1,8 @@
 
 import * as common from "classes/common";
 
-import React, { SyntheticEvent } from "react";
-import BaseControl, { DefaultProps } from "client/controls/abstract/base.control";
+import React from "react";
+import BaseControl from "client/controls/abstract/base.control";
 
 
 const flash_speed = 70;
@@ -66,20 +66,18 @@ export default class SelectButton extends BaseControl {
 
 
 	render () {
-		return (
-			<button id={this.props.id} name={this.props.name} className={this.props.className} disabled={this.props.disabled}
-				disabled={this.props.disabled} ref={this.button_reference}
-				style={{
-					...this.props.style,
-					color: this.state.selected ? selected_color : (this.state.flashing ? unselected_color: null),
-					background: this.state.selected ? selected_background : (this.state.flashing ? unselected_background: null),
-				}}
-				onClick={this.flash.bind (this)}>
-					
-				{this.props.children}
+		return <button id={this.props.id} name={this.props.name} className={this.props.className} disabled={this.props.disabled}
+			disabled={this.props.disabled} ref={this.button_reference}
+			style={{
+				...this.props.style,
+				color: this.state.selected ? selected_color : (this.state.flashing ? unselected_color: null),
+				background: this.state.selected ? selected_background : (this.state.flashing ? unselected_background: null),
+			}}
+			onClick={this.flash.bind (this)}>
 				
-			</button>
-		);
+			{this.props.children}
+			
+		</button>
 	}// render;
 
 
