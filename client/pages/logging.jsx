@@ -58,28 +58,28 @@ export default class LoggingPage extends BaseControl {
 	project_selected = () => { return ((this.state.project_id > 0) || OptionStorage.single_project ()) && this.client_selected () }
 
 
-	update_current_entry = () => {
+	// update_current_entry = () => {
 
-		let entry = LogStorage.get ();
+	// 	let entry = LogStorage.get ();
 
-		this.state.current_entry = entry;
+	// 	this.state.current_entry = entry;
 
-		if (isset (entry)) {
-			entry.start_time = Date.validated (entry.start_time);
-			entry.end_time = this.end_time ();
-			this.state.project_id = entry.project_id;
-			this.state.editable = this.needs_editing ();
-			if (this.state.editable) this.state.editing = true;
-		}// if;
+	// 	if (isset (entry)) {
+	// 		entry.start_time = Date.validated (entry.start_time);
+	// 		entry.end_time = this.end_time ();
+	// 		this.state.project_id = entry.project_id;
+	// 		this.state.editable = this.needs_editing ();
+	// 		if (this.state.editable) this.state.editing = true;
+	// 	}// if;
 
-	}// update_current_entry;
+	// }// update_current_entry;
 
 
 	needs_editing = () => { 
 
 		if (not_set (this.state.current_entry)) return false;
 
-		let same_day = this.state.current_entry.start_time.same_day (this.state.current_entry.end_time);
+		let same_day = this.state.current_entry.start_time.same_day (this.end_time ());
 		let result = (!same_day || (this.elapsed_time () > (8 * Date.hour_coef)));
 
 		return result;
@@ -89,7 +89,7 @@ export default class LoggingPage extends BaseControl {
 	
 	log_entry = () => {
 
-		this.update_current_entry ();
+//		this.update_current_entry ();
 
 		LoggingModel.log (this.context.company_id, this.state.client_id, this.state.project_id).then (entry => {
 
@@ -116,8 +116,8 @@ export default class LoggingPage extends BaseControl {
 		switch (OptionStorage.granularity (this.state.current_entry.company_id)) {
 			case 1: return new Date ().round_hours (date_rounding.down);
 			case 2: return new Date ().round_minutes (15);
-			case 3: return 0; // Level 3 Granularity - any number of minutes
-			case 4: return 0; // Level 4 Granularity - truetime: down to the second
+			case 3: return new Date ().round_minutes (1);
+			case 4: return new Date ();
 		}// switch;
 
 		return date;
@@ -128,7 +128,7 @@ export default class LoggingPage extends BaseControl {
 	elapsed_time = () => {
 
 		let end_time = this.state.current_entry.end_time ?? this.end_time ();
-		let result = Math.floor ((end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000);
+		let result = Math.max (Math.floor ((end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0);
 
 		return result;
 
@@ -161,15 +161,19 @@ export default class LoggingPage extends BaseControl {
 		
 		
 	link_cell = value => {
-		return <div className={this.state.editable ? "error-link" : null} onClick={this.state.editable ? () => this.setState ({ 
+
+		let editable = this.needs_editing ();
+
+		return <div className={editable ? "error-link" : null} onClick={editable ? () => this.setState ({ 
 			editing: true,
 			fixing: true
 		}) : null}>{value}</div>
+
 	}/* link_cell */;
 
 
 	overtime_notice = () => {
-		return <PopupNotice id="overtime_notice" visible={this.state.editing}>
+		return <PopupNotice id="overtime_notice" visible={this.needs_editing ()}>
 			<ExplodingPanel id="overtime_notice_panel">
 
 				<Container id="calendar_clock" visible={this.state.fixing}>

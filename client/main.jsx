@@ -34,6 +34,8 @@ import { MainContext } from "client/classes/types/contexts";
 import SettingsPage from "pages/settings";
 
 
+const version = 1.21;
+
 
 class Main extends BaseControl {
 
@@ -137,7 +139,7 @@ class Main extends BaseControl {
 
 				<div className="page-footer">
 					<div>&copy; Copyright 2022 - Roger L. Main dba RMPC - All rights reserved</div>
-					<div>Version 1.2</div>
+					<div>Version {version}</div>
 				</div>
 
 			</div>
