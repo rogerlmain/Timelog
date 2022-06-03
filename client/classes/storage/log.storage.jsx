@@ -8,6 +8,8 @@ const store_name = "logging";
 export default class LogStorage extends LocalStorage {
 
 	static get = () => { return super.get_all (store_name) }
+
+
 	static set = (value) => { return super.set_store (store_name, value) }
 	static delete = () => super.remove_store (store_name);	
 
@@ -16,5 +18,11 @@ export default class LogStorage extends LocalStorage {
 	static start_time = () => { return this.get ("start_time") }
 	static client_name = () => { return this.get ("client_name") }
 	static project_name = () => { return this.get ("project_name") }
+
+	static current_entry = () => { 
+		let result = this.get ();
+		if (isset (result) && isset (result.start_time)) result.start_time = new Date (result.start_time);
+		return result;
+	}// current_entry;
 
 }// LogStorage;

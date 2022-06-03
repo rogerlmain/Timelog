@@ -39,8 +39,6 @@ export default class ClientsPage extends BaseControl {
 
 
 	static contextType = MasterContext;
-
-
 	static defaultProps = { id: "clients_page" }
 
 

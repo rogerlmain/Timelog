@@ -24,7 +24,7 @@ create procedure get_latest_entry (account_id integer) begin
 	left outer join
 		clients as clt
 	on
-		(prj.client_id = clt.id)
+		(log.client_id = clt.id)
 	where
 		(log.account_id  = account_id) and
         (log.end_time is null)
