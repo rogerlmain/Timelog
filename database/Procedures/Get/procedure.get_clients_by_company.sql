@@ -10,7 +10,8 @@ create procedure get_clients_by_company (company_id int) begin
 	select
 		id as client_id,
 		`name`,
-        `description`
+        `description`,
+		billing_rate
 	from
 		clients
 	where

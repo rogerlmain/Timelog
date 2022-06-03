@@ -1,4 +1,4 @@
-/**** Containers ****/span
+/**** Containers ****/
 
 
 .row-container {
@@ -66,18 +66,18 @@ align-self: stretch;}/* .row-container */
 }/* .centering-container */
 
 
-.horizontally-center {
+.horizontally-centered {
 	display: inline-flex;
 	flex-direction: row;
 	justify-content: center;
-}/* .horizontally-center */
+}/* .horizontally-centered */
 
 
-.vertically-center {
+.vertically-centered {
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-end;
-}/* .vertically-center */
+	justify-content: center;
+}/* .vertically-centered */
 
 
 /** Flex Row **/
@@ -145,12 +145,21 @@ div.half-break	{ height: 0.5em }
 /********/
 
 
-.button-panel {
+div.button-panel {
 	display: flex;
 	flex-direction: row;
 	column-gap: 0.25em;
 	justify-content: flex-end;
-}/* .button-panel */
+}/* div.button-panel */
+
+
+div.button-column {
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	row-gap: 0.25em;
+	padding: 2em 2em 0 0
+}/* div.button-column */
 
 
 /********/
@@ -253,31 +262,7 @@ div.half-break	{ height: 0.5em }
 }/* banner-signin */
 
 
-/**** Forms ****/
-
-
-div[class$="piece-form"], div[class$="piece-subform"] { 
-	column-gap: 0.5em;
-	row-gap: 0.2em;
-}/* div[class$="piece-form"], div[class$="piece-subform"] */
-
-
-div.one-piece-form		{ grid-template-columns: min-content 1fr }
-div.two-piece-form		{ grid-template-columns: repeat(2, min-content 1fr) }
-div.three-piece-form	{ grid-template-columns: repeat(3, min-content 1fr) }
-
-
-div.one-piece-subform	{ grid-template-columns: 1fr min-content 1fr }
-div.two-piece-subform	{ grid-template-columns: 1fr repeat(2, min-content 1fr) }
-
-
 /********/
-
-
-.form-table label {
-	text-align: right;
-	align-self: center;
-}/* form-table */
 
 
 .aside {
@@ -372,6 +357,29 @@ div.header-column {
 	display: grid;
 	grid-template-rows: min-content 1fr;
 }/* div.header-column */
+
+
+/**** Forms ****/
+
+
+div[class*="-piece-form"] {
+	display: grid;
+	align-items: center;
+	justify-content: stretch;
+	column-gap: 0.5em;
+	row-gap: 0.2em;
+}/* div[class*="-piece-form"] */
+
+
+div.one-piece-form		{ grid-template-columns: min-content 1fr }
+div.two-piece-form		{ grid-template-columns: repeat(2, min-content 1fr) }
+div.three-piece-form	{ grid-template-columns: repeat(3, min-content 1fr) }
+
+
+div.form-table label {
+	text-align: right;
+	align-self: center;
+}/* div.form-table */
 
 
 /**** Proving Ground ****/

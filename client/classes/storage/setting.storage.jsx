@@ -8,7 +8,7 @@ import { default_settings, setting_types } from "classes/types/constants";
 const store_name = "settings";
 
 
-export default class Settings extends LocalStorage {
+export default class SettingStorage extends LocalStorage {
 
 	static get (setting_id) {
 		let settings = this.get_all ("settings");
@@ -17,8 +17,8 @@ export default class Settings extends LocalStorage {
 	}// get;
 
 	static animation_speed (value = null) { 
-		if (common.is_null (value)) return Settings.get (setting_types.animation_speed) ?? default_settings.animation_speed;
-		Settings.set_item (store_name, setting_types.animation_speed, value);
+		if (common.is_null (value)) return SettingStorage.get (setting_types.animation_speed) ?? default_settings.animation_speed;
+		SettingStorage.set_item (store_name, setting_types.animation_speed, value);
 	};
 
-}// Settings;
+}// SettingStorage;

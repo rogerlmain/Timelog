@@ -181,7 +181,7 @@ export default class ProjectForm extends FormControl {
 */}
 			</form>
 
-			<div className="horizontally-spaced-out vertically-center" style={{ marginTop: "1em" }}>
+			<div className="horizontally-spaced-out vertically-centered" style={{ marginTop: "1em" }}>
 
 				<SmallProgressMeter id="project_progress_meter" visible={isset (this.state.status)} 
 					alignment={horizontal_alignment.right}>

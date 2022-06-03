@@ -1,6 +1,6 @@
 import React from "react";
 
-import Settings from "classes/storage/settings";
+import SettingStorage from "classes/storage/setting.storage";
 
 import BaseControl from "controls/abstract/base.control";
 import FadePanel from "controls/panels/fade.panel";
@@ -23,7 +23,7 @@ export default class ExplodingPanel extends BaseControl {
 
 		id: null,
 
-		speed: Settings.animation_speed (),
+		speed: SettingStorage.animation_speed (),
 
 		stretchOnly: false,
 		direction: resize_direction.both,

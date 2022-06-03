@@ -3,6 +3,8 @@ import BaseControl from "../abstract/base.control";
 
 import { not_set } from "client/classes/common";
 
+import "client/resources/styles/controls.css";
+
 
 export default class CurrencyInput extends BaseControl {
 
@@ -38,8 +40,9 @@ export default class CurrencyInput extends BaseControl {
 		delete properties.type;
 		delete properties.defaultValue;
 
-		return <div>
-			$<input type="number" id={this.props.id} name={this.props.id}
+		return <div className="currency-input">
+			<div>$</div>
+			<input type="number" id={this.props.id} name={this.props.id}
 				min={0} step={1} defaultValue={this.props.defaultValue}
 				onKeyDown={this.process_keystroke} {...properties}>
 			</input>

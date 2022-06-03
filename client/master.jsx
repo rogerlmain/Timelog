@@ -24,6 +24,8 @@ import { globals } from "classes/types/constants";
 
 import { MainContext, MasterContext } from "classes/types/contexts";
 
+import "client/resources/styles/home.page.css";
+
 
 export const master_pages = { 
 	home	: { name: "Home", permission: true }, 
@@ -84,7 +86,7 @@ export default class MasterPanel extends BaseControl {
 			if (common.is_null (result)) result = [];
 
 			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP (when needed)
-			result.push (<SelectButton id={name} name={name} key={name} sticky={false}
+			result.push (<SelectButton id={name} name={name} key={name}
 				disabled={this.buttons_disabled ()}
 				onClick={() => this.setState ({ page: value })}>
 
@@ -118,13 +120,10 @@ export default class MasterPanel extends BaseControl {
 
 	signout_button () {
 		return (
-			<SelectButton sticky={false}
-				onClick={() => {
-					localStorage.clear ();
-					globals.main.forceUpdate ();
-				}}>
-				Sign out
-			</SelectButton>
+			<SelectButton onClick={() => {
+				localStorage.clear ();
+				globals.main.forceUpdate ();
+			}}>Sign out</SelectButton>
 		);
 	}// signout_button;
 
@@ -133,8 +132,6 @@ export default class MasterPanel extends BaseControl {
 		return <MasterContext.Provider value={{ ...this.context, master_page: this }}>
 
 			<div ref={this.reference} id={this.props.id} className="full-screen">
-
-				<link rel="stylesheet" href="client/resources/styles/home.page.css" />
 
 				<div className="home_button_panel">
 
@@ -153,8 +150,10 @@ export default class MasterPanel extends BaseControl {
 
 				</div>
 
-				<div className="full-screen horizontally-center" style={{ marginTop: "2em" }}>
-					<ExplodingPanel id="details_panel">{this.page_item ()}</ExplodingPanel>
+				<div className="full-screen horizontally-centered" style={{ marginTop: "2em" }}>
+					<ExplodingPanel id="details_panel">
+						{this.page_item ()}
+					</ExplodingPanel>
 				</div>
 
 			</div>

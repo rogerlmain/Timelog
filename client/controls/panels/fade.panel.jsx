@@ -1,7 +1,7 @@
 import BaseControl from "client/controls/abstract/base.control";
 import React from "react";
 
-import Settings from "classes/storage/settings";
+import SettingStorage from "classes/storage/setting.storage";
 
 import { is_null, not_set } from "classes/common";
 
@@ -16,7 +16,7 @@ export default class FadePanel extends BaseControl {
 		id: null,
 		animate: true,
 		visible: false,
-		speed: Settings.animation_speed ()
+		speed: SettingStorage.animation_speed ()
 	}// defaultProps;
 
 

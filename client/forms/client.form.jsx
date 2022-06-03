@@ -128,7 +128,7 @@ export default class ClientForm extends FormControl {
 						<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
 							defaultValue={this.client_data ("billing_rate") ?? "0"}
 							disabled={this.props.disabled}
-							onBlur={this.save_client.bind (this)}>
+							onBlur={this.save_client}>
 						</CurrencyInput>
 					</Container>
 
@@ -147,7 +147,7 @@ export default class ClientForm extends FormControl {
 				
 			</form>
 
-			<div className="horizontally-spaced-out vertically-center" style={{ marginTop: "1em" }}>
+			<div className="horizontally-spaced-out vertically-centered" style={{ marginTop: "1em" }}>
 
 				<SmallProgressMeter id="client_progress_meter" visible={common.isset (this.state.status)} 
 					alignment={constants.horizontal_alignment.right}>

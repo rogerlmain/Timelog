@@ -10,12 +10,12 @@ import ReactDOM from "react-dom";
 
 import Container from "controls/container";
 
-import BaseControl from "controls/abstract/base.control";
-import SelectList from "controls/select.list";
-import ExplodingPanel from "controls/panels/exploding.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
+import SelectList from "client/controls/select.list";
 
-import AccountStorage from "classes/storage/account.storage";
-import CompanyStorage from "classes/storage/company.storage";
+import AccountStorage from "client/classes/storage/account.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 import MasterPanel from "client/master";
 
@@ -24,14 +24,14 @@ import SignupPage from "pages/sign.up";
 
 import Settings from "pages/settings";
 
-import { globals } from "classes/types/constants";
-import { numeric_value } from "classes/common";
+import { globals } from "client/classes/types/constants";
+import { numeric_value } from "client/classes/common";
 
-import { MainContext } from "classes/types/contexts";
+import { MainContext } from "client/classes/types/contexts";
 
 
 //Special Guest Import
-import DeluxeAccountForm from "./forms/deluxe.account.form";
+import SettingsPage from "pages/settings";
 
 
 
@@ -137,17 +137,21 @@ error_handler (message, url, line) { common.notify (message, url, line) }
 }// Main;
 
 
+class QuickTest extends BaseControl {
+	render () { return null }
+}// QuickTest;
+
+
 /*********/
 
 
 document.onreadystatechange = () => {
 
-ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
+	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-//	ReactDOM.render (<DeluxeAccountForm option="granularity" optionPrice={299} />, document.getElementById ("main_page"));
-
-//	Quick Test Render
-//	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));
+	// ReactDOM.render (<MainContext.Provider value={{ company_id: 132, main_page: this }}>
+	// 	<SettingsPage />
+	// </MainContext.Provider>, document.getElementById ("main_page"));
 
 }// document.ready;

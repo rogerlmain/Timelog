@@ -19,9 +19,14 @@ export default class SelectButton extends BaseControl {
 
 
 	static defaultProps = {
+
+		active: false,
 		disabled: false,
-		sticky: false,
-		submit: false
+		selected: false,
+		submit: false,
+
+		beforeClick: null,
+
 	}// defaultProps;
 
 
@@ -33,24 +38,21 @@ export default class SelectButton extends BaseControl {
 	
 	button_reference = React.createRef ();
 
-	sticky = false;
-	submit = false;
 
-
-	change_color (event, select_value, count) {
+	change_color = (event, select_value, count) => {
 		this.setState ({ selected: select_value });
 		if (count > 0) {
 			setTimeout (() => { this.change_color (event, !select_value, --count) }, flash_speed);
 		} else {
-			this.setState ({ selected: this.sticky, flashing: false });
+			this.setState ({ selected: this.props.selected, flashing: false });
 			this.execute (this.props.onClick, {...event, button: this});
 		}// if;
 	}// change_color;
 
 
-	flash (event) {
+	flash = event => {
 
-		if (!this.submit) event.preventDefault ();
+		if (this.props.submit !== true) event.preventDefault ();
 
 		this.execute (this.props.beforeClick);
 		this.setState ({ flashing: true });
@@ -59,21 +61,26 @@ export default class SelectButton extends BaseControl {
 	}// flash;
 
 
-	componentDidMount () {
-		if (common.isset (this.props.sticky)) this.sticky = this.props.sticky;
-		if (common.isset (this.props.submit)) this.submit = this.props.submit;
+	/********/
+
+
+	shouldComponentUpdate (next_props) {
+		if (this.state.selected != next_props.selected) return !!this.setState ({ selected: next_props.selected });
+		return true;
 	}// componentDidMount;
 
 
+	componentDidMount () { return this.shouldComponentUpdate (this.props) }
+
+
 	render () {
-		return <button id={this.props.id} name={this.props.name} className={this.props.className} disabled={this.props.disabled}
-			disabled={this.props.disabled} ref={this.button_reference}
+		return <button id={this.props.id} name={this.props.name} className={this.props.className} disabled={this.props.disabled} ref={this.button_reference}
 			style={{
 				...this.props.style,
 				color: this.state.selected ? selected_color : (this.state.flashing ? unselected_color: null),
 				background: this.state.selected ? selected_background : (this.state.flashing ? unselected_background: null),
 			}}
-			onClick={this.flash.bind (this)}>
+			onClick={this.flash}>
 				
 			{this.props.children}
 			

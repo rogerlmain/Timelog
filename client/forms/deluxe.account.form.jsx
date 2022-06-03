@@ -282,7 +282,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 
 						<div className="horizontally-center full-width">
-							<div className="three-column-grid pricing-table vertically-center">
+							<div className="three-column-grid pricing-table vertically-centered">
 
 								<Container id="item_options" visible={isset (this.props.optionPrice)}>
 									<input type="radio" id="item_price" name="price_option" value={purchase_options.item} 

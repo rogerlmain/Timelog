@@ -2,7 +2,7 @@ import * as constants from "classes/types/constants";
 
 import React from "react";
 
-import Settings from "classes/storage/settings";
+import SettingStorage from "classes/storage/setting.storage";
 
 import BaseControl from "controls/abstract/base.control";
 import SlideshowPanel from "controls/panels/slideshow.panel";
@@ -28,7 +28,7 @@ export default class EyecandyPanel extends BaseControl {
 
 	static defaultProps = { 
 		id: null,
-		speed: Settings.animation_speed (),
+		speed: SettingStorage.animation_speed (),
 		stretchOnly: false,
 
 		text: null,

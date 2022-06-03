@@ -2,3 +2,20 @@ input.number-input { caret-color: transparent }
 
 input.number-input:focus { background-color: var(--highlight-color) }
 
+
+/********/
+
+
+div.currency-input {
+	display: flex; 
+	position: relative;
+}/* div.currency-input */
+
+
+div.currency-input > div {
+	display: flex;
+	position: relative;
+	left: 1.2em;
+	z-index: 1;
+	align-items: center;
+}/* div.currency-input > div */

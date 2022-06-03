@@ -3,7 +3,7 @@ import * as common from "classes/common";
 import React from "react";
 
 import BaseControl from "controls/abstract/base.control";
-import Settings from "classes/storage/settings";
+import SettingStorage from "classes/storage/setting.storage";
 
 import { horizontal_alignment } from "client/classes/types/constants";
 import { isset, is_number } from "classes/common";
@@ -33,7 +33,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	static defaultProps = {
 		id: null,
-		speed: Settings.animation_speed (),
+		speed: SettingStorage.animation_speed (),
 		value: null,		
 		singleStep: false,
 		showText: false,

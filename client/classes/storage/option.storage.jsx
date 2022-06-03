@@ -4,6 +4,8 @@ import * as common from "classes/common";
 import LocalStorage from "classes/local.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
+import OptionsModel from "client/models/options";
+
 import { isset } from "classes/common";
 
 
@@ -33,7 +35,7 @@ export default class OptionStorage extends LocalStorage {
 	}// get_options;
 
 
-	static set (name, value) { 
+	static #set (name, value) {
 		let company_id = CompanyStorage.active_company_id ();
 		let options = super.get_all (store_name);
 		
@@ -43,12 +45,28 @@ export default class OptionStorage extends LocalStorage {
 		options [company_id][name] = value;
 
 		super.set_store (store_name, options);
-	}// set;
+	}// #set;
 
 
 	static set_all (value) {
 		super.set_store (store_name, value);
 	}// set_all;
+
+
+	/********/
+	
+
+	static save_option (option, value) {	
+		return new Promise ((resolve, reject) => {
+			OptionsModel.save_option (option, value).then (data => {
+				this.#set (option, value);
+				resolve (data);
+			}).catch (reject);
+		});
+	}// save_option;
+	
+
+	/********/
 
 
 	static granularity (company_id = null) { 
@@ -68,6 +86,13 @@ export default class OptionStorage extends LocalStorage {
 	static project_limit () { return OptionStorage.get (constants.option_types.project_limit) ?? 1 }
 
 	static billing_option () { return isset (OptionStorage.get (constants.option_types.billing_option)) }
+
+	
+	static default_rate (value = null) { 
+		if (isset (value)) return OptionStorage.save_option (constants.option_types.default_rate, value);
+		return OptionStorage.get (constants.option_types.default_rate) ?? 0; 
+	}// default_rate;
+
 
 	static subscribed (option) {
 		switch (option) {

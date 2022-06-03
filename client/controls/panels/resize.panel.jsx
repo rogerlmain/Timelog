@@ -1,6 +1,6 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
-import Settings from "classes/storage/settings";
+import SettingStorage from "classes/storage/setting.storage";
 
 import { isset, is_null, matching_objects, nested_value } from "classes/common";
 
@@ -42,7 +42,7 @@ export default class ResizePanel extends BaseControl {
 		resize: resize_state.false,
 		direction: resize_direction.both,
 
-		speed: Settings.animation_speed (),
+		speed: SettingStorage.animation_speed (),
 
 		stretchOnly: false
 	}// defaultProps;

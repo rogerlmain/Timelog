@@ -213,18 +213,6 @@ textarea {
 /**** Partial Classes ****/
 
 
-[class*="-piece-form"], [class*="-piece-grid"] {
-	display: grid;
-	align-items: center;
-	row-gap: 0.2em;
-	column-gap: 1em;
-	justify-content: center;
-}/* [class*="-piece-form"] */
-
-
-/**** ID Classes ****/
-
-
 #home_panel  {
 	display: flex;
 	flex-direction: column;

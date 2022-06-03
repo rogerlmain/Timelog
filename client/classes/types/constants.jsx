@@ -184,6 +184,7 @@ export const option_types = {
 	client_limit	: 4,
 	project_limit	: 5,
 	billing_option	: 6,
+	default_rate	: 7,
 }// option_types;
 
 

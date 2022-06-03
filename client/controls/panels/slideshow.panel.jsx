@@ -2,7 +2,7 @@ import * as React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
-import Settings from "classes/storage/settings";
+import SettingStorage from "classes/storage/setting.storage";
 
 
 export default class SlideshowPanel extends BaseControl {
@@ -16,7 +16,7 @@ export default class SlideshowPanel extends BaseControl {
 		
 		index: 0,
 
-		speed: Settings.animation_speed (),
+		speed: SettingStorage.animation_speed (),
 
 		stretchOnly: false,
 
