@@ -68,8 +68,10 @@ class Main extends BaseControl {
 		if (!this.signed_in ()) return null
 
 		return <div>
-			<div className="right-aligned">{AccountStorage.full_name ()}</div>
-			<div className="right-aligned">
+
+			<div className="right-aligned">Hello {AccountStorage.full_name ()}!</div>
+			
+			<div className="right-aligned" style={{ marginTop: "0.5em" }}>
 
 				<Container visible={CompanyStorage.company_count () > 1}>
 					<SelectList value={CompanyStorage.active_company_id ()} data={companies}
@@ -93,12 +95,13 @@ class Main extends BaseControl {
 				</Container>
 				
 			</div>
+
 		</div>
 
 	}// company_header;
 
 
-error_handler (message, url, line) { common.notify (message, url, line) }
+	error_handler (message, url, line) { common.notify (message, url, line) }
 
 
 	main_page () {
@@ -113,11 +116,11 @@ error_handler (message, url, line) { common.notify (message, url, line) }
 
     render () {
 		return <MainContext.Provider value={{ company_id: numeric_value (this.state.company_id), main_page: this }}>
-			<div ref={this.reference} style={{ display: "flex", flexDirection: "column" }}>
+			<div ref={this.reference} className="vertically-spaced-out main-page">
 
-				<div className="horizontally-spaced-out">
+				<div className="vertically-centered horizontally-spaced-out page-header">
 
-					<div className="page-header">
+					<div className="program-title">
 						<div className="title">RMPC Timelog</div>
 						<div className="tagline">Make every second count</div>
 					</div>
@@ -126,9 +129,18 @@ error_handler (message, url, line) { common.notify (message, url, line) }
 
 				</div>
 				
-				<ExplodingPanel id="main_panel">
-					{this.main_page ()}
-				</ExplodingPanel>
+				<div className="full-screen">
+					<ExplodingPanel id="main_panel">
+						{this.main_page ()}
+					</ExplodingPanel>
+				</div>
+
+				<div className="horizontally-spaced-out page-footer">
+					<div className="two-column-grid">
+						<div>&copy; Copyright 2022 - Roger L. Main dba RMPC</div>
+						<div>Version 1.2</div>
+					</div>
+				</div>
 
 			</div>
 		</MainContext.Provider>

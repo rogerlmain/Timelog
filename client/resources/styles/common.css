@@ -236,9 +236,9 @@ div.button-column {
 /**** Debugging ****/
 
 
-.bordered, .outlined, .outlined * {
+.bordered, .borderlined, .borderlined > *, .outlined, .outlined * {
 	border: solid 1px red;
-}/* .bordered, .outlined, .outlined * */
+}/* border styles */
 
 
 .gray-outlined {
