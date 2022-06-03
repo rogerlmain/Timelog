@@ -21,7 +21,7 @@ create procedure save_client (
 				company_id, 
 				`name`, 
 				`description`,
-				rate
+				billing_rate
 			) values (
 				company_id,
 				client_name, 

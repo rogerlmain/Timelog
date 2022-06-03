@@ -14,7 +14,11 @@ div.page-footer {
 }/* div.page-footer */
 
 
-div.page-footer * { font-size: 8pt }
+div.page-footer div { 
+	display: flex;
+	justify-content: center;
+	font-size: 8pt;
+}/* div.page-footer div */
 
 
 div.program-title {

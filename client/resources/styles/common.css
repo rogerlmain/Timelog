@@ -67,7 +67,7 @@ align-self: stretch;}/* .row-container */
 
 
 .horizontally-centered {
-	display: inline-flex;
+	display: flex;
 	flex-direction: row;
 	justify-content: center;
 }/* .horizontally-centered */

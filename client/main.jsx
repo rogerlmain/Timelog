@@ -135,11 +135,9 @@ class Main extends BaseControl {
 					</ExplodingPanel>
 				</div>
 
-				<div className="horizontally-spaced-out page-footer">
-					<div className="two-column-grid">
-						<div>&copy; Copyright 2022 - Roger L. Main dba RMPC</div>
-						<div>Version 1.2</div>
-					</div>
+				<div className="page-footer">
+					<div>&copy; Copyright 2022 - Roger L. Main dba RMPC - All rights reserved</div>
+					<div>Version 1.2</div>
 				</div>
 
 			</div>
