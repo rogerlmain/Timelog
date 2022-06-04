@@ -131,7 +131,7 @@ export default class SettingsPage extends BaseControl {
 		
 		let option_value = option => { 
 			if (common.isset (options) && common.isset (options [option])) return parseInt (options [option]);
-			return constants.default_options [common.get_key (constants.option_types, option)];
+			return constants.deadbeat_options [common.get_key (constants.option_types, option)];
 		}// option_value;
 
 		this.setState ({
@@ -272,9 +272,6 @@ export default class SettingsPage extends BaseControl {
 									<Break />
 
 									<Container className="full-row" visible={billing_option_available} inline={true}>
-
-										<ExplodingPanel id="default_rate_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
-										</ExplodingPanel>
 
 										<ExplodingPanel id="billing_option_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
 

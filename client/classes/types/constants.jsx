@@ -153,7 +153,7 @@ export const signing_state = {
 
 export let text_highlights = {
 	error: { color: "red" },
-	warning: { color: "#D86500" }
+	warning: { color: "#D86500" },
 }// text_highlights;
 
 
@@ -169,8 +169,9 @@ export const credential_types = {
 	email_address		: "email_address",
 	first_name			: "first_name",
 	last_name			: "last_name",
-	username			: "username"
+	username			: "username",
 }// credential_types;
+
 
 export const setting_types = {
 	animation_speed: 1
@@ -188,6 +189,14 @@ export const option_types = {
 }// option_types;
 
 
+export const granularity_types = {
+	hourly		: 1,
+	quarterly	: 2,
+	minutely	: 3,
+	truetime	: 4,
+}// granularity_types;
+
+
 /**** Default Settings and Options ****/
 
 
@@ -196,14 +205,54 @@ export const default_settings = {
 }// default_settings;
 
 
-export const default_options = {
+export const deadbeat_options = {
 	granularity: 1,
 	start_rounding: date_rounding.off,
 	end_rounding: date_rounding.off,
 	client_limit: 1,
 	project_limit: 1,
 	billing_option: false,
-}// default_options;
+}// deadbeat_options;
+
+
+export const freelance_options = {
+	granularity: 2,
+	start_rounding: date_rounding.off,
+	end_rounding: date_rounding.off,
+	client_limit: 5,
+	project_limit: 5,
+	billing_option: false,
+}// freelance_options;
+
+
+export const company_options = {
+	granularity: 2,
+	start_rounding: date_rounding.off,
+	end_rounding: date_rounding.off,
+	client_limit: 1,
+	project_limit: 1,
+	billing_option: false,
+}// company_options;
+
+
+export const corporate_options = {
+	granularity: 3,
+	start_rounding: date_rounding.off,
+	end_rounding: date_rounding.off,
+	client_limit: 1,
+	project_limit: 1,
+	billing_option: false,
+}// corporate_options;
+
+
+export const enterprise_options = {
+	granularity: 4,
+	start_rounding: date_rounding.off,
+	end_rounding: date_rounding.off,
+	client_limit: 1,
+	project_limit: 1,
+	billing_option: false,
+}// enterprise_options;
 
 
 export const globals = {

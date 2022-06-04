@@ -66,10 +66,13 @@ Array.prototype.extract = function (value, name = "id") {
 
 /**** Date Helper Functions ****/
 
+Date.coefficient = {}
 
-Date.minute_coef = 60;
-Date.hour_coef = Date.minute_coef * 60;
-Date.day_coef = Date.hour_coef * 24;
+Date.coefficient.minute = 60;
+Date.coefficient.quarter = Date.coefficient.minute * 15;
+Date.coefficient.hour = Date.coefficient.quarter * 4;
+Date.coefficient.day = Date.coefficient.hour * 24;
+
 
 Date.is_date = (candidate) => { return (candidate instanceof Date) }
 Date.not_date = (candidate) => { return !this.is_date (candidate) }
@@ -78,9 +81,9 @@ Date.not_date = (candidate) => { return !this.is_date (candidate) }
 // Date.elapsed: returns a time period in minutes in the format: dd:hh:mm (may need to adjust for other formats)
 Date.elapsed = function (elapsed_time /* in minutes */) {
 
-	let days = Math.floor (elapsed_time / Date.day_coef);
-	let hours = Math.floor ((elapsed_time - (days * Date.day_coef)) / Date.hour_coef);
-	let mins = Math.floor ((elapsed_time - ((days * Date.day_coef) + (hours * Date.hour_coef))) / Date.minute_coef);
+	let days = Math.floor (elapsed_time / Date.coefficient.day);
+	let hours = Math.floor ((elapsed_time - (days * Date.coefficient.day)) / Date.coefficient.hour);
+	let mins = Math.floor ((elapsed_time - ((days * Date.coefficient.day) + (hours * Date.coefficient.hour))) / Date.coefficient.minute);
 
 	return `${((days > 0) ? `${days}:` : constants.empty)}${((days > 0) ? hours.padded (2) : hours)}:${mins.padded (2)}`;
 

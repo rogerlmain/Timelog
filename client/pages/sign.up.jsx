@@ -14,7 +14,7 @@ import PasswordForm from "forms/password.form";
 import AccountsModel from "models/accounts";
 
 import { account_types, globals } from "classes/types/constants";
-import { get_keys, is_null, nested_value } from "classes/common";
+import { get_keys, is_null, nested_value, not_empty } from "classes/common";
 
 
 export default class SignupPage extends BaseControl {
@@ -57,7 +57,9 @@ export default class SignupPage extends BaseControl {
 
 
 			<ExplodingPanel id="signup_error">
-				<div id="signup_error_message" style={{ marginBottom: "1em" }}>{this.state.error_message}</div>
+				<Container id="signup_error_container" visible={not_empty (this.state.error_message)}>
+					<div id="signup_error_message" style={{ marginBottom: "1em" }}>{this.state.error_message}</div>
+				</Container>
 			</ExplodingPanel>
 
 			<form id="account_form" ref={this.account_form} encType="multipart/form-data">

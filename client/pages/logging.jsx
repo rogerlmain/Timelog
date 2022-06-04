@@ -16,7 +16,7 @@ import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadg
 
 import LoggingModel from "models/logging";
 
-import { blank, date_formats, date_rounding } from "classes/types/constants";
+import { blank, date_formats, date_rounding, granularity_types } from "classes/types/constants";
 import { isset, is_null, is_empty, nested_value, not_set } from "classes/common";
 
 import { Break } from "controls/html/components";
@@ -58,29 +58,21 @@ export default class LoggingPage extends BaseControl {
 	project_selected = () => { return ((this.state.project_id > 0) || OptionStorage.single_project ()) && this.client_selected () }
 
 
-	// update_current_entry = () => {
+	billable_time = elapsed_time => {
 
-	// 	let entry = LogStorage.get ();
-
-	// 	this.state.current_entry = entry;
-
-	// 	if (isset (entry)) {
-	// 		entry.start_time = Date.validated (entry.start_time);
-	// 		entry.end_time = this.end_time ();
-	// 		this.state.project_id = entry.project_id;
-	// 		this.state.editable = this.needs_editing ();
-	// 		if (this.state.editable) this.state.editing = true;
-	// 	}// if;
-
-	// }// update_current_entry;
-
-
-	needs_editing = () => { 
+		//		let minutes = (elapsed % hour_coef);
+		
+				return "$1234.56";//"TO BE CALCULATED - ENSURE CORRECT LOGIN, FIRST"; //(elapsed - minutes) + Math.round (minutes / account.granularity) * account.granularity;
+		
+			}/* billable_time */;
+		
+		
+			needs_editing = () => { 
 
 		if (not_set (this.state.current_entry)) return false;
 
 		let same_day = this.state.current_entry.start_time.same_day (this.end_time ());
-		let result = (!same_day || (this.elapsed_time () > (8 * Date.hour_coef)));
+		let result = (!same_day || (this.elapsed_time () > (8 * Date.coefficient.hour)));
 
 		return result;
 
@@ -113,42 +105,34 @@ export default class LoggingPage extends BaseControl {
 
 	end_time = () => {
 
-		switch (OptionStorage.granularity (this.state.current_entry.company_id)) {
-			case 1: return new Date ().round_hours (date_rounding.down);
-			case 2: return new Date ().round_minutes (15);
-			case 3: return new Date ().round_minutes (1);
-			case 4: return new Date ();
-		}// switch;
+		if (not_set (nested_value (this.state.current_entry, "end_time"))) {
 
-		return date;
+			let new_entry = this.state.current_entry;
+
+			switch (OptionStorage.granularity (this.state.current_entry.company_id)) {
+				case granularity_types.hourly	: new_entry.end_time = new Date ().round_hours (date_rounding.down); break;
+				case granularity_types.quarterly: new_entry.end_time = new Date ().round_minutes (15); break;
+				case granularity_types.minutely	: new_entry.end_time = new Date ().round_minutes (1); break;
+				case granularity_types.truetime	: new_entry.end_time = new Date (); break;
+			}// switch;
+
+			this.state.current_entry = new_entry;
+
+		}// if;
+
+		return this.state.current_entry.end_time;
 
 	}// end_time;
 
 
-	elapsed_time = () => {
-
-		let end_time = this.state.current_entry.end_time ?? this.end_time ();
-		let result = Math.max (Math.floor ((end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0);
-
-		return result;
-
-	}/* elapsed_time */;
-
-
-	billable_time = (elapsed_time) => {
-
-//		let minutes = (elapsed % hour_coef);
-
-		return "$1234.56";//"TO BE CALCULATED - ENSURE CORRECT LOGIN, FIRST"; //(elapsed - minutes) + Math.round (minutes / account.granularity) * account.granularity;
-
-	}/* billable_time */;
+	elapsed_time = () => { return Math.max (Math.floor ((this.end_time ().getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0) }
 
 
 	invalid_entry = () => {
 
 		let entry = this.state.current_entry;
 		let now = new Date ();
-		let granularity = OptionStorage.granularity (nested_value (this, "context", "company_id"));
+		let granularity = OptionStorage.granularity (nested_value (this.context, "company_id"));
 
 		if (is_null (entry.end_time)) return false;
 
@@ -173,12 +157,13 @@ export default class LoggingPage extends BaseControl {
 
 
 	overtime_notice = () => {
-		return <PopupNotice id="overtime_notice" visible={this.needs_editing ()}>
+		return <PopupNotice id="overtime_notice" visible={this.state.editing}>
 			<ExplodingPanel id="overtime_notice_panel">
 
 				<Container id="calendar_clock" visible={this.state.fixing}>
+
 					<CalendarClock id="log_calendar_clock"
-						start={this.state.current_entry.start_time} end={this.state.current_entry.end_time}
+						start={this.state.current_entry.start_time} end={this.end_time ()}
 						onChange={data => {
 							this.state.current_entry [`${data.boundary}_time`] = data.date;
 							this.forceUpdate ();
@@ -215,9 +200,7 @@ export default class LoggingPage extends BaseControl {
 
 	entry_details = elapsed_time => {
 	
-		let end_time = nested_value (this, "state", "current_entry", "end_time") ?? this.end_time ();
-
-		setTimeout (() => this.forceUpdate (), 1000 + (new Date ().getMilliseconds () % 1000));
+		let end_time = this.end_time ();
 
 		return <div id={this.props.id} className="row-container">
 		
@@ -262,8 +245,25 @@ export default class LoggingPage extends BaseControl {
 
 
 	componentDidMount () {
-//		this.update_current_entry ();
-		this.setState ({ initialized: true });
+
+		let delay = 1000;
+
+		this.setState ({ 
+			editing: this.needs_editing (),
+			initialized: true,
+		});
+
+		switch (OptionStorage.granularity (this.context.company_id)) {
+			case granularity_types.hourly	: delay *= Date.coefficient.hourly; break;
+			case granularity_types.quarterly: delay *= Date.coefficient.quarterly; break;
+			case granularity_types.minutely	: delay *= Date.coefficient.minutely; break;
+		}// switch;
+
+		// setTimeout (() => this.setState ({ current_entry: { 
+		// 	...this.state.current_entry,
+		// 	end_time: this.end_time (),
+		// }}), delay + (new Date ().getMilliseconds () % delay));
+		
 	}// componentDidMount;
 
 
@@ -275,7 +275,6 @@ export default class LoggingPage extends BaseControl {
 
 
 	shouldComponentUpdate (new_props, new_state, new_context) {
-		super.shouldComponentUpdate (new_props, new_state, new_context);
 		if (is_null (new_context)) return false;
 		return true;
 	}// shouldComponentUpdate;

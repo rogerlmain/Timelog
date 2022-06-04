@@ -1,8 +1,13 @@
 import * as React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
-import ExplodingPanel from "controls/panels/exploding.panel";
-import SettingStorage from "classes/storage/setting.storage";
+
+import ExplodingPanel from "client/controls/panels/exploding.panel";
+import Container from "client/controls/container";
+
+import SettingStorage from "client/classes/storage/setting.storage";
+
+import { is_null } from "client/classes/common";
 
 
 export default class SlideshowPanel extends BaseControl {
@@ -32,6 +37,28 @@ export default class SlideshowPanel extends BaseControl {
 	}// constructor;	
 
 
+	/********/
+
+
+	render_children = () => {
+
+		let result = null;
+		let children = this.children (this.props);
+
+		for (let index = 0; index < children.length; index++) {
+			let id = `${children [index].props.id}_container`;
+			if (is_null (result)) result = [];
+			result.push (<Container key={`${id}_key`} id={id} visible={(this.props.index - 1) == index}>{children [index]}</Container>);
+		}// for;
+
+		return result;
+	
+	}// render_children;
+
+
+	/********/
+
+
 	render () {
 		return <ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
 			
@@ -39,7 +66,7 @@ export default class SlideshowPanel extends BaseControl {
 			beforeHiding={this.props.beforeChanging}
 			afterShowing={this.props.afterChanging}>
 
-			{(this.props.index == 0) ? null : this.props.children [this.props.index - 1]}
+			{this.render_children ()}
 
 		</ExplodingPanel>
 	}// render;

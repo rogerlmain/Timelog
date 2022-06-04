@@ -31,7 +31,7 @@ import { MainContext } from "client/classes/types/contexts";
 
 
 //Special Guest Import
-import SettingsPage from "pages/settings";
+import ExplodingPanelTest from "client/tests/archives/exploding.panel.test";
 
 
 const version = 1.21;
@@ -106,17 +106,10 @@ class Main extends BaseControl {
 	error_handler (message, url, line) { common.notify (message, url, line) }
 
 
-	main_page () {
-
-		if (this.signed_in ()) return <MasterPanel id="master_panel" parent={this} companyId={this.state.company_id} />
-		if (this.state.signing_up) return <SignupPage parent={this} />
-
-		return <SigninPage parent={this} />
-		
-	}// main_page;
-
-
     render () {
+
+		let active_panel = (this.signed_in () ? "master_panel" : (this.state.signing_up ? "signup_panel" : "signin_panel"));
+
 		return <MainContext.Provider value={{ company_id: numeric_value (this.state.company_id), main_page: this }}>
 			<div ref={this.reference} className="vertically-spaced-out main-page">
 
@@ -133,12 +126,24 @@ class Main extends BaseControl {
 				
 				<div className="full-screen">
 					<ExplodingPanel id="main_panel">
-						{this.main_page ()}
+
+						<Container id="master_panel_container" visible={active_panel == "master_panel"}>
+							<MasterPanel id="master_panel" parent={this} companyId={this.state.company_id} />
+						</Container>
+
+						<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
+							<SignupPage parent={this} />
+						</Container>
+
+						<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
+							<SigninPage parent={this} />
+						</Container>
+
 					</ExplodingPanel>
 				</div>
 
 				<div className="page-footer">
-					<div>&copy; Copyright 2022 - Roger L. Main dba RMPC - All rights reserved</div>
+					<div>&copy; Copyright 2022 - Roger Main Programming Company (RMPC) - All rights reserved</div>
 					<div>Version {version}</div>
 				</div>
 
@@ -162,8 +167,6 @@ document.onreadystatechange = () => {
 	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-	// ReactDOM.render (<MainContext.Provider value={{ company_id: 132, main_page: this }}>
-	// 	<SettingsPage />
-	// </MainContext.Provider>, document.getElementById ("main_page"));
+//	ReactDOM.render (<ExplodingPanelTest />, document.getElementById ("main_page"));
 
 }// document.ready;

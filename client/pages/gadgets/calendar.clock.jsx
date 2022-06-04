@@ -46,46 +46,63 @@ export default class CalendarClock extends BaseControl {
 	}// time_value;
 
 
+
+	/********/
+
+
+	calendar = React.createRef ();
+
+
+	componentDidMount () {
+
+		let x = this.calendar.current;
+//		alert (x);
+
+	}// componentDidMount;
+
+
+	shouldComponentUpdate (new_props, new_state, new_context) {
+
+		let x = this.calendar.current;
+//		alert (x);
+
+return false;
+
+	}// shouldComponentUpdate;
+
+
 	render () {
-		return (
-			<Container visible={this.props.visible} id={this.props.id} inline={true}>
+		return <Container visible={this.props.visible} id={this.props.id} inline={true}>
 
-				<div className="three-column-grid boundary-toggle-switch">
-					<ToggleButton htmlFor="log_boundary_start" className="centering-container">Start</ToggleButton>
-					<ToggleSwitch id="log_boundary_toggle" value={boundaries.end} onChange={data => this.setState ({ boundary: data })}>
-						<option id="log_boundary_start" value={boundaries.start}>Start</option>
-						<option id="log_boundary_end" value={boundaries.end}>End</option>
-					</ToggleSwitch>
-					<ToggleButton htmlFor="log_boundary_end" className="centering-container">End</ToggleButton>
-				</div>
+			<div className="three-column-grid boundary-toggle-switch">
+				<ToggleButton htmlFor="log_boundary_start" className="centering-container">Start</ToggleButton>
+				<ToggleSwitch id="log_boundary_toggle" value={boundaries.end} onChange={data => this.setState ({ boundary: data })}>
+					<option id="log_boundary_start" value={boundaries.start}>Start</option>
+					<option id="log_boundary_end" value={boundaries.end}>End</option>
+				</ToggleSwitch>
+				<ToggleButton htmlFor="log_boundary_end" className="centering-container">End</ToggleButton>
+			</div>
 
-				<div className="two-column-grid date-time-controls">
+			<div className="two-column-grid date-time-controls">
 
-					<Calendar id="test_calendar" calendarType="US" selectRange={false} 
-						value={this.props [this.state.boundary]} 
-						onChange={value => 
-{							
+				<Calendar id="calendar_object" ref={this.calendar} calendarType="US" selectRange={false} 
+					value={this.props [this.state.boundary]} 
+					onChange={value => this.execute (this.props.onChange, {
+						date: this.date_value (value),
+						boundary: this.state.boundary
+					})}>
+				</Calendar>
 
-						this.execute (this.props.onChange, {
-							date: this.date_value (value),
-							boundary: this.state.boundary
-						})
-						
-}						
-						}>
-					</Calendar>
+				<TimePicker id="time_picker" value={this.props [this.state.boundary]}
+					onChange={value => this.execute (this.props.onChange, {
+						date: this.time_value (value),
+						boundary: this.state.boundary
+					})}>
+				</TimePicker>
 
-					<TimePicker id="time_picker" value={this.props [this.state.boundary]}
-						onChange={value => this.execute (this.props.onChange, {
-							date: this.time_value (value),
-							boundary: this.state.boundary
-						})}>
-					</TimePicker>
+			</div>
 
-				</div>
-
-			</Container>
-		);
+		</Container>
 	}// render;
 
 }// CalendarClock;

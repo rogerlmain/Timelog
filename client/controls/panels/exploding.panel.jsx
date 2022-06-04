@@ -2,15 +2,12 @@ import React from "react";
 
 import SettingStorage from "classes/storage/setting.storage";
 
-import BaseControl from "controls/abstract/base.control";
-import FadePanel from "controls/panels/fade.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import FadePanel from "client/controls/panels/fade.panel";
 
-import ResizePanel, { resize_state, resize_direction } from "controls/panels/resize.panel";
+import ResizePanel, { resize_state, resize_direction } from "client/controls/panels/resize.panel";
 
-import { renderToString } from "react-dom/server";
-
-import { isset, is_null, not_empty, nested_value } from "classes/common";
-import { underscore } from "classes/types/constants";
+import { isset, is_array, is_null, nested_value, not_array } from "client/classes/common";
 
 
 export default class ExplodingPanel extends BaseControl {
@@ -44,7 +41,7 @@ export default class ExplodingPanel extends BaseControl {
 		resize: resize_state.false,
 
 		animate: false,
-		visible: false
+		visible: true,
 
 	}// state;
 
@@ -52,8 +49,7 @@ export default class ExplodingPanel extends BaseControl {
 	constructor (props) {
 		super (props);
 		this.validate_ids (props);
-		this.state.children = this.props.children;
-		this.state.visible = not_empty (renderToString (this.props.children));
+		this.validate_children (props.children);
 	}// constructor;
 
 
@@ -71,32 +67,41 @@ export default class ExplodingPanel extends BaseControl {
 	}// load_contents;
 
 
-	componentDidMount = () => this.setState ({ animate: true });
+	validate_children = children => {
+		if (not_array (children)) children = [children];
+		for (let child of children) {
+			if (nested_value (child.type, "name") != "Container") throw `Exploding panel can only contain Container objects: ${child.constructor.name} found (id: ${this.props.id})`;
+		}// for;
+		this.state.children = this.props.children;
+	}/* validate_children */;
 
 
-	shouldComponentUpdate (next_props, next_state) {
+	/********/
 
-		let updated = !this.same_element (next_state.children, next_props.children, false);
-		let changed = !this.same_element (next_state.children, next_props.children, true);
+
+	componentDidMount () { this.setState ({ animate: true }) }
+
+
+	shouldComponentUpdate (next_props) {
+
+		let updated = false;
+		let current_children = this.children (this.props);
+		let next_children = this.children (next_props);
+
+		for (let next_child of next_children) {
+			let current_child = current_children.find (child => child.props.id == next_child.props.id);
+			if (current_child.props.visible != next_child.props.visible) {
+				updated = true;
+				break;
+			}// if;
+		}// for;
 
 		if (this.transitioning) return is_null (setTimeout (() => this.forceUpdate ()));
 
-		if (updated) {
-			if (this.state.visible) {
-				this.transitioning = true; 
-				this.setState ({ visible: false }); 
-				return false;
-			} else {
-				if (changed) {
-					this.load_contents (next_props.children); 
-					return false;
-				}// if;
-			}// if;
-		} else {
-			if (changed) {
-				this.load_contents (next_props.children); 
-				return false;
-			}// if;
+		if ((updated) && (this.state.visible)) {
+			this.transitioning = true; 
+			this.setState ({ visible: false }); 
+			return false;
 		}// if;
 
  		return true; 

@@ -8,7 +8,9 @@ import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
-import { get_keys } from "classes/common";
+import Container from "client/controls/container";
+
+import { get_keys, not_empty } from "classes/common";
 
 import { globals } from "client/classes/types/constants";
 import { MainContext } from "classes/types/contexts";
@@ -68,7 +70,10 @@ export default class SigninPage extends BaseControl {
 			});
 
 		});
-	}// sign_in;
+	}/* sign_in */;
+
+
+	/********/
 
 
 	render () {
@@ -80,7 +85,9 @@ export default class SigninPage extends BaseControl {
 			<div id={this.props.id} className="shadow-box" style={{ alignSelf: "center" }}>
 
 				<ExplodingPanel id="signin_error">
-					<div id="signin_error_message">{this.state.error_message}</div>
+					<Container id="error_container" visible={not_empty (this.state.error_message)}>
+						<div id="signin_error_message">{this.state.error_message}</div>
+					</Container>
 				</ExplodingPanel>
 
 				<form id="signin_form" encType="multipart/form-data">

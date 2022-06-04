@@ -275,11 +275,10 @@ export default class DeluxeAccountForm extends BaseControl {
 						</Container>
 
 						<ExplodingPanel id="credit_card_form_panel">
-							<div id="credit_card_panel" style={{ display: this.state.new_card ? "initial" : "none" }}>
+							<Container id="credit_card_panel" visible={this.state.new_card}>
 								<CreditCardForm parent={this} />
-							</div>
+							</Container>
 						</ExplodingPanel>
-
 
 						<div className="horizontally-center full-width">
 							<div className="three-column-grid pricing-table vertically-centered">

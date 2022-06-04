@@ -71,7 +71,7 @@ export default class OptionStorage extends LocalStorage {
 
 	static granularity (company_id = null) { 
 		let granularity = OptionStorage.get (constants.option_types.granularity, company_id);
-		let result = common.not_set (granularity) ? constants.default_options.granularity : parseInt (granularity);
+		let result = common.not_set (granularity) ? constants.deadbeat_options.granularity : parseInt (granularity);
 		return result;
 	}// granularity;
 

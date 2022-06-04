@@ -84,7 +84,6 @@ export default class ProjectSelectorGadget extends BaseControl {
 
 
 	shouldComponentUpdate (next_props, next_state, next_context) {
-		super.shouldComponentUpdate (next_props, next_state, next_context);
 		if (this.context.company_id != next_context.company_id) return !!this.setState ({ selected_client: 0 });
 		if (this.props.selectedProject != next_props.selectedProject) return !!this.setState ({ selected_project: next_props.selectedProject });
 		return true;

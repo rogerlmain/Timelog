@@ -3,14 +3,16 @@ import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
-import SettingsPage from "client/pages/settings";
+import Container from "client/controls/container";
 
 
 export default class ExplodingPanelTest extends BaseControl {
 
 	state = {
 		contents: null,
-		item: null
+		show_small: false,
+		show_medium: false,
+		show_large: false,
 	}// state;
 
 
@@ -27,28 +29,24 @@ export default class ExplodingPanelTest extends BaseControl {
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ExplodingPanel id="test_panel" speed={500} stretchOnly={false}>
+						<ExplodingPanel id="test_panel" speed={500}>
 
-							{this.state_equals ("item", "small") && <div style={{ border: "solid 1px green" }} id="small">
+							<Container id="small" visible={this.state.show_small}><div style={{ border: "solid 1px green" }} id="small">
 								Small Item
-							</div>}
+							</div></Container>
 
-							{this.state_equals ("item", "medium") && <div style={{ border: "solid 1px green" }} id="medium">
+							<Container id="medium" visible={this.state.show_medium}><div style={{ border: "solid 1px green" }} id="medium">
 								This is extra test content<br />
 								With a second line...
-							</div>}
+							</div></Container>
 
-							{this.state_equals ("item", "large") && <div style={{ border: "solid 1px green" }} id="large">
+							<Container id="large" visible={this.state.show_large}><div style={{ border: "solid 1px green" }} id="large">
 								blah blah blah blahy blah<br />
 								blllaaahhh blah blah blah blahy blah<br />
 								blah blah blahby blahy blah blech<br />
 								<br />
 								<textarea></textarea>
-							</div>}
-
-							{this.state_equals ("item", "settings") && <div style={{ border: "solid 1px green" }} id="settings">
-								<SettingsPage />
-							</div>}
+							</div></Container>
 
 						</ExplodingPanel>
 					</div>
@@ -57,14 +55,17 @@ export default class ExplodingPanelTest extends BaseControl {
 
 				<br />
 
-				<button onClick={() => this.setState ({ item: "small" })}>Small contents</button>
-				<button onClick={() => this.setState ({ item: "medium" })}>Mediocre contents</button>
-				<button onClick={() => this.setState ({ item: "large" })}>Big contents</button>
-				<button onClick={() => this.setState ({ item: "settings" })}>Settings</button>
+				<button onClick={() => this.setState ({ show_small: !this.state.show_small })}>Small contents</button>
+				<button onClick={() => this.setState ({ show_medium: !this.state.show_medium })}>Mediocre contents</button>
+				<button onClick={() => this.setState ({ show_large: !this.state.show_large })}>Big contents</button>
 
 				<br />
 
-				<button onClick={() => this.setState ({ item: null })}>Clear contents</button>
+				<button onClick={() => this.setState ({ 
+					show_small: false,
+					show_medium: false,
+					show_large: false,
+				 })}>Clear contents</button>
 
 			</div>
 		)

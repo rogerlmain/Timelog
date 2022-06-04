@@ -86,7 +86,7 @@ export function jsonify (value) {
 
 export function is_array (value) { return Array.isArray (value) }
 export function is_date (value) { return value instanceof Date }
-export function is_empty (value) { return (not_set (value, consts.blank) || (value.length == 0)) }
+export function is_empty (value) { return (is_string (value) ? value.empty () : not_set (value, consts.blank) || (value.length == 0)) }
 export function is_function (value) { return value instanceof Function }
 export function is_null (value) { return value == null }
 export function is_number (value) { return !isNaN (Number (value)) }

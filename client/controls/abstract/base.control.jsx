@@ -4,7 +4,9 @@ import * as common from "classes/common";
 import React from "react";
 import ReactDOMServer, { renderToString } from "react-dom/server";
 
-import { get_keys, jsonify } from "classes/common";
+import Container from "client/controls/container";
+
+import { get_keys, is_array, is_null, jsonify, not_array } from "classes/common";
 
 import "classes/types/prototypes";
 
@@ -20,12 +22,25 @@ export default class BaseControl extends React.Component {
 	/********/
 
 
+	children = props => { return is_array (props.children) ? props.children : [props.children] }
 	compare_elements = (first_element, second_element) => { return ReactDOMServer.renderToString (first_element) == ReactDOMServer.renderToString (second_element) }
 	context_item = (name) => { return common.isset (this.context) ? this.context [name] : null }
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
 
 	// Like forceUpdate except calls shouldComponentUpdate
 	forceRefresh = () => { this.setState (this.state) }
+
+
+	// Like setState but doesn't update if states match 
+	// and returns a promise
+	updateState = new_state => {
+		return new Promise ((resolve, reject) => {
+			try {
+				if (jsonify (this.state).matches (jsonify (new_state))) resolve (true);
+				this.setState (new_state, () => resolve (true));
+			} catch (except) { reject (except) }
+		});
+	}// updateState;
 
 
 	filtered_properties = (...used_properties) => {
@@ -232,9 +247,6 @@ export default class BaseControl extends React.Component {
 	}// componentDidUpdate;
 
 
-	refresh () { super.setState (this.state) }
-
-
 	render () { return this.props.children }
 
 
@@ -289,14 +301,6 @@ export default class BaseControl extends React.Component {
 
 
 	/**** React Component Methods ****/
-
-
-	shouldComponentUpdate (next_props, next_state, next_context) {
-		if (jsonify (this.props) != jsonify (next_props)) return true;
-		if (jsonify (this.state) != jsonify (next_state)) return true;
-		if (jsonify (this.context) != jsonify (next_context)) return true;
-		return false;
-	}// shouldComponentUpdate;
 
 
 }// BaseControl;
