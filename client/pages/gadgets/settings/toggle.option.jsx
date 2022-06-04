@@ -6,7 +6,7 @@ import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 import ToggleSwitch from "controls/toggle.switch";
 
-import OptionStorage from "classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 import { get_key, is_null, isset, not_set } from "classes/common";
 import { MainContext } from "client/classes/types/contexts";
@@ -45,7 +45,7 @@ export default class ToggleOption extends BaseControl {
 	change_handler = new_value => {
 
 		let key_name = get_key (constants.option_types, this.props.option);
-		let current_value = OptionStorage [key_name] (this.context.company_id);
+		let current_value = OptionsStorage [key_name] (this.context.company_id);
 
 		this.state.value = new_value + 1;
 
@@ -96,7 +96,7 @@ export default class ToggleOption extends BaseControl {
 
 	componentDidMount () { 
 		if (not_set (this.props.id)) throw "ToggleOption requires an ID";
-		this.setState ({ value: this.props.value ?? OptionStorage.get (this.props.option) });
+		this.setState ({ value: this.props.value ?? OptionsStorage.get (this.props.option) });
 	}// componentDidMount;
 
 

@@ -1,7 +1,7 @@
 import React from "react";
 
 import ProjectStorage from "classes/storage/project.storage";
-import OptionStorage from "classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 import Container from "controls/container";
 
@@ -59,7 +59,7 @@ export default class ProjectsPage extends BaseControl {
 
 	render () {
 
-		let limit = OptionStorage.project_limit ();
+		let limit = OptionsStorage.project_limit ();
 		let option_value = get_values (project_limit_options) [limit - 1];
 		let can_create = ((limit > 1) && (not_set (this.state.project_list) || (this.state.project_list.length < option_value) || (option_value == 0)));
 

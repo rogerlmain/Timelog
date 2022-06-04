@@ -3,7 +3,7 @@ import * as common from "classes/common";
 import React from "react";
 
 import CompanyStorage from "client/classes/storage/company.storage";
-import OptionStorage from "classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 import Container from "controls/container";
 import SelectButton from "controls/buttons/select.button";
@@ -32,8 +32,8 @@ const home_page = "home";
 
 export const master_pages = { 
 	[home_page]	: { name: "Home", permission: true }, 
-	clients		: { name: "Clients", permission: () => { return OptionStorage.client_limit () > 1 } }, 
-	projects	: { name: "Projects", permission: () => { return OptionStorage.project_limit () > 1 } }, 
+	clients		: { name: "Clients", permission: () => { return OptionsStorage.client_limit () > 1 } }, 
+	projects	: { name: "Projects", permission: () => { return OptionsStorage.project_limit () > 1 } }, 
 	logging		: { name: "Logging", permission: true }, 
 	reports		: { name: "Reports", permission: true },
 	account		: { name: "Account", permission: true }, 

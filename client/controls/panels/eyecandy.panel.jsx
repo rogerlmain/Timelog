@@ -1,12 +1,11 @@
-import * as constants from "classes/types/constants";
-
 import React from "react";
 
-import SettingStorage from "classes/storage/setting.storage";
+import SettingsStorage from "client/classes/storage/settings.storage";
 
 import BaseControl from "controls/abstract/base.control";
 import SlideshowPanel from "controls/panels/slideshow.panel";
 
+import { default_settings, eyecandy_images } from "classes/types/constants";
 import { is_null, nested_value } from "classes/common";
 
 
@@ -24,11 +23,12 @@ export default class EyecandyPanel extends BaseControl {
 
 
 	item_container = React.createRef ();
+	slideshow_panel = React.createRef ();
 
 
 	static defaultProps = { 
 		id: null,
-		speed: SettingStorage.animation_speed (),
+		speed: null,
 		stretchOnly: false,
 
 		text: null,
@@ -36,6 +36,9 @@ export default class EyecandyPanel extends BaseControl {
 		eyecandySize: eyecandy_sizes.small,
 		eyecandyVisible: true,
 	};
+
+
+	forceResize = () => this.slideshow_panel.current.forceResize ();
 
 
 	/********/
@@ -56,7 +59,7 @@ export default class EyecandyPanel extends BaseControl {
 		let index = (this.props.eyecandyVisible) ? eyecandy_index : contents_index;
 		let id = `${this.props.id}_eyecandy_panel`;
 
-		return <SlideshowPanel id={id} index={index} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
+		return <SlideshowPanel id={id} ref={this.slideshow_panel} index={index} speed={this.animation_speed ()} stretchOnly={this.props.stretchOnly}
 
 			beforeChanging={() => this.execute (this.props.beforeChanging)}
 
@@ -66,7 +69,7 @@ export default class EyecandyPanel extends BaseControl {
 			}}>
 
 			<div id={`${id}_eyecandy`} style={eyecandy_style}>
-				<img src={constants.eyecandy_images [this.props.eyecandySize]} style={{ marginRight: "0.5em", alignSelf: "center" }} />
+				<img src={eyecandy_images [this.props.eyecandySize]} style={{ marginRight: "0.5em", alignSelf: "center" }} />
 				{this.props.text}
 			</div>
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import SettingStorage from "classes/storage/setting.storage";
+import SettingsStorage from "client/classes/storage/settings.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
 import FadePanel from "client/controls/panels/fade.panel";
@@ -8,30 +8,10 @@ import FadePanel from "client/controls/panels/fade.panel";
 import ResizePanel, { resize_state, resize_direction } from "client/controls/panels/resize.panel";
 
 import { isset, is_array, is_null, nested_value, not_array } from "client/classes/common";
+import { default_settings } from "client/classes/types/constants";
 
 
 export default class ExplodingPanel extends BaseControl {
-
-
-	transitioning = false;
-
-
-	static defaultProps = {
-
-		id: null,
-
-		speed: SettingStorage.animation_speed (),
-
-		stretchOnly: false,
-		direction: resize_direction.both,
-
-		beforeShowing: null,
-		beforeHiding: null,
-
-		afterShowing: null,
-		afterHiding: null
-
-	}// ExplodingPanelProps;
 
 
 	state = {
@@ -46,11 +26,38 @@ export default class ExplodingPanel extends BaseControl {
 	}// state;
 
 
+	transitioning = false;
+
+
+	static defaultProps = {
+
+		id: null,
+
+		speed: null,
+
+		stretchOnly: false,
+		direction: resize_direction.both,
+
+		beforeShowing: null,
+		beforeHiding: null,
+
+		afterShowing: null,
+		afterHiding: null
+
+	}// ExplodingPanelProps;
+
+
 	constructor (props) {
 		super (props);
 		this.validate_ids (props);
 		this.validate_children (props.children);
 	}// constructor;
+
+
+	/********/
+
+
+	forceResize = () => this.setState ({ resize: true });
 
 
 	load_contents = (new_children) => {
@@ -111,7 +118,7 @@ export default class ExplodingPanel extends BaseControl {
 
 	render () {
 
-		let target_speed = Math.floor (this.props.speed / 2);
+		let target_speed = Math.floor (this.animation_speed () / 2);
 
 		let has_width = ((this.props.direction == resize_direction.vertical) && (isset (nested_value (this.props.style, "width"))));
 		let has_height = ((this.props.direction == resize_direction.horizontal) && (isset (nested_value (this.props.style, "height"))));

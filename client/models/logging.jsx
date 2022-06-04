@@ -1,5 +1,5 @@
 import Database from "classes/database";
-import OptionStorage from "classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 import LogStorage from "classes/storage/log.storage";
 
@@ -22,7 +22,7 @@ export default class LoggingModel {
 		let parameters = new FormData ();
 		let time_stamp = new Date ();
 
-		switch (OptionStorage.granularity (company_id)) {
+		switch (OptionsStorage.granularity (company_id)) {
 			case 1: time_stamp = LogStorage.logged_in () ? time_stamp.round_hours (date_rounding.down) : time_stamp.round_hours (date_rounding.up); break;
 			case 2: time_stamp = time_stamp.round_minutes (15); break;
 		}// switch;

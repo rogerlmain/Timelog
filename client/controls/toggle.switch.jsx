@@ -3,9 +3,9 @@ import * as common from "classes/common";
 import React from "react";
 
 import BaseControl from "controls/abstract/base.control";
-import SettingStorage from "classes/storage/setting.storage";
+import SettingsStorage from "client/classes/storage/settings.storage";
 
-import { horizontal_alignment } from "client/classes/types/constants";
+import { default_settings, horizontal_alignment } from "client/classes/types/constants";
 import { isset, is_number } from "classes/common";
 
 
@@ -33,7 +33,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	static defaultProps = {
 		id: null,
-		speed: SettingStorage.animation_speed (),
+		speed: null,
 		value: null,		
 		singleStep: false,
 		showText: false,
@@ -108,7 +108,7 @@ export default class ToggleSwitch extends BaseControl {
 		let index = (common.is_empty (this.props.children) || common.not_set (this.state.option)) ? 0 : this.option_index ();
 		let control_style = { left: ((item_width + 2) * index) + this.state.drag_offset }
 
-		if (common.is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.props.speed}ms ease-in-out`}
+		if (common.is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.animation_speed ()}ms ease-in-out`}
 
 		return <div style={{ position: "relative" }}>
 			<div ref={this.switch_control} className={this.props.showText ? "two-column-grid" : null} style={{ ...this.props.style, position: "relative" }}>

@@ -2,7 +2,7 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import OptionStorage from "client/classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 import ClientStorage from "client/classes/storage/client.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
@@ -80,7 +80,7 @@ export default class ClientSelectorGadget extends BaseControl {
 
 	render () {
 
-		let single_client = (OptionStorage.client_limit () == 1);
+		let single_client = (OptionsStorage.client_limit () == 1);
 		let has_clients = ((not_empty (this.state.clients) || !this.props.newOption) && !single_client);
 
 		return <Container>

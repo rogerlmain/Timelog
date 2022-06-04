@@ -1,12 +1,11 @@
 import * as constants from "classes/types/constants";
-import * as common from "classes/common";
 
 import LocalStorage from "classes/local.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
 import OptionsModel from "client/models/options";
 
-import { isset } from "classes/common";
+import { isset, not_set } from "classes/common";
 
 
 const store_name = "options";
@@ -22,16 +21,16 @@ export default class OptionStorage extends LocalStorage {
 
 
 	static get (name, company_id = null) { 
-		let company = common.isset (company_id) ? company_id : CompanyStorage.active_company_id ();
+		let company = isset (company_id) ? company_id : CompanyStorage.active_company_id ();
 		let options = super.get (store_name, company);
-		return common.isset (options) ? (common.isset (options [name]) ? options [name] : null) : null;
+		return isset (options) ? (isset (options [name]) ? options [name] : null) : null;
 	}// get;
 
 
 	static get_options (company_id = null) {
-		let company = common.isset (company_id) ? company_id : CompanyStorage.active_company_id ();
+		let company = isset (company_id) ? company_id : CompanyStorage.active_company_id ();
 		let company_list = this.get_all (store_name, company);
-		return common.isset (company_list) ? company_list [company] : null;
+		return isset (company_list) ? company_list [company] : null;
 	}// get_options;
 
 
@@ -39,8 +38,8 @@ export default class OptionStorage extends LocalStorage {
 		let company_id = CompanyStorage.active_company_id ();
 		let options = super.get_all (store_name);
 		
-		if (common.not_set (options)) options = {};
-		if (common.not_set (options [company_id])) options [company_id] = {};
+		if (not_set (options)) options = {};
+		if (not_set (options [company_id])) options [company_id] = {};
 
 		options [company_id][name] = value;
 
@@ -71,7 +70,7 @@ export default class OptionStorage extends LocalStorage {
 
 	static granularity (company_id = null) { 
 		let granularity = OptionStorage.get (constants.option_types.granularity, company_id);
-		let result = common.not_set (granularity) ? constants.deadbeat_options.granularity : parseInt (granularity);
+		let result = not_set (granularity) ? constants.deadbeat_options.granularity : parseInt (granularity);
 		return result;
 	}// granularity;
 
@@ -86,6 +85,8 @@ export default class OptionStorage extends LocalStorage {
 	static project_limit () { return OptionStorage.get (constants.option_types.project_limit) ?? 1 }
 	static billing_option () { return OptionStorage.get (constants.option_types.billing_option) ?? 1 }
 
+	static can_bill () { return OptionStorage.billing_option () == 2 }
+
 	
 	static default_rate (value = null) { 
 		if (isset (value)) return OptionStorage.save_option (constants.option_types.default_rate, value);
@@ -95,8 +96,8 @@ export default class OptionStorage extends LocalStorage {
 
 	static subscribed (option) {
 		switch (option) {
-			case constants.option_types.granularity: return common.isset (this.granularity ());
-			case constants.option_types.rounding: return (common.isset (this.start_rounding ()) || common.isset (this.end_rounding ()));
+			case constants.option_types.granularity: return isset (this.granularity ());
+			case constants.option_types.rounding: return (isset (this.start_rounding ()) || isset (this.end_rounding ()));
 		}// switch;
 		return false;
 	}// subscribed;

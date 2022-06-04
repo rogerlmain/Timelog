@@ -8,7 +8,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 import FadePanel from "controls/panels/fade.panel";
 
 import LogStorage from "classes/storage/log.storage";
-import OptionStorage from "classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 import CalendarClock from "pages/gadgets/calendar.clock";
 import PopupNotice from "pages/gadgets/popup.notice";
@@ -44,6 +44,9 @@ export default class LoggingPage extends BaseControl {
 	}/* state */;
 
 
+	log_form_panel = React.createRef ();
+
+
 	static contextType = MainContext;
 	static defaultProps = { id: "logging_page" }
 
@@ -54,8 +57,8 @@ export default class LoggingPage extends BaseControl {
 	}// constructor;
 
 
-	client_selected = () => { return (this.state.client_id > 0) || OptionStorage.single_client () }
-	project_selected = () => { return ((this.state.project_id > 0) || OptionStorage.single_project ()) && this.client_selected () }
+	client_selected = () => { return (this.state.client_id > 0) || OptionsStorage.single_client () }
+	project_selected = () => { return ((this.state.project_id > 0) || OptionsStorage.single_project ()) && this.client_selected () }
 
 
 	billable_time = elapsed_time => {
@@ -109,7 +112,7 @@ export default class LoggingPage extends BaseControl {
 
 			let new_entry = this.state.current_entry;
 
-			switch (OptionStorage.granularity (this.state.current_entry.company_id)) {
+			switch (OptionsStorage.granularity (this.state.current_entry.company_id)) {
 				case granularity_types.hourly	: new_entry.end_time = new Date ().round_hours (date_rounding.down); break;
 				case granularity_types.quarterly: new_entry.end_time = new Date ().round_minutes (15); break;
 				case granularity_types.minutely	: new_entry.end_time = new Date ().round_minutes (1); break;
@@ -126,22 +129,7 @@ export default class LoggingPage extends BaseControl {
 
 
 	elapsed_time = () => { return Math.max (Math.floor ((this.end_time ().getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0) }
-
-
-	invalid_entry = () => {
-
-		let entry = this.state.current_entry;
-		let now = new Date ();
-		let granularity = OptionStorage.granularity (nested_value (this.context, "company_id"));
-
-		if (is_null (entry.end_time)) return false;
-
-		if (entry.end_time.before (entry.start_time)) return true;
-		if ((granularity == 1) && (entry.start_time.before (now) || entry.end_time.after (now))) return true;
-		
-		return false;
-		
-	}/* invalid_entry */;
+	invalid_entry = () => { return (this.state.current_entry.end_time.before (this.state.current_entry.start_time)) }
 		
 		
 	link_cell = value => {
@@ -165,6 +153,7 @@ export default class LoggingPage extends BaseControl {
 					<CalendarClock id="log_calendar_clock"
 						start={this.state.current_entry.start_time} end={this.end_time ()}
 						onChange={data => {
+							this.log_form_panel.current.forceResize ();
 							this.state.current_entry [`${data.boundary}_time`] = data.date;
 							this.forceUpdate ();
 						}}>
@@ -223,7 +212,7 @@ export default class LoggingPage extends BaseControl {
 				<label>Elapsed</label>
 				{this.link_cell (elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)) }
 				
-				<Container visible={OptionStorage.billing_option ()}>
+				<Container visible={OptionsStorage.can_bill ()}>
 
 					<Break />
 
@@ -253,7 +242,7 @@ export default class LoggingPage extends BaseControl {
 			initialized: true,
 		});
 
-		switch (OptionStorage.granularity (this.context.company_id)) {
+		switch (OptionsStorage.granularity (this.context.company_id)) {
 			case granularity_types.hourly	: delay *= Date.coefficient.hourly; break;
 			case granularity_types.quarterly: delay *= Date.coefficient.quarterly; break;
 			case granularity_types.minutely	: delay *= Date.coefficient.minutely; break;
@@ -287,7 +276,7 @@ export default class LoggingPage extends BaseControl {
 
 		return <div id="log_panel">
 
-			<EyecandyPanel id="log_form_eyecandy" text="Loading..." eyecandyVisible={!this.state.initialized} stretchOnly={true}>
+			<EyecandyPanel id="log_form_eyecandy" ref={this.log_form_panel} text="Loading..." eyecandyVisible={!this.state.initialized} stretchOnly={true}>
 
 				{logged_in ? this.entry_details (elapsed_time) : <div>
 

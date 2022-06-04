@@ -1,6 +1,6 @@
 import React from "react";
 
-import OptionStorage from "classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 import ClientStorage from "classes/storage/client.storage";
 
 import BaseControl from "controls/abstract/base.control";
@@ -47,7 +47,7 @@ export default class ClientsPage extends BaseControl {
 
 	render () {
 
-		let limit = OptionStorage.client_limit ();
+		let limit = OptionsStorage.client_limit ();
 		let option_value = get_values (client_limit_options) [limit - 1];
 		let can_create = ((limit > 1) && (not_set (this.state.client_list) || (this.state.client_list.length < option_value) || (option_value == 0)));
 

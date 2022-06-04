@@ -1,6 +1,6 @@
 import React from "react";
 
-import OptionStorage from "client/classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
@@ -92,8 +92,8 @@ export default class ProjectSelectorGadget extends BaseControl {
 
 	render () {
 
-		let single_client = OptionStorage.client_limit () == 1;
-		let single_project = OptionStorage.project_limit () == 1;
+		let single_client = OptionsStorage.client_limit () == 1;
+		let single_project = OptionsStorage.project_limit () == 1;
 
 		let client_selected = (this.state.selected_client > 0) || single_client;
 		let has_projects = isset (this.state.projects) || (!this.props.newOption);

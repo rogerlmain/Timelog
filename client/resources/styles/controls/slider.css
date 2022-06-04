@@ -31,4 +31,5 @@ div.slider div.slider-button {
     border-radius: 1.5em;
     top: calc(-0.75em + 50%);
     position: absolute;
+	cursor: pointer;
 }/* div.slider div.slider-button */

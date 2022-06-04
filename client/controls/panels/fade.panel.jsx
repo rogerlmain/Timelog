@@ -1,9 +1,10 @@
 import BaseControl from "client/controls/abstract/base.control";
 import React from "react";
 
-import SettingStorage from "classes/storage/setting.storage";
+import SettingsStorage from "client/classes/storage/settings.storage";
 
 import { is_null, not_set } from "classes/common";
+import { default_settings } from "client/classes/types/constants";
 
 
 export default class FadePanel extends BaseControl {
@@ -16,7 +17,7 @@ export default class FadePanel extends BaseControl {
 		id: null,
 		animate: true,
 		visible: false,
-		speed: SettingStorage.animation_speed ()
+		speed: null,
 	}// defaultProps;
 
 
@@ -66,7 +67,7 @@ export default class FadePanel extends BaseControl {
 
 	render () {
 		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0)};
-		if (this.props.animate) style = { ...style, transition: `opacity ${this.props.speed}ms ease-in-out` }
+		if (this.props.animate) style = { ...style, transition: `opacity ${this.animation_speed ()}ms ease-in-out` }
 		return <div id={this.props.id} ref={this.fade_panel} style={style} className={this.props.className}>{this.props.children}</div>
 	}// render;
 

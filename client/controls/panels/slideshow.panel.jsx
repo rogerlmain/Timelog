@@ -5,14 +5,18 @@ import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
 import Container from "client/controls/container";
 
-import SettingStorage from "client/classes/storage/setting.storage";
+import SettingsStorage from "client/classes/storage/settings.storage";
 
 import { is_null } from "client/classes/common";
+import { default_settings } from "client/classes/types/constants";
 
 
 export default class SlideshowPanel extends BaseControl {
 
 	state = { index: 0 }
+
+
+	exploding_panel = React.createRef ();
 
 
 	static defaultProps = {
@@ -21,7 +25,7 @@ export default class SlideshowPanel extends BaseControl {
 		
 		index: 0,
 
-		speed: SettingStorage.animation_speed (),
+		speed: null,
 
 		stretchOnly: false,
 
@@ -38,6 +42,9 @@ export default class SlideshowPanel extends BaseControl {
 
 
 	/********/
+
+
+	forceResize = () => this.exploding_panel.current.forceResize ();
 
 
 	render_children = () => {
@@ -60,7 +67,7 @@ export default class SlideshowPanel extends BaseControl {
 
 
 	render () {
-		return <ExplodingPanel id={`${this.props.id}_slideshow_panel`} speed={this.props.speed} stretchOnly={this.props.stretchOnly}
+		return <ExplodingPanel id={`${this.props.id}_slideshow_panel`} ref={this.exploding_panel} speed={this.animation_speed ()} stretchOnly={this.props.stretchOnly}
 			
 			beforeShowing={() => { if (this.props.index == 0) this.execute (this.props.beforeChanging) }}
 			beforeHiding={this.props.beforeChanging}

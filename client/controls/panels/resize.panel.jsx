@@ -1,8 +1,9 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
-import SettingStorage from "classes/storage/setting.storage";
+import SettingsStorage from "client/classes/storage/settings.storage";
 
 import { isset, is_null, matching_objects, nested_value } from "classes/common";
+import { default_settings } from "client/classes/types/constants";
 
 
 export const resize_state = { 
@@ -42,7 +43,7 @@ export default class ResizePanel extends BaseControl {
 		resize: resize_state.false,
 		direction: resize_direction.both,
 
-		speed: SettingStorage.animation_speed (),
+		speed: null,
 
 		stretchOnly: false
 	}// defaultProps;
@@ -163,6 +164,8 @@ export default class ResizePanel extends BaseControl {
 
 	render () {
 
+		let speed = this.animation_speed ();
+
 		let has_width = ((this.props.direction == resize_direction.vertical) && (isset (nested_value (this.props.style, "width"))));
 		let has_height = ((this.props.direction == resize_direction.horizontal) && (isset (nested_value (this.props.style, "height"))));
 
@@ -177,7 +180,7 @@ export default class ResizePanel extends BaseControl {
 			display: (this.props.stretchOnly || has_width || has_height) ? "block" : "inline-block"
 		}// inner_style;
 
-		if (this.props.resize == resize_state.animate) outer_style.transition = `width ${this.props.speed}ms ease-in-out, height ${this.props.speed}ms ease-in-out`;
+		if (this.props.resize == resize_state.animate) outer_style.transition = `width ${speed}ms ease-in-out, height ${speed}ms ease-in-out`;
 
 		if (has_width) outer_style.width = this.props.style.width;
 		if (has_height) outer_style.height = this.props.style.height;

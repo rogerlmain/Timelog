@@ -10,7 +10,7 @@ import CurrencyInput from "client/controls/inputs/currency.input";
 import FadePanel from "controls/panels/fade.panel";
 
 import ClientStorage from "client/classes/storage/client.storage";
-import OptionStorage from "client/classes/storage/option.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 import ClientModel from "models/client.model";
 
@@ -105,7 +105,7 @@ export default class ClientForm extends FormControl {
 	render () {
 
 		let client_id = this.client_data ("client_id");
-		let billing_option = OptionStorage.billing_option ();
+		let billing_option = OptionsStorage.can_bill ();
 
 		return <Container>
 

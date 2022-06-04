@@ -3,8 +3,8 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import OptionStorage from "classes/storage/option.storage";
-import SettingStorage from "classes/storage/setting.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
+import SettingsStorage from "client/classes/storage/settings.storage";
 
 import Container from "client/controls/container";
 import Slider from "client/controls/slider";
@@ -86,7 +86,7 @@ export default class SettingsPage extends BaseControl {
 
 
 	set_option (option, value) {
-		return new Promise ((resolve, reject) => OptionStorage.save_option (option, value).then (data => {
+		return new Promise ((resolve, reject) => OptionsStorage.save_option (option, value).then (data => {
 			this.setState ({ [option]: value }, resolve (data));
 		}).catch (reject));
 	}// set_option;
@@ -127,7 +127,7 @@ export default class SettingsPage extends BaseControl {
 
 	update_state () {
 
-		let options = OptionStorage.get_options (this.state.company_id);
+		let options = OptionsStorage.get_options (this.state.company_id);
 		
 		let option_value = option => { 
 			if (common.isset (options) && common.isset (options [option])) return parseInt (options [option]);
@@ -159,8 +159,8 @@ export default class SettingsPage extends BaseControl {
 	
 	render () {
 
-		let billing_option_available = ((OptionStorage.client_limit () > 1) || (OptionStorage.project_limit () > 1));
-		let billing_option_purchased = (OptionStorage.billing_option () == 2);
+		let billing_option_available = ((OptionsStorage.client_limit () > 1) || (OptionsStorage.project_limit () > 1));
+		let billing_option_purchased = (OptionsStorage.can_bill ());
 
 		return <Container>
 
@@ -201,11 +201,10 @@ export default class SettingsPage extends BaseControl {
 						<div className="one-piece-form">
 							<label>Animation Speed</label>
 							<div style={{ minWidth: "15em", padding: "0.2em 0" }}>
-								<Slider id="animation_speed" min={0} max={5000} value={SettingStorage.animation_speed ()} 
+								<Slider id="animation_speed" min={0} max={5000} value={SettingsStorage.animation_speed ()} 
 									onChange={value => {
-										SettingsModel.save_setting (constants.setting_types.animation_speed, value);
-										SettingStorage.animation_speed (value);
-										this.forceUpdate ();
+										SettingsStorage.animation_speed (value);
+										this.context.main_page.forceUpdate ();
 									}} 
 									showValue={true}>
 								</Slider>
@@ -290,8 +289,8 @@ export default class SettingsPage extends BaseControl {
 												<label htmlFor="default_rate">Default rate</label>
 
 												<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
-													defaultValue={OptionStorage.default_rate () ?? 0}
-													onBlur={event => OptionStorage.default_rate (event.target.value)}>
+													defaultValue={OptionsStorage.default_rate () ?? 0}
+													onBlur={event => OptionsStorage.default_rate (event.target.value)}>
 												</CurrencyInput>
 
 											</Container>
