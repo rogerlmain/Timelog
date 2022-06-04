@@ -3,10 +3,11 @@ import * as common from "classes/common";
 
 import React from "react";
 
-import CustomerHandler from "classes/customer.handler";
-
-import AccountStorage from "classes/storage/account.storage";
+import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
+
+import CustomerHandler from "client/classes/customer.handler";
+import SquareHandler from "client/classes/square.handler";
 
 import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";
@@ -51,6 +52,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	state = {
 
 		active_card: null,
+		square_handler: null,
 		package_price: 9999,	// TODO: Read from database
 
 		square_handler: null,
@@ -89,6 +91,7 @@ export default class DeluxeAccountForm extends BaseControl {
 		this.state = {
 			...this.state,
 			visible: props.visible,
+			square_handler: new SquareHandler (),
 		};
 	}// constructor;
 

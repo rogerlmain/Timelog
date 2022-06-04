@@ -53,7 +53,7 @@ export default class SettingsPage extends BaseControl {
 		client_limit: 1,
 		project_limit: 1,
 
-		billing_option: false,
+		billing_option: 1,
 
 		cc_form: null,
 		pricing: null
@@ -160,7 +160,7 @@ export default class SettingsPage extends BaseControl {
 	render () {
 
 		let billing_option_available = ((OptionStorage.client_limit () > 1) || (OptionStorage.project_limit () > 1));
-		let billing_option_purchased = OptionStorage.billing_option ();
+		let billing_option_purchased = (OptionStorage.billing_option () == 2);
 
 		return <Container>
 
@@ -272,15 +272,14 @@ export default class SettingsPage extends BaseControl {
 									<Break />
 
 									<Container className="full-row" visible={billing_option_available} inline={true}>
-
 										<ExplodingPanel id="billing_option_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
 
 											<Container id="billing_option_container" visible={!billing_option_purchased} inline={true} className="one-piece-form" style={{ display: "flex" }}>
-												<ToggleOption id="billing_option" title="Billing option" values={[1, 2]} value={this.state.billing_option + 1}
+												<ToggleOption id="billing_option" title="Billing option" values={["No", "Yes"]} value={this.state.billing_option}
 													option={constants.option_types.billing_option} parent={this}
 													onPaymentConfirmed={selected_option => 
-														this.set_option (constants.option_types.billing_option, (selected_option - 1)).then (() => 
-														this.setState ({ billing_option: (selected_option - 1) }, this.context.main_page.forceRefresh))
+														this.set_option (constants.option_types.billing_option, (selected_option)).then (() => 
+														this.setState ({ billing_option: selected_option }, this.context.main_page.forceRefresh))
 													}>
 												</ToggleOption>
 											</Container>

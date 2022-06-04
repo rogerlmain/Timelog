@@ -80,12 +80,11 @@ export default class OptionStorage extends LocalStorage {
 	static end_rounding () { return OptionStorage.get (constants.option_types.end_rounding) ?? constants.date_rounding.off }
 
 	static single_client () { return OptionStorage.client_limit () == 1 }
-	static client_limit () { return OptionStorage.get (constants.option_types.client_limit) ?? 1 }
-
 	static single_project () { return OptionStorage.project_limit () == 1}
-	static project_limit () { return OptionStorage.get (constants.option_types.project_limit) ?? 1 }
 
-	static billing_option () { return isset (OptionStorage.get (constants.option_types.billing_option)) }
+	static client_limit () { return OptionStorage.get (constants.option_types.client_limit) ?? 1 }
+	static project_limit () { return OptionStorage.get (constants.option_types.project_limit) ?? 1 }
+	static billing_option () { return OptionStorage.get (constants.option_types.billing_option) ?? 1 }
 
 	
 	static default_rate (value = null) { 

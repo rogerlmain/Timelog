@@ -51,12 +51,8 @@ export default class CreditCardForm extends BaseControl {
 	/********/
 
 
-	componentDidMount () { 
-		let square_handler = new SquareHandler ();
-		square_handler.create_card_form ("#square_form").then (card => this.props.parent.setState ({ 
-			square_handler: square_handler,
-			square_card: card
-		}));
+	componentDidMount () {
+		this.props.parent.state.square_handler.create_card_form ("#square_form").then (card => this.props.parent.setState ({ square_card: card }));
 	}// componentDidMount;
 
 

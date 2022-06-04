@@ -211,7 +211,7 @@ export const deadbeat_options = {
 	end_rounding: date_rounding.off,
 	client_limit: 1,
 	project_limit: 1,
-	billing_option: false,
+	billing_option: 1,
 }// deadbeat_options;
 
 
@@ -221,7 +221,7 @@ export const freelance_options = {
 	end_rounding: date_rounding.off,
 	client_limit: 5,
 	project_limit: 5,
-	billing_option: false,
+	billing_option: 2,
 }// freelance_options;
 
 
@@ -231,7 +231,7 @@ export const company_options = {
 	end_rounding: date_rounding.off,
 	client_limit: 1,
 	project_limit: 1,
-	billing_option: false,
+	billing_option: 2,
 }// company_options;
 
 
@@ -241,7 +241,7 @@ export const corporate_options = {
 	end_rounding: date_rounding.off,
 	client_limit: 1,
 	project_limit: 1,
-	billing_option: false,
+	billing_option: 2,
 }// corporate_options;
 
 
@@ -251,7 +251,7 @@ export const enterprise_options = {
 	end_rounding: date_rounding.off,
 	client_limit: 1,
 	project_limit: 1,
-	billing_option: false,
+	billing_option: 2,
 }// enterprise_options;
 
 
