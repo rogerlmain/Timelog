@@ -77,7 +77,7 @@ export default class CalendarClock extends BaseControl {
 
 				<TimePicker id="time_picker" defaultValue={this.props [this.state.boundary]}
 					onChange={value => this.execute (this.props.onChange, {
-						date: this.time_value (value),
+						date: value,
 						boundary: this.state.boundary
 					})}>
 				</TimePicker>
