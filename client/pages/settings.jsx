@@ -20,13 +20,13 @@ import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
 import ToggleOption from "pages/gadgets/settings/toggle.option";
 
+import { option_types } from "classes/types/constants";
 import { get_keys, nested_value } from "classes/common";
 
 import { resize_direction } from "controls/panels/resize.panel";
 import { client_limit_options } from "pages/clients";
 
 import { MainContext } from "classes/types/contexts";
-import { Break } from "client/controls/html/components";
 
 import "client/resources/styles/pages.css";
 
@@ -105,20 +105,23 @@ export default class SettingsPage extends BaseControl {
 	}// deluxe_account_form;
 
 
+	process_option = (option, value) => this.set_option (option_types [option], value).then (() => this.setState ({ [option]: value }, () => this.context.main_page.forceUpdate ()));
+
+
 	rounding_switches () {
 		return <ExplodingPanel id="rounding_options_panel" direction={resize_direction.vertical} stretchOnly={true}>
 			<Container id="rounding_options_container" visible={ this.state.granularity > 1} className="one-piece-form with-headspace" inline={true}>
 
 				<ToggleOption id="start_time_rounding" title="Start time rounding"
 					values={["Round down", "Round off", "Round up"]} value={this.state.start_rounding + 2}
-					option={constants.option_types.start_rounding} parent={this} billable={false}
-					onChange={selected_value => this.set_option (constants.option_types.start_rounding, selected_value - 1)}>
+					option={option_types.start_rounding} parent={this} billable={false}
+					onChange={selected_value => this.set_option (option_types.start_rounding, selected_value - 1)}>
 				</ToggleOption>					
 
 				<ToggleOption id="end_time_rounding" title="End time rounding"
 					values={["Round down", "Round off", "Round up"]} value={this.state.end_rounding + 2}
-					option={constants.option_types.end_rounding} parent={this} billable={false}
-					onChange={selected_value => this.set_option (constants.option_types.end_rounding, selected_value - 2)}>
+					option={option_types.end_rounding} parent={this} billable={false}
+					onChange={selected_value => this.set_option (option_types.end_rounding, selected_value - 2)}>
 				</ToggleOption>					
 
 			</Container>
@@ -132,16 +135,16 @@ export default class SettingsPage extends BaseControl {
 		
 		let option_value = option => { 
 			if (common.isset (options) && common.isset (options [option])) return parseInt (options [option]);
-			return constants.deadbeat_options [common.get_key (constants.option_types, option)];
+			return constants.deadbeat_options [common.get_key (option_types, option)];
 		}// option_value;
 
 		this.setState ({
-			granularity: option_value (constants.option_types.granularity),
-			start_rounding: option_value (constants.option_types.start_rounding),
-			end_rounding:  option_value (constants.option_types.end_rounding),
-			client_limit:  option_value (constants.option_types.client_limit),
-			project_limit: option_value (constants.option_types.project_limit),
-			billing_option: option_value (constants.option_types.billing_option),
+			granularity: option_value (option_types.granularity),
+			start_rounding: option_value (option_types.start_rounding),
+			end_rounding:  option_value (option_types.end_rounding),
+			client_limit:  option_value (option_types.client_limit),
+			project_limit: option_value (option_types.project_limit),
+			billing_option: option_value (option_types.billing_option),
 		});
 
 	}// update_state;
@@ -232,9 +235,9 @@ export default class SettingsPage extends BaseControl {
 								<div className="one-piece-form" style={{ display: "inline-grid" }}>
 
 									<ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
-										option={constants.option_types.granularity} parent={this} 
+										option={option_types.granularity} parent={this} 
 										onPaymentConfirmed={selected_option => {
-											this.set_option (constants.option_types.granularity, selected_option).then (() => this.setState ({
+											this.set_option (option_types.granularity, selected_option).then (() => this.setState ({
 												start_rounding: constants.date_rounding.off,
 												end_rounding: constants.date_rounding.off,
 												granularity: selected_option
@@ -254,52 +257,44 @@ export default class SettingsPage extends BaseControl {
 								<div className="one-piece-form" >
 
 									<ToggleOption id="client_limit" title="Number of clients" values={get_keys (client_limit_options)} value={this.state.client_limit}
-										option={constants.option_types.client_limit} parent={this} 
-										onPaymentConfirmed={selected_option => 
-											this.set_option (constants.option_types.client_limit, selected_option).then (() => 
-											this.setState ({ client_limit: selected_option }, this.context.main_page.forceRefresh))
-										}>
+										option={option_types.client_limit} parent={this} 
+										onPaymentConfirmed={selected_option => this.process_option ("client_limit", selected_option)}>
 									</ToggleOption>
 
 									<ToggleOption id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.project_limit}
-										option={constants.option_types.project_limit} parent={this} 
-										onPaymentConfirmed={selected_option => 
-											this.set_option (constants.option_types.project_limit, selected_option).then (() => 
-											this.setState ({ project_limit: selected_option }, this.context.main_page.forceRefresh))
-										}>
+										option={option_types.project_limit} parent={this} 
+										onPaymentConfirmed={selected_option => this.process_option ("project_limit", selected_option)}>
 									</ToggleOption>
 
-									<Break />
-
-									<Container className="full-row" visible={billing_option_available} inline={true}>
-										<ExplodingPanel id="billing_option_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
-
-											<Container id="billing_option_container" visible={!billing_option_purchased} inline={true} className="one-piece-form" style={{ display: "flex" }}>
-												<ToggleOption id="billing_option" title="Billing option" values={["No", "Yes"]} value={this.state.billing_option}
-													option={constants.option_types.billing_option} parent={this}
-													onPaymentConfirmed={selected_option => 
-														this.set_option (constants.option_types.billing_option, (selected_option)).then (() => 
-														this.setState ({ billing_option: selected_option }, this.context.main_page.forceRefresh))
-													}>
-												</ToggleOption>
-											</Container>
-
-											<Container id="billing_option_purchased" visible={billing_option_purchased} contentsOnly={false} inline={true} 
-												className="horizontally-spaced-out" style={{ border: "solid 1px blue !important" }}>
-
-												<label htmlFor="default_rate">Default rate</label>
-
-												<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
-													defaultValue={OptionsStorage.default_rate () ?? 0}
-													onBlur={event => OptionsStorage.default_rate (event.target.value)}>
-												</CurrencyInput>
-
-											</Container>
-
-										</ExplodingPanel>
-									</Container>
-
 								</div>
+
+								<br />
+
+								<ExplodingPanel id="billing_option_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
+									<Container id="billing_options_container" className="full-row" visible={billing_option_available} inline={true}>
+
+										<Container id="billing_available_container" visible={!billing_option_purchased} inline={true} className="one-piece-form" style={{ display: "flex" }}>
+											<ToggleOption id="billing_option" title="Billing option" values={["No", "Yes"]} value={this.state.billing_option}
+												option={option_types.billing_option} parent={this}
+												onPaymentConfirmed={selected_option => process_option ("billing_option", selected_option)}>
+											</ToggleOption>
+										</Container>
+
+										<Container id="billing_purchased_container" visible={billing_option_purchased} contentsOnly={false} inline={true} 
+											className="horizontally-spaced-out" style={{ border: "solid 1px blue !important" }}>
+
+											<label htmlFor="default_rate">Default rate</label>
+
+											<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
+												defaultValue={OptionsStorage.default_rate () ?? 0}
+												onBlur={event => OptionsStorage.default_rate (event.target.value)}>
+											</CurrencyInput>
+
+										</Container>
+
+									</Container>
+								</ExplodingPanel>
+
 							</div>
 
 						</div>

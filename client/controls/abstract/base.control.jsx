@@ -305,4 +305,12 @@ export default class BaseControl extends React.Component {
 	/**** React Component Methods ****/
 
 
+	shouldComponentUpdate (next_props, next_state, next_context) {
+		if (jsonify (this.props) != jsonify (next_props)) return true;
+		if (jsonify (this.state) != jsonify (next_state)) return true;
+		if (jsonify (this.context) != jsonify (next_context)) return true;
+		return false;
+	}// shouldComponentUpdate;
+
+
 }// BaseControl;
