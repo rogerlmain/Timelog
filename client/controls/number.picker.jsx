@@ -10,17 +10,22 @@ import "client/resources/styles/controls/number.picker.css";
 
 export default class NumberPicker extends BaseControl {
 
+
+	state = { value: 0 }
+
+	
+	timeout = null;
+
+
 	static defaultProps = { 
 		value: 0,
 		min: null,
 		max: null,
 		loop: false,
+		step: 1,
 		padding: 0,
 		onChange: null
 	}// defaultProps;
-
-
-	state = { value: 0 }
 
 
 	constructor (props) {
@@ -29,31 +34,53 @@ export default class NumberPicker extends BaseControl {
 	}// constructor;
 
 
+	upper_limit = () => { return parseInt (this.props.max) + (parseInt (this.props.min) + 1) }
+
+
+
 	save_selection (selection) {
-		this.setState ({ value: selection }, () => this.execute (this.props.onChange, {
+
+		const difference = limit => {
+			if (this.state.value == 0) return (selection > (limit / 2)) ? (selection - limit) : selection;
+			if (selection == 0) return (this.state.value > (limit / 2)) ? (limit - this.state.value) : (0 - this.state.value);
+			return (selection - this.state.value);
+		}/* difference */;
+
+		let update_values = {
 			old_value: this.state.value,
-			new_value: selection
-		}));
+			new_value: selection,
+			change: difference (this.upper_limit ()),
+			overflow: ((selection == 0) && (difference > 0) ? 1 : ((this.state.value == 0) && (difference < 0) ? -1 : 0)),
+		}// update_values;
+
+		this.setState ({ value: selection }, () => this.execute (this.props.onChange, update_values));
+
 	}// save_selection;
 
 
 	update_value (increment) {
 
-		let new_value = parseInt (this.state.value) + increment;
+		let new_value = parseInt (this.state.value) + parseInt (increment);
 
 		if (is_number (this.props.min) && (new_value < this.props.min)) {
-			if (this.props.loop) new_value = this.props.max;
+			if (this.props.loop) new_value = this.upper_limit () + new_value;
 			else return;
 		}// if;
 
 		if (is_number (this.props.max) && (new_value > this.props.max)) {
-			if (this.props.loop) new_value = this.props.min;
+			if (this.props.loop) new_value = new_value - this.upper_limit ();
 			else return;
 		}// if;
 
 		this.save_selection (new_value);
 
 	}// update_value;
+
+
+	set_value = (increment, delay) => {
+		this.update_value (increment);
+		//this.timeout = setTimeout (() => this.set_value (increment, 200), delay);
+	}// set_value;
 
 
 	shouldComponentUpdate (new_props) {
@@ -68,14 +95,14 @@ export default class NumberPicker extends BaseControl {
 	render () {
 		return <div className="number-picker">
 
-			<div className="up-arrow" onClick={() => this.update_value (1)} />
+			<div className="up-arrow" onMouseDown={() => this.set_value (this.props.step, 1000)} onMouseUp={() => clearTimeout (this.timeout)} />
 
 			<NumberRangeInput min={this.props.min} max={this.props.max} 
 				value={isset (this.state.value) ? this.state.value.padded (this.props.padding) : blank} 
 				onChange={data => this.save_selection (data.new_value)}>
 			</NumberRangeInput>
 
-			<div className="down-arrow" onClick={() => this.update_value (-1)} />
+			<div className="down-arrow" onMouseDown={() => this.set_value (-this.props.step, 1000)} onMouseUp={() => clearTimeout (this.timeout)} />
 
 		</div>
 	}// render;

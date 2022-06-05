@@ -1,104 +1,114 @@
 import React from "react";
 import Clock from "react-clock";
-import NumberPicker from "controls/number.picker";
 
-import BaseControl from "controls/abstract/base.control";
+import OptionStorage from "client/classes/storage/options.storage";
+
+import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
+import NumberPicker from "client/controls/number.picker";
 
 import { nested_value } from "client/classes/common";
+import { date_rounding, granularity_types } from "client/classes/types/constants";
 
 import "client/resources/styles/controls/time.picker.css";
 
 
-const meridians = {
-	am: "am",
-	pm: "pm"
-}// meridians;
-
-
-const time_parts = {
-	hours: "hours",
-	minutes: "minutes",
-	meridian: "meridian"
-}// time_parts;
-
-
 export default class TimePicker extends BaseControl {
 
+
+	state = { value: null }
+
+
 	static defaultProps = { 
-		value: null,
-		onChange: null 
+		granularity: granularity_types.hourly,
+		defaultValue: null,
+		onChange: null,
 	}// defaultProps;
 
 
-	meridian_time () {
-	
-		let military_hours = new Date (this.props.value).getHours ();
-		let hours = (military_hours % 12);
-
-		let is_morning = military_hours < 12;
-		let is_afternoon = military_hours > 11;
-
-		return {
-			hours: hours ? hours : 12,
-			meridian: is_morning ? meridians.am : meridians.pm,
-			morning: is_morning,
-			afternoon: is_afternoon
-		}// return;
-
-	}// meridian_time;
+	rounded = date => {
+		switch (OptionStorage.granularity ()) {
+			case granularity_types.hourly: return date.round_hours (date_rounding.down);
+			case granularity_types.quarterly: return date.round_minutes (15);
+			case granularity_types.minutely: return date.round_minutes (1);
+			default: return date;
+		}// switch;
+	}/* rounded */;
 
 
 	update_time (part, value) {
 
-		let new_time = new Date (this.props.value);
+		let new_time = new Date (this.state.value);
 
-		switch (part) {
-			case time_parts.hours: {
-				let hours = (this.meridian_time ().morning ? value : parseInt (value) + 12);
-				new_time.setHours (hours < 24 ? hours : 0);
-				break;
-			}// time_parts.hours;
-			case time_parts.minutes: new_time.setMinutes (value); break;
-			case time_parts.meridian: {
-				let hours = new_time.getHours ();
-				if ((value == meridians.am) && (hours > 11)) hours -= 12;
-				if ((value == meridians.pm) && (hours < 12)) hours += 12;
-				new_time.setHours (hours == 24 ? 0 : hours);
-				break;
-			}// time_parts.meridian;
-		}// switch;
+		if (part == Date.parts.meridian) {
+			if ((value == Date.meridians.am) && (new_time.getHours () > 11)) new_time.add (Date.parts.hours, -12);
+			if ((value == Date.meridians.pm) && (new_time.getHours () < 12)) new_time.add (Date.parts.hours, 12);
+		} else {
+			new_time.add (Date.parts [part], value);
+		}// if;
 
 		this.execute (this.props.onChange, new_time);
 
 	}// update_time;
 
 
+	/********/
+
+
+	componentDidMount = () => this.setState ({ value: this.rounded (this.props.defaultValue) });
+
+
+	shouldComponentUpdate (next_props) {
+		if (next_props.defaultValue != this.props.defaultValue) return !!this.setState ({ value: next_props.defaultValue });
+		return true;
+	}// shouldComponentUpdate;
+
+
 	render () {
 
-		let meridian_hours = this.meridian_time ();
+		let granularity = OptionStorage.granularity ();
 
-		return <div>
+		let column_class = () => {
+			switch (granularity) {
+				case granularity_types.hourly: return "two-column-grid";
+				case granularity_types.truetime: return "four-column-grid";
+				default: return "three-column-grid";
+			}// switch;
+		}/* column_class */;
+
+		return <div className="top-centered">
 			
-			<Clock id="test_clock" value={this.props.value} renderSecondHand={false} />
+			<Clock id="test_clock" value={this.state.value} renderSecondHand={false} />
 
-			<div className="three-column-grid time-picker">
+			<div className={`time-picker ${column_class ()}`}>
 
-				<NumberPicker id="hours" min="1" max="12" value={meridian_hours.hours} onChange={data => this.update_time (time_parts.hours, data.new_value )} loop={true} />
-
-				<NumberPicker id="minutes" min="0" max="59" 
-					value={nested_value (this, "props", "value", "getMinutes")} 
-					onChange={data => this.update_time (time_parts.minutes, data.new_value )} loop={true} padding={2}>
+				<NumberPicker id="hours" min="1" max="12" 
+					value={nested_value (this.state.value, "get_hours")} loop={true}
+					onChange={data => this.update_time (Date.parts.hours, data.change )}>
 				</NumberPicker>
 
-				<div className="meridian">
-					<div onClick={() => this.update_time (time_parts.meridian, meridians.am)} className={meridian_hours.morning ? "selected" : null}>am</div>
-					<div onClick={() => this.update_time (time_parts.meridian, meridians.pm)} className={meridian_hours.afternoon ? "selected" : null}>pm</div>
+				<Container visible={granularity != granularity_types.hourly}>
+					<NumberPicker id="minutes" min="0" max="59" step={granularity == granularity_types.quarterly ? 15 : 1}
+						value={nested_value (this.state.value, "getMinutes")} loop={true} padding={2}
+						onChange={data => this.update_time (Date.parts.minutes, data.change )}>
+					</NumberPicker>
+				</Container>
+
+				<Container visible={granularity == granularity_types.truetime}>
+					<NumberPicker id="minutes" min="0" max="59"
+						value={nested_value (this.state.value, "getSeconds")} loop={true} padding={2}
+						onChange={data => this.update_time (Date.parts.seconds, data.change )}>
+					</NumberPicker>
+				</Container>
+
+				<div className="vertically-centered meridian">
+					<div onClick={() => this.update_time (Date.parts.meridian, Date.meridians.am)} className={`fully-centered ${nested_value (this.state.value, "morning") ? "selected" : null}`}>am</div>
+					<div onClick={() => this.update_time (Date.parts.meridian, Date.meridians.pm)} className={`fully-centered ${nested_value (this.state.value, "afternoon") ? "selected" : null}`}>pm</div>
 				</div>
 
 			</div>
 
 		</div>
-
 	}// render;
 
 }// TimePicker;

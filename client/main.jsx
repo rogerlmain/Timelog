@@ -3,8 +3,6 @@ import "classes/types/prototypes";
 
 import "client/resources/styles/main.css";
 
-import * as common from "classes/common";
-
 import React from "react";
 import ReactDOM from "react-dom";
 
@@ -22,16 +20,14 @@ import MasterPanel from "client/master";
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
-import Settings from "pages/settings";
-
-import { globals } from "client/classes/types/constants";
-import { numeric_value } from "client/classes/common";
+import { date_formats, globals } from "client/classes/types/constants";
+import { isset, is_empty, not_set, nested_value, notify, numeric_value } from "client/classes/common";
 
 import { MainContext } from "client/classes/types/contexts";
 
 
 //Special Guest Import
-import ExplodingPanelTest from "client/tests/archives/exploding.panel.test";
+import TimePicker from "client/controls/time.picker";
 
 
 const version = 1.21;
@@ -58,7 +54,7 @@ class Main extends BaseControl {
 
 		// window.onerror = this.error_handler;
 
-		this.state.company_id = common.isset (company_list) ? ((common.not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
+		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
 
 	}// constructor;
 
@@ -89,10 +85,10 @@ class Main extends BaseControl {
 				</Container>
 
 				<Container visible={CompanyStorage.company_count () == 1}>
-					<div>{common.nested_value (CompanyStorage.active_company (), "company_name")}</div>
+					<div>{nested_value (CompanyStorage.active_company (), "company_name")}</div>
 				</Container>
 
-				<Container visible={common.is_empty (companies)}>
+				<Container visible={is_empty (companies)}>
 					<div>Guest Account</div>
 				</Container>
 				
@@ -103,7 +99,7 @@ class Main extends BaseControl {
 	}// company_header;
 
 
-	error_handler (message, url, line) { common.notify (message, url, line) }
+	error_handler (message, url, line) { notify (message, url, line) }
 
 
     render () {
@@ -155,7 +151,22 @@ class Main extends BaseControl {
 
 
 class QuickTest extends BaseControl {
-	render () { return null }
+
+	state = { current_time: new Date () }
+
+	render () { 
+		return <div>
+
+			<div>{this.state.current_time.format (date_formats.full_datetime)}</div>
+
+			<br /><br />
+
+			<TimePicker id="time_picker" defaultValue={this.state.current_time}
+				onChange={value => this.setState ({ current_time: value })}>
+			</TimePicker>
+		</div>
+	}// render;
+
 }// QuickTest;
 
 
@@ -167,6 +178,6 @@ document.onreadystatechange = () => {
 	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-//	ReactDOM.render (<ExplodingPanelTest />, document.getElementById ("main_page"));
+//	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));
 
 }// document.ready;

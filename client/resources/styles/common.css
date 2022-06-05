@@ -31,12 +31,6 @@ align-self: stretch;}/* .row-container */
 /**** Justification and Layout Containers ****/
 
 
-.self-centered {
-	justify-self: center;
-	align-self: center;
-}/* self-centered */
-
-
 .centering-cell {
 	justify-items: center;
 	align-items: center;
@@ -58,14 +52,6 @@ align-self: stretch;}/* .row-container */
 }/* flex-row */
 
 
-.centering-container {
-	display: inline-flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-}/* .centering-container */
-
-
 .horizontally-centered {
 	display: flex;
 	flex-direction: row;
@@ -78,6 +64,20 @@ align-self: stretch;}/* .row-container */
 	flex-direction: column;
 	justify-content: center;
 }/* .vertically-centered */
+
+
+.fully-centered {
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}/* .fully-centered */
+
+
+.self-centered {
+	justify-self: center;
+	align-self: center;
+}/* self-centered */
 
 
 /** Flex Row **/
@@ -107,12 +107,12 @@ align-items: center;}/* .horizontally-spaced-out */
 }/* right-justified-column */
 
 
-.top-center-container {
+.top-centered {
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
-}/* .top-center-container */
+}/* .top-centered */
 
 
 .vertically-spaced-out {

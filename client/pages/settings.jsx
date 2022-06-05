@@ -10,14 +10,13 @@ import Container from "client/controls/container";
 import Slider from "client/controls/slider";
 import ToggleSwitch from "client/controls/toggle.switch";
 
-import SelectButton from "client/controls/buttons/select.button";
+import BaseControl from "client/controls/abstract/base.control";
 
-import BaseControl from "controls/abstract/base.control";
-import ExplodingPanel from "controls/panels/exploding.panel";
+import SelectButton from "client/controls/buttons/select.button";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
+import CurrencyInput from "client/controls/inputs/currency.input";
 
 import DeluxeAccountPopup from "popups/deluxe.account.popup";
-
-import OptionsModel from "models/options";
 
 import ToggleOption from "pages/gadgets/settings/toggle.option";
 
@@ -30,7 +29,6 @@ import { MainContext } from "classes/types/contexts";
 import { Break } from "client/controls/html/components";
 
 import "client/resources/styles/pages.css";
-import CurrencyInput from "client/controls/inputs/currency.input";
 
 
 const options_panels = {

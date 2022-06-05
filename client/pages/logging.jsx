@@ -83,9 +83,6 @@ export default class LoggingPage extends BaseControl {
 
 	
 	log_entry = () => {
-
-//		this.update_current_entry ();
-
 		LoggingModel.log (this.context.company_id, this.state.client_id, this.state.project_id).then (entry => {
 
 			if (is_empty (entry)) {
@@ -102,7 +99,6 @@ export default class LoggingPage extends BaseControl {
 			});
 
 		});
-
 	}// log_entry;
 
 
@@ -248,11 +244,6 @@ export default class LoggingPage extends BaseControl {
 			case granularity_types.minutely	: delay *= Date.coefficient.minutely; break;
 		}// switch;
 
-		// setTimeout (() => this.setState ({ current_entry: { 
-		// 	...this.state.current_entry,
-		// 	end_time: this.end_time (),
-		// }}), delay + (new Date ().getMilliseconds () % delay));
-		
 	}// componentDidMount;
 
 

@@ -51,7 +51,7 @@ export default class ClientsPage extends BaseControl {
 		let option_value = get_values (client_limit_options) [limit - 1];
 		let can_create = ((limit > 1) && (not_set (this.state.client_list) || (this.state.client_list.length < option_value) || (option_value == 0)));
 
- 		return <div id={this.props.id} className="top-center-container row-spaced">
+ 		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="two-column-grid">
 				<ClientSelectorGadget id="client_selector" ref={this.client_selector} parent={this} newOption={false}

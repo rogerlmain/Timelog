@@ -106,7 +106,7 @@ this.setState ({
 
 		return <div className="vertically-spaced-out">
 		
-			<div className="full-row centering-container">
+			<div className="full-row fully-centered">
 				<div className="one-piece-form">
 
 					<label htmlFor="company_name">Company name</label>
@@ -129,7 +129,7 @@ this.setState ({
 				</div>
 			</div>
 
-			<div className="full-row centering-container">
+			<div className="full-row fully-centered">
 				<div className="one-piece-form">
 					
 					<label htmlFor="street_address">Street address</label>
@@ -179,7 +179,7 @@ this.setState ({
 				</div>
 			</div>
 
-			<div className="full-row centering-container">
+			<div className="full-row fully-centered">
 				<div className="one-piece-form">
 
 					<label htmlFor="primary_phone">Main phone</label>

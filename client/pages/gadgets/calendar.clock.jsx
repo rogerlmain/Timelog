@@ -30,21 +30,21 @@ export default class CalendarClock extends BaseControl {
 
 
 	date_value (new_date) {
-		let original_date = new Date (this.props [this.state.boundary]);
-		original_date.setFullYear (new_date.getFullYear ());
-		original_date.setMonth (new_date.getMonth ());
-		original_date.setDate (new_date.getDate ());
-		return original_date;
+		let date = new Date (this.props [this.state.boundary]);
+		date.setFullYear (new_date.getFullYear ());
+		date.setMonth (new_date.getMonth ());
+		date.setDate (new_date.getDate ());
+		return date;
 	}// date_value;
 
 
 	time_value (new_time) {
-		let original_time = new Date (this.props [this.state.boundary]);
-		original_time.setHours (new_time.getHours ());
-		original_time.setMinutes (new_time.getMinutes ());
-		return original_time;
+		let time = new Date (this.props [this.state.boundary]);
+		time.setHours (new_time.getHours ());
+		time.setMinutes (new_time.getMinutes ());
+		time.setSeconds (new_time.getSeconds ());
+		return time;
 	}// time_value;
-
 
 
 	/********/
@@ -53,34 +53,16 @@ export default class CalendarClock extends BaseControl {
 	calendar = React.createRef ();
 
 
-	componentDidMount () {
-
-		let x = this.calendar.current;
-//		alert (x);
-
-	}// componentDidMount;
-
-
-	shouldComponentUpdate (new_props, new_state, new_context) {
-
-		let x = this.calendar.current;
-//		alert (x);
-
-return false;
-
-	}// shouldComponentUpdate;
-
-
 	render () {
 		return <Container visible={this.props.visible} id={this.props.id} inline={true}>
 
 			<div className="three-column-grid boundary-toggle-switch">
-				<ToggleButton htmlFor="log_boundary_start" className="centering-container">Start</ToggleButton>
+				<ToggleButton htmlFor="log_boundary_start" className="fully-centered">Start</ToggleButton>
 				<ToggleSwitch id="log_boundary_toggle" value={boundaries.end} onChange={data => this.setState ({ boundary: data })}>
 					<option id="log_boundary_start" value={boundaries.start}>Start</option>
 					<option id="log_boundary_end" value={boundaries.end}>End</option>
 				</ToggleSwitch>
-				<ToggleButton htmlFor="log_boundary_end" className="centering-container">End</ToggleButton>
+				<ToggleButton htmlFor="log_boundary_end" className="fully-centered">End</ToggleButton>
 			</div>
 
 			<div className="two-column-grid date-time-controls">
@@ -93,7 +75,7 @@ return false;
 					})}>
 				</Calendar>
 
-				<TimePicker id="time_picker" value={this.props [this.state.boundary]}
+				<TimePicker id="time_picker" defaultValue={this.props [this.state.boundary]}
 					onChange={value => this.execute (this.props.onChange, {
 						date: this.time_value (value),
 						boundary: this.state.boundary

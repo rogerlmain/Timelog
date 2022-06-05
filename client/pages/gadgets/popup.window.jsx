@@ -62,7 +62,7 @@ export default class PopupWindow extends BaseControl {
 				beforeHiding={() => this.execute (this.props.beforeClosing)}>
 
 				<div className="full-size popup-panel">
-					{this.props.modal ? <div className="full-size centering-container popup-modal" /> : null}
+					{this.props.modal ? <div className="full-size fully-centered popup-modal" /> : null}
 					<div className="popup-window">
 
 						{this.props.children}

@@ -37,7 +37,7 @@ export default class CreditCardForm extends BaseControl {
 		let month_field = this.month_field.current;
 		let year_field = this.year_field.current.input_field.current;
 
-		let card_date = new Date (year_field.value, month_field.selectedValue ()).add (-1, Date.parts.day);
+		let card_date = new Date (year_field.value, month_field.selectedValue ()).add (Date.parts.days, -1);
 		let valid = (card_date.getTime () >= new Date ().getTime ());
 
 		month_field.setValidity (valid, expired_message);

@@ -103,24 +103,30 @@ Date.validated = (date) => {
 
 /**** Date Prototype Functions ****/
 
+Date.meridians = {
+	am: "am",
+	pm: "pm"
+}// meridians;
+
 
 Date.parts = {
-	year		: "year",
-	month		: "month",
-	day			: "day",
-	hour		: "hour",
-	minute		: "minute",
-	second		: "second",
-	millisecond	: "millisecond"
+	years			: "years",
+	months			: "months",
+	days			: "days",
+	hours			: "hours",
+	minutes			: "minutes",
+	seconds			: "seconds",
+	milliseconds	: "milliseconds",
+	meridians		: "meridian",
 }/* parts */;
 
 
-Date.increments 			= {}
-Date.increments.millisecond = 1;
-Date.increments.second		= Date.increments.millisecond * 1000,
-Date.increments.minute		= Date.increments.second * 60,
-Date.increments.hour		= Date.increments.minute * 60,
-Date.increments.day			= Date.increments.hour * 24,
+Date.increments 				= {}
+Date.increments.milliseconds 	= 1;
+Date.increments.seconds			= Date.increments.milliseconds * 1000,
+Date.increments.minutes			= Date.increments.seconds * 60,
+Date.increments.hours			= Date.increments.minutes * 60,
+Date.increments.days			= Date.increments.hours * 24,
 
 
 Date.prototype.get_date = function () { return new Date (this.format (constants.date_formats.database_date)) }
@@ -128,21 +134,19 @@ Date.prototype.get_month = function () { return this.getMonth () }
 Date.prototype.get_year = function () { return this.getFullYear () }
 
 
+Date.prototype.get_hours = function (twenty_four = false) { return twenty_four ? this.getHours () : ((this.getHours () % 12) || 12) }
+Date.prototype.get_meridian = function () { return (this.getHours () > 12) ? Date.meridians.pm : Date.meridians.am }
+
+Date.prototype.morning = function () { return this.get_meridian () == Date.meridians.am }
+Date.prototype.afternoon = Date.prototype.evening = function () { return this.get_meridian () == Date.meridians.pm }
+
 Date.prototype.before = function (comparison) { return this - comparison < 0 }
 Date.prototype.after = function (comparison) { return this - comparison > 0 }
 
 
-Date.prototype.add = function (amount, part) { 
-
-	if ([Date.parts.year, Date.parts.month].includes (part)) {
-		if ((part == Date.parts.year) || ((part == Date.parts.month) && (this.getMonth () == 11))) this.setFullYear (this.getFullYear () + 1);
-		if (part == Date.parts.month) this.setMonth (this.getMonth + 1);
-		return;
-	}// if;
-
+Date.prototype.add = function (part, amount) { 
 	this.setTime (this.getTime () + (Date.increments [part] * amount));
-	return this; // for chaining
-
+	return this;
 }// add;
 
 
