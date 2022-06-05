@@ -16,8 +16,8 @@ import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadg
 
 import LoggingModel from "models/logging";
 
-import { blank, date_formats, date_rounding, granularity_types } from "classes/types/constants";
-import { isset, is_null, is_empty, nested_value, not_set } from "classes/common";
+import { blank, date_formats, date_rounding, granularity_types, space } from "classes/types/constants";
+import { isset, is_null, is_empty, nested_value, not_set, multiline_text } from "classes/common";
 
 import { Break } from "controls/html/components";
 import { MainContext } from "client/classes/types/contexts";
@@ -67,15 +67,15 @@ export default class LoggingPage extends BaseControl {
 		
 				return "$1234.56";//"TO BE CALCULATED - ENSURE CORRECT LOGIN, FIRST"; //(elapsed - minutes) + Math.round (minutes / account.granularity) * account.granularity;
 		
-			}/* billable_time */;
-		
-		
-			needs_editing = () => { 
+	}/* billable_time */;
+
+
+	needs_editing = (limit = 24) => { 
 
 		if (not_set (this.state.current_entry)) return false;
 
 		let same_day = this.state.current_entry.start_time.same_day (this.end_time ());
-		let result = (!same_day || (this.elapsed_time () > (8 * Date.coefficient.hour)));
+		let result = (!same_day || (this.elapsed_time () > (limit * Date.coefficient.hour)));
 
 		return result;
 
@@ -130,12 +130,26 @@ export default class LoggingPage extends BaseControl {
 		
 	link_cell = value => {
 
-		let editable = this.needs_editing ();
+		let editable = this.needs_editing (8);
 
-		return <div className={editable ? "error-link" : null} onClick={editable ? () => this.setState ({ 
-			editing: true,
-			fixing: true
-		}) : null}>{value}</div>
+		return <div title={editable && !this.state.editing ? 
+			multiline_text (
+				"Whoa! Are you a workaholic?",
+				"You've been going for more than eight hours straight!",
+				space,
+				"Click here to change your log times."
+			) : null} 
+		
+			className={editable ? "error-link" : null} 
+
+			onClick={editable ? () => this.setState ({ 
+				editing: true,
+				fixing: true
+			}) : null}>
+				
+			{value}
+
+		</div>
 
 	}/* link_cell */;
 
@@ -167,6 +181,7 @@ export default class LoggingPage extends BaseControl {
 
 						Whoa! Are you sure this is right?<br/>
 						You have a single session going for more than a day!<br />
+						Did you forget to log out?<br />	
 
 						<br />
 

@@ -32,8 +32,8 @@ import "client/resources/styles/pages.css";
 
 
 const options_panels = {
-	user_options:		1,
-	account_options:	2,
+	account_options:	1,
+	user_options:		2,
 }// options_panels;
 
 
@@ -46,12 +46,15 @@ export default class SettingsPage extends BaseControl {
 		company_id: null,
 
 		granularity: 1,
-		start_rounding: constants.date_rounding.off,
-		end_rounding: constants.date_rounding.off,
 		client_limit: 1,
 		project_limit: 1,
 
 		billing_option: 1,
+
+		start_rounding: constants.date_rounding.off,
+		end_rounding: constants.date_rounding.off,
+
+		current_panel: options_panels.account_options,
 
 		cc_form: null,
 		pricing: null
@@ -168,6 +171,16 @@ export default class SettingsPage extends BaseControl {
 
 				<div className="button-column">
 		
+					<SelectButton id="account_options_button" className="sticky-button" 
+						selected={this.state.current_panel == options_panels.account_options} 
+
+						beforeClick={() => this.setState ({ current_panel: null })}
+						onClick={() => this.setState ({ current_panel: options_panels.account_options })}>
+							
+						Account Options
+						
+					</SelectButton>
+
 					<SelectButton id="user_settings_button" className="sticky-button" 
 						selected={this.state.current_panel == options_panels.user_settings} 
 
@@ -175,16 +188,6 @@ export default class SettingsPage extends BaseControl {
 						onClick={() => this.setState ({current_panel: options_panels.user_settings })}>
 							
 						User Settings
-						
-					</SelectButton>
-
-					<SelectButton id="account_options_button" className="sticky-button" 
-						selected={this.state.current_panel == options_panels.account_options} 
-
-						beforeClick={() => this.setState ({ current_panel: null })}
-						onClick={() => this.setState ({current_panel: options_panels.account_options })}>
-							
-						Account Options
 						
 					</SelectButton>
 
