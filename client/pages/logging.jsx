@@ -284,7 +284,7 @@ export default class LoggingPage extends BaseControl {
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 				
-					text={`LogStorage you ${logged_in ? "out" : "in"}...`} 
+					text={`Logging you ${logged_in ? "out" : "in"}...`} 
 					eyecandyVisible={this.state.updating}
 					eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
 

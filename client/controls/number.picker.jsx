@@ -34,16 +34,21 @@ export default class NumberPicker extends BaseControl {
 	}// constructor;
 
 
-	upper_limit = () => { return parseInt (this.props.max) + (parseInt (this.props.min) + 1) }
-
+	upper_limit = () => { return ((this.props.min > 0) ? (this.props.max - this.props.min) : ((this.props.max > 0) ? Math.abs (this.props.min) + Math.abs (this.props.max) : (this.props.min - this.props.max))) + 1 }
 
 
 	save_selection (selection) {
 
 		const difference = limit => {
+
 			if (this.state.value == 0) return (selection > (limit / 2)) ? (selection - limit) : selection;
+			if ((this.state.value == this.props.max) && (selection == this.props.min)) return selection;
+
 			if (selection == 0) return (this.state.value > (limit / 2)) ? (limit - this.state.value) : (0 - this.state.value);
+			if ((selection == this.props.max) && (this.props.value == this.props.min)) return (0 - this.state.value);
+
 			return (selection - this.state.value);
+
 		}/* difference */;
 
 		let update_values = {
