@@ -30,7 +30,7 @@ import { MainContext } from "client/classes/types/contexts";
 import TimePicker from "client/controls/time.picker";
 
 
-const version = "1.2.3";
+const version = "1.2.5";
 
 
 class Main extends BaseControl {

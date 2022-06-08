@@ -74,7 +74,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 
 
 	load_projects = () => {
-		ProjectStorage.get_projects (this.context.company_id, this.state.selected_client).then (data => {
+		ProjectStorage.get_projects_by_client (this.state.selected_client).then (data => {
 			this.setState ({ projects: data }, this.setState ({ projects_loading: false }));
 		});
 	}/* load_projects */;

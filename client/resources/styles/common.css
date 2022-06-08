@@ -80,6 +80,27 @@ align-self: stretch;}/* .row-container */
 }/* self-centered */
 
 
+.flexed-left {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+}/* .flexed-left */
+
+
+.flexed-right {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}/* .flexed-right */
+
+
+.left-aligned {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}/* .left-aligned */
+
+
 /** Flex Row **/
 
 

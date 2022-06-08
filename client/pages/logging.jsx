@@ -14,7 +14,7 @@ import CalendarClock from "pages/gadgets/calendar.clock";
 import PopupNotice from "pages/gadgets/popup.notice";
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
 
-import LoggingModel from "models/logging";
+import LoggingModel from "client/classes/models/logging";
 
 import { blank, date_formats, date_rounding, granularity_types, space } from "classes/types/constants";
 import { isset, is_null, is_empty, nested_value, not_set, multiline_text } from "classes/common";
@@ -23,6 +23,12 @@ import { Break } from "controls/html/components";
 import { MainContext } from "client/classes/types/contexts";
 
 import "client/resources/styles/pages/logging.css";
+
+
+const ranges = {
+	start	: 1,
+	end		: 2,
+}// ranges;
 
 
 export default class LoggingPage extends BaseControl {
@@ -81,8 +87,31 @@ export default class LoggingPage extends BaseControl {
 
 	}// needs_editing;
 
+
+
+	rounded = (date, range) => {
+
+		let rounding_direction = (ranges.start ? OptionsStorage.start_rounding () : OptionsStorage.end_rounding ());
+
+		if (!OptionsStorage.can_round (this.state.current_entry.company_id)) switch (range) {
+			case ranges.end	: return date.round_hours (date_rounding.down);
+			default			: return date.round_hours (date_rounding.up);
+		}// switch;
+
+		switch (OptionsStorage.granularity (this.state.current_entry.company_id)) {
+			case granularity_types.hourly	: return new Date ().round_hours (rounding_direction);
+			case granularity_types.quarterly: return new Date ().round_minutes (15, rounding_direction); break;
+			case granularity_types.minutely	: return new Date ().round_minutes (1, rounding_direction); break;
+			case granularity_types.truetime	: return new Date (); break;
+		}// switch;
+
+	}// rounded;
+
 	
 	log_entry = () => {
+
+		let time_stamp = this.rounded (new Date (), ranges.start);
+
 		LoggingModel.log (this.context.company_id, this.state.client_id, this.state.project_id).then (entry => {
 
 			if (is_empty (entry)) {
@@ -105,18 +134,10 @@ export default class LoggingPage extends BaseControl {
 	end_time = () => {
 
 		if (not_set (nested_value (this.state.current_entry, "end_time"))) {
-
-			let new_entry = this.state.current_entry;
-
-			switch (OptionsStorage.granularity (this.state.current_entry.company_id)) {
-				case granularity_types.hourly	: new_entry.end_time = new Date ().round_hours (date_rounding.down); break;
-				case granularity_types.quarterly: new_entry.end_time = new Date ().round_minutes (15); break;
-				case granularity_types.minutely	: new_entry.end_time = new Date ().round_minutes (1); break;
-				case granularity_types.truetime	: new_entry.end_time = new Date (); break;
-			}// switch;
-
-			this.state.current_entry = new_entry;
-
+			this.state.current_entry = {
+				...this.state.current_entry,
+				end_time: this.rounded (new Date (), ranges.end),
+			};
 		}// if;
 
 		return this.state.current_entry.end_time;

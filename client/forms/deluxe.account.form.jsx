@@ -17,7 +17,7 @@ import Container from "controls/container";
 import SelectList from "controls/select.list";
 
 import AddressForm from "forms/address.form"
-import CreditCardForm from "forms/credit.card.form";
+import CreditCardSubform from "client/forms/subforms/credit.card.subform";
 
 import { MainContext } from "classes/types/contexts";
 import { dynamic_input_classname } from "controls/inputs/dynamic.input";
@@ -279,7 +279,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 						<ExplodingPanel id="credit_card_form_panel">
 							<Container id="credit_card_panel" visible={this.state.new_card}>
-								<CreditCardForm parent={this} />
+								<CreditCardSubform parent={this} />
 							</Container>
 						</ExplodingPanel>
 

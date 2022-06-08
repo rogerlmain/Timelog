@@ -10,7 +10,7 @@ export default class ProjectModel {
 	static save_project (data) { return Database.save_data (table_name, data) }
 
 
-	static async fetch (client_id) {
+	static async get_projects_by_client (client_id) {
 
 		let parameters = new FormData ();
 
@@ -19,15 +19,19 @@ export default class ProjectModel {
 
 		return await Database.fetch_data ("projects", parameters);
 
-	}// fetch_by_client;
+	}// get_projects_by_client;
 
 
-	static fetch_by_id (project_id) {
+	static get_project_by_id (project_id) {
+
 		let parameters = new FormData ();
+
 		parameters.set ("project_id", project_id.toString ());
 		parameters.set ("action", "details");
+
 		return Database.fetch_row ("projects", parameters);
-	}// fetch_by_id;
+		
+	}// get_project_by_id;
 
 	
 }// ProjectModel;

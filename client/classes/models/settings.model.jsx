@@ -1,5 +1,5 @@
 import Database from "classes/database";
-import DataModel from "models/data.model";
+import DataModel from "client/classes/models/data.model";
 
 
 export default class SettingsModel extends DataModel {

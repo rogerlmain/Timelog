@@ -14,7 +14,7 @@ import "client/resources/styles/pages/forms.css";
 const expired_message = "Card expired\nWhat are you trying to pull?";
 
 
-export default class CreditCardForm extends BaseControl {
+export default class CreditCardSubform extends BaseControl {
 
 
 	name_checkbox = React.createRef ();
@@ -114,6 +114,6 @@ defaultValue="Rex Strange">
 		</Container>
 	}// render;
 
-}// CreditCardForm;
+}// CreditCardSubform;
 
 

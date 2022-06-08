@@ -76,7 +76,7 @@ export default class ClientsPage extends BaseControl {
 
 					let data = null;
 
-					if (this.state.selected_client > 0) data = await ClientStorage.get_by_client_id (this.context.company_id, this.state.selected_client);
+					if (this.state.selected_client > 0) data = await ClientStorage.get_by_id (this.state.selected_client);
 					
 					this.setState ({ 
 						client_data: data,

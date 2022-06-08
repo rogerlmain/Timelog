@@ -5,7 +5,7 @@ import SelectButton from "controls/buttons/select.button";
 import Container from "controls/container";
 
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
-import ReportsModel from "models/reports";
+import ReportsModel from "client/classes/models/reports";
 
 import { date_formats } from "classes/types/constants";
 import { get_keys, isset, is_null, is_object, not_set } from "classes/common";

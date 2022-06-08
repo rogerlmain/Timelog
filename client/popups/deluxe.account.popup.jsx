@@ -6,8 +6,8 @@ import React from "react";
 import BaseControl from "controls/abstract/base.control";
 import EyecandyPanel, { eyecandy_sizes } from "controls/panels/eyecandy.panel";
 
-import CompanyCardModel from "models/company.cards";
-import PricingModel from "models/pricing";
+import CompanyCardModel from "client/classes/models/company.cards";
+import PricingModel from "client/classes/models/pricing";
 
 import PopupWindow from "pages/gadgets/popup.window";
 

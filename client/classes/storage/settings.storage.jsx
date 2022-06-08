@@ -1,7 +1,7 @@
 import * as common from "classes/common";
 
 import LocalStorage from "classes/local.storage";
-import SettingsModel from "client/models/settings.model";
+import SettingsModel from "client/classes/models/settings.model";
 
 import { default_settings, setting_types } from "classes/types/constants";
 

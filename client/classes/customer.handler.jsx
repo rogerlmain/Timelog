@@ -3,11 +3,11 @@ import * as common from "classes/common";
 
 import FormHandler from "classes/form.handler";
 
-import AccountsModel from "models/accounts";
-import AddressesModel from "models/addresses";
-import CompaniesModel from "models/companies";
-import CompanyAccountsModel from "models/company.accounts";
-import CompanyCardModel from "models/company.cards";
+import AccountsModel from "client/classes/models/accounts";
+import AddressesModel from "client/classes/models/addresses";
+import CompaniesModel from "client/classes/models/companies";
+import CompanyAccountsModel from "client/classes/models/company.accounts";
+import CompanyCardModel from "client/classes/models/company.cards";
 
 import AccountStorage from "classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";

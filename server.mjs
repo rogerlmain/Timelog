@@ -197,7 +197,7 @@ app.post ("/projects", function (request, response) {
 	app.process (request, response, (fields) => {
 		let project_data = new ProjectData (request, response);
 		switch (fields.action) {
-			case "list": project_data.get_projects (fields.client_id); break;
+			case "list": project_data.get_projects_by_client (fields.client_id); break;
 			case "details": project_data.get_project_by_id (fields.project_id); break;
 			case "save": project_data.save_project (fields); break;
 		}// switch;

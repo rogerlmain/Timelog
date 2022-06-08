@@ -13,6 +13,7 @@ export default class ProjectData extends Database {
 			project_name: data.project_name, 
 			project_code: data.project_code,
 			description: data.project_description,
+			billing_rate: data.billing_rate,
 			deleted: false
 		}// parameters;
 
@@ -31,14 +32,14 @@ export default class ProjectData extends Database {
 	}/* get_project_by_id */;
 
 
-	get_projects (client_id) {
+	get_projects_by_client (client_id) {
 
-		let procedure = "get_projects";
+		let procedure = "get_projects_by_client";
 		let parameters = [client_id];
 
 		this.execute_query (procedure, parameters);
 		
-	}/* get_projects */;
+	}/* get_projects_by_client */;
 
 
 }/* ProjectData */;

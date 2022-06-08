@@ -11,7 +11,7 @@ import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import PasswordForm from "forms/password.form";
 
-import AccountsModel from "models/accounts";
+import AccountsModel from "client/classes/models/accounts";
 
 import { account_types, globals } from "classes/types/constants";
 import { get_keys, is_null, nested_value, not_empty } from "classes/common";

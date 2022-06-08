@@ -95,7 +95,7 @@ export default class ProjectsPage extends BaseControl {
 
 					let data = null;
 
-					if (this.state.selected_project > 0) data = await ProjectStorage.get_by_project_id (this.context.company_id, this.state.selected_project);
+					if (this.state.selected_project > 0) data = await ProjectStorage.get_by_id (this.state.selected_project);
 					
 					this.setState ({ 
 						project_data: data,

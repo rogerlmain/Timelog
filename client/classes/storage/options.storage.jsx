@@ -3,7 +3,7 @@ import * as constants from "classes/types/constants";
 import LocalStorage from "classes/local.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
-import OptionsModel from "client/models/options";
+import OptionsModel from "client/classes/models/options.model";
 
 import { isset, not_set } from "classes/common";
 
@@ -17,21 +17,20 @@ export const boundaries = {
 }// boundaries;
 
 
+export const toggled = {
+	false	: 1,
+	true	: 2,
+}// toggled;
+
+
 export default class OptionStorage extends LocalStorage {
 
 
-	static get (name, company_id = null) { 
+	static #get (name, company_id = null) { 
 		let company = isset (company_id) ? company_id : CompanyStorage.active_company_id ();
 		let options = super.get (store_name, company);
 		return isset (options) ? (isset (options [name]) ? options [name] : null) : null;
-	}// get;
-
-
-	static get_options (company_id = null) {
-		let company = isset (company_id) ? company_id : CompanyStorage.active_company_id ();
-		let company_list = this.get_all (store_name, company);
-		return isset (company_list) ? company_list [company] : null;
-	}// get_options;
+	}// #get;
 
 
 	static #set (name, value) {
@@ -47,9 +46,19 @@ export default class OptionStorage extends LocalStorage {
 	}// #set;
 
 
-	static set_all (value) {
-		super.set_store (store_name, value);
-	}// set_all;
+	// POSSIBLY OBSOLETE
+
+
+	// static get_options (company_id = null) {
+	// 	let company = isset (company_id) ? company_id : CompanyStorage.active_company_id ();
+	// 	let company_list = this.get_all (store_name, company);
+	// 	return isset (company_list) ? company_list [company] : null;
+	// }// get_options;
+
+	// static set_all (value) {
+	// 	super.set_store (store_name, value);
+	// }// set_all;
+
 
 
 	/********/
@@ -69,28 +78,31 @@ export default class OptionStorage extends LocalStorage {
 
 
 	static granularity (company_id = null) { 
-		let granularity = OptionStorage.get (constants.option_types.granularity, company_id);
+		let granularity = OptionStorage.#get (constants.option_types.granularity, company_id);
 		let result = not_set (granularity) ? constants.deadbeat_options.granularity : parseInt (granularity);
 		return result;
 	}// granularity;
 
 
-	static start_rounding () { return OptionStorage.get (constants.option_types.start_rounding) ?? constants.date_rounding.off }
-	static end_rounding () { return OptionStorage.get (constants.option_types.end_rounding) ?? constants.date_rounding.off }
+	static start_rounding () { return OptionStorage.#get (constants.option_types.start_rounding) ?? constants.date_rounding.off }
+	static end_rounding () { return OptionStorage.#get (constants.option_types.end_rounding) ?? constants.date_rounding.off }
 
 	static single_client () { return OptionStorage.client_limit () == 1 }
 	static single_project () { return OptionStorage.project_limit () == 1}
 
-	static client_limit () { return OptionStorage.get (constants.option_types.client_limit) ?? 1 }
-	static project_limit () { return OptionStorage.get (constants.option_types.project_limit) ?? 1 }
-	static billing_option () { return OptionStorage.get (constants.option_types.billing_option) ?? 1 }
+	static client_limit () { return OptionStorage.#get (constants.option_types.client_limit) ?? 1 }
+	static project_limit () { return OptionStorage.#get (constants.option_types.project_limit) ?? 1 }
 
-	static can_bill () { return OptionStorage.billing_option () == 2 }
+	static billing_option () { return OptionStorage.#get (constants.option_types.billing_option) ?? 1 }
+	static rounding_option () { return OptionStorage.#get (constants.option_types.rounding_option) ?? 1 }
+
+	static can_bill () { return OptionStorage.billing_option () == toggled.true }
+	static can_round () { return OptionStorage.rounding_option () == toggled.true }
 
 	
 	static default_rate (value = null) { 
 		if (isset (value)) return OptionStorage.save_option (constants.option_types.default_rate, value);
-		return OptionStorage.get (constants.option_types.default_rate) ?? 0; 
+		return OptionStorage.#get (constants.option_types.default_rate) ?? 0; 
 	}// default_rate;
 
 

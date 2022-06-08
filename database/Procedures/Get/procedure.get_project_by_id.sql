@@ -8,12 +8,13 @@ delimiter ??
 create procedure get_project_by_id (project_id integer) begin
 
 	select
-		clt.company_id,
-		prj.id as project_id,
+		prj.id,
         prj.client_id,
-        prj.`name` as project_name,
-        prj.`code` as project_code,
-        prj.`description`
+		clt.company_id,
+        prj.`code`,
+        prj.`name`,
+        prj.`description`,
+		prj.billing_rate
 	from
 		projects as prj
 	join

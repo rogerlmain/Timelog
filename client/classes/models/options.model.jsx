@@ -1,6 +1,6 @@
 import Database from "classes/database";
 import CompanyStorage from "client/classes/storage/company.storage";
-import DataModel from "models/data.model";
+import DataModel from "client/classes/models/data.model";
 
 
 export default class OptionsModel extends DataModel {

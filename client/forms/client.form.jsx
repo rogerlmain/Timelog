@@ -6,13 +6,14 @@ import React from "react";
 import FormControl from "controls/form.control";
 import Container from "controls/container";
 import CurrencyInput from "client/controls/inputs/currency.input";
-
-import FadePanel from "controls/panels/fade.panel";
+import FadePanel from "client/controls/panels/fade.panel";
 
 import ClientStorage from "client/classes/storage/client.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
-import ClientModel from "models/client.model";
+import ClientModel from "client/classes/models/client.model";
+
+import RateSubform from "client/forms/subforms/rate.subform";
 
 import { SmallProgressMeter } from "controls/progress.meter";
 import { MainContext } from "classes/types/contexts";
@@ -116,21 +117,13 @@ export default class ClientForm extends FormControl {
 				<div className={billing_option ? "billing-option-form" : "one-piece-form"}>
 
 					<label htmlFor="client_name">Client Name</label>
-					
 					<input type="text" id="client_name" name="client_name" 
 						defaultValue={this.client_data ("name") ?? constants.blank} 
 						required={true} disabled={this.props.disabled}
 						onBlur={this.save_client.bind (this)}>
 					</input>
 
-					<Container visible={billing_option}>
-						<label htmlFor="billing_rate" style={{ marginLeft: "1em" }}>Rate</label>
-						<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
-							defaultValue={this.client_data ("billing_rate") ?? "0"}
-							disabled={this.props.disabled}
-							onBlur={this.save_client}>
-						</CurrencyInput>
-					</Container>
+					<RateSubform clientId={client_id} onChange={this.save_client} />
 
 					<label htmlFor="client_description">Description</label>
 					<textarea id="client_description" name="client_description" 

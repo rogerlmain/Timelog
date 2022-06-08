@@ -10,6 +10,7 @@ create procedure save_project (
 	project_name varchar (50),
 	project_code varchar (5),
     project_description text,
+	billing_rate decimal (5, 2),
     deleted boolean
 ) begin
 
@@ -21,12 +22,14 @@ create procedure save_project (
                 client_id,
 				`name`,
 				`code`,
-				`description`
+				`description`,
+				billing_rate
 			) values (
                 client_id,
 				project_name,
 				project_code,
-				project_description
+				project_description,
+				billing_rate
 			);
             
 		end if;
@@ -40,6 +43,7 @@ create procedure save_project (
 			`name` 			= coalesce (project_name, projects.name), 
 			`code` 			= coalesce (project_code, projects.code),
 			`description` 	= coalesce (project_description, projects.description), 
+			`billing_rate` 	= coalesce (billing_rate, projects.billing_rate), 
 			last_updated 	= current_timestamp()
 		where
 			id = project_id;

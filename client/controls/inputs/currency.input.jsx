@@ -1,7 +1,7 @@
 import React from "react";
 import BaseControl from "../abstract/base.control";
 
-import { not_set } from "client/classes/common";
+import { not_set, numeric_value } from "client/classes/common";
 
 import "client/resources/styles/controls.css";
 
@@ -13,6 +13,10 @@ export default class CurrencyInput extends BaseControl {
 		id: null,
 		className: null,
 		defaultValue: null,
+
+		onBlur: null,
+		onChange: null,
+
 		maxLength: -1,
 	}// default_props;
 
@@ -39,11 +43,13 @@ export default class CurrencyInput extends BaseControl {
 		delete properties.step;
 		delete properties.type;
 		delete properties.defaultValue;
+		delete properties.onInput;
 
 		return <div className="currency-input">
 			<div>$</div>
 			<input type="number" id={this.props.id} name={this.props.id}
 				min={0} step={1} defaultValue={this.props.defaultValue}
+				onInput={event => this.execute (this.props.onInput, event)}
 				onKeyDown={this.process_keystroke} {...properties}>
 			</input>
 		</div>

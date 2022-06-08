@@ -27,17 +27,25 @@ import { MainContext, MasterContext } from "classes/types/contexts";
 import "client/resources/styles/home.page.css";
 
 
-const home_page = "home";
+export const page_names = {
+	home		: "home",
+	clients		: "clients",
+	projects	: "projects",
+	logging		: "logging",
+	reports		: "reports",
+	account		: "account",
+	settings	: "settings",
+}// page_names;
 
 
 export const master_pages = { 
-	[home_page]	: { name: "Home", permission: true }, 
-	clients		: { name: "Clients", permission: () => { return OptionsStorage.client_limit () > 1 } }, 
-	projects	: { name: "Projects", permission: () => { return OptionsStorage.project_limit () > 1 } }, 
-	logging		: { name: "Logging", permission: true }, 
-	reports		: { name: "Reports", permission: true },
-	account		: { name: "Account", permission: true }, 
-	settings	: { name: "Settings", permission: true }
+	[page_names.home]		: { name: "Home", permission: true }, 
+	[page_names.clients]	: { name: "Clients", permission: () => { return OptionsStorage.client_limit () > 1 } }, 
+	[page_names.projects]	: { name: "Projects", permission: () => { return OptionsStorage.project_limit () > 1 } }, 
+	[page_names.logging]	: { name: "Logging", permission: true }, 
+	[page_names.reports]	: { name: "Reports", permission: true },
+	[page_names.account]	: { name: "Account", permission: true }, 
+	[page_names.settings]	: { name: "Settings", permission: true }
 }// master_pages;
 
 
@@ -50,18 +58,18 @@ export default class MasterPanel extends BaseControl {
 	state = {
 		eyecandy_visible: false,
 		eyecandy_callback: null,
-		page: home_page,
+		page: page_names.home,
 	}// state;
 
 
 	pages = {
-		home	: <HomePage parent={this} />,
-		clients	: <ClientsPage />,
-		projects: <ProjectsPage />,
-		logging	: <LoggingPage />,
-		reports	: <ReportsPage />,
-		account	: <AccountPage parent={this.props.parent} />,
-		settings: <SettingsPage />,	
+		[page_names.home]		: <HomePage parent={this} />,
+		[page_names.clients]	: <ClientsPage />,
+		[page_names.projects]	: <ProjectsPage />,
+		[page_names.logging]	: <LoggingPage />,
+		[page_names.reports]	: <ReportsPage />,
+		[page_names.account]	: <AccountPage parent={this.props.parent} />,
+		[page_names.settings]	: <SettingsPage />,	
 	}// pages;
 
 
@@ -74,12 +82,6 @@ export default class MasterPanel extends BaseControl {
 	}// defaultProps;
 
 
-	constructor (props) {
-		super (props);
-		globals.master = this;
-	}// componentDidMount;
-
-
 	buttons_disabled () {
 		let company_list = CompanyStorage.company_list ();
 		if (common.is_empty (company_list) || (company_list.length == 1)) return false;
@@ -90,20 +92,19 @@ export default class MasterPanel extends BaseControl {
 
 	button_list () {
 		let result = null;
-		for (let key in master_pages) {
+		for (let page_name in page_names) {
 
-			let name = `${key}_button`;
-			let value = master_pages [key].name;
+			let name = `${page_name}_button`;
 
-			if (!(common.is_function (master_pages [key].permission) ? master_pages [key].permission () : master_pages [key].permission)) continue;
+			if (!(common.is_function (master_pages [page_name].permission) ? master_pages [page_name].permission () : master_pages [page_name].permission)) continue;
 			if (common.is_null (result)) result = [];
 
 			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP (when needed)
-			result.push (<SelectButton id={name} name={name} key={name}
+			result.push (<SelectButton id={name} name={name} key={name} page_name={name} selected={this.state.page == page_name}
 				disabled={this.buttons_disabled ()}
-				onClick={() => this.setState ({ page: key })}>
+				onClick={() => this.setState ({ page: page_name })}>
 
-				{value}
+				{master_pages [page_name].name}
 
 			</SelectButton>);
 		}// for;

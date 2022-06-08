@@ -279,7 +279,8 @@ FormData.prototype.toJsonString = function () { return JSON.stringify (this.toOb
 FormData.prototype.toObject = function () { return Object.fromEntries (this) }
 
 
-/**** HTMLElement ****/
+
+/**** HTMLElement Prototype Methods ****/
 
 
 HTMLElement.prototype.absolutePosition = function () {
@@ -433,20 +434,23 @@ HTMLElement.prototype.validate = function () {
 }// validate;
 
 
-HTMLFormElement.prototype.validate = function () {
-	let result = true;
-	let items = this.querySelectorAll ("input, select, textarea");
-	for (let item of items) if (!item.validate ()) result = false;
-	return result;
-}// validate;
-
-
 HTMLElement.prototype.visible = function () {
 	if (this.style.display.equals ("none")) return false;
 	if (this.style.visibility.equals ("hidden")) return false;
 	if (parseInt (this.style.opacity) == 0) return false;
 	return true;
 }// if;
+
+
+/********/
+
+
+HTMLFormElement.prototype.validate = function () {
+	let result = true;
+	let items = this.querySelectorAll ("input, select, textarea");
+	for (let item of items) if (!item.validate ()) result = false;
+	return result;
+}// validate;
 
 
 /********/

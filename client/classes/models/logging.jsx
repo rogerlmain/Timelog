@@ -17,16 +17,9 @@ export default class LoggingModel {
 	}// fetch_latest_entry;
 
 
-	static log (company_id, client_id, project_id) {
+	static log (company_id, client_id, project_id, start_time) {
 
 		let parameters = new FormData ();
-		let time_stamp = new Date ();
-
-		switch (OptionsStorage.granularity (company_id)) {
-			case 1: time_stamp = LogStorage.logged_in () ? time_stamp.round_hours (date_rounding.down) : time_stamp.round_hours (date_rounding.up); break;
-			case 2: time_stamp = time_stamp.round_minutes (15); break;
-		}// switch;
-
 		parameters.set ("action", "logging");
 		parameters.set ("client_id", isset (client_id) ? client_id.toString () : null);
 		parameters.set ("project_id", isset (project_id) ? project_id.toString () : null);

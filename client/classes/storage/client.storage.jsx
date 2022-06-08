@@ -1,8 +1,11 @@
-import LocalStorage from "classes/local.storage"
-import ClientModel from "models/client.model";
+import CompanyStorage from "classes/storage/company.storage";
+import OptionsStorage from "classes/storage/options.storage";
+import LocalStorage from "classes/local.storage";
+
+import ClientModel from "client/classes/models/client.model";
 
 import { stores } from "classes/types/constants";
-import { isset, not_set, not_empty, nested_value } from "classes/common";
+import { isset, not_set, not_empty, nested_value, null_value } from "classes/common";
 
 
 const store_name = stores.clients;
@@ -29,6 +32,9 @@ export default class ClientStorage extends LocalStorage {
 		ClientStorage.#set (values);
 
 	}/* set_client */;
+
+
+	/********/
 
 
 	static save_client = (company_id, form_data) => {
@@ -59,32 +65,7 @@ puke ();
 	/********/
 
 
-	static get_by_client_id = (company_id, client_id) => {
-		return new Promise ((resolve, reject) => {
-
-			let store = LocalStorage.get_all (store_name);
-			let result = nested_value (store, company_id, "find", item => { return item.client_id == client_id });
-
-			if (isset (result)) return resolve (result);
-
-			ClientModel.fetch_by_id (this.state.selected_client).then (data => {
-
-				if (not_empty (data)) {
-					if (not_set (store [company_id])) store [company_id] = [];
-					store [company_id].push (data);
-					LocalStorage.set (store_name, store);
-				}// if;
-				
-				resolve (data);
-			
-			});
-
-		});
-	}/* get_by_client_id */;
-
-
 	static get_by_company = (company_id) => { 
-
 		return new Promise ((resolve, reject) => {
 
 			let store = LocalStorage.get_all (store_name);
@@ -98,8 +79,56 @@ puke ();
 			}).catch (reject);
 
 		});
+	}/* get_by_company */;
 
-	}// get_by_company;
+
+	static get_by_id = client_id => {
+		return new Promise ((resolve, reject) => {
+
+			let store = LocalStorage.get_all (store_name);
+
+			for (let company_id of Object.keys (store)) {
+				let client = nested_value (store, company_id, "find", item => { return item.client_id == client_id });
+				if (isset (client)) return resolve (client);
+			}// for;
+
+			ClientModel.fetch_by_id (client_id).then (client => {
+
+				if (not_empty (client)) {
+					if (not_set (store [company_id])) store [company_id] = [];
+					store [company_id].push (client);
+					LocalStorage.set (store_name, store);
+				}// if;
+				
+				resolve (client);
+			
+			});
+
+		});
+	}/* get_by_id */;
+	
+
+	/********/
+
+
+	static default_rate = async (client_id, new_rate = null) => {
+
+		let result = null;
+
+		if (isset (new_rate)) {
+			client.default_rate = new_rate;
+			ClientStorage.#set_client (CompanyStorage.active_company_id (), client);
+			return;
+		}// if;
+
+		if (isset (client_id)) {
+			let client = await ClientStorage.get_by_id (client_id);
+			result = null_value (client.billing_rate);
+		}// if;
+
+		return result;
+
+	}/* default_rate */
 
 
 }// ClientStorage;

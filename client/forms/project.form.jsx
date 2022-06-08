@@ -1,9 +1,6 @@
 import React from "react";
 
-import Database from "classes/database";
-
-import AccountStorage from "client/classes/storage/account.storage";
-import ProjectStorage from "classes/storage/project.storage";
+import ProjectStorage from "client/classes/storage/project.storage";
 
 import FormControl from "controls/form.control";
 import Container from "controls/container";
@@ -11,12 +8,16 @@ import Container from "controls/container";
 import AlphaCapitalInput from "controls/inputs/alpha.capital.input";
 import FadePanel from "controls/panels/fade.panel";
 
+import RateSubform from "client/forms/subforms/rate.subform";
+
 import { blank, space, horizontal_alignment } from "classes/types/constants";
-import { nested_value, is_blank, isset  } from "classes/common";
+import { nested_value, isset  } from "classes/common";
 
 import { SmallProgressMeter } from "controls/progress.meter";
 import { MainContext } from "classes/types/contexts";
-import ProjectModel from "client/models/project.model";
+
+
+import "client/resources/styles/forms.css"
 
 
 const max_code_length = 5;
@@ -126,37 +127,58 @@ export default class ProjectForm extends FormControl {
 
 				<input type="hidden" id="project_id" name="project_id" value={project_id || blank} />
 
-				<div className="two-column-grid" style={{  ...this.props.style, columnGap: "1em" }}>
+				<div className="one-piece-form" style={{ rowGap: "0.5em" }}>
 
 					<label htmlFor="project_name">Project Name</label>
-					<div className="two-column-grid" 
-
-						style={{ 
-							gridTemplateColumns: "1fr min-content",
-							gridGap: "0.25em" 
-						}}>
+					<div className="horizontally-spaced-out">
 
 						<input type="text" id="project_name" name="project_name" defaultValue={this.project_data ("name") || blank} required={true}
 							onChange={this.update_code}
 							onBlur={this.save_project}>
 						</input>
 
-						<AlphaCapitalInput type="text" id="project_code" name="project_code" maxLength={max_code_length}
-							style={{ 
-								backgroundColor: "var(--disabled-field)",
-								textAlign: "center",
-								width: `${max_code_length}em`,
-							}}
-							value={this.state.code} 
-							onBlur={this.save_project}>
-						</AlphaCapitalInput>
+						<div style={{ marginLeft: "0.5em" }}>
+
+							<div className="two-column-grid">
+
+								<div className="two-piece-form">
+									<label htmlFor="project_code">Code</label>
+									<AlphaCapitalInput type="text" id="project_code" name="project_code" maxLength={max_code_length}
+										style={{ 
+											backgroundColor: "var(--disabled-field)",
+											textAlign: "center",
+											width: `${max_code_length}em`,
+										}}
+										value={this.state.code} 
+										onBlur={this.save_project}>
+									</AlphaCapitalInput>
+
+									<RateSubform clientId={this.props.clientId} projectId={project_id} onChange={this.save_project} />
+
+								</div>
+
+							</div>
+{/* 
+							<div className="horizontally-centered">
+								<div className="radio-list" style={{ marginTop: "0.2em" }}>
+
+									<input type="radio" id="hourly_rate" name="rate_type" value={rate_types.hourly} />
+									<label htmlFor="hourly_rate" className="sublabel">Hourly</label>
+
+									<input type="radio" id="flat_rate" name="rate_type" value={rate_types.flat_rate} />
+									<label htmlFor="flat_rate" className="sublabel">Flat rate</label>
+
+								</div>
+							</div>
+*/}
+						</div>
 
 					</div>
 
 					<label htmlFor="project_description">Description</label>
 					<textarea id="project_description" name="project_description" placeholder="(optional)"
 						defaultValue={this.project_data ("description")} 
-						onBlur={this.save_project}>
+						onBlur={this.save_project} style={{ minWidth: "32.25em" }}>
 					</textarea>
 
 				</div>
