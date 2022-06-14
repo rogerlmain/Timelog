@@ -23,26 +23,19 @@ export default class BaseControl extends React.Component {
 
 	/********/
 
+	
 	animation_speed = () => { return this.props.speed ?? SettingsStorage.animation_speed () ?? default_settings.animation_speed }
 	children = props => { return is_array (props.children) ? props.children : [props.children] }
 	compare_elements = (first_element, second_element) => { return ReactDOMServer.renderToString (first_element) == ReactDOMServer.renderToString (second_element) }
 	context_item = (name) => { return common.isset (this.context) ? this.context [name] : null }
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
 
+
 	// Like forceUpdate except calls shouldComponentUpdate
 	forceRefresh = () => { this.setState (this.state) }
 
-
 	// Like setState but doesn't update if states match 
-	// and returns a promise
-	updateState = new_state => {
-		return new Promise ((resolve, reject) => {
-			try {
-				if (jsonify (this.state).matches (jsonify (new_state))) resolve (true);
-				this.setState (new_state, () => resolve (true));
-			} catch (except) { reject (except) }
-		});
-	}// updateState;
+	updateState = (new_state, callback) => { if (!jsonify (this.state).matches (jsonify (new_state))) this.setState (new_state, callback) }
 
 
 	filtered_properties = (...used_properties) => {
@@ -305,10 +298,10 @@ export default class BaseControl extends React.Component {
 	/**** React Component Methods ****/
 
 
-	shouldComponentUpdate (next_props, next_state, next_context) {
-		if (jsonify (this.props) != jsonify (next_props)) return true;
-		if (jsonify (this.state) != jsonify (next_state)) return true;
-		if (jsonify (this.context) != jsonify (next_context)) return true;
+	shouldComponentUpdate (new_props, new_state, new_context) {
+		if (jsonify (this.props) != jsonify (new_props)) return true;
+		if (jsonify (this.state) != jsonify (new_state)) return true;
+		if (jsonify (this.context) != jsonify (new_context)) return true;
 		return false;
 	}// shouldComponentUpdate;
 

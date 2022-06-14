@@ -7,13 +7,13 @@ delimiter ??
 create procedure report_by_project (project_id int) begin
 
 	select
-		ent.id as entry_id,
-		ent.start_time,
-        ent.end_time,
-        timestampdiff (second, ent.start_time, ent.end_time) as total_time
+		log.id as logry_id,
+		log.start_time,
+        log.end_time,
+        timestampdiff (second, log.start_time, log.end_time) as total_time
 	from
-		entries as ent
+		logging as log
 	where
-		ent.project_id = project_id;
+		log.project_id = project_id;
         
 end??

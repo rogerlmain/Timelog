@@ -114,19 +114,19 @@ export default class ResizePanel extends BaseControl {
 	}// componentDidMount;
 
 
-	shouldComponentUpdate (next_props) {
+	shouldComponentUpdate (new_props) {
 
 		let outer_size = this.state_size ();
 		let inner_size = this.get_size (this.inner_control);
 
-		let updated = !this.same_element (this.props.children, next_props.children);
+		let updated = !this.same_element (this.props.children, new_props.children);
 
 		if (updated) {
 			this.setState (this.get_size (this.outer_control));
 			return false;
 		}// if;
 	
-		if (next_props.resize) {
+		if (new_props.resize) {
 
 			let new_size = {
 				width: (inner_size.width > outer_size.width) ? inner_size.width : outer_size.width,

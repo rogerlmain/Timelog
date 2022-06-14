@@ -1,11 +1,13 @@
 import * as constants from "classes/types/constants";
 
 import LocalStorage from "classes/local.storage";
-import CompanyStorage from "./company.storage";
+import ClientStorage from "classes/storage/client.storage";
+import CompanyStorage from "classes/storage/company.storage";
+import OptionsStorage from "classes/storage/options.storage";
 
 import ProjectModel from "client/classes/models/project.model";
 
-import { isset, is_null, not_set, nested_object, nested_value, null_value, not_array, is_array } from "classes/common";
+import { isset, not_set, not_null, nested_object, nested_value, null_value, not_array } from "classes/common";
 
 
 const store_name = constants.stores.projects;
@@ -92,18 +94,15 @@ export default class ProjectStorage extends LocalStorage {
 	static get_projects_by_client (client_id) { 
 		return new Promise (async (resolve, reject) => {
 
-			let data = nested_value (LocalStorage.get_all (store_name), CompanyStorage.active_company_id (), client_id);
+			let projects = nested_value (LocalStorage.get_all (store_name), CompanyStorage.active_company_id (), client_id);
 
-			if (not_set (data)) {
-
-				let items = await ProjectModel.get_projects_by_client (client_id).catch (reject);
-
-				if (not_array (items)) items = [items];
-				items.forEach (item => { if (isset (item)) this.#set_project (item) });
-				
+			if (not_set (projects)) {
+				projects = await ProjectModel.get_projects_by_client (client_id).catch (reject);
+				if (not_array (projects)) projects = [projects];
+				projects.forEach (item => { if (isset (item)) this.#set_project (item) });
 			}// if;
 
-			resolve (data);
+			resolve (projects);
 
 		});
 	}// get_projects_by_client;
@@ -112,22 +111,40 @@ export default class ProjectStorage extends LocalStorage {
 	/********/
 
 
-	static default_rate = async (project_id, new_rate = null) => {
-
-		let result = null;
+	static default_rate = (project_id, new_rate = null) => {
 
 		if (isset (new_rate)) { 
 			// SAVE NEW RATE
+			return;
 		}// if;
 
-		if (isset (project_id)) {
-			let project = await this.get_by_id (project_id);
-			result = null_value (project.billing_rate);
-		}// if;
+		return new Promise (async (resolve, reject) => {
 
-		return result;
+			let result = null;
+
+			if (isset (project_id)) {
+				let project = await this.get_by_id (project_id).catch (reject);
+				result = null_value (project.billing_rate);
+			}// if;
+
+			resolve (result);
+
+		});
 
 	}/* default_rate */
+
+
+	static billing_rate = (project_id, client_id) => {
+		return new Promise ((resolve, reject) => {
+			ProjectStorage.default_rate (project_id).then (result => {
+				if (not_null (result)) return resolve (result);
+				ClientStorage.default_rate (client_id).then (result => {
+					if (not_null (result)) return resolve (result);
+					resolve (OptionsStorage.default_rate () ?? 0);
+				});
+			});
+		});
+	}// billing_rate;
 
 
 }// ProjectStorage;

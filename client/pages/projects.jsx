@@ -1,18 +1,18 @@
 import React from "react";
 
-import ProjectStorage from "classes/storage/project.storage";
+import ProjectStorage from "client/classes/storage/project.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
-import Container from "controls/container";
+import Container from "client/controls/container";
 
-import BaseControl from "controls/abstract/base.control";
-import EyecandyPanel from "controls/panels/eyecandy.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";
+import ProjectSelectorGadget from "client/controls/selectors/project.selector.gadget";
 
-import ProjectForm from "forms/project.form";
+import ProjectForm from "client/forms/project.form";
 
-import { numeric_value, not_null, not_set, get_values } from "classes/common";
+import { numeric_value, not_null, not_set, get_values } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 import "client/resources/styles/pages/projects.css";

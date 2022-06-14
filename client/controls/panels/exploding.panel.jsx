@@ -89,11 +89,11 @@ export default class ExplodingPanel extends BaseControl {
 	componentDidMount () { this.setState ({ animate: true }) }
 
 
-	shouldComponentUpdate (next_props) {
+	shouldComponentUpdate (new_props) {
 
 		let updated = false;
 		let current_children = this.children (this.props);
-		let next_children = this.children (next_props);
+		let next_children = this.children (new_props);
 
 		for (let next_child of next_children) {
 			let current_child = current_children.find (child => child.props.id == next_child.props.id);

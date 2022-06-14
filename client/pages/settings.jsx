@@ -111,7 +111,7 @@ export default class SettingsPage extends BaseControl {
 
 	initialize_settings () {
 
-		let options = OptionsStorage.get_options (this.state.company_id);
+		let options = OptionsStorage.get_options ();
 		
 		let option_value = option => { 
 			if (common.isset (options) && common.isset (options [option])) return parseInt (options [option]);

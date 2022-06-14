@@ -26,9 +26,8 @@ export const toggled = {
 export default class OptionStorage extends LocalStorage {
 
 
-	static #get (name, company_id = null) { 
-		let company = isset (company_id) ? company_id : CompanyStorage.active_company_id ();
-		let options = super.get (store_name, company);
+	static #get (name) { 
+		let options = super.get (store_name, CompanyStorage.active_company_id ());
 		return isset (options) ? (isset (options [name]) ? options [name] : null) : null;
 	}// #get;
 
@@ -46,23 +45,14 @@ export default class OptionStorage extends LocalStorage {
 	}// #set;
 
 
-	// POSSIBLY OBSOLETE
-
-
-	// static get_options (company_id = null) {
-	// 	let company = isset (company_id) ? company_id : CompanyStorage.active_company_id ();
-	// 	let company_list = this.get_all (store_name, company);
-	// 	return isset (company_list) ? company_list [company] : null;
-	// }// get_options;
-
-	// static set_all (value) {
-	// 	super.set_store (store_name, value);
-	// }// set_all;
-
-
-
 	/********/
 	
+
+	static get_options () {
+		let company_list = this.#get (store_name, CompanyStorage.active_company_id ());
+		return company_list; // isset (company_list) ? company_list [company] : null;
+	}// get_options;
+
 
 	static save_option (option, value) {	
 		return new Promise ((resolve, reject) => {

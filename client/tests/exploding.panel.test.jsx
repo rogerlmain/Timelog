@@ -10,7 +10,7 @@ export default class ExplodingPanelTest extends BaseControl {
 
 	state = {
 		contents: null,
-		show_small: false,
+		show_small: true,
 		show_medium: false,
 		show_large: false,
 	}// state;
@@ -29,7 +29,7 @@ export default class ExplodingPanelTest extends BaseControl {
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 					<div style={{ border: "solid 1px red", padding: "1em", margin: "1em", display: "inline-block" }}>
-						<ExplodingPanel id="test_panel" speed={500}>
+						<ExplodingPanel id="test_panel" speed={1000}>
 
 							<Container id="small" visible={this.state.show_small}><div style={{ border: "solid 1px green" }} id="small">
 								Small Item

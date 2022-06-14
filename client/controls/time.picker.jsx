@@ -58,8 +58,8 @@ export default class TimePicker extends BaseControl {
 	componentDidMount = () => this.setState ({ value: this.rounded (this.props.defaultValue) });
 
 
-	shouldComponentUpdate (next_props) {
-		if (next_props.defaultValue != this.props.defaultValue) return !!this.setState ({ value: next_props.defaultValue });
+	shouldComponentUpdate (new_props) {
+		if (new_props.defaultValue != this.props.defaultValue) return !!this.setState ({ value: new_props.defaultValue });
 		return true;
 	}// shouldComponentUpdate;
 

@@ -3,7 +3,7 @@ import * as common from "classes/common";
 import React from "react";
 import BaseControl from "controls/abstract/base.control"
 
-import { get_values } from "classes/common";
+import { get_values, zero_value } from "classes/common";
 
 
 const header_value = -1;
@@ -71,13 +71,16 @@ export default class SelectList extends BaseControl {
 
 
 	componentDidMount () {
-		this.setState ({ selected_value: common.zero_value (this.props.value) });
+		this.setState ({ selected_value: zero_value (this.props.value) });
 	}// componentDidUpdate;
 
 
 	shouldComponentUpdate (new_props) {
+
+if (this.props.data != new_props.data) alert ("new data");
+
 		if (this.props.value != new_props.value) {
-			this.setState ({ selected_value: common.zero_value (new_props.value) });
+			this.setState ({ selected_value: zero_value (new_props.value) });
 			return false;
 		}// if;
 		return true;
@@ -86,7 +89,7 @@ export default class SelectList extends BaseControl {
 
     render () {
 
-		let selectedValue = common.coalesce (this.state.selected_value, this.props.value, header_value);
+		let selectedValue = this.state.selected_value ?? this.props.value ?? header_value;
 
         return (
             <select id={this.props.id} name={this.props.id} ref={this.list} value={selectedValue} className={this.props.className} style={this.props.style}

@@ -95,6 +95,7 @@ export function is_null (value) { return value == null }
 export function is_number (value) { return !isNaN (Number (value)) }
 export function is_object (value, include_arrays = false) { return ((value instanceof Object) && (include_arrays || not_array (value))) }
 export function is_primitive (value) { return (value !== Object (value)) }
+export function is_promise (value) { return (value instanceof Promise) }
 export function isset (value) { return (!null_or_undefined (value)) }
 export function is_string (value) { return typeof value == "string" }
 export function is_undefined (value) { return (value == undefined) && not_null (value) }

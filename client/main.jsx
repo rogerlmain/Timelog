@@ -27,10 +27,10 @@ import { MainContext } from "client/classes/types/contexts";
 
 
 //Special Guest Import
-import TimePicker from "client/controls/time.picker";
+import ExplodingPanelTest from "client/tests/exploding.panel.test";
 
 
-const version = "1.2.5";
+const version = "1.2.6";
 
 
 class Main extends BaseControl {
@@ -178,6 +178,6 @@ document.onreadystatechange = () => {
 	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-//	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));
+//	ReactDOM.render (<ExplodingPanelTest />, document.getElementById ("main_page"));
 
 }// document.ready;

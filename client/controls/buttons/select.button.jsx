@@ -64,8 +64,8 @@ export default class SelectButton extends BaseControl {
 	/********/
 
 
-	shouldComponentUpdate (next_props) {
-		if (this.state.selected != next_props.selected) return !!this.setState ({ selected: next_props.selected });
+	shouldComponentUpdate (new_props) {
+		if (this.state.selected != new_props.selected) return !!this.setState ({ selected: new_props.selected });
 		return true;
 	}// componentDidMount;
 

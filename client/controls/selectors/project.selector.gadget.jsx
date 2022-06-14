@@ -1,6 +1,8 @@
 import React from "react";
 
 import OptionsStorage from "client/classes/storage/options.storage";
+import ClientStorage from "client/classes/storage/client.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
@@ -11,7 +13,7 @@ import Container from "client/controls/container";
 import FadePanel from "client/controls/panels/fade.panel";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import ClientSelectorGadget from "client/pages/gadgets/selectors/client.selector.gadget";
+import ClientSelectorGadget from "client/controls/selectors/client.selector.gadget";
 
 import { isset, is_null, integer_value, not_set } from "classes/common";
 import { master_pages } from "client/master";
@@ -31,8 +33,8 @@ export default class ProjectSelectorGadget extends BaseControl {
 
 		projects: null,
 
-		selected_project: 0,
-		selected_client: 0,
+		project_id: null,
+		client_id: null,
 
 		projects_loading: false,
 
@@ -45,6 +47,9 @@ export default class ProjectSelectorGadget extends BaseControl {
 	static defaultProps = {
 
 		id: null,
+
+		clientId: null,
+		projectId: null,
 
 		newOption: false,
 
@@ -65,8 +70,22 @@ export default class ProjectSelectorGadget extends BaseControl {
 
 
 	constructor (props) {
+
 		super (props);
+
 		this.project_selector_id = `${this.props.id}_project_selector`;
+
+		if (isset (props.clientId)) {
+			this.state.client_id = props.clientId;
+			ClientStorage.get_by_company (CompanyStorage.active_company_id ()).then (clients => {
+				this.state.clients = clients;
+				if (isset (props.projectId)) {
+					this.state.project_id = props.projectId;
+					ProjectStorage.get_projects_by_client (props.clientId).then (projects => { this.state.projects = projects });
+				}//if;
+			});
+		}// if;
+
 	}// constructor;
 
 
@@ -74,7 +93,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 
 
 	load_projects = () => {
-		ProjectStorage.get_projects_by_client (this.state.selected_client).then (data => {
+		ProjectStorage.get_projects_by_client (this.state.client_id).then (data => {
 			this.setState ({ projects: data }, this.setState ({ projects_loading: false }));
 		});
 	}/* load_projects */;
@@ -83,9 +102,9 @@ export default class ProjectSelectorGadget extends BaseControl {
 	/********/
 
 
-	shouldComponentUpdate (next_props, next_state, next_context) {
-		if (this.context.company_id != next_context.company_id) return !!this.setState ({ selected_client: 0 });
-		if (this.props.selectedProject != next_props.selectedProject) return !!this.setState ({ selected_project: next_props.selectedProject });
+	shouldComponentUpdate (new_props, new_state, new_context) {
+		if (this.context.company_id != new_context.company_id) return !!this.setState ({ client_id: 0 });
+		if (this.props.selectedProject != new_props.selectedProject) return !!this.setState ({ project_id: new_props.selectedProject });
 		return true;
 	}// shouldComponentUpdate;
 
@@ -95,15 +114,16 @@ export default class ProjectSelectorGadget extends BaseControl {
 		let single_client = OptionsStorage.client_limit () == 1;
 		let single_project = OptionsStorage.project_limit () == 1;
 
-		let client_selected = (this.state.selected_client > 0) || single_client;
+		let client_selected = (this.state.client_id > 0) || single_client;
 		let has_projects = isset (this.state.projects) || (!this.props.newOption);
 		
 		return <div id={this.props.id} className="two-column-grid project-selector-form">
 
-			<ClientSelectorGadget id="client_selector" companyId={this.props.companyId}
+			<ClientSelectorGadget id="client_selector" clientId={this.state.client_id} clientData={this.state.clients}
 				hasHeader={this.props.hasHeader} headerSelectable={false} headerText="Select a client" 
 				onClientChange={event => this.setState ({ 
-					selected_client: integer_value (event.target.value),
+					client_id: integer_value (event.target.value),
+					project_id: null,
 					projects_loading: true,
 				}, () => this.execute (this.props.onClientChange, event))}>
 			</ClientSelectorGadget>
@@ -118,7 +138,7 @@ export default class ProjectSelectorGadget extends BaseControl {
 				<Container visible={client_selected}>
 
 					{ has_projects ? <SelectList id={this.project_selector_id} value={((()=>{
-							return this.state.selected_project
+							return this.state.project_id
 						})())} data={((()=>{
 							return this.state.projects
 						})())} 

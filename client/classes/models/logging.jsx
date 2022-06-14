@@ -17,13 +17,13 @@ export default class LoggingModel {
 	}// fetch_latest_entry;
 
 
-	static log (company_id, client_id, project_id, start_time) {
+	static log (client_id, project_id, timestamp) {
 
 		let parameters = new FormData ();
 		parameters.set ("action", "logging");
 		parameters.set ("client_id", isset (client_id) ? client_id.toString () : null);
 		parameters.set ("project_id", isset (project_id) ? project_id.toString () : null);
-		parameters.set ("time_stamp", time_stamp.format (date_formats.database_timestamp));
+		parameters.set ("time_stamp", timestamp.format (date_formats.database_timestamp));
 
 		return Database.fetch_row ("logging", parameters);
 

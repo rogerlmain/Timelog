@@ -12,7 +12,7 @@ import SelectList from "client/controls/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import FadePanel from "client/controls/panels/fade.panel";
 
-import { is_empty, is_null, not_empty } from "classes/common";
+import { isset, is_promise, not_empty, not_set } from "classes/common";
 import { master_pages } from "client/master";
 
 import { MasterContext } from "client/classes/types/contexts";
@@ -23,7 +23,7 @@ export default class ClientSelectorGadget extends BaseControl {
 
 	 state = { 
 
-		clients: null,
+		client_data: null,
 
 		client_selected: false,
 		clients_loading: false,
@@ -37,6 +37,9 @@ export default class ClientSelectorGadget extends BaseControl {
 	static defaultProps = {
 
 		id: "client_selector",
+
+		clientId: null,
+//		clientData: null,
 
 		newOption: true,
 
@@ -60,36 +63,49 @@ export default class ClientSelectorGadget extends BaseControl {
 	/*********/
 
 
-	load_clients = () => ClientStorage.get_by_company (this.context.company_id).then (data => this.setState ({ 
-		clients: data,
-		clients_loading: false,
-	}));
+	get_clients = () => {
 
+		if (isset (this.state.client_data)) return this.state.client_data;
 
-	componentDidMount = () => this.setState ({ clients_loading: true });
+		// if (isset (this.props.clientData)) {
+		// 	this.setState ({ client_data: this.props.clientData });
+		// 	return this.props.clientData;
+		// }// if;
+		
+		let data = ClientStorage.get_by_company (this.context.company_id);
+		
+		if (is_promise (data)) {
+			this.setState ({ clients_loading: true }, () => setTimeout (() => data.then (data => this.setState ({ 
+				client_data: data,
+				clients_loading: false,
+			})), 1000));
+			return data;
+		}// if;
+	
+		this.setState ({ client_data: data });
+		return data;
+
+	}// get_clients;
 
 
 	/*********/
 
 
-	shouldComponentUpdate (next_props, next_state, next_context) {
-		if (this.context.company_id != next_context.company_id) this.setState ({ clients_loading: true });
-		return true;
-	}// shouldComponentUpdate;
+	componentDidMount = this.get_clients;
 
 
 	render () {
 
 		let single_client = (OptionsStorage.client_limit () == 1);
-		let has_clients = ((not_empty (this.state.clients) || !this.props.newOption) && !single_client);
+		let has_clients = ((not_empty (this.state.client_data) || !this.props.newOption) && !single_client);
 
 		return <Container>
 
 			<label htmlFor={this.client_selector_id}>Client</label>
 
-			{ single_client ? "Default" : <EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} text="Loading..." eyecandyVisible={this.state.clients_loading} onEyecandy={this.load_clients}>
+			{ single_client ? "Default" : <EyecandyPanel id={`${this.client_selector_id}_eyecandy_panel`} text="Loading..." eyecandyVisible={this.state.clients_loading}>
 
-				{ has_clients ? <SelectList id={this.client_selector_id} data={this.state.clients} value={this.props.selectedClient}
+				{ has_clients ? <SelectList id={this.client_selector_id} data={this.state.client_data} value={this.props.selectedClient}
 							
 						hasHeader={this.props.hasHeader}
 

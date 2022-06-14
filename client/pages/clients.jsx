@@ -1,18 +1,18 @@
 import React from "react";
 
 import OptionsStorage from "client/classes/storage/options.storage";
-import ClientStorage from "classes/storage/client.storage";
+import ClientStorage from "client/classes/storage/client.storage";
 
-import BaseControl from "controls/abstract/base.control";
-import EyecandyPanel from "controls/panels/eyecandy.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import ClientSelectorGadget from "pages/gadgets/selectors/client.selector.gadget";
+import ClientSelectorGadget from "client/controls/selectors/client.selector.gadget";
 
-import ClientForm from "forms/client.form";
+import ClientForm from "client/forms/client.form";
 
 import { MasterContext } from "client/classes/types/contexts";
 
-import { is_null, get_values, not_set, numeric_value } from "classes/common";
+import { is_null, get_values, not_set, numeric_value } from "client/classes/common";
 
 
 export const client_limit_options = {
