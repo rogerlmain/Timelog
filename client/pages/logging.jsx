@@ -13,7 +13,7 @@ import ProjectStorage from "client/classes/storage/project.storage";
 
 import CalendarClock from "client/pages/gadgets/calendar.clock";
 import PopupNotice from "client/pages/gadgets/popup.notice";
-import ProjectSelectorGadget from "client/controls/selectors/project.selector.gadget";
+import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging";
 
@@ -309,12 +309,12 @@ export default class LoggingPage extends BaseControl {
 
 				{logged_in ? this.entry_details (elapsed_time) : <div>
 
-					<ProjectSelectorGadget id="logging_project_selector" parent={this}
+					<ProjectSelector id="logging_project_selector" parent={this}
 						clientId={this.state.client_id} projectId={this.state.project_id}
 						hasHeader={true} headerSelectable={false} headerText={blank} newOption={true}
 						onClientChange={event => this.setState ({ client_id: event.target.value })}
 						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
-					</ProjectSelectorGadget>
+					</ProjectSelector>
 				
 				</div>}
 

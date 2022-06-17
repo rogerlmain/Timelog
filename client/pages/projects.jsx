@@ -8,7 +8,7 @@ import Container from "client/controls/container";
 import BaseControl from "client/controls/abstract/base.control";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import ProjectSelectorGadget from "client/controls/selectors/project.selector.gadget";
+import ProjectSelector from "client/controls/selectors/project.selector";
 
 import ProjectForm from "client/forms/project.form";
 
@@ -66,7 +66,7 @@ export default class ProjectsPage extends BaseControl {
 		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="project-select-form">
-				<ProjectSelectorGadget id="project_selector" ref={this.project_selector} parent={this} newOption={false}
+				<ProjectSelector id="project_selector" ref={this.project_selector} parent={this} newOption={false}
 
 					hasHeader={true}
 					headerSelectable={can_create}
@@ -86,7 +86,7 @@ export default class ProjectsPage extends BaseControl {
 						updating: true,
 					})}>
 
-				</ProjectSelectorGadget>
+				</ProjectSelector>
 			</div>	
 
 			<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." 

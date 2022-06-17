@@ -1,14 +1,12 @@
 import React from "react";
 
-import SettingsStorage from "client/classes/storage/settings.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
 import FadePanel from "client/controls/panels/fade.panel";
 
 import ResizePanel, { resize_state, resize_direction } from "client/controls/panels/resize.panel";
 
-import { isset, is_array, is_null, nested_value, not_array } from "client/classes/common";
-import { default_settings } from "client/classes/types/constants";
+import { isset, is_null, nested_value, not_array } from "client/classes/common";
 
 
 export default class ExplodingPanel extends BaseControl {
@@ -19,6 +17,7 @@ export default class ExplodingPanel extends BaseControl {
 		children: null,
 
 		resize: resize_state.false,
+		resize_static: false,
 
 		animate: false,
 		visible: true,
@@ -57,14 +56,17 @@ export default class ExplodingPanel extends BaseControl {
 	/********/
 
 
-	forceResize = () => this.setState ({ resize: true });
+	forceResize = () => this.setState ({ resize: this.props.animate ? resize_state.animate : resize_state.true });
+
+
+	/********/
 
 
 	load_contents = (new_children) => {
 
 		const run_animation = () => {
 			if (this.state.children != new_children) return setTimeout (run_animation);
-			this.forceUpdate (() => this.setState ({ resize: resize_state.animate }));
+			this.forceResize ();
 		}// run_animation;
 
 		this.transitioning = false;
@@ -125,14 +127,14 @@ export default class ExplodingPanel extends BaseControl {
 
 		let panel_style = has_width ? { width: this.props.style.width } : (has_height ? { height: this.props.style.height } : null);
 
-		return <FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animate={this.state.animate} 
+		return <FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animated={this.state.animate} 
 			visible={this.state.visible} style={panel_style}
 
 			beforeHiding={this.props.beforeHiding}
 
 			afterShowing={() => {
 				this.transitioning = false;
-				this.execute (this.props.afterShowing)
+				this.execute (this.props.afterShowing);
 			}}// afterShowing;
 
 			afterHiding={() => {
@@ -141,7 +143,7 @@ export default class ExplodingPanel extends BaseControl {
 			}}>
 
 			<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} direction={this.props.direction} style={panel_style}
-				speed={target_speed} resize={this.state.resize} parent={this} stretchOnly={this.props.stretchOnly}
+				speed={target_speed} resize={this.state.resize} parent={this} stretchOnly={this.props.stretchOnly} static={this.state.resize_static}
 
 				beforeResizing={() => this.execute (this.props.beforeShowing)}
 				afterResizing={() => this.setState ({ visible: isset (this.state.children) })}>

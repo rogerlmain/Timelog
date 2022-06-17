@@ -5,7 +5,7 @@ import FadePanel from "client/controls/panels/fade.panel";
 import SelectButton from "client/controls/buttons/select.button";
 import Container from "client/controls/container";
 
-import ProjectSelectorGadget from "client/controls/selectors/project.selector.gadget";
+import ProjectSelector from "client/controls/selectors/project.selector";
 import ReportsModel from "client/classes/models/reports";
 
 import { date_formats } from "client/classes/types/constants";
@@ -176,10 +176,10 @@ export default class ReportsPage extends BaseControl {
 			<div className="two-column-grid" style={{ columnGap: "1em" }}>
 
 				<div>
-					<ProjectSelectorGadget id="report_selector" hasHeader={true} headerSelectable={false} 
+					<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
 						onClientChange={event => this.setState ({ client_id: event.target.value })}
 						onProjectChange={event => this.setState ({ project_id: event.target.value})}>
-					</ProjectSelectorGadget>
+					</ProjectSelector>
 				</div>
 
 				<div>

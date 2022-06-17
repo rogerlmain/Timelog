@@ -86,6 +86,9 @@ export default class BaseControl extends React.Component {
 	}// execute;
 
 
+	run (method, ...parameters) { return (common.is_function (method)) ? method (...parameters) : null }
+
+
 	id_badge (stub = null) {
 		if (common.is_null (stub)) stub = this.constructor.name;
 		return this.props.id ?? stub + constants.underscore + Date.now ();

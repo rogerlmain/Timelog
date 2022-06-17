@@ -8,7 +8,7 @@ delimiter ??
 create procedure get_projects_by_client (client_id integer) begin
 
 	select
-		prj.id,
+		prj.id as project_id,
         prj.client_id,
 		clt.company_id,
         prj.`code`,

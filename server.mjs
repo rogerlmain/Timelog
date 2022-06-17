@@ -35,7 +35,7 @@ const districts_id = 2;
 
 app.process = async (request, response, handler) => {
 
-	//await new Promise (resolve => setTimeout (resolve, 5000)); // For debugging - used to pause
+	await new Promise (resolve => setTimeout (resolve, 2000)); // For debugging - used to pause
 
 	let request_data = request.body;
 

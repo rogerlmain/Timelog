@@ -9,7 +9,7 @@ import { default_settings } from "client/classes/types/constants";
 export const resize_state = { 
 	false	: 0, 
 	true	: 1, 
-	animate	: 2
+	animate	: 2,
 }// resize_state;
 
 
@@ -45,7 +45,8 @@ export default class ResizePanel extends BaseControl {
 
 		speed: null,
 
-		stretchOnly: false
+		stretchOnly: false,
+		static: true,
 	}// defaultProps;
 
 
@@ -190,8 +191,10 @@ export default class ResizePanel extends BaseControl {
 			inner_style.flex = "1"
 		}// if;
 
-		if (isset (this.state.width) && this.horizontal ()) outer_style = { ...outer_style, width: this.state.width  };
-		if (isset (this.state.height) && this.vertical ()) outer_style = { ...outer_style, height: this.state.height };
+		if (this.props.static) {
+			if (isset (this.state.width) && this.horizontal ()) outer_style = { ...outer_style, width: this.state.width  };
+			if (isset (this.state.height) && this.vertical ()) outer_style = { ...outer_style, height: this.state.height };
+		}// if;
 
 		return (
 			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={outer_style}>

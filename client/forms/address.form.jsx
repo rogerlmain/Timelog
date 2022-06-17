@@ -6,7 +6,7 @@ import React from "react";
 import AccountStorage from "classes/storage/account.storage";
 
 import DynamicInput from "controls/inputs/dynamic.input";
-import SelectList from "controls/select.list";
+import SelectList from "controls/lists/select.list";
 import Container from "controls/container";
 
 import BaseControl from "controls/abstract/base.control";

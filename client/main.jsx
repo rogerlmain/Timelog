@@ -10,7 +10,7 @@ import Container from "controls/container";
 
 import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
-import SelectList from "client/controls/select.list";
+import SelectList from "client/controls/lists/select.list";
 
 import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
@@ -27,7 +27,10 @@ import { MainContext } from "client/classes/types/contexts";
 
 
 //Special Guest Import
-import ExplodingPanelTest from "client/tests/exploding.panel.test";
+import ProjectSelector from "client/controls/selectors/project.selector";
+//import ClientSelector from "client/controls/selectors/client.selector";
+//import ResizePanelTest from "client/tests/resize.panel.test";
+//import ExplodingPanelTest from "client/tests/exploding.panel.test";
 
 
 const version = "1.2.6";
@@ -178,6 +181,11 @@ document.onreadystatechange = () => {
 	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-//	ReactDOM.render (<ExplodingPanelTest />, document.getElementById ("main_page"));
+//	ReactDOM.render (<MainContext.Provider value={{ company_id: 263, main_page: this }}>
+//		<div className="fully-centered">
+//			<ProjectSelector id="project_selector" hasHeader={true} headerSelectable={false} headerText="Select a client" /> 
+//		</div>
+//	</MainContext.Provider>, document.getElementById ("main_page"));
+//	ReactDOM.render (<ResizePanelTest />, document.getElementById ("main_page"));
 
 }// document.ready;

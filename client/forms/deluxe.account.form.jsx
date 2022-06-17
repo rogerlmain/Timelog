@@ -14,7 +14,7 @@ import ExplodingPanel from "controls/panels/exploding.panel";
 import EyecandyPanel from "controls/panels/eyecandy.panel";
 
 import Container from "controls/container";
-import SelectList from "controls/select.list";
+import SelectList from "controls/lists/select.list";
 
 import AddressForm from "forms/address.form"
 import CreditCardSubform from "client/forms/subforms/credit.card.subform";

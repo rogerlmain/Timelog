@@ -6,7 +6,7 @@ import ClientStorage from "client/classes/storage/client.storage";
 import BaseControl from "client/controls/abstract/base.control";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import ClientSelectorGadget from "client/controls/selectors/client.selector.gadget";
+import ClientSelector from "client/controls/selectors/client.selector";
 
 import ClientForm from "client/forms/client.form";
 
@@ -54,7 +54,7 @@ export default class ClientsPage extends BaseControl {
  		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="two-column-grid">
-				<ClientSelectorGadget id="client_selector" ref={this.client_selector} parent={this} newOption={false}
+				<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newOption={false}
 				
 					hasHeader={true} 
 					headerSelectable={can_create}
@@ -62,12 +62,12 @@ export default class ClientsPage extends BaseControl {
 
 					selectedClient={this.state.selected_client}
 
-					onClientChange={(event) => this.setState ({ 
+					onChange={(event) => this.setState ({ 
 						selected_client: numeric_value (event.target.value),
 						updating: true 
 					})}>
 
-				</ClientSelectorGadget>
+				</ClientSelector>
 			</div>
 
 			<EyecandyPanel id="edit_client_panel" text="Loading..." eyecandyVisible={this.state.updating} 
