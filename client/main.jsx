@@ -20,20 +20,17 @@ import MasterPanel from "client/master";
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
-import { date_formats, globals } from "client/classes/types/constants";
-import { isset, is_empty, not_set, nested_value, notify, numeric_value } from "client/classes/common";
+import { blank, date_formats, debugging, tracing, globals } from "client/classes/types/constants";
+import { isset, is_empty, not_set, nested_value, notify, numeric_value, is_null, null_value } from "client/classes/common";
 
 import { MainContext } from "client/classes/types/contexts";
 
 
 //Special Guest Import
-import ProjectSelector from "client/controls/selectors/project.selector";
-//import ClientSelector from "client/controls/selectors/client.selector";
-//import ResizePanelTest from "client/tests/resize.panel.test";
-//import ExplodingPanelTest from "client/tests/exploding.panel.test";
+//import ProjectSelector from "client/controls/selectors/project.selector";
 
 
-const version = "1.2.6";
+const version = "1.2.6-1";
 
 
 class Main extends BaseControl {
@@ -58,6 +55,10 @@ class Main extends BaseControl {
 		// window.onerror = this.error_handler;
 
 		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
+
+
+console.log ("creating main page");
+	
 
 	}// constructor;
 
@@ -124,6 +125,7 @@ class Main extends BaseControl {
 				</div>
 				
 				<div className="full-screen">
+					
 					<ExplodingPanel id="main_panel">
 
 						<Container id="master_panel_container" visible={active_panel == "master_panel"}>
@@ -139,6 +141,7 @@ class Main extends BaseControl {
 						</Container>
 
 					</ExplodingPanel>
+
 				</div>
 
 				<div className="page-footer">
@@ -153,20 +156,52 @@ class Main extends BaseControl {
 }// Main;
 
 
+/**** FOR DEBUGGING ONLY *****/
+
+
+class AThing extends BaseControl {
+
+	constructor (props) {
+		super (props);
+		console.log ("athing created");
+	}
+
+}
+
+
 class QuickTest extends BaseControl {
 
-	state = { current_time: new Date () }
+	container = React.createRef ();
+
+
+	componentDidMount () {
+		this.setState ({ id_name: nested_value (this.container.current, "pathed_id") });
+	}// componentDidMount;
+
 
 	render () { 
-		return <div>
+		return <div className="outlined">
 
-			<div>{this.state.current_time.format (date_formats.full_datetime)}</div>
+			<div className="two-column-grid" style={{ border: "solid 1px blue", padding: "2px" }}>
+{/* 
+				<Container visible={false} inline={true}>
+					visible: false<br />
+					inline: true<br />
+				</Container>
+*/}
 
-			<br /><br />
+				<Container visible={true} inline={false}>
+					<div>visible: true</div>
+					<div>inline: false</div>
+				</Container>
 
-			<TimePicker id="time_picker" defaultValue={this.state.current_time}
-				onChange={value => this.setState ({ current_time: value })}>
-			</TimePicker>
+				<Container visible={true} inline={true}>
+					<div>visible: true</div>
+					<div>inline: true</div>
+				</Container>
+
+			</div>
+
 		</div>
 	}// render;
 
@@ -178,14 +213,13 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
+	if (debugging) console.log (`Debug test: #51`);
+
 	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 
 //	Special Guest Render	
-//	ReactDOM.render (<MainContext.Provider value={{ company_id: 263, main_page: this }}>
-//		<div className="fully-centered">
-//			<ProjectSelector id="project_selector" hasHeader={true} headerSelectable={false} headerText="Select a client" /> 
-//		</div>
-//	</MainContext.Provider>, document.getElementById ("main_page"));
+//	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));
 //	ReactDOM.render (<ResizePanelTest />, document.getElementById ("main_page"));
+//	ReactDOM.render (<ExplodingPanelTest />, document.getElementById ("main_page"));
 
 }// document.ready;

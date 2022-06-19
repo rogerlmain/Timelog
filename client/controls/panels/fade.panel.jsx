@@ -4,7 +4,7 @@ import React from "react";
 import SettingsStorage from "client/classes/storage/settings.storage";
 
 import { is_null, not_set } from "classes/common";
-import { default_settings } from "client/classes/types/constants";
+import { default_settings, hidden_zindex } from "client/classes/types/constants";
 
 
 export default class FadePanel extends BaseControl {
@@ -14,10 +14,15 @@ export default class FadePanel extends BaseControl {
 
 
 	static defaultProps = {
+
 		id: null,
+
 		animate: true,
 		visible: false,
+
 		speed: null,
+		className: null,
+
 	}// defaultProps;
 
 
@@ -38,13 +43,17 @@ export default class FadePanel extends BaseControl {
 
 
 	transition_end = (event) => {
+
 		if (event.propertyName != "opacity") return;
 		if (event.currentTarget != event.srcElement) return;
+
 		switch (this.props.visible) {
 			case true: this.execute (this.props.afterShowing, event); break;
 			default: this.execute (this.props.afterHiding, event); break;
 		}// switch;
+
 		this.forceUpdate ();
+
 	}/* transition_end */;
 
 
@@ -66,9 +75,18 @@ export default class FadePanel extends BaseControl {
 
 
 	render () {
-		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0)};
+
+		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0) }
+
+		if (!this.props.visible) style.visibility = "hidden";
+
 		if (this.props.animate) style = { ...style, transition: `opacity ${this.animation_speed ()}ms ease-in-out` }
-		return <div id={this.props.id} ref={this.fade_panel} style={style} className={this.props.className}>{this.props.children}</div>
+		return <div id={this.props.id} ref={this.fade_panel} style={style}>
+
+			{this.props.children}
+		
+		</div>
+
 	}// render;
 
 }// FadePanel;

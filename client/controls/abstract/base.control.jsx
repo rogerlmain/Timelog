@@ -2,7 +2,7 @@ import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
 import React from "react";
-import ReactDOMServer, { renderToString } from "react-dom/server";
+import ReactDOM from "react-dom";
 
 import Container from "client/controls/container";
 
@@ -26,9 +26,11 @@ export default class BaseControl extends React.Component {
 	
 	animation_speed = () => { return this.props.speed ?? SettingsStorage.animation_speed () ?? default_settings.animation_speed }
 	children = props => { return is_array (props.children) ? props.children : [props.children] }
-	compare_elements = (first_element, second_element) => { return ReactDOMServer.renderToString (first_element) == ReactDOMServer.renderToString (second_element) }
 	context_item = (name) => { return common.isset (this.context) ? this.context [name] : null }
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
+
+	same_element (first_element, second_element) { return jsonify (first_element == jsonify (second_element)) }
+	different_element  (first_element, second_element) { return !this.same_element (first_element, second_element) }
 
 
 	// Like forceUpdate except calls shouldComponentUpdate
@@ -127,35 +129,6 @@ export default class BaseControl extends React.Component {
 		return false;
 
 	}// react_element;
-
-
-	object_string (object) {
-		let result = null;
-		if (typeof object == "string") return object;
-		try {
-			result = this.react_element (object) ? renderToString (object) : JSON.stringify (object);
-		} catch (except) {
-			let message = `Error on object_string: ${except}`;
-			if (constants.globals.debugging) alert (message);
-			console.log (message);
-		}// try;
-		return result;
-	}// object_string;
-	
-	
-	same_element (first_element, second_element, deep) {
-
-		let first_string = ReactDOMServer.renderToString (first_element);
-		let second_string = ReactDOMServer.renderToString (second_element);
-
-		if (deep !== false) deep = true;
-
-		switch (deep) {
-			case true: return first_string.equals (second_string);
-			default: return first_string.substring (0, first_string.indexOf (">") + 1).equals (second_string.substring (0, second_string.indexOf (">") + 1));
-		}// switch;
-
-	}// same_element;
 
 
 	state_size (control = null) {

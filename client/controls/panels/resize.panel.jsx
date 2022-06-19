@@ -1,9 +1,8 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
-import SettingsStorage from "client/classes/storage/settings.storage";
 
 import { isset, is_null, matching_objects, nested_value } from "classes/common";
-import { default_settings } from "client/classes/types/constants";
+import { tracing, debugging } from "client/classes/types/constants";
 
 
 export const resize_state = { 
@@ -51,9 +50,14 @@ export default class ResizePanel extends BaseControl {
 
 
 	constructor (props) {
+
 		super (props);
+		
 		if (is_null (this.props.id)) throw "ResizePanel requires an ID";
-		if (is_null (props.parent)) throw "ResizePanel requires a parent of type iResizable";
+		if (is_null (props.parent)) throw "ResizePanel requires a parent";
+
+		if (tracing) console.log (`resize_panel '${this.props.id}' created`);
+
 	}// constructor;
 
 
@@ -120,9 +124,7 @@ export default class ResizePanel extends BaseControl {
 		let outer_size = this.state_size ();
 		let inner_size = this.get_size (this.inner_control);
 
-		let updated = !this.same_element (this.props.children, new_props.children);
-
-		if (updated) {
+		if (this.different_element (this.props.children, new_props.children)) {
 			this.setState (this.get_size (this.outer_control));
 			return false;
 		}// if;
@@ -196,13 +198,11 @@ export default class ResizePanel extends BaseControl {
 			if (isset (this.state.height) && this.vertical ()) outer_style = { ...outer_style, height: this.state.height };
 		}// if;
 
-		return (
-			<div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={outer_style}>
-				<div id={`${this.props.id}_inner_control`} ref={this.inner_control} style={inner_style}>
-					{this.props.children}
-				</div>
+		return <div id={`${this.props.id}_outer_control`} ref={this.outer_control} style={outer_style}>
+			<div id={`${this.props.id}_inner_control`} ref={this.inner_control} style={inner_style}>
+				{this.props.children}
 			</div>
-		);
+		</div>
 
 	}// render;
 

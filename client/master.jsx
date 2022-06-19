@@ -1,5 +1,3 @@
-import * as common from "classes/common";
-
 import React from "react";
 
 import CompanyStorage from "client/classes/storage/company.storage";
@@ -20,7 +18,7 @@ import SettingsPage from "client/pages/settings";
 import BaseControl from "client/controls/abstract/base.control";
 
 import { globals } from "client/classes/types/constants";
-import { is_null } from "client/classes/common";
+import { is_empty, is_function, is_null } from "client/classes/common";
 
 import { MainContext, MasterContext } from "classes/types/contexts";
 
@@ -82,9 +80,18 @@ export default class MasterPanel extends BaseControl {
 	}// defaultProps;
 
 
+	constructor (props) {
+		super (props);
+		console.log ("creating master page");
+	}// constructor;
+
+
+	/********/
+
+
 	buttons_disabled () {
 		let company_list = CompanyStorage.company_list ();
-		if (common.is_empty (company_list) || (company_list.length == 1)) return false;
+		if (is_empty (company_list) || (company_list.length == 1)) return false;
 		if (CompanyStorage.company_selected ()) return false;
 		return true;
 	}// buttons_disabled;
@@ -96,8 +103,8 @@ export default class MasterPanel extends BaseControl {
 
 			let name = `${page_name}_button`;
 
-			if (!(common.is_function (master_pages [page_name].permission) ? master_pages [page_name].permission () : master_pages [page_name].permission)) continue;
-			if (common.is_null (result)) result = [];
+			if (!(is_function (master_pages [page_name].permission) ? master_pages [page_name].permission () : master_pages [page_name].permission)) continue;
+			if (is_null (result)) result = [];
 
 			// TO DO - ADD A "GROUP" OPTION FOR SINGLE STICKY BUTTON OUT OF A BUTTON LIST/GROUP (when needed)
 			result.push (<SelectButton id={name} name={name} key={name} page_name={name} selected={this.state.page == page_name}

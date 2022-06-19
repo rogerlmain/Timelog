@@ -35,12 +35,17 @@ const ranges = {
 export default class LoggingPage extends BaseControl {
 
 
+	selector = React.createRef ();
+
+
 	state = {
 
 		current_entry: null,
 
 		client_id: null,
 		project_id: null,
+
+		project_selected: false,
 
 		editable: false,
 		editing: false,
@@ -62,15 +67,17 @@ export default class LoggingPage extends BaseControl {
 		super (props);
 		this.state.current_entry = LogStorage.current_entry ();
 		ProjectStorage.billing_rate (this.props.projectId, this.props.clientId).then (result => this.setState ({ billing_rate: result }));
+console.log ("logging page created");		
 	}// constructor;
 
-
-	client_selected = () => { return (this.state.client_id > 0) || OptionsStorage.single_client () }
-	project_selected = () => { return ((this.state.project_id > 0) || OptionsStorage.single_project ()) && this.client_selected () }
 
 	company_id = () => { return isset (this.state.current_entry) ? this.state.current_entry.company_id : this.context.company_id }
 	client_id = () => { return isset (this.state.current_entry) ? this.state.current_entry.client_id : this.state.client_id }
 	project_id = () => { return isset (this.state.current_entry) ? this.state.current_entry.project_id : this.state.project_id }
+
+
+	project_selected = () => { return ((this.state.project_id > 0) || OptionsStorage.single_project () || this.logged_in ()) }
+	logged_in = () => { return isset (this.state.current_entry) }
 
 
 	billable_time = elapsed_time => {
@@ -93,7 +100,6 @@ export default class LoggingPage extends BaseControl {
 		return result;
 
 	}// needs_editing;
-
 
 
 	rounded = (date, range) => {
@@ -138,6 +144,8 @@ export default class LoggingPage extends BaseControl {
 
 
 	end_time = () => {
+
+		if (not_set (this.state.current_entry)) return null;
 
 		if (not_set (nested_value (this.state.current_entry, "end_time"))) {
 			this.state.current_entry = {
@@ -228,6 +236,9 @@ export default class LoggingPage extends BaseControl {
 	entry_details = elapsed_time => {
 	
 		let end_time = this.end_time ();
+		let start_time = nested_value (this.state.current_entry, "start_time");
+
+		if (not_set (this.state.current_entry)) return null;
 
 		return <div id={this.props.id} className="row-container">
 		
@@ -242,10 +253,10 @@ export default class LoggingPage extends BaseControl {
 				<Break />
 
 				<label>Start</label>
-				<div>{this.state.current_entry.start_time.format (date_formats.full_datetime)}</div>
+				<div>{nested_value (start_time, "format", date_formats.full_datetime)}</div>
 
 				<label>Stop</label>
-				{this.link_cell (end_time.format (this.state.current_entry.start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime))}
+				{this.link_cell (end_time.format (nested_value (start_time, "same_day", end_time) ? date_formats.timestamp : date_formats.full_datetime))}
 
 				<label>Elapsed</label>
 				{this.link_cell (elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)) }
@@ -300,36 +311,42 @@ export default class LoggingPage extends BaseControl {
 
 		if (not_set (this.context)) return null;
 
-		let logged_in = isset (this.state.current_entry);
+		let logged_in = this.logged_in ();
 		let elapsed_time = logged_in ? this.elapsed_time () : null;
 
 		return <div id="log_panel">
 
 			<EyecandyPanel id="log_form_eyecandy" ref={this.log_form_panel} text="Loading..." eyecandyVisible={!this.state.initialized} stretchOnly={true}>
 
-				{logged_in ? this.entry_details (elapsed_time) : <div>
+				<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
 
-					<ProjectSelector id="logging_project_selector" parent={this}
+				<Container visible={!logged_in}>
+					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newOption={true}
+
 						clientId={this.state.client_id} projectId={this.state.project_id}
-						hasHeader={true} headerSelectable={false} headerText={blank} newOption={true}
+
+						hasHeader={true} 
+						headerSelectable={false} 
+
 						onClientChange={event => this.setState ({ client_id: event.target.value })}
 						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
+
 					</ProjectSelector>
-				
-				</div>}
+				</Container>
 
 			</EyecandyPanel>
 
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 				
-					text={`Logging you ${logged_in ? "out" : "in"}...`} 
+					text={`Logging you ${logged_in ? "out" : "in"}...`}
+					
 					eyecandyVisible={this.state.updating}
 					eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
 
 					onEyecandy={this.log_entry}>
 
-					<FadePanel id="login_button" visible={this.project_selected () || logged_in} style={{ display: "flex" }}>
+					<FadePanel id="login_button" visible={this.project_selected ()} style={{ display: "flex" }}>
 						<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }} disabled={logged_in && this.invalid_entry ()}>
 							{logged_in ? (elapsed_time == 0 ? "Cancel log entry" : "Log out") : "Log in"}
 						</button>

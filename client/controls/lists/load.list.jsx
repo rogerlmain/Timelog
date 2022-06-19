@@ -9,15 +9,19 @@ import FadePanel from "client/controls/panels/fade.panel";
 import SelectList from "client/controls/lists/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import { isset, is_empty, is_promise, not_set, null_value } from "client/classes/common";
+import { isset, is_empty, is_function, is_promise, not_function, not_set, null_value } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
+import { tracing } from "client/classes/types/constants";
 
 
 const load_list_id = "load_list";
 
 
 export default class LoadList extends BaseControl {
+
+
+	container = React.createRef ();
 
 
 	 state = { 
@@ -40,6 +44,8 @@ export default class LoadList extends BaseControl {
 		label: "LoadList",
 		newOptionPage: null,
 
+		data: null,
+
 		dataIdField: null,
 		dataTextField: null,
 
@@ -55,14 +61,38 @@ export default class LoadList extends BaseControl {
 	}// defaultProps;
 
 
+	load_data = (data) => {
+
+		let update_state = data => {
+			if (not_set (this.container.current)) return setTimeout (() => update_state (data));
+			this.setState ({ 
+				list_data: data,  
+				data_loading: false,
+			});
+		}/* update_state */;
+
+		if (is_promise (this.props.data)) return this.props.data.then (data => update_state (data));
+		update_state (data);
+
+	}/* load_data */;
+
+
 	constructor (props) {
-
+		
 		super (props);
-
+		
 		if (this.props.id.equals (load_list_id)) console.warn ("Your LoadList really should have a unique ID");
-		this.get_data ();
+		if (tracing) console.log (`${props.id} list created`);
+
+		this.load_data (props.data);
 
 	}// constructor;
+
+
+	shouldComponentUpdate (new_props) {
+		if (this.props.data != new_props.data) return !!this.load_data (new_props.data);
+		return true;
+	}// shouldComponentUpdate;
 
 
 	/*********/
@@ -91,50 +121,14 @@ export default class LoadList extends BaseControl {
 	}// data_options;
 
 
-	get_data = (force = false) => {
-
-		if (not_set (this.state.list_data)) {
-			this.state.list_data = this.run (this.props.getData);
-			if (is_promise (this.state.list_data)) {
-
-				this.state.data_loading = true;
-				
-				this.state.list_data.then (data => this.setState ({ 
-					list_data: data,
-					data_loading: false,
-				}));
-
-			}// if;
-		}// if;
-
-		if (force) this.forceUpdate ();
-
-		return this.state.list_data;
-
-	}// get_data;
-
-
 	/*********/
-
-
-	shouldComponentUpdate (new_props) {
-
-		if (this.props.getData != new_props.getData) {
-			this.state.list_data = null;
-			this.get_data (true);
-			return false;
-		}// if;
-
-		return true;
-	
-	}// shouldComponentUpdate;
 
 
 	render () {
 
 		let list_id = `${this.props.id}_load_list`;
 
-		return <Container>
+		return <Container ref={this.container}>
 
 			<FadePanel id={`${this.props.id}_label_panel`} animated={this.props.animated} visible={this.props.visible}>
 				<label htmlFor={list_id} style={{

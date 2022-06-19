@@ -8,6 +8,7 @@ export const application_id = "sandbox-sq0idb-i9_IjjiYVUfBsBoNCFh9LA";
 export const location_id = "RMPCInc";
 
 export const debugging = true;
+export const tracing = false;
 
 export const space = " ";
 export const blank = "";

@@ -1,4 +1,4 @@
-import * as consts from "client/classes/types/constants";
+import { blank } from "client/classes/types/constants";
 
 
 export function boolean_value (value) { return (is_string (value) && (value.equals ("true") || value.equals ("on"))) }
@@ -89,10 +89,10 @@ export function jsonify (value) {
 
 export function is_array (value) { return Array.isArray (value) }
 export function is_date (value) { return value instanceof Date }
-export function is_empty (value) { return (is_string (value) ? value.empty () : not_set (value, consts.blank) || (value.length == 0)) }
+export function is_empty (value) { return (is_string (value) ? value.empty () : not_set (value, blank) || (value.length == 0)) }
 export function is_function (value) { return value instanceof Function }
 export function is_null (value) { return value == null }
-export function is_number (value) { return !isNaN (Number (value)) }
+export function is_number (value) { return isset (value) && !isNaN (Number (value)) }
 export function is_object (value, include_arrays = false) { return ((value instanceof Object) && (include_arrays || not_array (value))) }
 export function is_primitive (value) { return (value !== Object (value)) }
 export function is_promise (value) { return (value instanceof Promise) }
@@ -102,12 +102,13 @@ export function is_undefined (value) { return (value == undefined) && not_null (
 
 export function not_array (value) { return !is_array (value) }
 export function not_empty (value) { return !is_empty (value) }
+export function not_function (value) { return !is_function (value) }
 export function not_set (value, ...nullables) { return (!isset (value)) || Array.from (nullables).includes (value) }
 export function not_null (value) { return !is_null (value) }
 export function not_object (value, include_arrays = false) { return !is_object (value, include_arrays) }
 export function not_undefined (value) { return !is_undefined (value) }
 
-export function null_value (value) { return isset (value) ? value : null }
+export function null_value (value) { return ((value === 0) || (value === blank) || not_set (value)) ? null : value }
 export function null_or_undefined (value) { return (is_null (value) || (value == undefined)) }
 
 export function zero_value (value) { return null_or_undefined (value) ? 0 : value }

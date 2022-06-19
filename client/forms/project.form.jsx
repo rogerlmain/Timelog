@@ -67,7 +67,7 @@ export default class ProjectForm extends FormControl {
 
 		form_data.append ("action", "save");
 		form_data.append ("deleted", "true");
-		form_data.append ("project_id", this.project_data ("id"));
+		form_data.append ("project_id", this.project_data ("project_id"));
 
 		this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
 
@@ -120,7 +120,7 @@ export default class ProjectForm extends FormControl {
 
 	render () {
 
-		let project_id = this.project_data ("id");
+		let project_id = this.project_data ("project_id");
 
 		return <Container>
 			<form id="project_form" ref={this.project_form}>

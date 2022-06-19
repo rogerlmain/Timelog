@@ -76,9 +76,6 @@ export default class SelectList extends BaseControl {
 
 
 	shouldComponentUpdate (new_props) {
-
-if (this.props.data != new_props.data) alert ("new data");
-
 		if (this.props.value != new_props.value) {
 			this.setState ({ selected_value: zero_value (new_props.value) });
 			return false;

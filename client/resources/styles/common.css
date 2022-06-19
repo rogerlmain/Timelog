@@ -257,7 +257,7 @@ div.button-column {
 /**** Debugging ****/
 
 
-.bordered, .borderlined, .borderlined > *, .outlined, .outlined * {
+.bordered, .borderline, .borderline > *, .outlined, .outlined * {
 	border: solid 1px red;
 }/* border styles */
 
@@ -414,5 +414,4 @@ div.form-table label {
 	content: "more content";
 }
 				
-
 

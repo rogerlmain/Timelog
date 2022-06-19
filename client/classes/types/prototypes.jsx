@@ -1,7 +1,5 @@
-import * as constants from "classes/types/constants";
-import * as common from "classes/common";
-
-import { isset, not_empty, not_set, get_keys } from "classes/common";
+import { blank, space, date_formats, date_rounding, directions, empty } from "classes/types/constants";
+import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys } from "classes/common";
 
 
 /**** Array Helper Functions ****/
@@ -58,7 +56,7 @@ Array.prototype.replace = function (element, replacement) {
 
 Array.prototype.extract = function (value, name = "id") {
 	for (let item of this) {
-		if (common.is_object (item) && (item [name] == value)) return item;
+		if (is_object (item) && (item [name] == value)) return item;
 	}// for;
 	return null;
 }// extract;
@@ -85,18 +83,18 @@ Date.elapsed = function (elapsed_time /* in minutes */) {
 	let hours = Math.floor ((elapsed_time - (days * Date.coefficient.day)) / Date.coefficient.hour);
 	let mins = Math.floor ((elapsed_time - ((days * Date.coefficient.day) + (hours * Date.coefficient.hour))) / Date.coefficient.minute);
 
-	return `${((days > 0) ? `${days}:` : constants.empty)}${((days > 0) ? hours.padded (2) : hours)}:${mins.padded (2)}`;
+	return `${((days > 0) ? `${days}:` : empty)}${((days > 0) ? hours.padded (2) : hours)}:${mins.padded (2)}`;
 
 }// elapsed;
 
 
-Date.fromGMT = function (date_string) { return new Date (new Date (date_string).toLocaleString ()).format (constants.date_formats.database_timestamp) }
+Date.fromGMT = function (date_string) { return new Date (new Date (date_string).toLocaleString ()).format (date_formats.database_timestamp) }
 
 Date.month_name = (month) => { return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month] }
 
 
 Date.validated = (date) => {
-	if (common.is_string (date)) date = new Date (date);
+	if (is_string (date)) date = new Date (date);
 	return (Date.is_date (date)) ? date : null;
 }// validated;
 
@@ -129,7 +127,7 @@ Date.increments.hours			= Date.increments.minutes * 60,
 Date.increments.days			= Date.increments.hours * 24,
 
 
-Date.prototype.get_date = function () { return new Date (this.format (constants.date_formats.database_date)) }
+Date.prototype.get_date = function () { return new Date (this.format (date_formats.database_date)) }
 Date.prototype.get_month = function () { return this.getMonth () }
 Date.prototype.get_year = function () { return this.getFullYear () }
 
@@ -154,7 +152,7 @@ Date.prototype.round_hours = function (direction) {
 
 	let result = new Date (this);
 
-	if (direction == constants.date_rounding.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
+	if (direction == date_rounding.up) result.setHours ((result.getMinutes () == 0) ? result.getHours () : result.getHours () + 1); 
 
 	result.setMinutes (0);
 	result.setSeconds (0);
@@ -171,9 +169,9 @@ Date.prototype.round_minutes = function (count, direction) {
 	let minutes = Math.floor (result.getMinutes () / count) * count;
 
 	// If not specified then round off
-	if (not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? constants.date_rounding.down : constants.date_rounding.up;
+	if (not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? date_rounding.down : date_rounding.up;
 
-	result.setMinutes (direction == constants.date_rounding.down ? minutes : minutes + count);
+	result.setMinutes (direction == date_rounding.down ? minutes : minutes + count);
 	result.setSeconds (0);
 	result.setMilliseconds (0);
 
@@ -186,7 +184,7 @@ Date.prototype.same_day = function (input_date) {
 
 	let new_date = Date.validated (input_date);
 
-	if (common.is_null (new_date)) return false;
+	if (is_null (new_date)) return false;
 	
 	if (this.getDate () != new_date.getDate ()) return false;
 	if (this.getMonth () != new_date.getMonth ()) return false;
@@ -229,7 +227,7 @@ Date.prototype.format = function (selected_format) {
 	let hours = this.getHours ();
 	let month = this.getMonth ();
 
-	let result = (selected_format.replace ? selected_format : constants.blank);
+	let result = (selected_format.replace ? selected_format : blank);
 
 	result = result.replace ("MMMM", "!!").replace ("w", "@@");
 
@@ -293,10 +291,10 @@ HTMLElement.prototype.absolutePosition = function () {
 
 
 HTMLElement.prototype.addClass = function (new_class) {
-	let classes = this.className.split (constants.space).filter (item => common.not_empty (item));
+	let classes = this.className.split (space).filter (item => not_empty (item));
 	if (classes.indexOf (new_class) >= 0) return;
 	classes.push (new_class);
-	this.className = classes.join (constants.space);
+	this.className = classes.join (space);
 }// addClass;
 
 
@@ -305,10 +303,33 @@ HTMLElement.prototype.attributeLength = function (attribute) {
 }// attributeLength;
 
 
+HTMLElement.prototype.pathed_id = function () {
+
+	let result = null;
+	let item = this;
+	let index = 0;
+
+	while (isset (item)) {
+		
+		let name = null_value (item.id) ?? item.tagName.toLowerCase ();
+
+		if (is_null (name)) name = "ufo";
+
+		result = (is_null (result)) ? name : `${name}_$_${result}`;
+		item = item.parentElement;
+		index++;
+
+	}// while;
+
+	return `${result}_$${index}`;
+
+}/* pathed_id */;
+
+
 HTMLElement.prototype.removeClass = function (new_class) {
-	let classes = this.className.split (constants.space);
+	let classes = this.className.split (space);
 	if (classes.indexOf (new_class) >= 0) classes.remove (new_class);
-	this.className = classes.join (constants.space);
+	this.className = classes.join (space);
 }// removeClass;
 
 
@@ -362,7 +383,7 @@ HTMLElement.prototype.isComplete = function () {
 		let common_length = 0;
 
 		for (let index = 0; index < Math.min (this.value.length, input_mask.length); index++) {
-			if (common.is_number (this.value [index]) && (this.value [index] == input_mask [index])) common_length++;
+			if (is_number (this.value [index]) && (this.value [index] == input_mask [index])) common_length++;
 		}// for;
 
 		return (entry_length == common_length) || (entry_length == required_length);
@@ -390,7 +411,7 @@ HTMLElement.prototype.addValidator = function (validator) {
 // Returns optional boolean = valid, for chaining.
 HTMLElement.prototype.setValidity = function (valid, message = null) {
 	if (valid) {
-		this.setCustomValidity (constants.blank);
+		this.setCustomValidity (blank);
 		this.removeClass ("invalid");
 		return true;
 	}// if;	
@@ -423,7 +444,7 @@ HTMLElement.prototype.validate = function () {
 	}/* pattern_match */;
 
 
-	let labels = common.not_empty (this.id) ? document.querySelectorAll (`[for=${this.id}]`) : null;
+	let labels = not_empty (this.id) ? document.querySelectorAll (`[for=${this.id}]`) : null;
 	let field_name = (isset (labels) && (labels.length > 0)) ? labels [0].innerText : "This field";
 
 	if (!this.setValidity (provided (), `${field_name} is a required value.`)) return false;
@@ -470,7 +491,7 @@ HTMLSelectElement.prototype.selectedValue = function () {
 
 
 Number.prototype.padded = function (length) {
-	return this.toString ().padded (length, "0", constants.directions.left);
+	return this.toString ().padded (length, "0", directions.left);
 }// if;
 
 
@@ -488,9 +509,9 @@ String.prototype.char_count = function (character) { return (this.match (new Reg
 
 
 String.prototype.extractNumber = function () {
-	let result = constants.blank;
+	let result = blank;
 	for (var i = 0; i < this.length; i++) {
-		if (common.is_number (this [i])) result += this [i];
+		if (is_number (this [i])) result += this [i];
 	}// for;
 	return result;
 }// extractNumber;
@@ -500,7 +521,7 @@ String.prototype.padded = function (length, character, direction = null) {
 	let result = this;
 	while (result.length < length) {
 		switch (direction) {
-			case constants.directions.left: result = character + result; break;
+			case directions.left: result = character + result; break;
 			default: result += character; break;
 		}// switch;
 	}// while;
@@ -509,12 +530,12 @@ String.prototype.padded = function (length, character, direction = null) {
 
 
 String.prototype.equals = function (comparison, case_sensitive = false) {
-	if (common.is_null (comparison)) return false;
+	if (is_null (comparison)) return false;
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
 }// equals;
 
 
-String.prototype.empty = function () { return this.trim () == constants.blank }
+String.prototype.empty = function () { return this.trim () == blank }
 String.prototype.not_empty = function () { return !this.empty () }
 
 
@@ -523,10 +544,10 @@ String.prototype.matches = function (pattern) { return isset (this.match (patter
 
 String.prototype.splice = function (start_index, end_index, replacement = null) {
 
-	let start = common.is_number (start_index) ? parseInt (start_index) : null;
-	let finish = common.is_number (end_index) ? parseInt (end_index) : null;
+	let start = is_number (start_index) ? parseInt (start_index) : null;
+	let finish = is_number (end_index) ? parseInt (end_index) : null;
 
-	if (common.is_null (start) || common.is_null (finish) || (finish > start)) return this;
+	if (is_null (start) || is_null (finish) || (finish > start)) return this;
 
 	return `${this.substring (0, start)}${replacement}${this.substring (finish)}`;
 	

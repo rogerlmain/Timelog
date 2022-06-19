@@ -246,7 +246,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 				<div className="vertically-spaced-out">
 
-					<Container contentsOnly={false} inline={true}>
+					<Container inline={true}>
 
 						<Container visible={this.props.hasCredit} inline={true}>
 

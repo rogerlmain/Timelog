@@ -12,7 +12,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import ProjectForm from "client/forms/project.form";
 
-import { numeric_value, not_null, not_set, get_values } from "client/classes/common";
+import { numeric_value, not_null, not_set, get_values, nested_value } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 import "client/resources/styles/pages/projects.css";
@@ -43,7 +43,8 @@ export default class ProjectsPage extends BaseControl {
 
 		project_data: null,
 
-		updating: false
+		form_visible: false,
+		updating: false,
 
 	}// state;
 
@@ -55,6 +56,22 @@ export default class ProjectsPage extends BaseControl {
 
 
 	/********/
+
+
+	componentDidMount = () => this.setState ({ form_visible: nested_value (this.project_selector.current, "client_selected") });
+
+
+	shouldComponentUpdate (new_props, new_state) {
+
+		let client_selected = nested_value (this.project_selector.current, "client_selected");
+
+		if (new_state.form_visible != client_selected) {
+			this.setState ({ form_visible: client_selected });
+			return false;
+		}// if;
+
+		return true;
+	}// shouldComponentUpdate;
 
 
 	render () {
@@ -69,6 +86,7 @@ export default class ProjectsPage extends BaseControl {
 				<ProjectSelector id="project_selector" ref={this.project_selector} parent={this} newOption={false}
 
 					hasHeader={true}
+
 					headerSelectable={can_create}
 					headerText={can_create ? "New project" : "Select a project"}
 
@@ -104,7 +122,7 @@ export default class ProjectsPage extends BaseControl {
 				
 				}}>
 
-				<Container visible={not_null (this.state.selected_client)}>
+				<Container visible={this.state.form_visible}>
 					<ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
 						onSave={() => this.project_selector.current.setState ({ projects_loading: true })}>
 					</ProjectForm>

@@ -33,6 +33,7 @@ contents: null,
 						<ResizePanel id="test" ref={this.resize_panel} resize={this.state.resize} frozen={this.state.frozen} parent={this}>
 
 							{(this.state.selected_index == 1) && <div>
+								{console.log ("writing teeny line")}
 								Teeny line<br />
 							</div>}
 
