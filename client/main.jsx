@@ -171,38 +171,8 @@ class AThing extends BaseControl {
 
 class QuickTest extends BaseControl {
 
-	container = React.createRef ();
-
-
-	componentDidMount () {
-		this.setState ({ id_name: nested_value (this.container.current, "pathed_id") });
-	}// componentDidMount;
-
-
 	render () { 
-		return <div className="outlined">
-
-			<div className="two-column-grid" style={{ border: "solid 1px blue", padding: "2px" }}>
-{/* 
-				<Container visible={false} inline={true}>
-					visible: false<br />
-					inline: true<br />
-				</Container>
-*/}
-
-				<Container visible={true} inline={false}>
-					<div>visible: true</div>
-					<div>inline: false</div>
-				</Container>
-
-				<Container visible={true} inline={true}>
-					<div>visible: true</div>
-					<div>inline: true</div>
-				</Container>
-
-			</div>
-
-		</div>
+		return <div className="outlined">Waiting to test something</div>
 	}// render;
 
 }// QuickTest;

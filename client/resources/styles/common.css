@@ -393,8 +393,12 @@ div[class*="-piece-form"] {
 
 
 div.one-piece-form		{ grid-template-columns: min-content 1fr }
-div.two-piece-form		{ grid-template-columns: repeat(2, min-content 1fr) }
+div.two-piece-form		{grid-template-columns: repeat(4, min-content);}
 div.three-piece-form	{ grid-template-columns: repeat(3, min-content 1fr) }
+
+
+div.one-piece-form label:nth-child(odd) { text-align: right }
+div.one-piece-form label:nth-child(even) { border: "solid 1px red" }
 
 
 div.form-table label {

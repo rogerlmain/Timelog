@@ -13,7 +13,7 @@ export default class Container extends BaseControl {
 
 	static defaultProps = { 
 		visible: true,
-		inline: false
+		inline: true,
 	}// defaultProps;
 
 

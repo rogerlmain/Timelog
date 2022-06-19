@@ -246,9 +246,9 @@ export default class DeluxeAccountForm extends BaseControl {
 
 				<div className="vertically-spaced-out">
 
-					<Container inline={true}>
+					<Container>
 
-						<Container visible={this.props.hasCredit} inline={true}>
+						<Container visible={this.props.hasCredit}>
 
 							<SelectList ref={this.credit_card_list} data={this.props.creditCards} idField="square_id" className="full-width" header={true}
 								textField={item => { 
