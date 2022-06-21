@@ -1,3 +1,5 @@
+use timelog;
+
 start transaction;
 
 drop table if exists invitations;
@@ -13,7 +15,7 @@ create table invitations (
 	last_updated		datetime,
     
     foreign key (company_id) references companies (id),
-	foreign key (inviter_id) references accounts (id)
+	foreign key (inviter_id) references accounts (id),
 	foreign key (accepted_account_id) references accounts (id)
 	
 );
