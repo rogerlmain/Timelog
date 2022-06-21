@@ -1,9 +1,9 @@
 import "./server/globals.mjs";
 
 import express from "express";
-import multiparty from "multiparty";
-import https from "https";
 import file_system from "fs";
+import https from "https";
+import multiparty from "multiparty";
 
 import AccountData from "./server/models/accounts.mjs";
 import AccountSettingsData from "./server/models/settings.mjs";
@@ -21,11 +21,11 @@ import ReportData from "./server/models/reports.mjs";
 import TaskData from "./server/models/tasks.mjs";
 import MiscData from "./server/models/misc.mjs";
 
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import EmailHandler from "./server/handlers/email.handler.mjs";
+
+import { root_path } from "./server/constants.mjs";
 
 
-const root_path = dirname (fileURLToPath (import.meta.url));
 const app = express ();
 
 
@@ -35,7 +35,7 @@ const districts_id = 2;
 
 app.process = async (request, response, handler) => {
 
-	await new Promise (resolve => setTimeout (resolve, 2000)); // For debugging - used to pause
+//	await new Promise (resolve => setTimeout (resolve, 2000)); // For debugging - used to pause
 
 	let request_data = request.body;
 
@@ -57,7 +57,7 @@ app.use (express.urlencoded ({ extended: false }));
 app.use (express.json ());
 
 
-/********/
+/**** Data Lookups ****/
 
 
 app.post ("/accounts", function (request, response) {
@@ -229,14 +229,6 @@ app.post ("/settings", function (request, response) {
 });
 
 
-app.post ("/signin", function (request, response) {
-	app.process (request, response, fields => {
-		let account_data = new AccountData (request, response);
-		account_data.signin (fields, response);
-	});
-});
-
-
 app.post ("/tasks", function (request, response) {
 	app.process (request, response, (fields) => {
 		let task_data = new TaskData (request, response);
@@ -246,6 +238,26 @@ app.post ("/tasks", function (request, response) {
 			case "details": task_data.get_task (fields.task_id); break;
 			case "save": task_data.save (fields); break;
 		}// switch;
+	});
+});
+
+
+/*********/
+
+
+app.post ("/email", function (request, response) {
+	app.process (request, response, async fields => {
+		switch (fields.action) {
+			case "invite": new EmailHandler (request, response, fields).send_invitation (); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/signin", function (request, response) {
+	app.process (request, response, fields => {
+		let account_data = new AccountData (request, response);
+		account_data.signin (fields, response);
 	});
 });
 
@@ -261,6 +273,9 @@ app.post ("/tasks", function (request, response) {
 // });
 
 
+/*********/
+
+
 var options = {
     key: file_system.readFileSync (`${root_path}/server/certificates/timelog.key`),
     cert: file_system.readFileSync (`${root_path}/server/certificates/timelog.crt`),
@@ -270,4 +285,4 @@ let server = https.createServer (options, app).listen (app.get ("port"), functio
     console.log (`listening: ${root_path}`);
 });
 
-//server.keepAliveTimeout = 10000;
+server.keepAliveTimeout = 10000;

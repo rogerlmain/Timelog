@@ -183,7 +183,7 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
-	if (debugging) console.log (`Debug test: #51`);
+	if (debugging) console.log (`Debug test: #52`);
 
 	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
 

@@ -118,9 +118,7 @@ export default class ToggleOption extends BaseControl {
 
 		return <Container>
 			<label htmlFor={id}>{this.props.title}</label>
-			<div style={{ display: "flex", flexDirection: "row", justifyContent: "right" }}>
-				<ToggleSwitch id={id} value={this.state.value - 1} singleStep={true} onChange={this.change_handler}>{this.option_items ()}</ToggleSwitch>
-			</div>
+			<ToggleSwitch id={id} value={this.state.value - 1} singleStep={true} onChange={this.change_handler}>{this.option_items ()}</ToggleSwitch>
 		</Container>
 
 	}// render;

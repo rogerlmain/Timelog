@@ -1,5 +1,4 @@
 import * as constants from "classes/types/constants";
-import * as common from "classes/common";
 
 import React from "react";
 
@@ -12,21 +11,28 @@ import ToggleSwitch from "client/controls/toggle.switch";
 
 import BaseControl from "client/controls/abstract/base.control";
 
-import SelectButton from "client/controls/buttons/select.button";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
+
+import AccountStorage from "client/classes/storage/account.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
+
 import CurrencyInput from "client/controls/inputs/currency.input";
+import SelectButton from "client/controls/buttons/select.button";
 
 import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
 import ToggleOption from "pages/gadgets/settings/toggle.option";
 
-import { option_types } from "classes/types/constants";
-import { get_keys, is_null, nested_value } from "classes/common";
+import { blank, option_types } from "classes/types/constants";
+import { get_key, get_keys, isset, is_null, nested_value, not_set } from "classes/common";
 
 import { resize_direction } from "controls/panels/resize.panel";
 import { client_limit_options } from "pages/clients";
 
 import { MainContext } from "classes/types/contexts";
+
+import { Break } from "client/controls/html/components";
 
 import "client/resources/styles/pages.css";
 
@@ -38,6 +44,9 @@ const options_panels = {
 
 
 export default class SettingsPage extends BaseControl {
+
+
+	invite_form = React.createRef ();
 
 
 	state = { 
@@ -58,7 +67,10 @@ export default class SettingsPage extends BaseControl {
 		current_panel: options_panels.account_options,
 
 		cc_form: null,
-		pricing: null
+		pricing: null,
+
+		invitee: null,
+		invite_data: null,
 
 	}/* state */;
 
@@ -96,9 +108,9 @@ export default class SettingsPage extends BaseControl {
 
 	deluxe_account_form () {
 
-		const form_value = (field) => { return common.isset (this.state.cc_form) ? this.state.cc_form [field] : null };
+		const form_value = (field) => { return isset (this.state.cc_form) ? this.state.cc_form [field] : null };
 
-		return <DeluxeAccountPopup visible={common.isset (this.state.cc_form)} option={form_value ("option")} value={form_value ("value")}
+		return <DeluxeAccountPopup visible={isset (this.state.cc_form)} option={form_value ("option")} value={form_value ("value")}
 			onCancel={() => this.execute (this.state.cc_form.onCancel).then (() => this.setState ({ cc_form: null }))} 
 			onSubmit={() => this.execute (nested_value (this.state.cc_form, "onSubmit")).then (() => this.setState ({ cc_form: null }))}>
 		</DeluxeAccountPopup>
@@ -114,8 +126,8 @@ export default class SettingsPage extends BaseControl {
 		let options = OptionsStorage.get_options ();
 		
 		let option_value = option => { 
-			if (common.isset (options) && common.isset (options [option])) return parseInt (options [option]);
-			return constants.deadbeat_options [common.get_key (option_types, option)];
+			if (isset (options) && isset (options [option])) return parseInt (options [option]);
+			return constants.deadbeat_options [get_key (option_types, option)];
 		}/* option_value */;
 
 		let settings = null;
@@ -130,39 +142,65 @@ export default class SettingsPage extends BaseControl {
 	}// initialize_settings;
 
 
+	invite_contributor = event => {
+
+		let data = this.state.invite_data;
+
+		data.append ("action", "invite");
+		data.append ("inviter", AccountStorage.full_name ());
+		data.append ("company", CompanyStorage.active_company ().company_name);
+
+		return new Promise ((resolve, reject) => {
+
+			fetch ("/email", {
+				method: "post",
+				body: this.state.invite_data,
+				credentials: "same-origin"
+			}).then (response => {
+//				this.invite_form.current.reset ();
+				resolve (response);
+			}).catch (reject);
+
+		});
+
+	}/* invite_contributor */;
+
+
+	invitee_details = () => {
+		if (not_set (this.state.invite_data)) return blank;
+		return `Inviting ${this.state.invite_data.get ("invitee_name")} (${this.state.invite_data.get ("invitee_address")})`;
+	}// invitee_details;
+
+
 	/**** Options ****/
 
 
 	granularity_option = () => { 
-		return <div className="one-piece-form">
-			<ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
-				option={option_types.granularity} parent={this} 
-				onPaymentConfirmed={selected_option => {
-					this.set_option (option_types.granularity, selected_option).then (() => this.setState ({
-						start_rounding: constants.date_rounding.off,
-						end_rounding: constants.date_rounding.off,
-						granularity: selected_option
-					}, this.context.main_page.forceRefresh));
-				}}>
-			</ToggleOption>
-		</div>
+		return <ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
+			option={option_types.granularity} parent={this} 
+			onPaymentConfirmed={selected_option => {
+				this.set_option (option_types.granularity, selected_option).then (() => this.setState ({
+					start_rounding: constants.date_rounding.off,
+					end_rounding: constants.date_rounding.off,
+					granularity: selected_option
+				}, this.context.main_page.forceRefresh));
+			}}>
+		</ToggleOption>
 	}/* granularity_option */;
 
 
 	rounding_options = () => {
 		return <Container>
 		
-			<div className="horizontally-spaced-out">
-				<ToggleOption id="rounding_option" title="Rounding option" values={["No", "Yes"]} value={this.state.rounding_option}
-					option={option_types.rounding_option} parent={this}
-					onPaymentConfirmed={selected_option => this.process_option ("rounding_option", selected_option)}>
-				</ToggleOption>
-			</div>
+			<ToggleOption id="rounding_option" title="Rounding option" values={["No", "Yes"]} value={this.state.rounding_option}
+				option={option_types.rounding_option} parent={this}
+				onPaymentConfirmed={selected_option => this.process_option ("rounding_option", selected_option)}>
+			</ToggleOption>
 
-			<div className="with-headspace">
+			<div className="span-all-columns">
 				<ExplodingPanel id="rounding_options_panel">
 					<Container id="rounding_options_container" visible={OptionsStorage.can_round ()}>
-						<div className="one-piece-form">
+						<div className="credit-centered with-headspace">
 
 							<ToggleOption id="start_time_rounding" title="Start time rounding"
 								values={["Round down", "Round off", "Round up"]} value={this.state.start_rounding + 2}
@@ -186,7 +224,7 @@ export default class SettingsPage extends BaseControl {
 
 
 	limit_options = () => {
-		return <div className="one-piece-form">
+		return <Container>
 
 			<ToggleOption id="client_limit" title="Number of clients" values={get_keys (client_limit_options)} value={this.state.client_limit}
 				option={option_types.client_limit} parent={this} 
@@ -198,7 +236,7 @@ export default class SettingsPage extends BaseControl {
 				onPaymentConfirmed={selected_option => this.process_option ("project_limit", selected_option)}>
 			</ToggleOption>
 
-		</div>
+		</Container>
 	}/* limit_options */;
 
 
@@ -207,33 +245,37 @@ export default class SettingsPage extends BaseControl {
 		let option_available = ((OptionsStorage.client_limit () > 1) || (OptionsStorage.project_limit () > 1));
 		let option_purchased = (OptionsStorage.can_bill ());
 
-		return <ExplodingPanel id="option_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
-			<Container id="billing_options_container" visible={option_available}>
+		return <div className="span-all-columns">
+			<ExplodingPanel id="option_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
+				<Container id="billing_options_container" visible={option_available}>
 
-				<Container id="billing_available_container" visible={!option_purchased}>
-					<div className="horizontally-spaced-out">
-						<ToggleOption id="billing_option" title="Billing option" values={["No", "Yes"]} value={this.state.billing_option}
-							option={option_types.billing_option} parent={this}
-							onPaymentConfirmed={selected_option => this.process_option ("billing_option", selected_option)}>
-						</ToggleOption>
-					</div>
+					<Container id="billing_available_container" visible={!option_purchased}>
+						<div className="credit-centered">
+							<ToggleOption id="billing_option" title="Billing option" values={["No", "Yes"]} value={this.state.billing_option}
+								option={option_types.billing_option} parent={this}
+								onPaymentConfirmed={selected_option => this.process_option ("billing_option", selected_option)}>
+							</ToggleOption>
+						</div>
+					</Container>
+
+					<Container id="billing_purchased_container" visible={option_purchased}>
+						<div className="horizontally-centered">
+							<div className="credit-centered">
+
+								<label htmlFor="default_rate">Default rate</label>
+
+								<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
+									defaultValue={OptionsStorage.default_rate () ?? 0}
+									onBlur={event => OptionsStorage.default_rate (event.target.value)}>
+								</CurrencyInput>
+
+							</div>
+						</div>
+					</Container>
+
 				</Container>
-
-				<Container id="billing_purchased_container" visible={option_purchased}>
-					<div className="horizontally-spaced-out">
-
-						<label htmlFor="default_rate">Default rate</label>
-
-						<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
-							defaultValue={OptionsStorage.default_rate () ?? 0}
-							onBlur={event => OptionsStorage.default_rate (event.target.value)}>
-						</CurrencyInput>
-
-					</div>
-				</Container>
-
-			</Container>
-		</ExplodingPanel>
+			</ExplodingPanel>
+		</div>
 
 	}/* billing_options */;
 
@@ -270,26 +312,64 @@ export default class SettingsPage extends BaseControl {
 
 			<div className="full-row horizontally-centered" style={{ display: "flex", margin: "1em 0 2em" }}>
 				<div className="one-piece-form">
-					<label htmlFor="package">{common.get_key (constants.account_types, this.state.account_type).titled ()} account</label>
+					<label htmlFor="package">{get_key (constants.account_types, this.state.account_type).titled ()} account</label>
 					<ToggleSwitch id="package" onChange={option => this.setState ({ account_type: parseInt (option) })}>{this.account_options ()}</ToggleSwitch>
 				</div>
 			</div>
 
-			<div className=" with-headspace two-column-newspaper">
+			<div className="two-column-newspaper with-headspace">
 
 				<div>
-					{this.granularity_option ()}
-					<br />
-					{this.limit_options ()}
+					<div className="credit-centered">
+						{this.granularity_option ()}
+						<Break />
+						{this.limit_options ()}
+					</div>
 				</div>
 
 				<div>
-					{this.rounding_options ()}
-					<br />
-					{this.billing_options ()}
+					<div className="credit-centered">
+						{this.rounding_options ()}
+						<Break />
+						{this.billing_options ()}
+					</div>
 				</div>
 
 			</div>
+
+			<div className="full-row section-header">Contributors</div>
+
+			<EyecandyPanel id="invite_button_panel" text={this.invitee_details ()}
+			
+				onEyecandy={() => this.invite_contributor ().then (() => this.setState ({ invite_data: null }, () => alert ("done: " + this.state.invite_data))) }
+				eyecandyVisible={isset (this.state.invite_data)}>
+
+				<form id="invite_form" ref={this.invite_form}>
+
+					<div className="horizontally-centered with-headspace">
+
+						<label htmlFor="invitation">Invite a contributor</label>
+
+						<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
+							<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
+								onChange={event => this.setState ({ invitee: event.target.value })} required={true}
+//	defaultValue="Rex"
+							/>
+							<input type="email" id="invitee_address" name="invitee_address" placeholder="Email address" required={true}
+//	defaultValue="rex@rogerlmain.com" 
+							/>
+							<button onClick={event => {
+								this.setState ({ invite_data: new FormData (this.invite_form.current) });
+								event.preventDefault ();
+							}}>Invite</button>
+
+						</div>
+
+					</div>
+
+				</form>
+
+			</EyecandyPanel>
 
 		</Container>
 

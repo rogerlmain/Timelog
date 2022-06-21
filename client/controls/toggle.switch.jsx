@@ -110,41 +110,39 @@ export default class ToggleSwitch extends BaseControl {
 
 		if (common.is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.animation_speed ()}ms ease-in-out`}
 
-		return <div style={{ position: "relative" }}>
-			<div ref={this.switch_control} className={this.props.showText ? "two-column-grid" : null} style={{ ...this.props.style, position: "relative" }}>
+		return <div ref={this.switch_control} className={this.props.showText ? "two-column-grid" : null} style={{ ...this.props.style, position: "relative" }}>
 
-				{!this.props.textAlignment.equals (horizontal_alignment.left) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
+			{!this.props.textAlignment.equals (horizontal_alignment.left) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
 
-				<div id={this.props.id} className="toggle-switch unselectable">
+			<div id={this.props.id} className="toggle-switch unselectable">
 
-					{common.is_empty (this.props.children) ? null : this.props.children.map (child => {
-						return <div id={child.props.id} className="item" key={child.props.children} value={child.props.value} title={child.props.children} 
-						
-							onClick={event => this.setState ({ 
-								process_change: true, 
-								option: this.selection (event.target)
-							})}>
-							
-						</div>
-					})}
-
-					<div className="switch" ref={this.switch} 
-
-						onMouseDown={event => this.setState ({ drag_position: event.clientX })}
- 						onMouseMove={event => { if (this.dragging ()) this.setState ({ drag_offset: (event.clientX - this.state.drag_position) }) }}
-
-						onMouseLeave={event => { if (this.dragging ()) this.stop_dragging (event) }}
-						onMouseUp={this.stop_dragging}
-
-						style={control_style}
+				{common.is_empty (this.props.children) ? null : this.props.children.map (child => {
+					return <div id={child.props.id} className="item" key={child.props.children} value={child.props.value} title={child.props.children} 
 					
-					></div>
+						onClick={event => this.setState ({ 
+							process_change: true, 
+							option: this.selection (event.target)
+						})}>
+						
+					</div>
+				})}
 
-				</div>
+				<div className="switch" ref={this.switch} 
 
-				{this.props.textAlignment.equals (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
+					onMouseDown={event => this.setState ({ drag_position: event.clientX })}
+					onMouseMove={event => { if (this.dragging ()) this.setState ({ drag_offset: (event.clientX - this.state.drag_position) }) }}
+
+					onMouseLeave={event => { if (this.dragging ()) this.stop_dragging (event) }}
+					onMouseUp={this.stop_dragging}
+
+					style={control_style}
+				
+				></div>
 
 			</div>
+
+			{this.props.textAlignment.equals (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
+
 		</div>
 	};
 
