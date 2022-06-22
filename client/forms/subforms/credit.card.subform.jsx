@@ -3,7 +3,7 @@ import * as constants from "classes/types/constants";
 import React from "react";
 
 import AccountStorage from "classes/storage/account.storage";
-import SquareHandler from "classes/square.handler";
+import SquareHandler from "client/classes/handlers/square.handler";
 
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";

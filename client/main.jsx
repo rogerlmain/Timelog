@@ -71,9 +71,9 @@ console.log ("creating main page");
 
 		return <div>
 
-			<div className="right-aligned">Hello {AccountStorage.full_name ()}!</div>
+			<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
 			
-			<div className="right-aligned" style={{ marginTop: "0.5em" }}>
+			<div className="right-aligned-text" style={{ marginTop: "0.5em" }}>
 
 				<Container visible={CompanyStorage.company_count () > 1}>
 					<SelectList value={CompanyStorage.active_company_id ()} data={companies}

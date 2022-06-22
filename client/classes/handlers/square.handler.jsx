@@ -1,7 +1,7 @@
 import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
-import FormHandler from "classes/form.handler";
+import FormHandler from "client/classes/handlers/form.handler";
 
 import AccountStorage from "classes/storage/account.storage";
 
@@ -9,13 +9,6 @@ import { v4 as uuid } from "uuid";
 
 
 const transaction_id_field = "transaction_id";
-
-const square_hostname = "connect.squareupsandbox.com";
-const square_authorization = "EAAAENzB7zMQb2M5FW6MpbnIMXfvwLdonwGI9XxqtkwT86LvxuWpW4N_SyI67cjJ";
-
-const card_path 	= "v2/cards";
-const customer_path	= "v2/customers";
-const payment_path	= "v2/payments";
 
 
 export default class SquareHandler {
@@ -29,6 +22,11 @@ export default class SquareHandler {
 
 	send_square_request (path, data) {
 
+		let square_data = new FormData ();
+		
+		square_data.append ("square_string", JSON.stringify (data));
+		square_data.append ("path", path);
+
 		data.idempotency_key = localStorage.getItem (transaction_id_field);
 
 		if (common.is_null (data.idempotency_key)) {
@@ -36,18 +34,14 @@ export default class SquareHandler {
 			localStorage.setItem (transaction_id_field, data.idempotency_key);
 		}// if;
 
-		return new Promise ((resolve, reject) => fetch (`https://${square_hostname}/${path}`, {
+		return new Promise ((resolve, reject) => fetch ("/payments", {
 			method: "post",
-			headers: {
-				"Content-Type": "application/json",
-				"Square-Version": "2022-03-16",
-				"Authorization": `Bearer ${square_authorization}`
-			}/* headers */,
-			body: JSON.stringify (data)
-		}).then (response => response.json ()).then (response => {
+			body: square_data,
+			credentials: "same-origin"
+		})).then (response => response.json ()).then (response => {
 			localStorage.removeItem (transaction_id_field);
-			resolve (response)
-		}).catch (error => reject (error)))
+			resolve (response);
+		}).catch (error => reject (error));
 
 	}// send_square_request;
 

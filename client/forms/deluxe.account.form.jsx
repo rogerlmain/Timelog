@@ -6,8 +6,8 @@ import React from "react";
 import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
-import CustomerHandler from "client/classes/customer.handler";
-import SquareHandler from "client/classes/square.handler";
+import CustomerHandler from "client/classes/handlers/customer.handler";
+import SquareHandler from "client/classes/handlers/square.handler";
 
 import BaseControl from "controls/abstract/base.control";
 import ExplodingPanel from "controls/panels/exploding.panel";

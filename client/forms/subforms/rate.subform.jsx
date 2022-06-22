@@ -68,7 +68,7 @@ export default class RateSubform extends BaseControl {
 			<div className="one-piece-form">
 
 
-				<div className="flexed-left">
+				<div className="left-aligned">
 					<CurrencyInput key={input_key} id="billing_rate" className="rate-field" maxLength={3}
 						defaultValue={project_rate} disabled={this.props.disabled} onBlur={this.props.onChange} 
 						onInput={event => this.setState ({ current_rate: numeric_value (event.target.value) })}>

@@ -24,6 +24,7 @@ import MiscData from "./server/models/misc.mjs";
 import EmailHandler from "./server/handlers/email.handler.mjs";
 
 import { root_path } from "./server/constants.mjs";
+import PaymentHandler from "./server/handlers/payment.handler.mjs";
 
 
 const app = express ();
@@ -252,6 +253,9 @@ app.post ("/email", function (request, response) {
 		}// switch;
 	});
 });
+
+
+app.post ("/payment", (request, response) => app.process (request, response, fields => new PaymentHandler (response).pay (fields.square_string, fields.path)));
 
 
 app.post ("/signin", function (request, response) {

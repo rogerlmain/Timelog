@@ -1,9 +1,6 @@
 import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
-import FormHandler from "classes/form.handler";
-
-import AccountsModel from "client/classes/models/accounts";
 import AddressesModel from "client/classes/models/addresses";
 import CompaniesModel from "client/classes/models/companies";
 import CompanyAccountsModel from "client/classes/models/company.accounts";
@@ -11,8 +8,6 @@ import CompanyCardModel from "client/classes/models/company.cards";
 
 import AccountStorage from "classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
-
-import { v4 as uuid } from "uuid";
 
 
 const transaction_id_field = "transaction_id";
@@ -23,7 +18,6 @@ const square_authorization = "EAAAENzB7zMQb2M5FW6MpbnIMXfvwLdonwGI9XxqtkwT86Lvxu
 const customer_path	= "v2/customers";
 const card_path 	= "v2/cards";
 const payment_path	= "v2/payments";
-
 
 
 export default class CustomerHandler {

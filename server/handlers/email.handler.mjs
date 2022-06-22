@@ -1,6 +1,8 @@
 import FileSystem from "fs";
 import nodemailer from "nodemailer";
 
+import InvitationData from "../models/invitations.mjs";
+
 import { root_path } from "../constants.mjs";
 
 
@@ -66,13 +68,23 @@ export default class EmailHandler {
 	send_invitation = async () => {
 
 		try {
+			
 			await nodemailer.createTransport (email_details).sendMail ({
 				from: inviter_email,
-				to: this.fields.invitee_address,
+				to: this.fields.invitee_email,
 				subject: "You have been invited to travel through time",
 				text: this.get_template (templates.invitation, email_types.text),
 				html: this.get_template (templates.invitation, email_types.html),
 			});
+
+			new InvitationData ().set_invitation ({
+				company_id		: this.fields.company_id,
+				inviter_id		: this.fields.inviter_id,
+				invitee			: this.fields.invitee_name,
+				invitee_email	: this.fields.invitee_email,
+				account_id		: this.fields.accepted_account_id,
+			});
+
 		} catch (except) {
 			return this.response.send (`Error: ${except}`);
 		}// try;

@@ -24,7 +24,7 @@ import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
 import ToggleOption from "pages/gadgets/settings/toggle.option";
 
-import { blank, option_types } from "classes/types/constants";
+import { blank, debugging, option_types } from "classes/types/constants";
 import { get_key, get_keys, isset, is_null, nested_value, not_set } from "classes/common";
 
 import { resize_direction } from "controls/panels/resize.panel";
@@ -147,8 +147,8 @@ export default class SettingsPage extends BaseControl {
 		let data = this.state.invite_data;
 
 		data.append ("action", "invite");
-		data.append ("inviter", AccountStorage.full_name ());
-		data.append ("company", CompanyStorage.active_company ().company_name);
+		data.append ("inviter_id", AccountStorage.account_id ());
+		data.append ("company_id", CompanyStorage.active_company_id ());
 
 		return new Promise ((resolve, reject) => {
 
@@ -157,7 +157,6 @@ export default class SettingsPage extends BaseControl {
 				body: this.state.invite_data,
 				credentials: "same-origin"
 			}).then (response => {
-//				this.invite_form.current.reset ();
 				resolve (response);
 			}).catch (reject);
 
@@ -328,11 +327,9 @@ export default class SettingsPage extends BaseControl {
 				</div>
 
 				<div>
-					<div className="credit-centered">
-						{this.rounding_options ()}
-						<Break />
-						{this.billing_options ()}
-					</div>
+					<div className="credit-centered">{this.rounding_options ()}</div>
+					<br />
+					<div className="horizontally-centered">{this.billing_options ()}</div>
 				</div>
 
 			</div>
@@ -353,11 +350,11 @@ export default class SettingsPage extends BaseControl {
 						<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
 							<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
 								onChange={event => this.setState ({ invitee: event.target.value })} required={true}
-//	defaultValue="Rex"
-							/>
-							<input type="email" id="invitee_address" name="invitee_address" placeholder="Email address" required={true}
-//	defaultValue="rex@rogerlmain.com" 
-							/>
+								defaultValue={debugging ? "Rex" : null}>
+							</input>
+							<input type="email" id="invitee_email" name="invitee_email" placeholder="Email address" required={true}
+								defaultValue={debugging ? "rex@rogerlmain.com" : null}>
+							</input>
 							<button onClick={event => {
 								this.setState ({ invite_data: new FormData (this.invite_form.current) });
 								event.preventDefault ();

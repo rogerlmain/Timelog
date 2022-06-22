@@ -37,7 +37,7 @@ align-self: stretch;}/* .row-container */
 }/* .centering-cell */
 
 
-.right-aligned { text-align: right !important }
+.right-aligned-text { text-align: right !important }
 
 .with-headspace { margin-top: 1em }
 
@@ -91,24 +91,13 @@ div.credit-centered *:last-child { justify-self: flex-start }
 }/* self-centered */
 
 
-.flexed-left {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-}/* .flexed-left */
-
-
-.flexed-right {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-end;
-}/* .flexed-right */
+/********/
 
 
 .left-aligned {
 	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
+	flex-direction: row;
+	justify-content: flex-start;
 }/* .left-aligned */
 
 

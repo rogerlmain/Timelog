@@ -1,10 +1,11 @@
 start transaction;
 
 drop procedure if exists save_invitation;
+drop procedure if exists set_invitation;
 
 delimiter ??
 
-create procedure save_invitation (
+create procedure set_invitation (
     company_id			integer,
 	inviter_id			integer,
 	invitee				varchar (32),
@@ -15,7 +16,7 @@ create procedure save_invitation (
 	declare invitation_id int;
     
     select
-		inv.id into account_invitation_id
+		inv.id into invitation_id
 	from
 		invitations as inv
 	where
