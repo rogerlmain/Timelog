@@ -10,16 +10,6 @@ import AccountStorage from "classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
 
-const transaction_id_field = "transaction_id";
-
-const square_hostname = "connect.squareupsandbox.com";
-const square_authorization = "EAAAENzB7zMQb2M5FW6MpbnIMXfvwLdonwGI9XxqtkwT86LvxuWpW4N_SyI67cjJ";
-
-const customer_path	= "v2/customers";
-const card_path 	= "v2/cards";
-const payment_path	= "v2/payments";
-
-
 export default class CustomerHandler {
 
 

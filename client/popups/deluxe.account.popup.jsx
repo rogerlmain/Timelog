@@ -1,4 +1,3 @@
-import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
 import React from "react";
@@ -86,12 +85,10 @@ export default class DeluxeAccountPopup extends BaseControl {
 		return <PopupWindow id="deluxe_account_window" visible={this.props.visible} afterOpening={this.load_details} afterClosing={() => this.setState ({ loading: true })}>
 			<EyecandyPanel id="payment_eyecandy" text={<div>Loading. <br />One moment, please...</div>} 
 				eyecandyVisible={this.state.loading} eyecandySize={eyecandy_sizes.medium}>
-
-				<DeluxeAccountForm onCancel={this.props.onCancel} onSubmit={this.props.onSubmit} 
-					option={this.props.option} optionPrice={this.state.price} hasCredit={this.state.has_credit}
-					creditCards={this.state.credit_cards}>
-				</DeluxeAccountForm>
-
+					<DeluxeAccountForm onCancel={this.props.onCancel} onSubmit={this.props.onSubmit} 
+						option={this.props.option} optionPrice={this.state.price} hasCredit={this.state.has_credit}
+						creditCards={this.state.credit_cards}>
+					</DeluxeAccountForm>
 			</EyecandyPanel>
 		</PopupWindow>
 	}// render;

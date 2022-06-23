@@ -2,12 +2,6 @@
 
 #new_project_button { width: 100% }
 
-#project_details_panel { width: 100% }
-
-
-#project_details_panel > * { display: relative }
-#project_details_panel form { z-index: 2 }
-
 
 #projects_page hr {
 	height: 0;

@@ -4,7 +4,7 @@ import BaseControl from "controls/abstract/base.control";
 import SelectButton from "controls/buttons/select.button";
 import FadePanel from "controls/panels/fade.panel";
 
-import { isset, not_set } from "classes/common";
+import { isset, notify, not_set, pause } from "classes/common";
 import { hidden_zindex, visible_zindex } from "client/classes/types/constants";
 
 import "client/resources/styles/pages/gadgets/popups.css";
@@ -47,19 +47,11 @@ export default class PopupWindow extends BaseControl {
 		return (
 			<FadePanel id={`${this.props.id}_fade_panel`} className="full-size" visible={this.props.visible} style={{ zIndex: this.state.zIndex }}
 
-				beforeShowing={() => {
-					this.execute (this.props.beforeOpening);
-					this.setState ({ zIndex: visible_zindex });
-				}}
-
-				afterHiding={() => {
-					this.setState ({ zIndex: hidden_zindex });
-					this.execute (this.props.afterClosing);
-				}}
-
+				beforeShowing={() => this.execute (this.props.beforeOpening)}
 				afterShowing={() => this.execute (this.props.afterOpening)}
 
-				beforeHiding={() => this.execute (this.props.beforeClosing)}>
+				beforeHiding={() => this.execute (this.props.beforeClosing)}
+ 				afterHiding={() => this.execute (this.props.afterClosing)}>
 
 				<div className="full-size popup-panel">
 					{this.props.modal ? <div className="full-size fully-centered popup-modal" /> : null}

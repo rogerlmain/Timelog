@@ -11,6 +11,13 @@ import { v4 as uuid } from "uuid";
 const transaction_id_field = "transaction_id";
 
 
+const square_transactions = {
+	card	: "card",
+	customer: "customer",
+	payment	: "payment",
+}// square_transactions;
+
+
 export default class SquareHandler {
 
 
@@ -23,25 +30,24 @@ export default class SquareHandler {
 	send_square_request (path, data) {
 
 		let square_data = new FormData ();
-		
-		square_data.append ("square_string", JSON.stringify (data));
-		square_data.append ("path", path);
 
 		data.idempotency_key = localStorage.getItem (transaction_id_field);
-
-		if (common.is_null (data.idempotency_key)) {
+		if (common.is_null (square_data.idempotency_key)) {
 			data.idempotency_key = uuid ();
 			localStorage.setItem (transaction_id_field, data.idempotency_key);
 		}// if;
+	
+		square_data.append ("square_string", JSON.stringify (data));
+		square_data.append ("path", path);
 
-		return new Promise ((resolve, reject) => fetch ("/payments", {
+		return new Promise ((resolve, reject) => fetch ("/payment", {
 			method: "post",
 			body: square_data,
 			credentials: "same-origin"
-		})).then (response => response.json ()).then (response => {
+		}).then (response => response.json ()).then (response => {
 			localStorage.removeItem (transaction_id_field);
 			resolve (response);
-		}).catch (error => reject (error));
+		}).catch (error => reject (error)));
 
 	}// send_square_request;
 
@@ -90,7 +96,7 @@ export default class SquareHandler {
 			phone_number: form_data.primary_phone
 		}/* parameters */;
 
-		return this.send_square_request (customer_path, parameters);
+		return this.send_square_request (square_transactions.customer, parameters);
 
 	}// create_square_account;
 
@@ -107,7 +113,7 @@ export default class SquareHandler {
 			note: data.note,
 		}/* parameters */;
 
-		return this.send_square_request (payment_path, parameters);
+		return this.send_square_request (square_transactions.payment, parameters);
 
 	}// create_payment;
 
@@ -128,7 +134,7 @@ export default class SquareHandler {
 			}/* card */
 		}/* card_data */;
 
-		return this.send_square_request (card_path, card_data);
+		return this.send_square_request (square_transactions.card, card_data);
 
 	}// save_card;
 

@@ -122,7 +122,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		let option_name = isset (this.props.option) ? common.get_key (constants.option_types, this.props.option).titled () : null;
 
-		return await this.state.square_handler.create_payment ({
+		return this.state.square_handler.create_payment ({
 			amount: this.state.selected_item.equals (purchase_options.item) ? this.props.optionPrice : JSON.parse (this.package_list.current.value).price,
 			customer_id: data.customer_id,
 			source_id: data.card_id ?? data.token,
@@ -167,7 +167,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	}// get_card_id;
 	
 
-	submit_payment = async (event) => {
+	submit_payment = async event => {
 
 		let form_data = this.get_form_data ();
 
@@ -175,7 +175,7 @@ export default class DeluxeAccountForm extends BaseControl {
 		form_data = { ...form_data, ...await this.get_customer_id (form_data) };
 		form_data.card_id = await this.get_card_id (form_data);
 
-		await this.execute (this.props.onSubmit, await this.create_payment (form_data));
+		this.create_payment (form_data).then (() => this.execute (this.props.onSubmit));
 
 	}// submit_payment
 	

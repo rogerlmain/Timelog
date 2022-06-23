@@ -387,8 +387,6 @@ export default class SettingsPage extends BaseControl {
 	render () {
 		return <Container>
 
-			{this.deluxe_account_form ()}
-
 			<div className="two-column-grid">
 
 				<div className="button-column">
@@ -423,6 +421,8 @@ export default class SettingsPage extends BaseControl {
 				</ExplodingPanel>
 
 			</div>
+
+			{this.deluxe_account_form ()}
 
 		</Container>
 	}// render;

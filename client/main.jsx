@@ -30,7 +30,7 @@ import { MainContext } from "client/classes/types/contexts";
 //import ProjectSelector from "client/controls/selectors/project.selector";
 
 
-const version = "1.2.6-1";
+const version = "1.2.7";
 
 
 class Main extends BaseControl {

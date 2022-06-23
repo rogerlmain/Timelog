@@ -1,10 +1,7 @@
 import BaseControl from "client/controls/abstract/base.control";
 import React from "react";
 
-import SettingsStorage from "client/classes/storage/settings.storage";
-
 import { is_null, not_set } from "classes/common";
-import { default_settings, hidden_zindex } from "client/classes/types/constants";
 
 
 export default class FadePanel extends BaseControl {
@@ -20,8 +17,16 @@ export default class FadePanel extends BaseControl {
 		animate: true,
 		visible: false,
 
-		speed: null,
-		className: null,
+		style: null,
+
+		beforeTransition: null,
+		afterTransition: null,
+
+		beforeShowing: null,
+		beforeHiding: null,
+
+		afterShowing: null,
+		afterHiding: null,
 
 	}// defaultProps;
 
@@ -35,6 +40,7 @@ export default class FadePanel extends BaseControl {
 	transition_start = (event) => {
 		if (event.propertyName != "opacity") return;
 		if (event.currentTarget != event.srcElement) return;
+		this.execute (this.props.beforeTransition);
 		switch (this.props.visible) {
 			case true: this.execute (this.props.beforeShowing, event); break;
 			default: this.execute (this.props.beforeHiding, event); break;
@@ -51,6 +57,7 @@ export default class FadePanel extends BaseControl {
 			case true: this.execute (this.props.afterShowing, event); break;
 			default: this.execute (this.props.afterHiding, event); break;
 		}// switch;
+		this.execute (this.props.afterTransition);
 
 		this.forceUpdate ();
 
