@@ -27,7 +27,7 @@ export default class OptionStorage extends LocalStorage {
 
 
 	static #get (name) { 
-		let options = super.get (store_name, CompanyStorage.active_company_id ());
+		let options = this.get_options ();
 		return isset (options) ? (isset (options [name]) ? options [name] : null) : null;
 	}// #get;
 
@@ -48,10 +48,7 @@ export default class OptionStorage extends LocalStorage {
 	/********/
 	
 
-	static get_options () {
-		let company_list = this.#get (store_name, CompanyStorage.active_company_id ());
-		return company_list; // isset (company_list) ? company_list [company] : null;
-	}// get_options;
+	static get_options () { return super.get (store_name, CompanyStorage.active_company_id ()) }
 
 
 	static save_option (option, value) {	

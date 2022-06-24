@@ -66,18 +66,28 @@ align-self: stretch;}/* .row-container */
 }/* .vertically-centered */
 
 
+/********/
+
+
 div.credit-centered { 
 	display: grid;
-	grid-template-columns: repeat(2, min-content);
+	grid-template-columns: repeat(2, max-content);
 	row-gap: 0.2em;
 }/* div.credit-centered */
 
-div.credit-centered * { justify-self: center }
-div.credit-centered *:first-child { justify-self: flex-end }
-div.credit-centered *:last-child { justify-self: flex-start }
+div.credit-centered label {
+	text-align: right;
+	margin-left: 0;
+}/* div.credit-centered label */
+
+div.credit-centered *:nth-child(::odd) { justify-self: flex-end }
+div.credit-centered *:nth-child(::even) { justify-self: flex-start }
 
 
-.fully-centered {
+/********/
+
+
+*.fully-centered {
 	display: inline-flex;
 	flex-direction: row;
 	justify-content: center;
@@ -85,7 +95,7 @@ div.credit-centered *:last-child { justify-self: flex-start }
 }/* .fully-centered */
 
 
-.self-centered {
+*.self-centered {
 	justify-self: center;
 	align-self: center;
 }/* self-centered */
@@ -262,11 +272,15 @@ div.button-column {
 }/* border styles */
 
 
+div.outlined label { 
+	border: solid 1px blue !important;
+}/* div.outlined label */
+
+
 .gray-outlined {
 	border: none;
 	row-gap: 0.25em;
 }/* .gray-outlined */
-
 
 
 .unsigned-signin {
@@ -363,7 +377,9 @@ div[class*="-column-grid"] {
 
 div[class*="-column-grid"] label {
 	display: inline-flex;
+	flex-direction: row;
 	align-items: center;
+	justify-content: flex-end;
 }/* div[class*="-column-grid"] label */
 
 
