@@ -20,6 +20,8 @@ import MasterPanel from "client/master";
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
+import { createRoot } from "react-dom/client";
+
 import { blank, date_formats, debugging, tracing, globals } from "client/classes/types/constants";
 import { isset, is_empty, not_set, nested_value, notify, numeric_value, is_null, null_value } from "client/classes/common";
 
@@ -185,7 +187,7 @@ document.onreadystatechange = () => {
 
 	if (debugging) console.log (`Debug test: #52`);
 
-	ReactDOM.render (<Main id="timelog_main_page" />, document.getElementById ("main_page"));
+	createRoot (document.getElementById ("main_page")).render (<Main id="timelog_main_page" />);
 
 //	Special Guest Render	
 //	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));

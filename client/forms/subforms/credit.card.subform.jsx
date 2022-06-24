@@ -66,7 +66,7 @@ export default class CreditCardSubform extends BaseControl {
 					<img src={"client/resources/images/logos/visa.png"} />
 					<img src={"client/resources/images/logos/discover.svg"} />
 					<img src={"client/resources/images/logos/amex.png"} />
-					<img src={"client/resources/images/logos/JCB.svg"} />
+					<img src={"client/resources/images/logos/jcb.svg"} />
 					<img src={"client/resources/images/logos/unionpay.svg"} />
 				</div>
 			</div>

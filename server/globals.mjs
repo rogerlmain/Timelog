@@ -20,3 +20,11 @@ global.not_number = value => { return !is_number (value) }
 
 global.null_if = (value, comparison) => { return (value == comparison) ? null : value }
 
+
+/********/
+
+
+String.prototype.equals = function (comparison, case_sensitive = false) {
+	if (is_null (comparison)) return false;
+	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
+}// equals;

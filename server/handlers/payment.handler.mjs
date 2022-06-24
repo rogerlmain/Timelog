@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 const square_hostname = "connect.squareupsandbox.com";
 const square_authorization = "EAAAENzB7zMQb2M5FW6MpbnIMXfvwLdonwGI9XxqtkwT86LvxuWpW4N_SyI67cjJ";
 

@@ -22,9 +22,9 @@ import TaskData from "./server/models/tasks.mjs";
 import MiscData from "./server/models/misc.mjs";
 
 import EmailHandler from "./server/handlers/email.handler.mjs";
+import PaymentHandler from "./server/handlers/payment.handler.mjs";
 
 import { root_path } from "./server/constants.mjs";
-import PaymentHandler from "./server/handlers/payment.handler.mjs";
 
 
 const app = express ();
