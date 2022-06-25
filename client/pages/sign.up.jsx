@@ -78,8 +78,8 @@ defaultValue={"Test"} />
 					
 defaultValue={"Dude"} />
 
-					<label htmlFor="username">Username<div style={{ fontSize: "8pt" }}>(optional)</div></label>
-					<input type="text" id="username" name="username" 
+					<label htmlFor="friendly_name">Friendly name<div style={{ fontSize: "8pt" }}>(optional)</div></label>
+					<input type="text" id="friendly_name" name="friendly_name" 
 					
 defaultValue={"tastetestdude"} />
 
@@ -166,7 +166,7 @@ defaultValue={"tastetestdude@gmail.com"} />
 								account_id		: account_id,
 								first_name		: form_data.get ("first_name"),
 								last_name		: form_data.get ("last_name"),
-								username		: form_data.get ("username"),
+								friendly_name	: form_data.get ("friendly_name"),
 								email_address	: form_data.get ("email_address"),
 								account_type	: form_data.get ("account_type"),
 							});

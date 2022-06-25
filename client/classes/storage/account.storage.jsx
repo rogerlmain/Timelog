@@ -1,6 +1,6 @@
 import LocalStorage from "classes/local.storage"
 
-import { credential_types } from "client/classes/types/constants";
+import { credential_fields } from "client/classes/types/constants";
 
 
 const storage_locker = "credentials";
@@ -14,15 +14,15 @@ export default class AccountStorage extends LocalStorage {
 
 	static set_all (credentials) { LocalStorage.set_store (storage_locker, credentials) }
 	
-	static account_id = () => { let result = AccountStorage.get (credential_types.account_id); return result; }
+	static account_id = () => { let result = AccountStorage.get (credential_fields.account_id); return result; }
 
-	static first_name = () => { return AccountStorage.get (credential_types.first_name) }
-	static last_name = () => { return AccountStorage.get (credential_types.last_name) }
+	static first_name = () => { return AccountStorage.get (credential_fields.first_name) }
+	static last_name = () => { return AccountStorage.get (credential_fields.last_name) }
 
 	static full_name = () => { return `${AccountStorage.first_name ()} ${AccountStorage.last_name ()}` }
-	static username = () => { return AccountStorage.get (credential_types.username) }
+	static friendly_name = () => { return AccountStorage.get (credential_fields.friendly_name) }
 
-	static email_address = () => { return AccountStorage.get (credential_types.email_address) }
+	static email_address = () => { return AccountStorage.get (credential_fields.email_address) }
 
 
 }// AccountStorage;

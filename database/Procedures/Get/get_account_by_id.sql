@@ -12,7 +12,8 @@ create procedure get_account_by_id (account_id integer) begin
         acc.company_id,
 		acc.first_name,
         acc.last_name,
-        coalesce(acc.username, concat(acc.first_name, ' ', acc.last_name)) as username,
+        concat(acc.first_name, ' ', acc.last_name) as full_name,
+        coalesce(acc.friendly_name, acc.first_name) as friendly_name,
         acc.email_address,
         acc.account_type,
         acc.administrator_type

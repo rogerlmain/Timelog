@@ -17,7 +17,7 @@ export default class HomePage extends BaseControl {
 
 	render () {
 
-		let name = AccountStorage.username ();
+		let name = AccountStorage.friendly_name ();
 
 		return (<div id={this.props.id} className="centering-cell">
 			<div>Welcome {isset (name) ? name : "person with money"}</div>

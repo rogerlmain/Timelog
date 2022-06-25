@@ -17,8 +17,8 @@ import { MainContext } from "classes/types/contexts";
 
 
 const bad_credentials = <div id="bad_credentials" className="login-error">
-	That doesn't sound right. Check your username<br />
-	(email) and password and try again.
+	That doesn't sound right.<br />
+	Check your email and password and try again.
 </div>
 
 
@@ -93,8 +93,8 @@ export default class SigninPage extends BaseControl {
 				<form id="signin_form" encType="multipart/form-data">
 					<div className="one-piece-form form-table">
 
-						<label htmlFor="username">Username or email</label>
-						<input name="username" type="text"
+						<label htmlFor="email">Email</label>
+						<input id="email" name="email" type="text"
 
 //defaultValue="betty@riverdale.edu"
 //defaultValue="rex@rogerlmain.com"

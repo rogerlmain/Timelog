@@ -8,7 +8,7 @@ create procedure save_account (
     account_id int,
 	first_name varchar (45),
     last_name varchar (45),
-    username varchar (45),
+    friendly_name varchar (45),
     email_address varchar (255),
     `password` varchar (45),
     account_type int
@@ -20,7 +20,7 @@ create procedure save_account (
 			null,
 			first_name,
 			last_name,
-			username,
+			friendly_name,
 			email_address,
 			`password`,	--  to be encrypted
 			account_type,
@@ -37,7 +37,7 @@ create procedure save_account (
 		update accounts as acc set
  			acc.first_name = coalesce (first_name, acc.first_name),
 			acc.last_name = coalesce (last_name, acc.last_name),
-			acc.username = coalesce (username, acc.username),
+			acc.friendly_name = coalesce (friendly_name, acc.friendly_name),
 			acc.email_address = coalesce (email_address, acc.email_address),
 			acc.password = coalesce (`password`, acc.password),	--  to be encrypted
 			acc.account_type = coalesce (account_type, acc.account_type),

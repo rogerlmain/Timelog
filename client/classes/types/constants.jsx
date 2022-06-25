@@ -164,7 +164,7 @@ export let text_highlights = {
 /**** Local Settings Objects ****/
 
 
-export const credential_types = {
+export const credential_fields = {
 	account_id			: "account_id",
 	account_type		: "account_type",
 	administrator_type	: "administrator_type",
@@ -173,8 +173,8 @@ export const credential_types = {
 	email_address		: "email_address",
 	first_name			: "first_name",
 	last_name			: "last_name",
-	username			: "username",
-}// credential_types;
+	friendly_name		: "friendly_name",
+}// credential_fields;
 
 
 export const setting_types = {

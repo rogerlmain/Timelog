@@ -81,7 +81,7 @@ export default class CreditCardSubform extends BaseControl {
 					<div key={this.state.cc_name}>
 						<input type="text" id="cc_name" name="cc_name" style={{ width: "13em", marginRight: "1em" }} 
 							defaultValue={this.state.cc_name || constants.blank} required={true}
-							onChange={event => this.name_checkbox.current.checked = event.target.value.equals (AccountStorage.username ())}
+							onChange={event => this.name_checkbox.current.checked = event.target.value.equals (AccountStorage.friendly_name ())}
 							
 defaultValue="Rex Strange">
 
@@ -92,7 +92,7 @@ defaultValue="Rex Strange">
 						<label htmlFor="use_account_name_for_cc" className="mini-title">Just use<br />my name</label>
 						<input id="use_account_name_for_cc" name="use_account_name_for_cc" ref={this.name_checkbox}
 							type="checkbox" style={{ columnWidth: "min-content" }}
-							onChange={event => this.setState ({ cc_name: event.target.checked ? AccountStorage.username () : constants.blank })}>
+							onChange={event => this.setState ({ cc_name: event.target.checked ? AccountStorage.friendly_name () : constants.blank })}>
 						</input>
 					</div>
 
