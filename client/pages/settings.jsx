@@ -167,7 +167,7 @@ export default class SettingsPage extends BaseControl {
 
 	invitee_details = () => {
 		if (not_set (this.state.invite_data)) return blank;
-		return `Inviting ${this.state.invite_data.get ("invitee_name")} (${this.state.invite_data.get ("invitee_address")})`;
+		return `Inviting ${this.state.invite_data.get ("invitee_name")} (${this.state.invite_data.get ("invitee_email")})`;
 	}// invitee_details;
 
 
@@ -282,28 +282,6 @@ export default class SettingsPage extends BaseControl {
 	/**** Panels ****/
 
 
-	user_settings_panel = () => {
-		return <Container id="user_settings_container" visible={this.state.current_panel == options_panels.user_settings}>
-
-			<div className="full-row section-header">User Settings</div>
-
-			<div className="one-piece-form">
-				<label>Animation Speed</label>
-				<div style={{ minWidth: "15em", padding: "0.2em 0" }}>
-					<Slider id="animation_speed" min={0} max={5000} value={SettingsStorage.animation_speed ()} 
-						onChange={value => {
-							SettingsStorage.animation_speed (value);
-							this.context.main_page.forceUpdate ();
-						}} 
-						showValue={true}>
-					</Slider>
-				</div>
-			</div>
-
-		</Container>
-	}/* user_settings_panel */;
-
-
 	account_options_panel = () => {
 		return <Container id="account_options_container" visible={this.state.current_panel == options_panels.account_options}>
 
@@ -371,6 +349,28 @@ export default class SettingsPage extends BaseControl {
 		</Container>
 
 	}// account_options_panel;
+
+
+	user_settings_panel = () => {
+		return <Container id="user_settings_container" visible={this.state.current_panel == options_panels.user_settings}>
+
+			<div className="full-row section-header">User Settings</div>
+
+			<div className="one-piece-form">
+				<label>Animation Speed</label>
+				<div style={{ minWidth: "15em", padding: "0.2em 0" }}>
+					<Slider id="animation_speed" min={0} max={5000} value={SettingsStorage.animation_speed ()} 
+						onChange={value => {
+							SettingsStorage.animation_speed (value);
+							this.context.main_page.forceUpdate ();
+						}} 
+						showValue={true}>
+					</Slider>
+				</div>
+			</div>
+
+		</Container>
+	}/* user_settings_panel */;
 
 
 	/**** React Routines ****/
