@@ -42,7 +42,7 @@ export default class LoadList extends BaseControl {
 		id: load_list_id,
 
 		label: "LoadList",
-		newOptionPage: null,
+		newButtonPage: null,
 
 		data: null,
 
@@ -61,7 +61,7 @@ export default class LoadList extends BaseControl {
 	}// defaultProps;
 
 
-	load_data = (data) => {
+	load_data = (input_data) => {
 
 		let update_state = data => {
 			if (not_set (this.container.current)) return setTimeout (() => update_state (data));
@@ -72,7 +72,9 @@ export default class LoadList extends BaseControl {
 		}/* update_state */;
 
 		if (is_promise (this.props.data)) return this.props.data.then (data => update_state (data));
-		update_state (data);
+		if (is_promise (input_data)) return input_data.then (data => update_state (data));
+
+		update_state (input_data);
 
 	}/* load_data */;
 
@@ -103,12 +105,16 @@ export default class LoadList extends BaseControl {
 		let header = null_value (this.props.listHeader);
 
 		if (is_promise (this.state.list_data)) return null;
-		if (isset (this.props.newOptionPage) && is_empty (this.state.list_data)) return <button onClick={() => { this.context.master_page.setState ({ page: this.props.newOptionPage }) }}>New</button>
+		
+		if (isset (this.props.newButtonPage) && is_empty (this.state.list_data)) return <button onClick={() => { 
+			this.context.master_page.setState ({ page: this.props.newButtonPage })
+		}}>New</button>
 		
 		return <SelectList id={this.props.id} data={this.state.list_data} value={this.props.selectedItem}
 
 			hasHeader={isset (header)} headerText={header} 
 			headerSelectable={this.props.headerSelectable}
+			
 			idField={this.props.dataIdField} textField={this.props.dataTextField}
 
 			onChange={event => {

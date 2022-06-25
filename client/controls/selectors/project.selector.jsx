@@ -55,7 +55,8 @@ export default class ProjectSelector extends BaseControl {
 		this.state.client_id = this.props.clientId;
 		this.state.project_id = this.props.projectId;
 
-		if (tracing) console.log (`${props.id} object created`);
+//		if (tracing) 
+		console.log (`${props.id} object created`);
 
 	}// constructor;
 
@@ -77,12 +78,19 @@ export default class ProjectSelector extends BaseControl {
 
 		return <div id={this.props.id} className="one-piece-form">
 
-			<ClientSelector id="client_selector" ref={this.client_selector} clientId={this.state.client_id}
-				hasHeader={this.props.hasHeader} headerSelectable={false} headerText="Select a client" 
+			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={true}
+
+				hasHeader={this.props.hasHeader} 
+				headerSelectable={false} 
+				headerText="Select a client" 
+
+				selectedClient={this.state.client_id}
+
 				onChange={event => this.setState ({ 
 					client_id: integer_value (event.target.value),
 					project_id: null,
 				}, () => this.execute (this.props.onClientChange, event))}>
+
 			</ClientSelector>
 
 			{ single_project ? <Container>
@@ -92,16 +100,15 @@ export default class ProjectSelector extends BaseControl {
 
 				label="Project"
 
-				listHeader={this.props.headerText}
+				listHeader={this.props.headerSelectable ? "New project" : "Select a project"}
 				headerSelectable={this.props.headerSelectable}
 
 				dataIdField="project_id"
 				dataTextField="name"
 
 				data={isset (this.state.client_id) ? ProjectStorage.get_projects_by_client (this.state.client_id) : null}
-//				getData={() => { return isset (this.state.client_id) ? ProjectStorage.get_projects_by_client (this.state.client_id) : null }}
 				
-				newOptionPage={this.props.newOption ? page_names.projects : null} 
+				newButtonPage={this.props.newButton ? page_names.projects : null} 
 				selectedItem={this.state.project_id}
 				visible={isset (this.state.client_id) || single_client}
 

@@ -127,10 +127,7 @@ export default class ClientForm extends FormControl {
 
 					<label htmlFor="client_description">Description</label>
 					<textarea id="client_description" name="client_description" 
-						style={{
-							width: "100%",
-							gridColumn: (billing_option ? "2 / -1" : null),
-						}}
+						style={{ gridColumn: (billing_option ? "2 / -1" : null) }}
 						defaultValue={this.client_data ("description")}  
 						placeholder="(optional)" disabled={this.props.disabled}
 						onBlur={this.save_client.bind (this)}>

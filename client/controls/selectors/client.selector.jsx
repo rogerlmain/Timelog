@@ -10,17 +10,30 @@ import LoadList from "client/controls/lists/load.list";
 import Container from "client/controls/container";
 
 import { integer_value } from "client/classes/common";
-import { master_pages } from "client/master";
+import { master_pages, page_names } from "client/master";
 import { tracing } from "client/classes/types/constants";
 
 
 export default class ClientSelector extends BaseControl {
 
+
 	state = { client_id: null }
 
+
 	static defaultProps = { 
+
+		id: null,
+		parent: null,
+		
+		newButton: false,
+
 		selectedClient: null,
+
+		hasHeader: true,
+		headerSelectable: false,
+
 		onChange: null,
+
 	}// defaultProps;
 
 
@@ -49,14 +62,16 @@ export default class ClientSelector extends BaseControl {
 		</Container> : <LoadList id={this.props.id}
 
 			data={ClientStorage.get_by_company (CompanyStorage.active_company_id ())}
-//			getData={() => { return ClientStorage.get_by_company (CompanyStorage.active_company_id ()) }}
-
 			dataIdField="client_id"
 			dataTextField="name"
-			newOptionPage={master_pages.clients.name} 
+
+			newButtonPage={this.props.newButton ? page_names.clients : null}
+
 			label="Client"
-			listHeader="Select a client"
-			selectedItem={this.props.clientId}
+			
+			listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
+			selectedItem={this.props.selectedClient}
+
 			onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
 
 		</LoadList>

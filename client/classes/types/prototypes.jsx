@@ -15,6 +15,22 @@ Array.range = function (start, end) {
 }// Array.range;
 
 
+Array.prototype.nest_item = function (value, ...path) {
+
+	let next_array = this;
+
+	while (path.length > 0) {
+		if (not_set (next_array [path [0]])) next_array [`"${path [0]}"`] = [];
+		next_array = next_array [`"${path [0]}"`];
+		path = path.slice (1);
+	}// while;
+	
+	next_array.push (value);
+	return this; // for chaining;
+	
+}// Array.nested_array;
+
+
 /**** Array Prototype Functions ****/
 
 

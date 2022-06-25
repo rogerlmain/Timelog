@@ -321,7 +321,7 @@ console.log ("logging page created");
 				<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
 
 				<Container visible={!logged_in}>
-					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newOption={true}
+					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
 
 						clientId={this.state.client_id} projectId={this.state.project_id}
 

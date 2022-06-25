@@ -130,7 +130,7 @@ export default class ProjectForm extends FormControl {
 				<div className="one-piece-form" style={{ rowGap: "0.5em" }}>
 
 					<label htmlFor="project_name">Project Name</label>
-					<div className="horizontally-spaced-out">
+					<div style={{ display: "grid", gridTemplateColumns: "1fr min-content" }}>
 
 						<input type="text" id="project_name" name="project_name" defaultValue={this.project_data ("name") || blank} required={true}
 							onChange={this.update_code}
@@ -158,19 +158,7 @@ export default class ProjectForm extends FormControl {
 								</div>
 
 							</div>
-{/* 
-							<div className="horizontally-centered">
-								<div className="radio-list" style={{ marginTop: "0.2em" }}>
 
-									<input type="radio" id="hourly_rate" name="rate_type" value={rate_types.hourly} />
-									<label htmlFor="hourly_rate" className="sublabel">Hourly</label>
-
-									<input type="radio" id="flat_rate" name="rate_type" value={rate_types.flat_rate} />
-									<label htmlFor="flat_rate" className="sublabel">Flat rate</label>
-
-								</div>
-							</div>
-*/}
 						</div>
 
 					</div>

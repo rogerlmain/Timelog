@@ -54,11 +54,10 @@ export default class ClientsPage extends BaseControl {
  		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="one-piece-form">
-				<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newOption={false}
+				<ClientSelector id="client_selector" ref={this.client_selector} parent={this}
 				
-					hasHeader={true} 
 					headerSelectable={can_create}
-					headerText={can_create ? "New client" : "Select a client"}
+//					headerText={can_create ? "New client" : "Select a client"}
 
 					selectedClient={this.state.selected_client}
 

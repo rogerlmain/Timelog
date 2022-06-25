@@ -7,7 +7,7 @@ import OptionsStorage from "classes/storage/options.storage";
 
 import ProjectModel from "client/classes/models/project.model";
 
-import { isset, not_set, not_null, nested_object, nested_value, null_value, not_array } from "classes/common";
+import { isset, not_set, not_null, nested_object, nested_value, null_value, not_array, is_null } from "classes/common";
 
 
 const store_name = constants.stores.projects;
@@ -24,18 +24,15 @@ export default class ProjectStorage extends LocalStorage {
 
 	static #set_project = data => {
 
-		let company_id = CompanyStorage.active_company_id ();
+		let company_id = data.company_id;
+		let client_id = data.client_id;
 
-		// POSSIBLY REDUNDANT - DEFAULT SHOULD MATCH TO NULL SO THIS MAY NOT BE NECESSARY
-		data.client_id = data.client_id ?? 0;
+		let current_values = super.get_all (store_name);
 
-		let values = nested_object (LocalStorage.get_all (store_name), company_id, data.client_id);
-		if (not_set (values [company_id][data.client_id])) values [company_id][data.client_id] = [];
+		delete data.company_id;
+		delete data.client_id;
 
-		let item = values [company_id][data.client_id].find (next => next.id == data.id);
-		if (isset (item)) values [company_id][data.client_id].remove (item);
-
-		values [company_id][data.client_id].push (data);
+		let values = (current_values ?? []).nest_item (data, company_id, client_id);
 
 		this.#set (values);
 
@@ -97,9 +94,14 @@ export default class ProjectStorage extends LocalStorage {
 			let projects = nested_value (LocalStorage.get_all (store_name), CompanyStorage.active_company_id (), client_id);
 
 			if (not_set (projects)) {
+
 				projects = await ProjectModel.get_projects_by_client (client_id).catch (reject);
+
+				if (is_null (projects)) return resolve (null);
 				if (not_array (projects)) projects = [projects];
+
 				projects.forEach (item => { if (isset (item)) this.#set_project (item) });
+				
 			}// if;
 
 			resolve (projects);

@@ -83,12 +83,11 @@ export default class ProjectsPage extends BaseControl {
 		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="project-select-form">
-				<ProjectSelector id="project_selector" ref={this.project_selector} parent={this} newOption={false}
+				<ProjectSelector id="project_selector" ref={this.project_selector} parent={this}
 
 					hasHeader={true}
 
 					headerSelectable={can_create}
-					headerText={can_create ? "New project" : "Select a project"}
 
 					selectedClient={this.state.selected_client}
 					selectedProject={this.state.selected_project}
