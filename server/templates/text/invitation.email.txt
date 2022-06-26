@@ -1,6 +1,6 @@
 Hello {{invitee}},
 
-{{inviter}} with {{company}} has invited you to join RMPC Timelog as a contributor.
+{{host}} with {{company}} has invited you to join RMPC Timelog as a contributor.
 
 To accept this invitation, paste the following link into your favourite browser:
 

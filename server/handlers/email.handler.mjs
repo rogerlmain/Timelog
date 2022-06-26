@@ -1,3 +1,5 @@
+import "../prototypes.mjs";
+
 import FileSystem from "fs";
 import nodemailer from "nodemailer";
 
@@ -52,45 +54,60 @@ export default class EmailHandler {
 	/********/
 
 
-	create_invite = () => { return "id01234567890" } // Create a hash of company id and invite ([padded company id (8 chars)][padded invite id (8 chars created by DB insert )])
+	#get_template = (name, type, values) => {
+		let contents = FileSystem.readFileSync (`${root_path}/server/templates/${type}/${name}.email.${type == email_types.text ? "txt" : "html"}`, `utf-8`);
+		for (let [name, value] of Object.entries (values)) contents = contents.replace (`{{${name}}}`, value);
+		return contents;
+	}// #text_template;
+	
+
+	/********/
 
 
-	get_template = (name, type) => {
-		let contents = FileSystem.readFileSync (`${root_path}/server/templates/${name}.email.${type == email_types.text ? "txt" : "html"}`, `utf-8`);
-		return contents.replace (`{{invitee}}`, this.fields.invitee_name)
-			.replace (`{{inviter}}`, this.fields.inviter)
-			.replace (`{{company}}`, this.fields.company)
-			.replace (`{{domain}}`, this.request.hostname)
-			.replace (`{{address}}`, `join?invite=${this.create_invite ().id}`);
+	create_invite = (invitation) => { 
+
+		let code_string = (number) => { return `${number.toString ().length}${number.toString ()}` }
+
+		let result = code_string (invitation.invite_id) +
+			code_string (invitation.company_id) +
+			code_string (invitation.host_id) +
+			new Date (invitation.date_created).getTime () +
+			Number.random (10, 99);
+
+		return result;
+
+	}// create_invite;
+
+
+	invitation_template = (invitation, type) => {
+		return this.#get_template (templates.invitation, type, {
+			invitee: this.fields.invitee_name,
+			host: this.fields.host_name,
+			company: this.fields.company_name,
+			domain: this.request.hostname,
+			address: `join?invite=${this.create_invite (invitation)}`,
+		});
 	}// text_template;
 	
 
-	send_invitation = async () => {
-
+	send_invitation = () => {
 		try {
-			
-			await nodemailer.createTransport (email_details).sendMail ({
-				from: inviter_email,
-				to: this.fields.invitee_email,
-				subject: "You have been invited to travel through time",
-				text: this.get_template (templates.invitation, email_types.text),
-				html: this.get_template (templates.invitation, email_types.html),
-			});
+			new InvitationData (this.request, this.response).set_invitation (this.fields).then (invitation => {
 
-			new InvitationData ().set_invitation ({
-				company_id		: this.fields.company_id,
-				inviter_id		: this.fields.inviter_id,
-				invitee			: this.fields.invitee_name,
-				invitee_email	: this.fields.invitee_email,
-				account_id		: this.fields.accepted_account_id,
-			});
+				if (!Array.isArray (invitation) || (invitation.length == 0)) return this.response.send ("Error: invitation not sent");
 
+				nodemailer.createTransport (email_details).sendMail ({
+					from: inviter_email,
+					to: this.fields.invitee_email,
+					subject: "You have been invited to travel through time",
+					text: this.invitation_template (invitation [0], email_types.text),
+					html: this.invitation_template (invitation [0], email_types.html),
+				}).then (() => this.response.send (JSON.stringify (invitation)));
+
+			});
 		} catch (except) {
 			return this.response.send (`Error: ${except}`);
 		}// try;
-
-		this.response.send ("success");
-
 	}// send_invitation;
 
 

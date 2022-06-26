@@ -8,27 +8,14 @@ import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, nu
 Array.has_value = function (candidate) { return Array.isArray (candidate) && (candidate.length > 0) }
 
 
+Array.get_element = (array, index) => { return (Array.isArray (array) && (array.length >= index)) ? array [index] : null }
+
+
 Array.range = function (start, end) {
 	let result = new Array ();
 	for (let index = start; index <= end; index++) result.push (index);
 	return result;
 }// Array.range;
-
-
-Array.prototype.nest_item = function (value, ...path) {
-
-	let next_array = this;
-
-	while (path.length > 0) {
-		if (not_set (next_array [path [0]])) next_array [`"${path [0]}"`] = [];
-		next_array = next_array [`"${path [0]}"`];
-		path = path.slice (1);
-	}// while;
-	
-	next_array.push (value);
-	return this; // for chaining;
-	
-}// Array.nested_array;
 
 
 /**** Array Prototype Functions ****/
@@ -50,6 +37,22 @@ Array.prototype.merge = function (new_values) {
 	new_values.forEach (value => this.push (value));
 	return this;
 }// merge;
+
+
+Array.prototype.nest_item = function (value, ...path) {
+
+	let next_array = this;
+
+	while (path.length > 0) {
+		if (not_set (next_array [path [0]])) next_array [`"${path [0]}"`] = [];
+		next_array = next_array [`"${path [0]}"`];
+		path = path.slice (1);
+	}// while;
+	
+	next_array.push (value);
+	return this; // for chaining;
+	
+}// Array.nested_array;
 
 
 Array.prototype.prepend = function (item) {
@@ -503,7 +506,7 @@ HTMLSelectElement.prototype.selectedValue = function () {
 }// selectedValue;
 
 
-/********/
+/**** Number Prototype Functions ****/
 
 
 Number.prototype.padded = function (length) {

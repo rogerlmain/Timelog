@@ -11,11 +11,12 @@ create procedure get_invitations (
 ) begin
 
 	select
+		inv.id as invite_id,
 		inv.company_id,
-		inv.inviter_id,
-		inv.invitee,
+		inv.host_id,
+		inv.invitee_name,
 		inv.invitee_email,
-		inv.account_id,
+		inv.invitee_account_id,
 		inv.date_created,
 		inv.last_updated
 	from

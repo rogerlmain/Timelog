@@ -46,4 +46,7 @@ export default class CompanyStorage extends LocalStorage {
 	}// company_count;
 	
 
+	static company_name = () => { return common.nested_value (this.active_company (), "company_name") }
+	
+
 }// CompanyStorage;

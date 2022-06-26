@@ -43,6 +43,9 @@ const options_panels = {
 }// options_panels;
 
 
+const notification_delay = 2000;
+
+
 export default class SettingsPage extends BaseControl {
 
 
@@ -147,19 +150,17 @@ export default class SettingsPage extends BaseControl {
 		let data = this.state.invite_data;
 
 		data.append ("action", "invite");
-		data.append ("inviter_id", AccountStorage.account_id ());
+		data.append ("host_id", AccountStorage.account_id ());
+		data.append ("host_name", AccountStorage.full_name ());
+		data.append ("company_name", CompanyStorage.company_name ());
 		data.append ("company_id", CompanyStorage.active_company_id ());
 
 		return new Promise ((resolve, reject) => {
-
 			fetch ("/email", {
 				method: "post",
 				body: this.state.invite_data,
 				credentials: "same-origin"
-			}).then (response => {
-				resolve (response);
-			}).catch (reject);
-
+			}).then (response => response.json ()).then (data => resolve (Array.get_element (data, 0))).catch (reject);
 		});
 
 	}/* invite_contributor */;
@@ -316,33 +317,43 @@ export default class SettingsPage extends BaseControl {
 
 			<EyecandyPanel id="invite_button_panel" text={this.invitee_details ()}
 			
-				onEyecandy={() => this.invite_contributor ().then (() => this.setState ({ invite_data: null }, () => alert ("done: " + this.state.invite_data))) }
+				onEyecandy={() => this.invite_contributor ().then (invitation => this.setState ({ 
+					invite_data: null,
+					notification: `${invitation.invitee_name} has been invited to join us.`,
+				}, () => setTimeout (() => this.setState ({ notification: null }), notification_delay)))}
+
 				eyecandyVisible={isset (this.state.invite_data)}>
 
-				<form id="invite_form" ref={this.invite_form}>
+				<Container visible={isset (this.state.notification)}>
+					<div>{this.state.notification}</div>
+				</Container>
 
-					<div className="horizontally-centered with-headspace">
+				<Container visible={not_set (this.state.notification)}>
+					<form id="invite_form" ref={this.invite_form}>
 
-						<label htmlFor="invitation">Invite a contributor</label>
+						<div className="horizontally-centered with-headspace">
 
-						<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
-							<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
-								onChange={event => this.setState ({ invitee: event.target.value })} required={true}
-								defaultValue={debugging ? "Rex" : null}>
-							</input>
-							<input type="email" id="invitee_email" name="invitee_email" placeholder="Email address" required={true}
-								defaultValue={debugging ? "rex@rogerlmain.com" : null}>
-							</input>
-							<button onClick={event => {
-								this.setState ({ invite_data: new FormData (this.invite_form.current) });
-								event.preventDefault ();
-							}}>Invite</button>
+							<label htmlFor="invitation">Invite a contributor</label>
+
+							<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
+								<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
+									onChange={event => this.setState ({ invitee: event.target.value })} required={true}
+									defaultValue={debugging ? "Rex" : null}>
+								</input>
+								<input type="email" id="invitee_email" name="invitee_email" placeholder="Email address" required={true}
+									defaultValue={debugging ? "rex@rogerlmain.com" : null}>
+								</input>
+								<button onClick={event => {
+									this.setState ({ invite_data: new FormData (this.invite_form.current) });
+									event.preventDefault ();
+								}}>Invite</button>
+
+							</div>
 
 						</div>
 
-					</div>
-
-				</form>
+					</form>
+				</Container>
 
 			</EyecandyPanel>
 

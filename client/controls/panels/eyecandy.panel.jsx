@@ -1,11 +1,9 @@
 import React from "react";
 
-import SettingsStorage from "client/classes/storage/settings.storage";
-
 import BaseControl from "controls/abstract/base.control";
 import SlideshowPanel from "controls/panels/slideshow.panel";
 
-import { default_settings, eyecandy_images } from "classes/types/constants";
+import { eyecandy_images } from "classes/types/constants";
 import { is_null, nested_value } from "classes/common";
 
 
@@ -27,7 +25,9 @@ export default class EyecandyPanel extends BaseControl {
 
 
 	static defaultProps = { 
+
 		id: null,
+
 		speed: null,
 		stretchOnly: false,
 
@@ -35,7 +35,14 @@ export default class EyecandyPanel extends BaseControl {
 
 		eyecandySize: eyecandy_sizes.small,
 		eyecandyVisible: false,
-	};
+
+		onEyecandy: null,
+		onContents: null,
+
+	}// defaultProps;
+
+
+	/********/
 
 
 	forceResize = () => this.slideshow_panel.current.forceResize ();
@@ -64,7 +71,7 @@ export default class EyecandyPanel extends BaseControl {
 			beforeChanging={() => this.execute (this.props.beforeChanging)}
 
 			afterChanging={() => {
-				this.execute ((index == eyecandy_index) ? this.props.onEyecandy : null);
+				this.execute ((index == eyecandy_index) ? this.props.onEyecandy : this.props.onContents);
 				this.execute (this.props.afterChanging);
 			}}>
 

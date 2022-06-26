@@ -8,14 +8,14 @@ export default class InvitationData extends Database {
 		let procedure = "set_invitation";
 
 		let parameters = {
-			company_id		: data.company_id,
-			inviter_id		: data.inviter_id,
-			invitee			: data.invitee,
-			invitee_email	: data.invitee_email,
-			account_id		: data.accepted_account_id,
+			company_id			: data.company_id,
+			host_id				: data.host_id,
+			invitee_name		: data.invitee_name,
+			invitee_email		: data.invitee_email,
+			invitee_account_id	: data.invitee_account_id,
 		}// parameters;
 
-		this.execute_query (procedure, parameters);
+		return this.data_query (procedure, parameters);
 
 	}/* set_invitation */;
 

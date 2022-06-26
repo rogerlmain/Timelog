@@ -7,10 +7,10 @@ delimiter ??
 
 create procedure set_invitation (
     company_id			integer,
-	inviter_id			integer,
-	invitee				varchar (32),
+	host_id				integer,
+	invitee_name		varchar (32),
 	invitee_email		varchar (320),
-	account_id			integer
+	invitee_account_id	integer
 ) begin
 
 	declare invitation_id int;
@@ -27,18 +27,18 @@ create procedure set_invitation (
     
 		insert into invitations (
 			company_id,
-			inviter_id,
-			invitee,
+			host_id,
+			invitee_name,
 			invitee_email,
-			account_id,
+			invitee_account_id,
 			date_created,
 			last_updated
 		) values (
 			company_id,
-			inviter_id,
-			invitee,
+			host_id,
+			invitee_name,
 			invitee_email,
-			account_id,
+			invitee_account_id,
 			now(),
 			now()
 		);
@@ -48,13 +48,13 @@ create procedure set_invitation (
     else
     
 		update invitations as inv set 
-			account_id = coalesce (account_id, inv.account_id),
+			invitee_account_id = coalesce (invitee_account_id, inv.invitee_account_id),
 			last_updated = now()
 		where inv.id = invitation_id;
     
     end if;
 
-	call get_invitations (account_id);
+	call get_invitations (invitation_id, null, null);
 
 end??
 
