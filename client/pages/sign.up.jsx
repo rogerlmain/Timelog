@@ -66,22 +66,16 @@ export default class SignupPage extends BaseControl {
 
 				<div className="two-piece-form">
 
-					<input id="account_id" name="account_id" type="hidden" />
+					<input id="account_id" name="account_id" type="hidden" defaultValue={AccountStorage.account_id ()} />
 
 					<label htmlFor="first_name">First name</label>
-					<input type="text" id="first_name" name="first_name" required={true} 
-					
-defaultValue={"Test"} />
+					<input type="text" id="first_name" name="first_name" required={true} defaultValue={AccountStorage.first_name ()} />
 
 					<label htmlFor="last_name">Last name</label>
-					<input type="text" id="last_name" name="last_name" required={true}
-					
-defaultValue={"Dude"} />
+					<input type="text" id="last_name" name="last_name" required={true} defaultValue={AccountStorage.last_name ()} />
 
 					<label htmlFor="friendly_name">Friendly name<div style={{ fontSize: "8pt" }}>(optional)</div></label>
-					<input type="text" id="friendly_name" name="friendly_name" 
-					
-defaultValue={"tastetestdude"} />
+					<input type="text" id="friendly_name" name="friendly_name" defaultValue={AccountStorage.friendly_name ()} />
 
 					<label htmlFor="account_type">AccountStorage Type</label>
 
@@ -119,9 +113,7 @@ defaultValue="stranger" />
 					</Container>
 
 					<label htmlFor="email_address">Email address</label>
-					<input type="text" name="email_address" style={{ gridColumn: "span 3", width: "100%" }} 
-					
-defaultValue={"tastetestdude@gmail.com"} />
+					<input type="text" name="email_address" style={{ gridColumn: "span 3", width: "100%" }} defaultValue={AccountStorage.email_address ()} />
 
 				</div>
 

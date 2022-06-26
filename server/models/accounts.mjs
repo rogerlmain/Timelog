@@ -39,7 +39,7 @@ export default class AccountData extends Database {
 
 			fields ["first_name"],
 			fields ["last_name"],
-			fields ["username"],
+			fields ["friendly_name"],
 			fields ["email_address"],
 			fields ["password"],
 
@@ -53,7 +53,7 @@ export default class AccountData extends Database {
 
 
 	signin = (fields, response) => {
-		this.data_query ("get_account_by_credentials", [fields ["username"], fields ["password"]]).then (async results => {
+		this.data_query ("get_account_by_credentials", [fields ["email"], fields ["password"]]).then (async results => {
 
 			global.account = (global.is_null (results) || (results.length < 1)) ? null : results [0];
 			
