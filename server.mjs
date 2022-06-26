@@ -27,11 +27,11 @@ import PaymentHandler from "./server/handlers/payment.handler.mjs";
 import { root_path } from "./server/constants.mjs";
 
 
-const app = express ();
-
-
 const countries_id = 1;
 const districts_id = 2;
+
+
+let app = express ();
 
 
 app.process = async (request, response, handler) => {
@@ -290,3 +290,4 @@ let server = https.createServer (options, app).listen (app.get ("port"), functio
 });
 
 server.keepAliveTimeout = 10000;
+
