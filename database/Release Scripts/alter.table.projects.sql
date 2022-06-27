@@ -1,1 +1,0 @@
-alter table projects add column billing_rate decimal(5,2) after `description`;

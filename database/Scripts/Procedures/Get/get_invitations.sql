@@ -17,8 +17,8 @@ create procedure get_invitations (
 		inv.invitee_name,
 		inv.invitee_email,
 		inv.invitee_account_id,
-		inv.date_created,
-		inv.last_updated
+		unix_timestamp(inv.date_created) as date_created,
+		unix_timestamp(inv.last_updated) as last_updated
 	from
 		invitations as inv
 	where

@@ -14,7 +14,10 @@ create procedure get_account_by_credentials (email varchar (45), `password` varc
         coalesce(acc.friendly_name, acc.first_name) as friendly_name,
         acc.email_address,
         acc.account_type,
-        acc.administrator_type
+        acc.administrator_type,
+		acc.memo,
+		unix_timestamp(acc.date_created) as date_created,
+		unix_timestamp(acc.last_updated) as last_updated
 	from
 		accounts as acc
 	where
