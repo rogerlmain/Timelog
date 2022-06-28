@@ -7,7 +7,7 @@ import ExplodingPanel from"client/controls/panels/exploding.panel";
 import EyecandyPanel from"client/controls/panels/eyecandy.panel";
 import FadePanel from"client/controls/panels/fade.panel";
 
-import LogStorage from"client/classes/storage/log.storage";
+import LoggingStorage from"client/classes/storage/logging.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
 
@@ -65,7 +65,7 @@ export default class LoggingPage extends BaseControl {
 
 	constructor (props) { 
 		super (props);
-		this.state.current_entry = LogStorage.current_entry ();
+		this.state.current_entry = LoggingStorage.current_entry ();
 		ProjectStorage.billing_rate (this.props.projectId, this.props.clientId).then (result => this.setState ({ billing_rate: result }));
 console.log ("logging page created");		
 	}// constructor;
@@ -128,10 +128,10 @@ console.log ("logging page created");
 		LoggingModel.log (this.client_id (), this.project_id (), timestamp).then (entry => {
 
 			if (is_empty (entry)) {
-				LogStorage.delete ();
+				LoggingStorage.delete ();
 			} else {
 				entry.start_time = Date.validated (entry.start_time);
-				LogStorage.set (entry);
+				LoggingStorage.set (entry);
 			}// if;
 
 			this.setState ({ 

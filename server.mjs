@@ -6,20 +6,23 @@ import https from "https";
 import multiparty from "multiparty";
 
 import AccountData from "./server/models/accounts.mjs";
-import AccountSettingsData from "./server/models/settings.mjs";
 import AccountOptionsData from "./server/models/options.mjs";
+import AccountSettingsData from "./server/models/settings.mjs";
 import AddressData from "./server/models/addresses.mjs";
 import ClientData from "./server/models/clients.mjs";
-import CompanyData from "./server/models/companies.mjs";
 import CompanyAccountsData from "./server/models/company.accounts.mjs";
 import CompanyCardData from "./server/models/company.cards.mjs";
+import CompanyData from "./server/models/companies.mjs";
+import InvitationData from "./server/models/invitations.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import LookupsData from "./server/models/lookups.mjs";
+import MiscData from "./server/models/misc.mjs";
+import OptionsData from "./server/models/options.mjs";
 import PricingData from "./server/models/pricing.mjs";
 import ProjectData from "./server/models/projects.mjs";
 import ReportData from "./server/models/reports.mjs";
+import SettingsData from "./server/models/settings.mjs";
 import TaskData from "./server/models/tasks.mjs";
-import MiscData from "./server/models/misc.mjs";
 
 import EmailHandler from "./server/handlers/email.handler.mjs";
 import PaymentHandler from "./server/handlers/payment.handler.mjs";
@@ -30,6 +33,8 @@ import { root_path } from "./server/constants.mjs";
 const countries_id = 1;
 const districts_id = 2;
 
+const method = { get: "get", post: "post" };
+
 
 let app = express ();
 
@@ -39,6 +44,8 @@ app.process = async (request, response, handler) => {
 //	await new Promise (resolve => setTimeout (resolve, 2000)); // For debugging - used to pause
 
 	let request_data = request.body;
+
+	if (request.method.equals (method.get)) return handler (request.query);
 
 	new multiparty.Form ().parse (request, (error, fields, files) => {
 		for (let key of Object.keys (fields)) {
@@ -129,6 +136,15 @@ app.post ("/company_cards", function (request, response) {
 		switch (fields.action) {
 			case "get": company_card_data.get_company_cards (fields.company_id); break;
 			case "save": company_card_data.save_company_card (fields); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/invitations", (request, response) => {
+	app.process (request, response, (fields) => {
+		switch (fields.action) {
+			case "all": new InvitationData (request, response).get_invitations_by_email (fields.email_address); break;
 		}// switch;
 	});
 });
@@ -259,10 +275,56 @@ app.post ("/payment", (request, response) => app.process (request, response, fie
 
 
 app.post ("/signin", function (request, response) {
-	app.process (request, response, fields => {
-		let account_data = new AccountData (request, response);
-		account_data.signin (fields, response);
-	});
+	app.process (request, response, fields => new AccountData (request, response).signin (fields, response).then (async results => {
+
+		global.account = (global.is_null (results) || (results.length < 1)) ? null : results [0];
+		
+		if (global.is_null (account)) {
+			response.send ({ 
+				error: 1,
+				error_message: "Unknown account"
+			});
+			this.connection.end ();
+			return;
+		}// if;
+
+		let result = { credentials: account };
+
+		let companies = await (new CompanyData ().get_companies_by_account (global.account.account_id));
+		let settings = await (new SettingsData ().get_settings ());
+		let logging = (await (new LoggingData ().latest_log_entry ()));
+
+		if (companies.length > 0) {
+			
+			for (let company of companies) {
+
+				let options = await (new OptionsData ().get_options_by_company (company.company_id));
+
+				if (Array.isArray (options)) for (let option of options) {
+					if (not_set (result.options)) result.options = {};
+					if (not_set (result.options [company.company_id])) result.options [company.company_id] = {};
+					result.options [company.company_id][option.id] = option.value;
+				}// if;
+
+				result.companies = { ...result.companies, [company.company_id]: company }
+				delete company.company_id;
+					
+			}// for;
+
+		}// if;
+
+		if (companies.length == 1) result.companies.active_company = companies [0].company_id;
+
+		for (let setting of settings) {
+			if (not_set (result.settings)) result.settings = {};
+			result.settings [setting.id] = setting.value;
+		}// for;
+
+		if (logging.length > 0) result.logging = logging [0];
+
+		response.send (result);
+
+	}));
 });
 
 
@@ -275,6 +337,61 @@ app.post ("/signin", function (request, response) {
 // 		}// switch;
 // 	});
 // });
+
+
+/*********/
+
+
+app.get ("/join", (request, response) => app.process (request, response, fields => {
+
+
+	const bad_invitation = (data) => {
+		if (global.not_set (data) || global.not_set (data = data [0])) return true;
+		if (invite.value != data.invite_id) return true;
+		if (company.value != data.company_id) return true;
+		if (host.value != data.host_id) return true;
+		if (timestamp != data.date_created) return true;
+		return false;
+	}/* bad_invitation */;
+
+
+	const index_data = (start_index = 0) => { 
+		let index_length = parseInt (fields.invite [start_index]);
+		return {
+			length: index_length,
+			value: parseInt (fields.invite.substr (start_index + 1, index_length)),
+		}// return;
+	}/* index_data */;
+
+
+	const condolences = `
+		<br />Oh no!&nbsp;&#128551
+		<br />Your invitation must have gotten lost in the matrix!
+	`// condolences;
+
+
+	/*********/
+
+
+	let index = 0;
+
+	let invite = index_data ();
+	let company = index_data (index += (invite.length + 1));
+	let host = index_data (index += (company.length + 1));
+
+	let timestamp = parseInt (fields.invite.substr (index += (host.length + 1), fields.invite.length - (index + 2)));
+
+
+	/*********/
+
+
+	new InvitationData ().get_invitation_by_id (invite.value).then (data => {
+		if (bad_invitation (data)) return response.send (condolences);
+		response.redirect ("/");
+		response.end ();
+	});
+
+}));
 
 
 /*********/

@@ -14,7 +14,7 @@ export default class AccountStorage extends LocalStorage {
 
 	static set_all (credentials) { LocalStorage.set_store (storage_locker, credentials) }
 	
-	static account_id = () => { let result = AccountStorage.get (credential_fields.account_id); return result; }
+	static account_id = () => { return AccountStorage.get (credential_fields.account_id) }
 
 	static first_name = () => { return AccountStorage.get (credential_fields.first_name) }
 	static last_name = () => { return AccountStorage.get (credential_fields.last_name) }

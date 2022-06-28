@@ -156,7 +156,7 @@ export default class SettingsPage extends BaseControl {
 		data.append ("company_id", CompanyStorage.active_company_id ());
 
 		return new Promise ((resolve, reject) => {
-			fetch ("/email", {
+			fetch_data ("/email", {
 				method: "post",
 				body: this.state.invite_data,
 				credentials: "same-origin"

@@ -32,7 +32,7 @@ import { MainContext } from "client/classes/types/contexts";
 //import ProjectSelector from "client/controls/selectors/project.selector";
 
 
-const version = "1.3.1";
+const version = "1.4";
 
 
 class Main extends BaseControl {
@@ -57,10 +57,7 @@ class Main extends BaseControl {
 		// window.onerror = this.error_handler;
 
 		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
-
-
-console.log ("creating main page");
-	
+		if ((debugging) || (tracing)) console.log ("creating main page");
 
 	}// constructor;
 

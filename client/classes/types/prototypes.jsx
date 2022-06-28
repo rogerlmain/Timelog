@@ -5,6 +5,9 @@ import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, nu
 /**** Array Helper Functions ****/
 
 
+Array.arrayify = (candidate) => { return (Array.isArray (candidate) ? candidate : [candidate]) }
+
+
 Array.has_value = function (candidate) { return Array.isArray (candidate) && (candidate.length > 0) }
 
 
@@ -291,7 +294,12 @@ FormData.fromObject = function (object) {
 /****/
 
 
-FormData.prototype.appendAll = function (object) { get_keys (object).forEach (key => this.append (key, object [key])) }
+FormData.prototype.appendAll = function (object) { 
+	get_keys (object).forEach (key => this.append (key, object [key]));
+	return this; // for chaining;
+}// appendAll;
+
+
 FormData.prototype.toJsonString = function () { return JSON.stringify (this.toObject ()) }
 FormData.prototype.toObject = function () { return Object.fromEntries (this) }
 

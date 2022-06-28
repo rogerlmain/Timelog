@@ -1,7 +1,7 @@
 import Database from "classes/database";
 import OptionsStorage from "client/classes/storage/options.storage";
 
-import LogStorage from "classes/storage/log.storage";
+import LoggingStorage from "classes/storage/logging.storage";
 
 import { date_formats, date_rounding } from "classes/types/constants";
 import { isset } from "classes/common";

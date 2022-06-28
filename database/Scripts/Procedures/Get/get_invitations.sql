@@ -14,6 +14,8 @@ create procedure get_invitations (
 		inv.id as invite_id,
 		inv.company_id,
 		inv.host_id,
+        cpy.name as company_name,
+        coalesce(acc.friendly_name, concat(acc.first_name, ' ', acc.last_name)) as host_name,
 		inv.invitee_name,
 		inv.invitee_email,
 		inv.invitee_account_id,
@@ -21,6 +23,14 @@ create procedure get_invitations (
 		unix_timestamp(inv.last_updated) as last_updated
 	from
 		invitations as inv
+	left outer join
+		companies as cpy
+	on
+		(cpy.id = inv.company_id)
+	left outer join
+		accounts as acc
+	on
+		(acc.id = inv.host_id)
 	where
 		(invitation_id = inv.id) or
 		((invitation_id is null) and (

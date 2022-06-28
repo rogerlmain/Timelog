@@ -77,7 +77,7 @@ export default class SignupPage extends BaseControl {
 					<label htmlFor="friendly_name">Friendly name<div style={{ fontSize: "8pt" }}>(optional)</div></label>
 					<input type="text" id="friendly_name" name="friendly_name" defaultValue={AccountStorage.friendly_name ()} />
 
-					<label htmlFor="account_type">AccountStorage Type</label>
+					<label htmlFor="account_type">Account Type</label>
 
 					<select id="account_type" name="account_type" 
 					

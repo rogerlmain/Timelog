@@ -10,7 +10,11 @@ export default class Database {
 		let fetch_parameters = null;
 		let account_id = AccountStorage.account_id ();
 
-		if (!(form_data instanceof FormData)) throw "Invalid data passed to Database.fetch_data";
+		if (!(form_data instanceof FormData)) {
+			if (!(form_data instanceof Object )) throw "Database.fetch_data form_data requires an object or a FormData element";
+			form_data = new FormData ().appendAll (form_data);
+		}// if;
+
 		if (not_null (account_id)) form_data.set ("account_id", account_id);
 		
 		fetch_parameters = {

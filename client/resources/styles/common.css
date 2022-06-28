@@ -40,6 +40,7 @@ align-self: stretch;}/* .row-container */
 .right-aligned-text { text-align: right !important }
 
 .with-headspace { margin-top: 1em }
+.with-some-headspace {margin-top: 0.35em }
 
 
 /** inline-flex **/
@@ -173,7 +174,19 @@ div.break		{ height: 1em }
 div.half-break	{ height: 0.5em }
 
 
-/********/
+/**** Anchors ****/
+
+
+*.link-row { display: contents }
+
+*.link-row > *:not(:first-child) { padding-left: 0.5em }
+*.link-row > *:not(:last-child) { padding-right: 0.5em }
+
+*.link-row:hover { cursor: pointer }
+*.link-row:hover > * { background-color: var(--highlight-color) }
+
+
+/**** Button Panels ****/
 
 
 div.button-panel {
@@ -196,27 +209,27 @@ div.button-column {
 /********/
 
 
-.border-panel {
+*.border-panel {
 	border-left: solid 1px var(--border-color);
 	margin-left: var(--double-margin);
 	padding-left: var(--double-padding);
-}/* .border-panel */
+}/* *.border-panel */
 
 
 /********/
 
 
-.form-panel input {
+*.form-panel input {
 	height: var(--standard-height);
-}/* .form-panel input */
+}/* *.form-panel input */
 
 
-.form-panel button {
+*.form-panel button {
 	display: flex;
 	height: var(--standard-height);
 	align-items: center;
 	justify-content: center;
-}/* .form-panel */
+}/* *.form-panel */
 
 
 /**** Class Definitions ****/
@@ -230,6 +243,7 @@ div.button-column {
 
 
 .subheader {
+	font-size: 8pt;
 	font-weight: bold;
 	font-style: italic;
 }/* subheader */
@@ -366,23 +380,26 @@ div.outlined label {
 /**** Grid Styles ****/
 
 
-div[class*="two-column-"]	{ grid-template-columns: repeat(2, min-content) }
-div[class*="three-column-"]	{ grid-template-columns: repeat(3, min-content) }
-div[class*="four-column-"]	{ grid-template-columns: repeat(4, min-content) }
+div[class^="two-column-"]	{ grid-template-columns: repeat(2, min-content) }
+div[class^="three-column-"]	{ grid-template-columns: repeat(3, min-content) }
+div[class^="four-column-"]	{ grid-template-columns: repeat(4, min-content) }
 
 
-div[class*="-column-grid"] {
+div[class*="-column-grid"], div[class*="-column-table"] {
 	display: grid;
 	row-gap: 0.2em;
-}/* div[class*="-column-grid"] */
+}/* div[class*="-column-grid"], div[class*="-column-table"] */
 
 
-div[class*="-column-grid"] label {
+div[class*="-column-grid"] label, div[class*="-column-table"] label {
 	display: inline-flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-end;
-}/* div[class*="-column-grid"] label */
+}/* div[class*="-column-grid"] label, div[class*="-column-table"] */
+
+
+div[class*="-column-table"] { column-gap: 1em }
 
 
 /********/

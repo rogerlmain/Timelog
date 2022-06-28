@@ -71,8 +71,7 @@ export default class EmailHandler {
 		let result = code_string (invitation.invite_id) +
 			code_string (invitation.company_id) +
 			code_string (invitation.host_id) +
-			new Date (invitation.date_created).getTime () +
-			Number.random (10, 99);
+			`${invitation.date_created}${Number.random (10, 99)}`;
 
 		return result;
 
@@ -84,7 +83,7 @@ export default class EmailHandler {
 			invitee: this.fields.invitee_name,
 			host: this.fields.host_name,
 			company: this.fields.company_name,
-			domain: this.request.hostname,
+			domain: `${this.request.hostname}:${this.request.socket.localPort}`,
 			address: `join?invite=${this.create_invite (invitation)}`,
 		});
 	}// text_template;
