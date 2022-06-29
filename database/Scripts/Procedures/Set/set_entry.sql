@@ -8,6 +8,7 @@ create procedure save_entry (
 	account_id	integer, 
     client_id	integer,
 	project_id	integer,
+    notes		text,
     time_stamp	datetime
 ) begin
 
@@ -28,14 +29,16 @@ create procedure save_entry (
 			account_id,
             client_id,
 			project_id,
+            notes,
 			time_stamp,
 			null
 		);
 
 	else
 
-		update logging set
-			end_time = time_stamp
+		update logging as log set
+			end_time = time_stamp,
+            notes = coalesce(notes, log.notes)
 		where
 			id = last_entry;
 

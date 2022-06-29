@@ -25,6 +25,7 @@ export default class PopupNotice extends BaseControl {
 		afterClosing: null,
 
 		parent: null,
+		style: null,
 		switch: null	// parent state named used to open / close this control
 
 	}// defaultProps;
@@ -43,7 +44,7 @@ export default class PopupNotice extends BaseControl {
 
 	render () {
 		return (
-			<FadePanel id={`${this.props.id}_fade_panel`} visible={this.props.visible} className="popup-notice" style={{ zIndex: 1 }}
+			<FadePanel id={`${this.props.id}_fade_panel`} visible={this.props.visible} className="popup-notice" style={{ ...this.props.style, zIndex: 1 }}
 
 				beforeShowing={() => {
 					this.execute (this.props.beforeOpening);

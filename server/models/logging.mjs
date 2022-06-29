@@ -21,6 +21,7 @@ class LoggingData extends Database {
 			fields.account_id,
 			parseInt (fields.client_id),
 			parseInt (fields.project_id),
+			fields.notes,
 			fields.time_stamp
 		];
 

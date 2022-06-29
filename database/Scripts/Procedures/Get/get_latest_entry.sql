@@ -13,6 +13,7 @@ create procedure get_latest_entry (account_id integer) begin
 		log.project_id,
 		clt.`name` as client_name,
 		prj.`name` as project_name,
+        log.notes,
 		log.start_time,
         log.end_time
 	from

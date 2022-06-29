@@ -1,5 +1,5 @@
 import LocalStorage from "classes/local.storage";
-import { isset } from "classes/common";
+import { isset, is_object } from "classes/common";
 
 
 const store_name = "logging";
@@ -13,7 +13,7 @@ export default class LoggingStorage extends LocalStorage {
 
 	static #get = field => {
 		let result = this.#get_all ();
-		return result [field];
+		return is_object (result) ? result [field] : null;
 	}// #get;
 
 

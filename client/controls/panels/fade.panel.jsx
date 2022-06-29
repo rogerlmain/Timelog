@@ -18,6 +18,7 @@ export default class FadePanel extends BaseControl {
 		visible: false,
 
 		style: null,
+		className: null,
 
 		beforeTransition: null,
 		afterTransition: null,
@@ -88,7 +89,7 @@ export default class FadePanel extends BaseControl {
 		if (!this.props.visible) style.visibility = "hidden";
 
 		if (this.props.animate) style = { ...style, transition: `opacity ${this.animation_speed ()}ms ease-in-out` }
-		return <div id={this.props.id} ref={this.fade_panel} style={style}>
+		return <div id={this.props.id} ref={this.fade_panel} className={this.props.className} style={style}>
 
 			{this.props.children}
 		

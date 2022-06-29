@@ -17,19 +17,23 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging";
 
-import { date_formats, date_rounding, debugging, granularity_types, space } from "client/classes/types/constants";
+import { blank, date_formats, date_rounding, debugging, granularity_types, space } from "client/classes/types/constants";
 import { isset, is_empty, nested_value, not_set, multiline_text } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
 import { MainContext } from "client/classes/types/contexts";
 
 import "client/resources/styles/pages/logging.css";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 
 const ranges = {
 	start	: 1,
 	end		: 2,
 }// ranges;
+
+
+const session_maximum = 8;
 
 
 export default class LoggingPage extends BaseControl {
@@ -41,10 +45,6 @@ export default class LoggingPage extends BaseControl {
 	state = {
 
 		current_entry: null,
-
-		client_id: null,
-		project_id: null,
-
 		project_selected: false,
 
 		editable: false,
@@ -71,13 +71,15 @@ export default class LoggingPage extends BaseControl {
 	}// constructor;
 
 
-	company_id = () => { return isset (this.state.current_entry) ? this.state.current_entry.company_id : this.context.company_id }
-	client_id = () => { return isset (this.state.current_entry) ? this.state.current_entry.client_id : this.state.client_id }
-	project_id = () => { return isset (this.state.current_entry) ? this.state.current_entry.project_id : this.state.project_id }
+	company_id = () => 	{ return isset (this.state.current_entry) ? this.state.current_entry.company_id : null }
+	client_id = () => 	{ return isset (this.state.current_entry) ? this.state.current_entry.client_id : null }
+	project_id = () => 	{ return isset (this.state.current_entry) ? this.state.current_entry.project_id : null }
+	notes = () => 		{ return isset (this.state.current_entry) ? this.state.current_entry.notes : null }
 
-
-	project_selected = () => { return ((this.state.project_id > 0) || OptionsStorage.single_project () || this.logged_in ()) }
 	logged_in = () => { return isset (this.state.current_entry) }
+	logged_out = () => { return !this.logged_in () }
+
+	project_selected = () => { return ((this.project_id () > 0) || OptionsStorage.single_project () || this.logged_in ()) }
 
 
 	billable_time = elapsed_time => {
@@ -90,9 +92,9 @@ export default class LoggingPage extends BaseControl {
 	}/* billable_time */;
 
 
-	needs_editing = (limit = 24) => { 
+	needs_editing = limit => { 
 
-		if (not_set (this.state.current_entry)) return false;
+		if (this.logged_out ()) return false;
 
 		let same_day = this.state.current_entry.start_time.same_day (this.end_time ());
 		let result = (!same_day || (this.elapsed_time () > (limit * Date.coefficient.hour)));
@@ -112,10 +114,10 @@ export default class LoggingPage extends BaseControl {
 		}// switch;
 
 		switch (OptionsStorage.granularity (this.company_id ())) {
-			case granularity_types.hourly	: return new Date ().round_hours (rounding_direction);
-			case granularity_types.quarterly: return new Date ().round_minutes (15, rounding_direction); break;
-			case granularity_types.minutely	: return new Date ().round_minutes (1, rounding_direction); break;
-			case granularity_types.truetime	: return new Date (); break;
+			case granularity_types.hourly	: return date.round_hours (rounding_direction);
+			case granularity_types.quarterly: return date.round_minutes (15, rounding_direction);
+			case granularity_types.minutely	: return date.round_minutes (1, rounding_direction);
+			case granularity_types.truetime	: return date;
 		}// switch;
 
 	}// rounded;
@@ -125,7 +127,7 @@ export default class LoggingPage extends BaseControl {
 
 		let timestamp = this.rounded (new Date (), ranges.start);
 
-		LoggingModel.log (this.client_id (), this.project_id (), timestamp).then (entry => {
+		LoggingModel.log (this.client_id (), this.project_id (), this.notes (), timestamp).then (entry => {
 
 			if (is_empty (entry)) {
 				LoggingStorage.delete ();
@@ -143,24 +145,24 @@ export default class LoggingPage extends BaseControl {
 	}// log_entry;
 
 
-	end_time = () => {
+	end_time = () => { return this.rounded (new Date (), ranges.end) }
 
-		if (not_set (this.state.current_entry)) return null;
+	// 	if (not_set (this.state.current_entry)) return null;
 
-		if (not_set (nested_value (this.state.current_entry, "end_time"))) {
-			this.state.current_entry = {
-				...this.state.current_entry,
-				end_time: this.rounded (new Date (), ranges.end),
-			};
-		}// if;
+	// 	if (not_set (nested_value (this.state.current_entry, "end_time"))) {
+	// 		this.state.current_entry = {
+	// 			...this.state.current_entry,
+	// 			end_time: this.rounded (new Date (), ranges.end),
+	// 		};
+	// 	}// if;
 
-		return this.state.current_entry.end_time;
+	// 	return this.state.current_entry.end_time;
 
-	}// end_time;
+	// }// end_time;
 
 
 	elapsed_time = () => { return Math.max (Math.floor ((this.end_time ().getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0) }
-	invalid_entry = () => { return (this.state.current_entry.end_time.before (this.state.current_entry.start_time)) }
+	invalid_entry = () => { return (this.end_time ().before (this.state.current_entry.start_time)) }
 		
 		
 	link_cell = value => {
@@ -190,7 +192,8 @@ export default class LoggingPage extends BaseControl {
 
 
 	overtime_notice = () => {
-		return <PopupNotice id="overtime_notice" visible={this.state.editing}>
+		return <PopupNotice id="overtime_notice" visible={this.state.editing} style={{ top: "9em" }}>
+
 			<ExplodingPanel id="overtime_notice_panel">
 
 				<Container id="calendar_clock" visible={this.state.fixing}>
@@ -240,7 +243,7 @@ export default class LoggingPage extends BaseControl {
 
 		if (not_set (this.state.current_entry)) return null;
 
-		return <div id={this.props.id} className="row-container">
+		return <div id={this.props.id} className="two-column-grid">
 		
 			<div className="log-details one-piece-form">
 
@@ -276,7 +279,7 @@ export default class LoggingPage extends BaseControl {
 
 			</div>
 
-			<div style={{ width: 0 }}>{this.overtime_notice ()}</div>
+			<div>{this.overtime_notice ()}</div>
 
 		</div>
 
@@ -291,11 +294,11 @@ export default class LoggingPage extends BaseControl {
 		let delay = 1000;
 
 		this.setState ({ 
-			editing: this.needs_editing (),
+			editing: this.needs_editing (24),
 			initialized: true,
 		});
 
-		switch (OptionsStorage.granularity (this.context.company_id)) {
+		switch (OptionsStorage.granularity (CompanyStorage.active_company_id ())) {
 			case granularity_types.hourly	: delay *= Date.coefficient.hourly; break;
 			case granularity_types.quarterly: delay *= Date.coefficient.quarterly; break;
 			case granularity_types.minutely	: delay *= Date.coefficient.minutely; break;
@@ -305,7 +308,7 @@ export default class LoggingPage extends BaseControl {
 
 
 	componentDidUpdate () {
-		let needs_editing = this.needs_editing ();
+		let needs_editing = this.needs_editing (24);
 		if (this.state.editable == needs_editing) return;
 		this.setState ({ editable: needs_editing });
 	}// componentDidUpdate;
@@ -325,26 +328,29 @@ export default class LoggingPage extends BaseControl {
 				<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
 
 				<Container visible={!logged_in}>
-					
 					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
 
-						clientId={this.state.client_id} projectId={this.state.project_id}
+						clientId={this.client_id ()} projectId={this.project_id ()}
 
 						hasHeader={true} 
 						headerSelectable={false} 
 
-						onClientChange={event => this.setState ({ client_id: event.target.value })}
-						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
+						onClientChange={event => this.setState ({ current_entry: {...this.state.current_entry, client_id: event.target.value }})}
+						onProjectChange={event => this.setState ({ current_entry: {...this.state.current_entry, project_id: event.target.value }})}>
 
 					</ProjectSelector>
-
 				</Container>
 
 			</EyecandyPanel>
 
 			<div className="flex-column with-headspace">
 				<div style={{ paddingLeft: "0.75em" }}><label htmlFor="memo" style={{ fontWeight: "bold" }}>Notes</label></div>
-				<div className="textarea-container with-some-headspace"><textarea id="notes" name="notes" placeholder="(optional)" /></div>
+				<div className="textarea-container with-some-headspace">
+					<textarea id="notes" name="notes" 
+						placeholder="(optional)" value={this.notes () ?? blank}
+						onChange={event => this.setState ({ current_entry: {...this.state.current_entry, notes: event.target.value }})}>
+					</textarea>
+				</div>
 			</div>
 
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
