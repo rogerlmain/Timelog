@@ -76,7 +76,7 @@ export default class LoggingPage extends BaseControl {
 	project_id = () => 	{ return isset (this.state.current_entry) ? this.state.current_entry.project_id : null }
 	notes = () => 		{ return isset (this.state.current_entry) ? this.state.current_entry.notes : null }
 
-	logged_in = () => { return isset (this.state.current_entry) }
+	logged_in = () => { return isset (this.state.current_entry) && isset (this.state.current_entry.start_time) }
 	logged_out = () => { return !this.logged_in () }
 
 	project_selected = () => { return ((this.project_id () > 0) || OptionsStorage.single_project () || this.logged_in ()) }
