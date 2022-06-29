@@ -1,10 +1,23 @@
 /**** Containers ****/
 
 
+.flex-row {
+	display: flex;
+	flex-direction: row;
+}/* .flex-row */
+
+
+.flex-column {
+	display: flex;
+	flex-direction: column;
+}/* .flex-column */
+
+
 .row-container {
 	display: flex;
 	flex-direction: row;
-align-self: stretch;}/* .row-container */
+	align-self: stretch;
+}/* .row-container */
 
 
 .span-all, .span-all-columns { grid-column: 1 / -1 }
@@ -431,7 +444,7 @@ div[class*="-piece-form"] {
 
 
 div.one-piece-form		{ grid-template-columns: min-content 1fr }
-div.two-piece-form		{grid-template-columns: repeat(4, min-content);}
+div.two-piece-form		{ grid-template-columns: repeat(4, min-content) }
 div.three-piece-form	{ grid-template-columns: repeat(3, min-content 1fr) }
 
 

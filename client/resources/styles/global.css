@@ -223,9 +223,19 @@ textarea {
 	border-color: black;
 	border-radius: 1em;
 	border-bottom-right-radius: 0;
-	width: 24em;
-	height: 12em;
+	min-width: 20em;
+	min-height: 9em;
 }/* textarea */
+
+
+div.textarea-container {
+	display: inline-flex;
+	flex-direction: column;
+	/* align-items: stretch; */
+	/* align-content: stretch; */
+	/* justify-content: stretch; */
+	/* justify-items: stretch; */
+}/* div.textarea-container */
 
 
 /**** Partial Classes ****/

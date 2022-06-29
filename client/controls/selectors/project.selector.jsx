@@ -74,7 +74,7 @@ export default class ProjectSelector extends BaseControl {
 	render () {
 
 		let single_client = (OptionsStorage.client_limit () == 1);
-		let single_project = (OptionsStorage.project_limit () == 1);
+		let multiple_projects = (OptionsStorage.project_limit () > 1);
 
 		return <div id={this.props.id} className="one-piece-form">
 
@@ -93,28 +93,28 @@ export default class ProjectSelector extends BaseControl {
 
 			</ClientSelector>
 
-			{ single_project ? <Container>
-				<div style={{ textAlign: "right" }}>Project</div>
-				<div>Default</div>
-			</Container> : <LoadList id={this.props.id}
+			
+			<Container visible={multiple_projects}>
+				<LoadList id={this.props.id}
 
-				label="Project"
+					label="Project"
 
-				listHeader={this.props.headerSelectable ? "New project" : "Select a project"}
-				headerSelectable={this.props.headerSelectable}
+					listHeader={this.props.headerSelectable ? "New project" : "Select a project"}
+					headerSelectable={this.props.headerSelectable}
 
-				dataIdField="project_id"
-				dataTextField="name"
+					dataIdField="project_id"
+					dataTextField="name"
 
-				data={isset (this.state.client_id) ? ProjectStorage.get_projects_by_client (this.state.client_id) : null}
-				
-				newButtonPage={this.props.newButton ? page_names.projects : null} 
-				selectedItem={this.state.project_id}
-				visible={isset (this.state.client_id) || single_client}
+					data={isset (this.state.client_id) ? ProjectStorage.get_projects_by_client (this.state.client_id) : null}
+					
+					newButtonPage={this.props.newButton ? page_names.projects : null} 
+					selectedItem={this.state.project_id}
+					visible={isset (this.state.client_id) || single_client}
 
-				onChange={event => this.setState ({ project_id: integer_value (event.target.value) }, () => this.execute (this.props.onProjectChange, event))}>
+					onChange={event => this.setState ({ project_id: integer_value (event.target.value) }, () => this.execute (this.props.onProjectChange, event))}>
 
-			</LoadList>}
+				</LoadList>
+			</Container>
 
 		</div>
 	}// render;

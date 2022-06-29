@@ -54,27 +54,26 @@ export default class ClientSelector extends BaseControl {
 
 	render () {
 
-		let single_client = (OptionsStorage.client_limit () == 1);
+		let multiple_clients = (OptionsStorage.client_limit () > 1);
 
-		return single_client ? <Container>
-			<div style={{ textAlign: "right" }}>Client</div>
-			<div>Default</div>
-		</Container> : <LoadList id={this.props.id}
+		return <Container visible={multiple_clients}>
+			<LoadList id={this.props.id}
 
-			data={ClientStorage.get_by_company (CompanyStorage.active_company_id ())}
-			dataIdField="client_id"
-			dataTextField="name"
+				data={ClientStorage.get_by_company (CompanyStorage.active_company_id ())}
+				dataIdField="client_id"
+				dataTextField="name"
 
-			newButtonPage={this.props.newButton ? page_names.clients : null}
+				newButtonPage={this.props.newButton ? page_names.clients : null}
 
-			label="Client"
-			
-			listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
-			selectedItem={this.props.selectedClient}
+				label="Client"
+				
+				listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
+				selectedItem={this.props.selectedClient}
 
-			onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
+				onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
 
-		</LoadList>
+			</LoadList>
+		</Container>
 
 	}// render;
 

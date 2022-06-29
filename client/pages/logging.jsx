@@ -17,8 +17,8 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging";
 
-import { blank, date_formats, date_rounding, granularity_types, space } from "client/classes/types/constants";
-import { isset, is_null, is_empty, nested_value, not_set, multiline_text } from "client/classes/common";
+import { date_formats, date_rounding, debugging, granularity_types, space } from "client/classes/types/constants";
+import { isset, is_empty, nested_value, not_set, multiline_text } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
 import { MainContext } from "client/classes/types/contexts";
@@ -67,7 +67,7 @@ export default class LoggingPage extends BaseControl {
 		super (props);
 		this.state.current_entry = LoggingStorage.current_entry ();
 		ProjectStorage.billing_rate (this.props.projectId, this.props.clientId).then (result => this.setState ({ billing_rate: result }));
-console.log ("logging page created");		
+		if (debugging) console.log ("logging page created");
 	}// constructor;
 
 
@@ -244,11 +244,15 @@ console.log ("logging page created");
 		
 			<div className="log-details one-piece-form">
 
-				<label>Client</label>
-				<div>{this.state.current_entry.client_name ?? "Default"}</div>
+				<Container visible={isset (this.state.current_entry.client_name)}>
+					<label>Client</label>
+					<div>{this.state.current_entry.client_name}</div>
+				</Container>
 
-				<label>Project</label>
-				<div>{this.state.current_entry.project_name ?? "Default"}</div>
+				<Container visible={isset (this.state.current_entry.project_name)}>
+					<label>Project</label>
+					<div>{this.state.current_entry.project_name}</div>
+				</Container>
 
 				<Break />
 
@@ -321,6 +325,7 @@ console.log ("logging page created");
 				<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
 
 				<Container visible={!logged_in}>
+					
 					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
 
 						clientId={this.state.client_id} projectId={this.state.project_id}
@@ -332,9 +337,15 @@ console.log ("logging page created");
 						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
 
 					</ProjectSelector>
+
 				</Container>
 
 			</EyecandyPanel>
+
+			<div className="flex-column with-headspace">
+				<div style={{ paddingLeft: "0.75em" }}><label htmlFor="memo" style={{ fontWeight: "bold" }}>Notes</label></div>
+				<div className="textarea-container with-some-headspace"><textarea id="notes" name="notes" placeholder="(optional)" /></div>
+			</div>
 
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}

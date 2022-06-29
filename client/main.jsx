@@ -4,7 +4,6 @@ import "classes/types/prototypes";
 import "client/resources/styles/main.css";
 
 import React from "react";
-import ReactDOM from "react-dom";
 
 import Container from "controls/container";
 
@@ -22,8 +21,8 @@ import SignupPage from "pages/sign.up";
 
 import { createRoot } from "react-dom/client";
 
-import { blank, date_formats, debugging, tracing, globals } from "client/classes/types/constants";
-import { isset, is_empty, not_set, nested_value, notify, numeric_value, is_null, null_value } from "client/classes/common";
+import { debugging, tracing, globals } from "client/classes/types/constants";
+import { isset, is_empty, not_set, nested_value, notify, numeric_value } from "client/classes/common";
 
 import { MainContext } from "client/classes/types/contexts";
 
