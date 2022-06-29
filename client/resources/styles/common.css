@@ -393,9 +393,9 @@ div.outlined label {
 /**** Grid Styles ****/
 
 
-div[class^="two-column-"]	{ grid-template-columns: repeat(2, min-content) }
-div[class^="three-column-"]	{ grid-template-columns: repeat(3, min-content) }
-div[class^="four-column-"]	{ grid-template-columns: repeat(4, min-content) }
+div[class*="two-column-"]	{ grid-template-columns: repeat(2, min-content) }
+div[class*="three-column-"]	{ grid-template-columns: repeat(3, min-content) }
+div[class*="four-column-"]	{ grid-template-columns: repeat(4, min-content) }
 
 
 div[class*="-column-grid"], div[class*="-column-table"] {

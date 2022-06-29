@@ -5,7 +5,7 @@ import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, nu
 /**** Array Helper Functions ****/
 
 
-Array.arrayify = (candidate) => { return (Array.isArray (candidate) ? candidate : [candidate]) }
+Array.arrayify = (candidate) => { return (Array.isArray (candidate) ? candidate : (is_null (candidate) ? null : [candidate])) }
 
 
 Array.has_value = function (candidate) { return Array.isArray (candidate) && (candidate.length > 0) }
