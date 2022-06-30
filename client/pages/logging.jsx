@@ -66,6 +66,9 @@ export default class LoggingPage extends BaseControl {
 	constructor (props) { 
 		super (props);
 		this.state.current_entry = LoggingStorage.current_entry ();
+
+		this.state.current_entry.end_time = this.end_time ();
+
 		ProjectStorage.billing_rate (this.props.projectId, this.props.clientId).then (result => this.setState ({ billing_rate: result }));
 		if (debugging) console.log ("logging page created");
 	}// constructor;
@@ -96,7 +99,7 @@ export default class LoggingPage extends BaseControl {
 
 		if (this.logged_out ()) return false;
 
-		let same_day = this.state.current_entry.start_time.same_day (this.end_time ());
+		let same_day = this.state.current_entry.start_time.same_day (this.state.current_entry.end_time);
 		let result = (!same_day || (this.elapsed_time () > (limit * Date.coefficient.hour)));
 
 		return result;
@@ -161,8 +164,8 @@ export default class LoggingPage extends BaseControl {
 	// }// end_time;
 
 
-	elapsed_time = () => { return Math.max (Math.floor ((this.end_time ().getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0) }
-	invalid_entry = () => { return (this.end_time ().before (this.state.current_entry.start_time)) }
+	elapsed_time = () => { return Math.max (Math.floor ((this.state.current_entry.end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0) }
+	invalid_entry = () => { return (this.state.current_entry.end_time.before (this.state.current_entry.start_time)) }
 		
 		
 	link_cell = value => {
@@ -199,7 +202,7 @@ export default class LoggingPage extends BaseControl {
 				<Container id="calendar_clock" visible={this.state.fixing}>
 
 					<CalendarClock id="log_calendar_clock"
-						start={this.state.current_entry.start_time} end={this.end_time ()}
+						start={this.state.current_entry.start_time} end={this.state.current_entry.end_time}
 						onChange={data => {
 							this.log_form_panel.current.forceResize ();
 							this.state.current_entry [`${data.boundary}_time`] = data.date;
@@ -238,8 +241,8 @@ export default class LoggingPage extends BaseControl {
 
 	entry_details = elapsed_time => {
 	
-		let end_time = this.end_time ();
 		let start_time = nested_value (this.state.current_entry, "start_time");
+		let end_time = nested_value (this.state.current_entry, "end_time");
 
 		if (not_set (this.state.current_entry)) return null;
 
