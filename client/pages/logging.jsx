@@ -67,7 +67,7 @@ export default class LoggingPage extends BaseControl {
 		super (props);
 		this.state.current_entry = LoggingStorage.current_entry ();
 
-		this.state.current_entry.end_time = this.end_time ();
+		if (isset (this.state.current_entry)) this.state.current_entry.end_time = this.end_time ();
 
 		ProjectStorage.billing_rate (this.props.projectId, this.props.clientId).then (result => this.setState ({ billing_rate: result }));
 		if (debugging) console.log ("logging page created");
@@ -244,7 +244,7 @@ export default class LoggingPage extends BaseControl {
 		let start_time = nested_value (this.state.current_entry, "start_time");
 		let end_time = nested_value (this.state.current_entry, "end_time");
 
-		if (not_set (this.state.current_entry)) return null;
+		if (not_set (start_time) ) return null;
 
 		return <div id={this.props.id} className="two-column-grid">
 		
