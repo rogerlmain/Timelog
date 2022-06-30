@@ -28,8 +28,8 @@ import CompanyStorage from "client/classes/storage/company.storage";
 
 
 const ranges = {
-	start	: 1,
-	end		: 2,
+	start	: "start",
+	end		: "end",
 }// ranges;
 
 
@@ -109,12 +109,9 @@ export default class LoggingPage extends BaseControl {
 
 	rounded = (date, range) => {
 
-		let rounding_direction = (ranges.start ? OptionsStorage.start_rounding () : OptionsStorage.end_rounding ());
-
-		if (!OptionsStorage.can_round (this.company_id ())) switch (range) {
-			case ranges.end	: return date.round_hours (date_rounding.down);
-			default			: return date.round_hours (date_rounding.up);
-		}// switch;
+		let rounding_direction = (range == ranges.end) ? date_rounding.down : date_rounding.up;
+		
+		if (OptionsStorage.can_round (this.company_id ())) rounding_direction = (ranges.start ? OptionsStorage.start_rounding () : OptionsStorage.end_rounding ());
 
 		switch (OptionsStorage.granularity (this.company_id ())) {
 			case granularity_types.hourly	: return date.round_hours (rounding_direction);
@@ -136,6 +133,7 @@ export default class LoggingPage extends BaseControl {
 				LoggingStorage.delete ();
 			} else {
 				entry.start_time = Date.validated (entry.start_time);
+				entry.end_time = this.end_time ();
 				LoggingStorage.set (entry);
 			}// if;
 
@@ -149,19 +147,6 @@ export default class LoggingPage extends BaseControl {
 
 
 	end_time = () => { return this.rounded (new Date (), ranges.end) }
-
-	// 	if (not_set (this.state.current_entry)) return null;
-
-	// 	if (not_set (nested_value (this.state.current_entry, "end_time"))) {
-	// 		this.state.current_entry = {
-	// 			...this.state.current_entry,
-	// 			end_time: this.rounded (new Date (), ranges.end),
-	// 		};
-	// 	}// if;
-
-	// 	return this.state.current_entry.end_time;
-
-	// }// end_time;
 
 
 	elapsed_time = () => { return Math.max (Math.floor ((this.state.current_entry.end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0) }
