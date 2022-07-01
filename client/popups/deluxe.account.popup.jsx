@@ -14,7 +14,7 @@ import DeluxeAccountForm from "forms/deluxe.account.form";
 
 import { MainContext } from "client/classes/types/contexts";
 
-import "client/resources/styles/forms/deluxe.account.form.css";
+import "resources/styles/forms/deluxe.account.form.css";
 
 
 export default class DeluxeAccountPopup extends BaseControl {

@@ -52,7 +52,11 @@ export default class LoadList extends BaseControl {
 		listHeader: null,
 		selectedItem: null,
 
+		style: null,
+
 		headerSelectable: false,
+		disabled: false,
+
 		animated: true,
 		visible: true,
 
@@ -110,7 +114,9 @@ export default class LoadList extends BaseControl {
 			this.context.master_page.setState ({ page: this.props.newButtonPage })
 		}}>New</button>
 		
-		return <SelectList id={this.props.id} data={this.state.list_data} value={this.props.selectedItem}
+		return <SelectList id={this.props.id} data={this.state.list_data} value={this.props.selectedItem} disabled={this.props.disabled}
+
+			style={this.props.style}
 
 			hasHeader={isset (header)} headerText={header} 
 			headerSelectable={this.props.headerSelectable}
@@ -144,7 +150,7 @@ export default class LoadList extends BaseControl {
 			</FadePanel>
 
 			<FadePanel id={`${this.props.id}_list_panel`} animated={this.props.animated} visible={this.props.visible}>
-				<EyecandyPanel id={list_id} text="Loading..." eyecandyVisible={is_promise (this.state.list_data) || this.state.data_loading}>
+				<EyecandyPanel id={list_id} text="Loading..." eyecandyVisible={is_promise (this.state.list_data) || this.state.data_loading} stretchOnly={true}>
 					{this.data_options ()}
 				</EyecandyPanel>
 			</FadePanel>

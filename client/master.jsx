@@ -22,7 +22,7 @@ import { is_empty, is_function, is_null } from "client/classes/common";
 
 import { MainContext, MasterContext } from "classes/types/contexts";
 
-import "client/resources/styles/home.page.css";
+import "resources/styles/home.page.css";
 
 
 export const page_names = {

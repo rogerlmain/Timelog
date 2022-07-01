@@ -8,7 +8,7 @@ import SquareHandler from "client/classes/handlers/square.handler";
 import BaseControl from "controls/abstract/base.control";
 import Container from "controls/container";
 
-import "client/resources/styles/pages/forms.css";
+import "resources/styles/pages/forms.css";
 
 
 const expired_message = "Card expired\nWhat are you trying to pull?";
@@ -60,14 +60,14 @@ export default class CreditCardSubform extends BaseControl {
 		return <Container>
 
 			<div className="horizontally-spaced-out">
-				<img src={"client/resources/images/logos/square.png"} className="square-logo" />
+				<img src={"resources/images/logos/square.png"} className="square-logo" />
 				<div className="credit-card-logos right-justify">
-					<img src={"client/resources/images/logos/mastercard.svg"} />
-					<img src={"client/resources/images/logos/visa.png"} />
-					<img src={"client/resources/images/logos/discover.svg"} />
-					<img src={"client/resources/images/logos/amex.png"} />
-					<img src={"client/resources/images/logos/jcb.svg"} />
-					<img src={"client/resources/images/logos/unionpay.svg"} />
+					<img src={"resources/images/logos/mastercard.svg"} />
+					<img src={"resources/images/logos/visa.png"} />
+					<img src={"resources/images/logos/discover.svg"} />
+					<img src={"resources/images/logos/amex.png"} />
+					<img src={"resources/images/logos/jcb.svg"} />
+					<img src={"resources/images/logos/unionpay.svg"} />
 				</div>
 			</div>
 

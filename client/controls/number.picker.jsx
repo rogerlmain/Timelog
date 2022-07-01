@@ -5,7 +5,7 @@ import NumberRangeInput from "controls/inputs/number.range.input";
 import { blank } from "classes/types/constants";
 import { is_number, isset } from "classes/common";
 
-import "client/resources/styles/controls/number.picker.css";
+import "resources/styles/controls/number.picker.css";
 
 
 export default class NumberPicker extends BaseControl {

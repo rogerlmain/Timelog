@@ -109,7 +109,7 @@ export default class SigninPage extends BaseControl {
 						<label htmlFor="password">Password</label>
 						<div style={{display: 'flex', flexDirection: 'row'}}>
 							<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue="stranger" style={{ width: "100%" }} />
-							<img className="link-control" src={"client/resources/images/eyeball." + (this.state.password_visible ? "off" : "on") + ".svg"}
+							<img className="link-control" src={"resources/images/eyeball." + (this.state.password_visible ? "off" : "on") + ".svg"}
 								onClick={() => { this.setState ({ password_visible: !this.state.password_visible }); }}>
 							</img>
 						</div>

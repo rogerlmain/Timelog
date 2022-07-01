@@ -1,7 +1,7 @@
 import "regenerator-runtime/runtime.js";
 import "classes/types/prototypes";
 
-import "client/resources/styles/main.css";
+import "resources/styles/main.css";
 
 import React from "react";
 

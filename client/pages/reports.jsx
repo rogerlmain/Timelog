@@ -3,15 +3,18 @@ import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 import FadePanel from "client/controls/panels/fade.panel";
 import SelectButton from "client/controls/buttons/select.button";
-import Container from "client/controls/container";
 
 import ProjectSelector from "client/controls/selectors/project.selector";
+
+import Container from "client/controls/container";
+import DateInput from "client/controls/inputs/date.input";
+
 import ReportsModel from "client/classes/models/reports";
 
 import { date_formats } from "client/classes/types/constants";
 import { get_keys, isset, is_null, is_object, not_set } from "client/classes/common";
 
-import "client/resources/styles/pages/reports.css";
+import "resources/styles/pages/reports.css";
 
 
 
@@ -54,6 +57,7 @@ export default class ReportsPage extends BaseControl {
 
 			return <Container key={`result_${entry.entry_id}`}>
 				<div className="entry">{day_text}</div>
+				<div className="entry">{entry.notes}</div>
 				<div className="entry">{start_time.format (date_formats.timestamp)}</div>
 				<div className="entry">{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
 				<div className="entry">{Date.elapsed (entry.total_time)}</div>
@@ -160,7 +164,7 @@ export default class ReportsPage extends BaseControl {
 		if (isset (this.state.entries)) this.state.entries.map (row => total += row.total_time);
 
 		return <Container>
-			<div className="entry" style={{ gridColumn: "1 / 4" }}>Total</div>
+			<div className="entry" style={{ gridColumn: "1 / 5" }}>Total</div>
 			<div className="entry">{Date.elapsed (total)}</div>
 		</Container>
 
@@ -184,7 +188,7 @@ export default class ReportsPage extends BaseControl {
 
 				<div>
 					<label htmlFor="granularity">Granularity</label>
-					<select id="granularity" onChange={event => this.setState ({ granularity: parseInt (event.target.value) })} defaultValue={granularity.total}>
+					<select id="granularity" onChange={event => this.setState ({ granularity: parseInt (event.target.value) })} defaultValue={granularity.daily}>
 						<option value={granularity.daily}>Day</option>
 						<option value={granularity.monthly}>Month</option>
 						<option value={granularity.yearly}>Year</option>
@@ -194,17 +198,31 @@ export default class ReportsPage extends BaseControl {
 
 			</div>
 
+			<div className="two-column-table with-some-headspace">
+
+				<div className="one-piece-form">
+					<label htmlFor="date_range_start">Start date</label>
+					<div><DateInput id="date_range_start" value={new Date ()} /></div>
+				</div>
+
+				<div className="one-piece-form">
+					<label htmlFor="date_range_end">End date</label>
+					<div><DateInput id="date_range_end" value={new Date ()} /></div>
+				</div>
+
+			</div>
+
 			<FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
 				<SelectButton onClick={() => ReportsModel.fetch_by_project (this.state.project_id).then (data => this.setState ({ entries: data }))} style={{ marginTop: "1em" }}>Generate</SelectButton>
-				<hr />
 			</FadePanel>
 
+			<br />
+
 			<FadePanel id="report_results_panel" visible={has_data}>
-				<div className="four-column-grid report-grid">
-					{(this.state.granularity < 4) && <Container>
-						{this.list_entries ()}
-						<hr />
-					</Container>}
+				<div className="five-column-grid report-grid">
+					<hr className="report-rule" />
+					<Container visible={this.state.granularity < 4}>{this.list_entries ()}</Container>
+					<hr className="report-rule" />
 					{this.show_totals ()}
 				</div>
 			</FadePanel>

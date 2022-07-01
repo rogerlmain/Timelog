@@ -1,6 +1,28 @@
 import { createConnection } from "mysql";
 
 
+const local_testing = false;
+
+
+const local_database = {
+	host: "localhost",
+	user: "root",
+	password: "stranger",
+	database: "timelog"
+}/* local_database */
+
+
+const interserver_database = {
+	host: "208.73.201.47",
+	user: "remote",
+	password: "stranger",
+	database: "timelog"
+}/* local_database */
+
+
+const active_database = local_testing ? local_database : interserver_database;
+
+
 class Database {
 
 	connection = null;
@@ -57,12 +79,7 @@ class Database {
 		this.response = response;
 
 		try {
-			this.connection = createConnection ({
-				host: "localhost",
-				user: "root",
-				password: "stranger",
-				database: "timelog"
-			})/* connection */;
+			this.connection = createConnection (active_database);
 			this.connection.connect ((error) => { if (isset (error)) console.log (error) });
 		} catch (except) {
 			console.log (except);

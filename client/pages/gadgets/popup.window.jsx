@@ -7,7 +7,7 @@ import FadePanel from "controls/panels/fade.panel";
 import { isset, notify, not_set, pause } from "classes/common";
 import { hidden_zindex, visible_zindex } from "client/classes/types/constants";
 
-import "client/resources/styles/pages/gadgets/popups.css";
+import "resources/styles/pages/gadgets/popups.css";
 
 
 export default class PopupWindow extends BaseControl {

@@ -7,7 +7,7 @@ import Container from "controls/container";
 
 import { not_set } from "classes/common";
 
-import "client/resources/styles/controls/slider.css";
+import "resources/styles/controls/slider.css";
 
 
 export default class Slider extends BaseControl {

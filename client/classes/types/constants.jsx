@@ -76,18 +76,18 @@ export const date_rounding = {
 
 
 export const eyecandy_images = {
-	small: "client/resources/images/indicators/small.gif",
-	medium: "client/resources/images/indicators/medium.gif"
+	small: "resources/images/indicators/small.gif",
+	medium: "resources/images/indicators/medium.gif"
 }// eyecandy_images;
 
 
 export const credit_card_images = {
-	amex		: "client/resources/images/credit_cards/amex.png",
-	visa		: "client/resources/images/credit_cards/visa.png",
-	mastercard	: "client/resources/images/credit_cards/mastercard.png",
-	discover	: "client/resources/images/credit_cards/discover.png",
-	jcb			: "client/resources/images/credit_cards/jcb.png",
-	unionpay	: "client/resources/images/credit_cards/unionpay.png"
+	amex		: "resources/images/credit_cards/amex.png",
+	visa		: "resources/images/credit_cards/visa.png",
+	mastercard	: "resources/images/credit_cards/mastercard.png",
+	discover	: "resources/images/credit_cards/discover.png",
+	jcb			: "resources/images/credit_cards/jcb.png",
+	unionpay	: "resources/images/credit_cards/unionpay.png"
 }// credit_card_images;
 
 

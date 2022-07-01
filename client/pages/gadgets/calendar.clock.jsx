@@ -12,7 +12,7 @@ import ToggleSwitch from "client/controls/toggle.switch";
 import { boundaries } from "client/classes/storage/options.storage";
 
 import "react-clock/dist/Clock.css";
-import "client/resources/styles/pages/gadgets/calendar.clock.css";
+import "resources/styles/pages/gadgets/calendar.clock.css";
 
 
 export default class CalendarClock extends BaseControl {

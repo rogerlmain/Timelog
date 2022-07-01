@@ -3,7 +3,7 @@ import BaseControl from "controls/abstract/base.control";
 
 import { isset, is_null, is_number } from "classes/common";
 
-import "client/resources/styles/controls.css";
+import "resources/styles/controls.css";
 
 
 const default_length = 3;

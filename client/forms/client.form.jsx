@@ -19,7 +19,7 @@ import { SmallProgressMeter } from "controls/progress.meter";
 import { MainContext } from "classes/types/contexts";
 
 
-import "client/resources/styles/forms.css";
+import "resources/styles/forms.css";
 
 
 export default class ClientForm extends FormControl {

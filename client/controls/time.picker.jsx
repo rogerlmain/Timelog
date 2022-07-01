@@ -10,7 +10,7 @@ import NumberPicker from "client/controls/number.picker";
 import { nested_value } from "client/classes/common";
 import { date_rounding, granularity_types } from "client/classes/types/constants";
 
-import "client/resources/styles/controls/time.picker.css";
+import "resources/styles/controls/time.picker.css";
 
 
 export default class TimePicker extends BaseControl {

@@ -30,7 +30,7 @@ tests: path.resolve (__dirname, "client/tests"),
 			tests: path.resolve (__dirname, "client/tests"),
 			types: path.resolve (__dirname, "client/types"),
 
-			resources: path.resolve (__dirname, "client/resources")
+			resources: path.resolve (__dirname, "resources")
 
 		}/* alias */
 	},

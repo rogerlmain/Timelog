@@ -15,7 +15,7 @@ import ProjectForm from "client/forms/project.form";
 import { numeric_value, not_null, not_set, get_values, nested_value } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
-import "client/resources/styles/pages/projects.css";
+import "resources/styles/pages/projects.css";
 
 
 export const project_limit_options = {

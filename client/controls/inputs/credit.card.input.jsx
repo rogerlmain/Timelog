@@ -116,7 +116,7 @@ defaultValue="5412 3456 7890 1234"
 
 			<ExplodingPanel id="credit_card_image">
 				<Container id="credit_card_image_container" visible={isset (this.state.current_card)}>
-					<img src={`client/resources/images/logos/${this.state.current_card}.svg`} style={{ 
+					<img src={`resources/images/logos/${this.state.current_card}.svg`} style={{ 
 						width: "auto", 
 						height: "1.4em",  
 						marginLeft: "0.5em"

@@ -10,11 +10,11 @@ import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 import ClientSelector from "client/controls/selectors/client.selector";
 
-import { isset, integer_value, nested_value } from "classes/common";
+import { isset, integer_value, nested_value, not_set } from "classes/common";
 import { page_names } from "client/master";
 import { tracing } from "client/classes/types/constants";
 
-import "client/resources/styles/gadgets/selector.gadget.css";
+import "resources/styles/gadgets/selector.gadget.css";
 
 
 export default class ProjectSelector extends BaseControl {
@@ -109,7 +109,9 @@ export default class ProjectSelector extends BaseControl {
 					
 					newButtonPage={this.props.newButton ? page_names.projects : null} 
 					selectedItem={this.state.project_id}
-					visible={isset (this.state.client_id) || single_client}
+
+					style={{ width: "100%" }}
+					disabled={not_set (this.state.client_id) && (!single_client)}
 
 					onChange={event => this.setState ({ project_id: integer_value (event.target.value) }, () => this.execute (this.props.onProjectChange, event))}>
 

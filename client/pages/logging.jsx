@@ -23,7 +23,7 @@ import { isset, is_empty, nested_value, not_set, multiline_text } from "client/c
 import { Break } from "client/controls/html/components";
 import { MainContext } from "client/classes/types/contexts";
 
-import "client/resources/styles/pages/logging.css";
+import "resources/styles/pages/logging.css";
 import CompanyStorage from "client/classes/storage/company.storage";
 
 

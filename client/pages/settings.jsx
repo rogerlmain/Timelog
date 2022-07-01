@@ -34,7 +34,7 @@ import { MainContext } from "classes/types/contexts";
 
 import { Break } from "client/controls/html/components";
 
-import "client/resources/styles/pages.css";
+import "resources/styles/pages.css";
 
 
 const options_panels = {

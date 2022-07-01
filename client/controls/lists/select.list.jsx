@@ -29,6 +29,8 @@ export default class SelectList extends BaseControl {
 		headerSelectable: false,
 		hasHeader: false,
 
+		disabled: false,
+
 		value: null,
 
 		onChange: null
@@ -89,7 +91,9 @@ export default class SelectList extends BaseControl {
 		let selectedValue = this.state.selected_value ?? this.props.value ?? header_value;
 
         return (
-            <select id={this.props.id} name={this.props.id} ref={this.list} value={selectedValue} className={this.props.className} style={this.props.style}
+            <select id={this.props.id} name={this.props.id} ref={this.list} value={selectedValue} disabled={this.props.disabled}
+			
+				className={this.props.className} style={this.props.style}
 
  				onChange={(event) => {
 					let value = parseInt (event.target.value);

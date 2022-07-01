@@ -9,7 +9,7 @@ import { default_settings, horizontal_alignment } from "client/classes/types/con
 import { isset, is_number } from "classes/common";
 
 
-import "client/resources/styles/controls/toggle.switch.css";
+import "resources/styles/controls/toggle.switch.css";
 
 
 const item_width = 24;

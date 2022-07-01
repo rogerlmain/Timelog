@@ -3,7 +3,7 @@ import BaseControl from "../abstract/base.control";
 
 import { not_set, numeric_value } from "client/classes/common";
 
-import "client/resources/styles/controls.css";
+import "resources/styles/controls.css";
 
 
 export default class CurrencyInput extends BaseControl {

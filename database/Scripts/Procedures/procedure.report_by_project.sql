@@ -10,10 +10,13 @@ create procedure report_by_project (project_id int) begin
 		log.id as logry_id,
 		log.start_time,
         log.end_time,
-        timestampdiff (second, log.start_time, log.end_time) as total_time
+        timestampdiff (second, log.start_time, log.end_time) as total_time,
+        log.notes
 	from
 		logging as log
 	where
-		log.project_id = project_id;
+		log.project_id = project_id
+	order by
+		start_time;
         
 end??

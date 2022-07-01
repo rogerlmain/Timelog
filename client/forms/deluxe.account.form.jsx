@@ -24,7 +24,7 @@ import { dynamic_input_classname } from "controls/inputs/dynamic.input";
 
 import { isset, is_number, nested_value } from "classes/common";
 
-import "client/resources/styles/forms/deluxe.account.form.css";
+import "resources/styles/forms/deluxe.account.form.css";
 
 
 const greetings = {
