@@ -173,8 +173,8 @@ export default class ResizePanel extends BaseControl {
 		let has_height = ((this.props.direction == resize_direction.horizontal) && (isset (nested_value (this.props.style, "height"))));
 
 		let outer_style = {
-			margin: 0, padding: 0,
-			overflow: "hidden"
+			margin: 0, 
+			padding: 0,
 		}// style;
 
 		let inner_style = {

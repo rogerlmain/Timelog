@@ -37,7 +37,7 @@ export default class ReportsPage extends BaseControl {
 		client_id: null,
 		project_id: null,
 		entries: null,
-		granularity: 4
+		granularity: granularity.daily,
 	}// state;
 
 
@@ -176,56 +176,66 @@ export default class ReportsPage extends BaseControl {
 		let has_data = isset (this.state.entries);
 
 		return <div id={this.props.id}>
-			
-			<div className="two-column-grid" style={{ columnGap: "1em" }}>
 
+			<div className="horizontally-centered">
 				<div>
-					<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
-						onClientChange={event => this.setState ({ client_id: event.target.value })}
-						onProjectChange={event => this.setState ({ project_id: event.target.value})}>
-					</ProjectSelector>
-				</div>
 
-				<div>
-					<label htmlFor="granularity">Granularity</label>
-					<select id="granularity" onChange={event => this.setState ({ granularity: parseInt (event.target.value) })} defaultValue={granularity.daily}>
-						<option value={granularity.daily}>Day</option>
-						<option value={granularity.monthly}>Month</option>
-						<option value={granularity.yearly}>Year</option>
-						<option value={granularity.total}>Project Total</option>
-					</select>
-				</div>
+					<div className="two-column-grid" style={{ columnGap: "1em" }}>
 
+						<div>
+							<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
+								onClientChange={event => this.setState ({ client_id: event.target.value })}
+								onProjectChange={event => this.setState ({ project_id: event.target.value})}>
+							</ProjectSelector>
+						</div>
+
+						<div>
+							<label htmlFor="granularity">Granularity</label>
+							<select id="granularity" onChange={event => this.setState ({ granularity: parseInt (event.target.value) })} defaultValue={granularity.daily}>
+								<option value={granularity.daily}>Day</option>
+								<option value={granularity.monthly}>Month</option>
+								<option value={granularity.yearly}>Year</option>
+								<option value={granularity.total}>Project Total</option>
+							</select>
+						</div>
+
+					</div>
+
+					<div className="two-column-table with-some-headspace">
+
+						<div className="one-piece-form">
+							<label htmlFor="date_range_start">Start date</label>
+							<div><DateInput id="date_range_start" value={new Date ()} /></div>
+						</div>
+
+						<div className="one-piece-form">
+							<label htmlFor="date_range_end">End date</label>
+							<div><DateInput id="date_range_end" value={new Date ()} /></div>
+						</div>
+
+					</div>
+
+					<FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
+						<div className="button-panel with-headspace">
+							<SelectButton onClick={() => ReportsModel.fetch_by_project (this.state.project_id).then (data => this.setState ({ entries: data }))}>Generate</SelectButton>
+						</div>
+					</FadePanel>
+
+				</div>
 			</div>
-
-			<div className="two-column-table with-some-headspace">
-
-				<div className="one-piece-form">
-					<label htmlFor="date_range_start">Start date</label>
-					<div><DateInput id="date_range_start" value={new Date ()} /></div>
-				</div>
-
-				<div className="one-piece-form">
-					<label htmlFor="date_range_end">End date</label>
-					<div><DateInput id="date_range_end" value={new Date ()} /></div>
-				</div>
-
-			</div>
-
-			<FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
-				<SelectButton onClick={() => ReportsModel.fetch_by_project (this.state.project_id).then (data => this.setState ({ entries: data }))} style={{ marginTop: "1em" }}>Generate</SelectButton>
-			</FadePanel>
 
 			<br />
 
-			<FadePanel id="report_results_panel" visible={has_data}>
-				<div className="five-column-grid report-grid">
-					<hr className="report-rule" />
-					<Container visible={this.state.granularity < 4}>{this.list_entries ()}</Container>
-					<hr className="report-rule" />
-					{this.show_totals ()}
-				</div>
-			</FadePanel>
+			<div className="horizontally-centered">
+				<FadePanel id="report_results_panel" visible={has_data}>
+					<div className="five-column-grid report-grid">
+						<hr className="report-rule" />
+						<Container visible={this.state.granularity < 4}>{this.list_entries ()}</Container>
+						<hr className="report-rule" />
+						{this.show_totals ()}
+					</div>
+				</FadePanel>
+			</div>
 			
 		</div>
 	}// render;

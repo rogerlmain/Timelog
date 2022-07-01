@@ -54,7 +54,7 @@ tests: path.resolve (__dirname, "client/tests"),
 				}// use;
 			},
 			{
-				test: /\.(jsx)?$/,
+				test: /\.jsx?$/,
 				use: {
 					loader: "babel-loader",
 					options: {
@@ -75,7 +75,15 @@ tests: path.resolve (__dirname, "client/tests"),
 			{
 				test: /\.css$/,
 				use: ["style-loader", "css-loader"]
-			},			
+			},
+			{
+				test: /\.(jpg|png|svg)$/,
+				loader: "url-loader",
+			},
+			// {
+			// 	test: /\.(jpg|png|svg)$/,
+			// 	use: [{ loader: 'file-loader' }],
+			// }
 		]
 	}/* module */,
 
