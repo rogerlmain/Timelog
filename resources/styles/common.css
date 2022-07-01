@@ -294,7 +294,7 @@ div.button-column {
 /**** Debugging ****/
 
 
-.bordered, .borderline, .borderline > *, .outlined, .outlined * {
+.borderline, .borderline > *, .outlined, .outlined * {
 	border: solid 1px red;
 }/* border styles */
 

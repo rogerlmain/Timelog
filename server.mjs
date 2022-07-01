@@ -226,7 +226,7 @@ app.post ("/reports", function (request, response) {
 	app.process (request, response, (fields) => {
 		let report_data = new ReportData (request, response);
 		switch (fields.action) {
-			case "by_project": report_data.report_by_project (fields.project_id); break;
+			case "project": report_data.report_by_project (fields.project_id, fields.start_date, fields.end_date); break;
 		}// switch;
 	});
 });

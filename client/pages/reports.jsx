@@ -34,10 +34,16 @@ export default class ReportsPage extends BaseControl {
 
 
 	state = {
+
 		client_id: null,
 		project_id: null,
+
 		entries: null,
 		granularity: granularity.daily,
+
+		start_date: new Date (),
+		end_date: new Date (),
+
 	}// state;
 
 
@@ -205,19 +211,27 @@ export default class ReportsPage extends BaseControl {
 
 						<div className="one-piece-form">
 							<label htmlFor="date_range_start">Start date</label>
-							<div><DateInput id="date_range_start" value={new Date ()} /></div>
+							<div><DateInput id="date_range_start" value={this.state.start_date} onChange={value => 
+{								
+alert ("the value: " + value);
+									this.setState ({ start_date: value })} 
+}								
+								/></div>
 						</div>
 
 						<div className="one-piece-form">
 							<label htmlFor="date_range_end">End date</label>
-							<div><DateInput id="date_range_end" value={new Date ()} /></div>
+							<div><DateInput id="date_range_end" value={this.state.end_date} onChange={value => this.setState ({ end_date: value })} /></div>
 						</div>
 
 					</div>
 
 					<FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
 						<div className="button-panel with-headspace">
-							<SelectButton onClick={() => ReportsModel.fetch_by_project (this.state.project_id).then (data => this.setState ({ entries: data }))}>Generate</SelectButton>
+							<SelectButton onClick={() => ReportsModel.fetch_by_project (this.state.project_id, {
+								start_date: this.state.start_date.format (date_formats.database_date), 
+								end_date: this.state.end_date.format (date_formats.database_date),
+							}).then (data => this.setState ({ entries: data }))}>Generate</SelectButton>
 						</div>
 					</FadePanel>
 

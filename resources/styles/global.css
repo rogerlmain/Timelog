@@ -150,10 +150,10 @@ button, *.unselectable {
 }/* button, unselectable */
 
 
-input, select {
+input, select, div.bordered {
 	border: solid 1px black;
 	border-radius: 999px;
-}/* input, select */
+}/* input, select, div.bordered */
 
 
 input:not([type="checkbox"]):not([type="radio"]) {
