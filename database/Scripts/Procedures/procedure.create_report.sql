@@ -12,7 +12,7 @@ create procedure create_report (
 ) begin
 
 	select
-		log.id as logry_id,
+		log.id as log_id,
 		log.start_time,
         log.end_time,
         timestampdiff (second, log.start_time, log.end_time) as total_time,

@@ -61,7 +61,7 @@ export default class ReportsPage extends BaseControl {
 			if (entry.total_time == 0) return;
 			if (isset (day_text)) current_day = start_time.get_date ();
 
-			return <Container key={`result_${entry.entry_id}`}>
+			return <Container key={`result_id#${entry.log_id}`}>
 				<div className="entry">{day_text}</div>
 				<div className="entry">{entry.notes}</div>
 				<div className="entry">{start_time.format (date_formats.timestamp)}</div>
@@ -207,16 +207,11 @@ export default class ReportsPage extends BaseControl {
 
 					</div>
 
-					<div className="two-column-table with-some-headspace">
+					<div className="two-column-table with-headspace">
 
 						<div className="one-piece-form">
 							<label htmlFor="date_range_start">Start date</label>
-							<div><DateInput id="date_range_start" value={this.state.start_date} onChange={value => 
-{								
-alert ("the value: " + value);
-									this.setState ({ start_date: value })} 
-}								
-								/></div>
+							<div><DateInput id="date_range_start" value={this.state.start_date} onChange={value => this.setState ({ start_date: value })} /></div>
 						</div>
 
 						<div className="one-piece-form">
