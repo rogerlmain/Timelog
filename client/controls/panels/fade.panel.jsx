@@ -38,7 +38,7 @@ export default class FadePanel extends BaseControl {
 	}// constructor;
 
 
-	transition_start = (event) => {
+	transition_start = event => {
 		if (event.propertyName != "opacity") return;
 		if (event.currentTarget != event.srcElement) return;
 		this.execute (this.props.beforeTransition);
@@ -49,7 +49,7 @@ export default class FadePanel extends BaseControl {
 	}/* transition_start */;
 
 
-	transition_end = (event) => {
+	transition_end = event => {
 
 		if (event.propertyName != "opacity") return;
 		if (event.currentTarget != event.srcElement) return;

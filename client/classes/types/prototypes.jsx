@@ -2,6 +2,9 @@ import { blank, space, date_formats, date_rounding, directions, empty } from "cl
 import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys } from "classes/common";
 
 
+const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
 /**** Array Helper Functions ****/
 
 
@@ -113,6 +116,7 @@ Date.elapsed = function (elapsed_time /* in minutes */) {
 Date.fromGMT = function (date_string) { return new Date (new Date (date_string).toLocaleString ()).format (date_formats.database_timestamp) }
 
 Date.month_name = (month) => { return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month] }
+Date.weekday_name = (day) => { return weekdays [day] }
 
 
 Date.validated = (date) => {
@@ -149,7 +153,12 @@ Date.increments.hours			= Date.increments.minutes * 60,
 Date.increments.days			= Date.increments.hours * 24,
 
 
-Date.prototype.get_date = function () { return new Date (this.format (date_formats.database_date)) }
+Date.prototype.get_date = function () { return new Date (this.format (date_formats.database_date)) } // removes time component
+
+Date.prototype.get_day = function () { return this.getDate () }
+Date.prototype.get_weekday = function () { return this.getDay () }
+Date.prototype.get_weekday_name = function () { return Date.weekday_name (this.get_weekday ())};
+
 Date.prototype.get_month = function () { return this.getMonth () }
 Date.prototype.get_year = function () { return this.getFullYear () }
 
@@ -162,6 +171,9 @@ Date.prototype.afternoon = Date.prototype.evening = function () { return this.ge
 
 Date.prototype.before = function (comparison) { return this - comparison < 0 }
 Date.prototype.after = function (comparison) { return this - comparison > 0 }
+
+
+Date.prototype.get_month_name = function () { return Date.month_name (this.get_month ()) }
 
 
 Date.prototype.add = function (part, amount) { 
@@ -243,8 +255,6 @@ Date.prototype.same_year = function (date_one, date_two) {
 
 
 Date.prototype.format = function (selected_format) {
-
-	const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 	let hours = this.getHours ();
 	let month = this.getMonth ();

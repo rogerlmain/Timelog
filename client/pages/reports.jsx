@@ -1,6 +1,10 @@
 import React from "react";
 
+import ReportsModel from "client/classes/models/reports";
+import OptionStorage from "client/classes/storage/options.storage";
+
 import BaseControl from "client/controls/abstract/base.control";
+import TreeList from "client/controls/lists/tree.list";
 import FadePanel from "client/controls/panels/fade.panel";
 import SelectButton from "client/controls/buttons/select.button";
 
@@ -9,10 +13,8 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import Container from "client/controls/container";
 import DateInput from "client/controls/inputs/date.input";
 
-import ReportsModel from "client/classes/models/reports";
-
-import { date_formats } from "client/classes/types/constants";
-import { get_keys, isset, is_null, is_object, not_set } from "client/classes/common";
+import { date_formats, debugging } from "client/classes/types/constants";
+import { get_keys, isset, is_null, is_object, not_array, not_set } from "client/classes/common";
 
 import "resources/styles/pages/reports.css";
 
@@ -47,6 +49,15 @@ export default class ReportsPage extends BaseControl {
 	}// state;
 
 
+	constructor (props) {
+		super (props);
+		if (debugging) console.log (`Creating reports page (${this.props.id})`);
+	}// constructor;
+
+
+	/********/
+
+
 	daily_entries () {
 
 		let current_day = null;
@@ -61,13 +72,18 @@ export default class ReportsPage extends BaseControl {
 			if (entry.total_time == 0) return;
 			if (isset (day_text)) current_day = start_time.get_date ();
 
-			return <Container key={`result_id#${entry.log_id}`}>
+			return <div className="ghost-box report-entry" key={`result_id#${entry.log_id}`}>
 				<div className="entry">{day_text}</div>
 				<div className="entry">{entry.notes}</div>
 				<div className="entry">{start_time.format (date_formats.timestamp)}</div>
 				<div className="entry">{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
 				<div className="entry">{Date.elapsed (entry.total_time)}</div>
-			</Container>
+				<Container visible={OptionStorage.can_bill ()}>
+					<input type="checkbox" onClick={() => alert (entry.entry_id)
+						// "TO DO: update the log entry in the database")
+					} />
+				</Container>
+			</div>
 
 		});
 	}// daily_entries;
@@ -146,6 +162,7 @@ export default class ReportsPage extends BaseControl {
 	}// yearly_entries;
 
 
+	// DEPRECATED - USING show_entries INSTEAD
 	list_entries () {
 
 		let entries = null;
@@ -162,6 +179,51 @@ export default class ReportsPage extends BaseControl {
 
 	}// list_entries;
 
+
+	expand_dates (items) {
+		items = Array.arrayify (items);
+		if (Array.isArray (items)) items.forEach (item => {
+
+			let item_date = new Date (item.start_time);
+
+			item.year = item_date.get_year ();
+			item.month = item_date.get_month_name ();
+			item.day = item_date.get_day ();
+			item.weekday = item_date.get_weekday_name ();
+
+		});
+		return items;
+	}// expand_dates;
+
+
+	show_entries () { 
+		return <TreeList data={this.expand_dates (this.state.entries)} nodeFields={["year", "month", "day"]} 
+
+			// itemFormatter={entry => {
+
+			// 	let start_time = new Date (entry.start_time);
+			// 	let end_time = new Date (entry.end_time);
+	
+			// 	let day_text = start_time.same_day (current_day) ? null : (isset (start_time) ? start_time.format (date_formats.full_date) : null);
+	
+			// 	return <div className="ghost-box report-entry" key={`result_id#${entry.log_id}`}>
+			// 		<div>{day_text}</div>
+			// 		<div>{entry.notes}</div>
+			// 		<div>{start_time.format (date_formats.timestamp)}</div>
+			// 		<div>{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
+			// 		<div>{Date.elapsed (entry.total_time)}</div>
+			// 		<Container visible={OptionStorage.can_bill ()}>
+			// 			<input type="checkbox" onClick={() => alert (entry.entry_id)
+			// 				// "TO DO: update the log entry in the database")
+			// 			} />
+			// 		</Container>
+			// 	</div>
+
+			// }}>
+>			 
+		</TreeList>
+	}// show_entries;
+	
 
 	show_totals () {
 
@@ -237,12 +299,23 @@ export default class ReportsPage extends BaseControl {
 
 			<div className="horizontally-centered">
 				<FadePanel id="report_results_panel" visible={has_data}>
-					<div className="five-column-grid report-grid">
+{/* 
+					<div className={`${OptionStorage.can_bill () ? "six-column-grid" : "five-column-grid"} report-grid"`}>
 						<hr className="report-rule" />
 						<Container visible={this.state.granularity < 4}>{this.list_entries ()}</Container>
 						<hr className="report-rule" />
 						{this.show_totals ()}
 					</div>
+*/}
+
+					<hr />
+
+					<Container visible={this.state.granularity < 4}>{this.show_entries ()}</Container>
+
+					<hr />
+
+					{this.show_totals ()}
+
 				</FadePanel>
 			</div>
 			

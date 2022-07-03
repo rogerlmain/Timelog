@@ -13,6 +13,10 @@ export function get_values (object) { return is_object (object) ? Object.values 
 
 export function notify () { alert (not_empty (arguments) ? multiline_text (...arguments) : "paused") }
 
+export function randomized (number) { return ((parseInt (number) * 1000) + (Math.random () * 1000)) }
+
+
+
 
 /********/
 

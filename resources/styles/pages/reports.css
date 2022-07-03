@@ -3,16 +3,12 @@
 	grid-column: 1 / -1;
 }/* #report_panel hr */
 
-div.report-grid div.entry {
-	padding: 0 1em;
-}/* div.report-grid div.entry */
-
-div.report-grid div.entry:not(:first-child) {
-	text-align: right;
-}/* div.report-grid div.entry:not(:first-child) */
-
 hr.report-rule {
 	grid-column: 1 / -1;
 	color: var(--border-color);
 	margin: 1em 0;
 }/* hr.report-rule */
+
+div.report-grid div.ghost-box > div { padding: 0 1em }
+div.report-grid div.ghost-box > div:not(:first-child) { text-align: right }
+

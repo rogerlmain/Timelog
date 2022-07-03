@@ -1,6 +1,9 @@
 /**** Containers ****/
 
 
+div.ghost-box { display: contents }
+
+
 .flex-row {
 	display: flex;
 	flex-direction: row;
@@ -397,6 +400,7 @@ div[class*="two-column-"]	{ grid-template-columns: repeat(2, min-content) }
 div[class*="three-column-"]	{ grid-template-columns: repeat(3, min-content) }
 div[class*="four-column-"]	{ grid-template-columns: repeat(4, min-content) }
 div[class*="five-column-"]	{ grid-template-columns: repeat(5, min-content) }
+div[class*="six-column-"]	{ grid-template-columns: repeat(6, min-content) }
 
 
 div[class*="-column-grid"], div[class*="-column-table"] {
