@@ -1,11 +1,10 @@
 import CompanyStorage from "classes/storage/company.storage";
-import OptionsStorage from "classes/storage/options.storage";
 import LocalStorage from "classes/local.storage";
 
 import ClientModel from "client/classes/models/client.model";
 
 import { stores } from "classes/types/constants";
-import { isset, not_set, not_empty, nested_value, null_value } from "classes/common";
+import { isset, not_set, not_empty, nested_value, nulled } from "classes/common";
 
 
 const store_name = stores.clients;
@@ -123,7 +122,7 @@ puke ();
 
 		if (isset (client_id)) {
 			let client = await ClientStorage.get_by_id (client_id);
-			result = null_value (client.billing_rate);
+			result = nulled (client.billing_rate);
 		}// if;
 
 		return result;

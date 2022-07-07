@@ -1,6 +1,9 @@
 import { blank } from "client/classes/types/constants";
 
 
+/********/
+
+
 export function boolean_value (value) { return (is_string (value) && (value.equals ("true") || value.equals ("on"))) }
 
 export function multiline_text () { return Array.from (arguments).join ("\n") }
@@ -14,8 +17,6 @@ export function get_values (object) { return is_object (object) ? Object.values 
 export function notify () { alert (not_empty (arguments) ? multiline_text (...arguments) : "paused") }
 
 export function randomized (number) { return ((parseInt (number) * 1000) + (Math.random () * 1000)) }
-
-
 
 
 /********/
@@ -112,6 +113,7 @@ export function not_null (value) { return !is_null (value) }
 export function not_object (value, include_arrays = false) { return !is_object (value, include_arrays) }
 export function not_undefined (value) { return !is_undefined (value) }
 
+export function nulled (value) { return (null_or_undefined (value)) ? null : value }
 export function null_value (value) { return ((value === 0) || (value === blank) || not_set (value)) ? null : value }
 export function null_or_undefined (value) { return (is_null (value) || (value == undefined)) }
 

@@ -34,7 +34,7 @@ import ReportsModel from "./classes/models/reports";
 //import ProjectSelector from "client/controls/selectors/project.selector";
 
 
-const version = "1.6";
+const version = "1.6.1";
 
 
 class Main extends BaseControl {

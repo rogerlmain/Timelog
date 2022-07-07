@@ -7,7 +7,7 @@ import OptionsStorage from "classes/storage/options.storage";
 
 import ProjectModel from "client/classes/models/project.model";
 
-import { isset, not_set, not_null, nested_object, nested_value, null_value, not_array, is_null } from "classes/common";
+import { isset, not_set, not_null, nested_value, null_value, not_array, is_null } from "classes/common";
 
 
 const store_name = constants.stores.projects;

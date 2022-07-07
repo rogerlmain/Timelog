@@ -7,6 +7,7 @@ import ExplodingPanel from"client/controls/panels/exploding.panel";
 import EyecandyPanel from"client/controls/panels/eyecandy.panel";
 import FadePanel from"client/controls/panels/fade.panel";
 
+import CompanyStorage from "client/classes/storage/company.storage";
 import LoggingStorage from"client/classes/storage/logging.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
@@ -24,7 +25,6 @@ import { Break } from "client/controls/html/components";
 import { MainContext } from "client/classes/types/contexts";
 
 import "resources/styles/pages/logging.css";
-import CompanyStorage from "client/classes/storage/company.storage";
 
 
 const ranges = {
@@ -64,14 +64,22 @@ export default class LoggingPage extends BaseControl {
 
 
 	constructor (props) { 
+
 		super (props);
+
 		this.state.current_entry = LoggingStorage.current_entry ();
 
-		if (isset (this.state.current_entry)) this.state.current_entry.end_time = this.end_time ();
+		let project_id = nested_value (this.state.current_entry, "project_id");
+		let client_id = nested_value (this.state.current_entry, "client_id");
 
-		ProjectStorage.billing_rate (this.props.projectId, this.props.clientId).then (result => this.setState ({ billing_rate: result }));
+		if (isset (this.state.current_entry)) this.state.current_entry.end_time = this.end_time ();
+		ProjectStorage.billing_rate (project_id, client_id).then (result => this.setState ({ billing_rate: result }));
 		if (debugging) console.log ("logging page created");
+
 	}// constructor;
+
+
+	/********/
 
 
 	company_id = () => 	{ return null_value (nested_value (this.state.current_entry, "company_id")) }
@@ -256,7 +264,7 @@ export default class LoggingPage extends BaseControl {
 				<label>Elapsed</label>
 				{this.link_cell (elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)) }
 				
-				<Container visible={OptionsStorage.can_bill ()}>
+				<Container visible={OptionsStorage.can_bill () && (this.state.billing_rate > 0)}>
 
 					<Break />
 
