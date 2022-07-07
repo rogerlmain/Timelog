@@ -162,7 +162,7 @@ export default class ReportsPage extends BaseControl {
 	}// yearly_entries;
 
 
-	// DEPRECATED - USING show_entries INSTEAD
+	// DEPRECATED - REVISE FOR OTHER LINEAR REPORTS
 	list_entries () {
 
 		let entries = null;
@@ -180,6 +180,9 @@ export default class ReportsPage extends BaseControl {
 	}// list_entries;
 
 
+	/**** Tree Report ****/
+
+
 	expand_dates (items) {
 		items = Array.arrayify (items);
 		if (Array.isArray (items)) items.forEach (item => {
@@ -193,36 +196,70 @@ export default class ReportsPage extends BaseControl {
 
 		});
 		return items;
-	}// expand_dates;
+	}/* expand_dates */;
 
 
-	show_entries () { 
+	report_tree = () => {
+
+		let can_bill = OptionStorage.can_bill ();
+		let column_style = { gridTemplateColumns: "6em 6em 25em 6em" }
+
+		if (can_bill) column_style.gridTemplateColumns += " 6em 2em"
+
 		return <TreeList data={this.expand_dates (this.state.entries)} nodeFields={["year", "month", "day"]} 
 
-			// itemFormatter={entry => {
+			glyph={<div className="tree-glyph" />}
 
-			// 	let start_time = new Date (entry.start_time);
-			// 	let end_time = new Date (entry.end_time);
-	
-			// 	let day_text = start_time.same_day (current_day) ? null : (isset (start_time) ? start_time.format (date_formats.full_date) : null);
-	
-			// 	return <div className="ghost-box report-entry" key={`result_id#${entry.log_id}`}>
-			// 		<div>{day_text}</div>
-			// 		<div>{entry.notes}</div>
-			// 		<div>{start_time.format (date_formats.timestamp)}</div>
-			// 		<div>{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
-			// 		<div>{Date.elapsed (entry.total_time)}</div>
-			// 		<Container visible={OptionStorage.can_bill ()}>
-			// 			<input type="checkbox" onClick={() => alert (entry.entry_id)
-			// 				// "TO DO: update the log entry in the database")
-			// 			} />
-			// 		</Container>
-			// 	</div>
+			listStyle={column_style}
 
-			// }}>
->			 
+			format={entry => {
+			
+				let start_time = new Date (entry.start_time);
+				let end_time = new Date (entry.end_time);
+
+				let billed = isset (entry.total_due);
+
+				return <Container key={this.create_key ("array_list")}>
+
+					<div>{start_time.format (date_formats.timestamp)}</div>
+					<div>{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
+					<div className="tree-notes">{entry.notes}</div>
+					<div>{Date.elapsed (entry.total_time)}</div>
+
+					<Container visible={can_bill}>
+
+						<div style = {{
+							display: "flex",
+							color: (billed ? null : "var(--disabled-color)"),
+							justifyContent: (billed ? "flex-end" : "center"),
+						}}>{billed ? `$${entry.total_due}` : <>&mdash;</>}</div>
+
+						<div style={{ justifyContent: "center" }}>
+							<input type="checkbox" disabled={!billed} onClick={() => alert (entry.entry_id)
+								// "TO DO: update the log entry in the database")
+							} />
+						</div>
+
+					</Container>
+
+				</Container>
+
+			}}
+			
+			footer={entries => {
+				return <Container>
+					<div style={{ gridColumn: "1 / 4"}} />
+					<div>[total hours]</div>
+					<div>[total cost]</div>
+				</Container>
+			}}>
+
 		</TreeList>
-	}// show_entries;
+
+	}/* report_tree */;
+
+
+	/********/
 	
 
 	show_totals () {
@@ -310,7 +347,7 @@ export default class ReportsPage extends BaseControl {
 
 					<hr />
 
-					<Container visible={this.state.granularity < 4}>{this.show_entries ()}</Container>
+					<Container visible={this.state.granularity < 4}>{this.report_tree ()}</Container>
 
 					<hr />
 

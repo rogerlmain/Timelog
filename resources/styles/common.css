@@ -466,14 +466,32 @@ div.form-table label {
 /**** Proving Ground ****/
 
 
-#testthing::before {
-	content: "some content";
-}
-				
-#testthing::after {
-	content: "more content";
-}
-				
+div.tree-style {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}/* div.tree-style */
 
 
+div.tree-branch {
+	display: flex;
+	flex-direction: column;
+}/* div.tree-branch */
+
+
+div.tree-list { display: grid }
+
+
+div.tree-list > * { 
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}/* div.tree-list > * */
+
+
+div.tree-list div.tree-notes {
+	justify-content: flex-start;
+	white-space: break-spaces;
+	padding-left: 1em;
+}/* div.tree-list div.tree-notes */
 

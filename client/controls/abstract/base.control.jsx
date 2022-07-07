@@ -13,7 +13,13 @@ import { get_keys, is_array, is_null, jsonify, not_array } from "classes/common"
 import SettingsStorage from "client/classes/storage/settings.storage";
 
 
+
+const random_factor = 1000;
+
+
+
 export default class BaseControl extends React.Component {
+
 
 	constructor (props, state = {}) {
 		super (props);
@@ -25,13 +31,14 @@ export default class BaseControl extends React.Component {
 
 	
 	animation_speed = () => { return this.props.speed ?? SettingsStorage.animation_speed () ?? default_settings.animation_speed }
+
 	children = props => { return is_array (props.children) ? props.children : [props.children] }
 	context_item = (name) => { return common.isset (this.context) ? this.context [name] : null }
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
 
-	same_element (first_element, second_element) { return jsonify (first_element == jsonify (second_element)) }
 	different_element  (first_element, second_element) { return !this.same_element (first_element, second_element) }
-
+	same_element (first_element, second_element) { return jsonify (first_element == jsonify (second_element)) }
+	
 
 	// Like forceUpdate except calls shouldComponentUpdate
 	forceRefresh = () => { this.setState (this.state) }
@@ -45,6 +52,9 @@ export default class BaseControl extends React.Component {
 		used_properties.forEach (property => delete properties [property]);
 		return properties;
 	}// filtered_properties;
+
+
+	create_key = prefix => { return `${prefix}_${(new Date ().getTime () * random_factor) + (Math.random () * random_factor)}` }
 
 
 	/********/

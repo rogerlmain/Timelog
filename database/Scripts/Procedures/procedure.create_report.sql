@@ -16,6 +16,7 @@ create procedure create_report (
 		log.start_time,
         log.end_time,
         timestampdiff (second, log.start_time, log.end_time) as total_time,
+        (timestampdiff (second, log.start_time, log.end_time) / 3600) * get_rate (project_id) as total_due,
         log.notes
 	from
 		logging as log

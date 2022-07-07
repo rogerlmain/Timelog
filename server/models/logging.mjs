@@ -22,6 +22,7 @@ class LoggingData extends Database {
 			parseInt (fields.client_id),
 			parseInt (fields.project_id),
 			fields.notes,
+			fields.billed.equals ("true"),
 			fields.time_stamp
 		];
 

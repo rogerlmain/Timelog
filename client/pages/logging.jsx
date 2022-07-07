@@ -18,7 +18,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import LoggingModel from "client/classes/models/logging";
 
 import { blank, date_formats, date_rounding, debugging, granularity_types, space } from "client/classes/types/constants";
-import { isset, is_empty, nested_value, not_set, multiline_text } from "client/classes/common";
+import { isset, is_empty, nested_value, not_set, multiline_text, null_value } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
 import { MainContext } from "client/classes/types/contexts";
@@ -74,10 +74,10 @@ export default class LoggingPage extends BaseControl {
 	}// constructor;
 
 
-	company_id = () => 	{ return isset (this.state.current_entry) ? this.state.current_entry.company_id : null }
-	client_id = () => 	{ return isset (this.state.current_entry) ? this.state.current_entry.client_id : null }
-	project_id = () => 	{ return isset (this.state.current_entry) ? this.state.current_entry.project_id : null }
-	notes = () => 		{ return isset (this.state.current_entry) ? this.state.current_entry.notes : null }
+	company_id = () => 	{ return null_value (nested_value (this.state.current_entry, "company_id")) }
+	client_id = () => 	{ return null_value (nested_value (this.state.current_entry, "client_id")) }
+	project_id = () => 	{ return null_value (nested_value (this.state.current_entry, "project_id")) }
+	notes = () => 		{ return null_value (nested_value (this.state.current_entry, "notes")) }
 
 	logged_in = () => { return isset (this.state.current_entry) && isset (this.state.current_entry.start_time) }
 	logged_out = () => { return !this.logged_in () }

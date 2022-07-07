@@ -17,6 +17,8 @@
 	--error-color: #C00;
 	--warning-color: #A00;
 
+	--disabled-color: #D0D0D0;
+
 	--error-highlight: #FFFAFA;
 
 	--double-margin: 2em;
@@ -26,14 +28,12 @@
 	--double-height: 2em;
 	--full-height: 3em;
 
-	--single-height: var(--standard-height);
+	--single-height:var(--standard-height);
 
 	--standard-column-gap: 0.5em;
 	--standard-row-gap: 0.2em;
 
-	--disabled-field: #EAE8E8;
-
-}/* root */
+	--disabled-field: #EAE8E8;}/* root */
 
 
 /**** Globals ****/

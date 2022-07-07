@@ -13,6 +13,7 @@ import SelectList from "client/controls/lists/select.list";
 
 import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
+import OptionStorage from "client/classes/storage/options.storage";
 
 import MasterPanel from "client/master";
 
@@ -21,10 +22,12 @@ import SignupPage from "pages/sign.up";
 
 import { createRoot } from "react-dom/client";
 
-import { debugging, tracing, globals } from "client/classes/types/constants";
+import { debugging, tracing, globals, date_formats, dash } from "client/classes/types/constants";
 import { isset, is_empty, not_set, nested_value, notify, numeric_value } from "client/classes/common";
 
 import { MainContext } from "client/classes/types/contexts";
+import TreeList from "./controls/lists/tree.list";
+import ReportsModel from "./classes/models/reports";
 
 
 //Special Guest Import
@@ -157,22 +160,10 @@ class Main extends BaseControl {
 /**** FOR DEBUGGING ONLY *****/
 
 
-class AThing extends BaseControl {
-
-	constructor (props) {
-		super (props);
-		console.log ("athing created");
-	}
-
-}
-
-
 class QuickTest extends BaseControl {
 
-	render () { 
-		return <div className="outlined">Waiting to test something</div>
-	}// render;
-
+	render () { return <div>I got nothin'</div> }
+	
 }// QuickTest;
 
 
@@ -181,13 +172,13 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
-	if (debugging) console.log (`Debug test: #52`);
+	if (debugging) console.log (`Debug test: #53`);
 
 	createRoot (document.getElementById ("main_page")).render (<Main id="timelog_main_page" />);
 
-//	Special Guest Render	
-//	ReactDOM.render (<QuickTest />, document.getElementById ("main_page"));
-//	ReactDOM.render (<ResizePanelTest />, document.getElementById ("main_page"));
-//	ReactDOM.render (<ExplodingPanelTest />, document.getElementById ("main_page"));
-
+	//	Special Guest Render	
+	// createRoot (document.getElementById ("main_page")).render (<QuickTest />);
+	// createRoot (document.getElementById ("main_page")).render (<ResizePanelTest />);
+	// createRoot (document.getElementById ("main_page")).render (<ExplodingPanelTest />);
+	
 }// document.ready;

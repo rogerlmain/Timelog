@@ -9,6 +9,7 @@ create procedure save_entry (
     client_id	integer,
 	project_id	integer,
     notes		text,
+    billed		bit,
     time_stamp	datetime
 ) begin
 
@@ -30,6 +31,7 @@ create procedure save_entry (
             client_id,
 			project_id,
             notes,
+            billed,
 			time_stamp,
 			null
 		);
@@ -38,7 +40,8 @@ create procedure save_entry (
 
 		update logging as log set
 			end_time = time_stamp,
-            notes = coalesce(notes, log.notes)
+            notes = coalesce(notes, log.notes),
+            billed = coalesce(billed, log.billed)
 		where
 			id = last_entry;
 

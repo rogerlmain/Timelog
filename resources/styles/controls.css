@@ -20,3 +20,26 @@ div.currency-input > div {
 	z-index: 1;
 	align-items: center;
 }/* div.currency-input > div */
+
+
+/********/
+
+
+div.arrow-glyph {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	height: 100%;
+}/* div.arrow-glyph */
+
+
+div.tree-glyph {
+	border: solid 0.4em transparent;
+	border-right: none;
+	border-left: solid 0.7em #444;
+}/* div.tree-glyph */
+
+
+/********/
+
+

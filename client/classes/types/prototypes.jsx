@@ -383,12 +383,16 @@ HTMLElement.prototype.availableHeight = function () {
 }// availableHeight;
 
 
-HTMLElement.prototype.freeze = function () {
-	let dimensions = { width: this.offsetWidth, height: this.offsetHeight }
-	if (dimensions.width != null) this.style.width = `${dimensions.width}px`;
-	if (dimensions.height != null) this.style.height = `${dimensions.height}px`;
-	return dimensions;
+HTMLElement.prototype.freeze = function (height = false, width = false) {
+	if (width) this.style.width = `${this.offsetWidth}px`;
+	if (height) this.style.height = `${this.offsetHeight}px`;
 }// freeze;
+
+
+HTMLElement.prototype.thaw = function (height = false, width = false) {
+	if (width) this.style.width = null;
+	if (height) this.style.height = null;
+}// thaw;
 
 
 HTMLElement.prototype.getNumber = function (attribute) {

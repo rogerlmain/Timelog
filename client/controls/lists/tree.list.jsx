@@ -1,23 +1,31 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 
+import Container from "client/controls/container";
+
 import { debugging } from "client/classes/types/constants";
-import { isset, is_array, is_empty, is_null, is_object, nested_value, not_array, not_function, not_null, not_object, not_set, pause, randomized } from "client/classes/common";
+
+import { isset, is_array, is_empty, is_function, is_null, is_object, nested_value, not_array, not_function, not_null, not_object, not_set, pause, randomized } from "client/classes/common";
+
+import "resources/styles/controls.css";
+
+
+const TreeListContext = React.createContext (null);
+
+const benchmark_distance = 200;
 
 
 class TreeView extends BaseControl {
 
-
 	static defaultProps = { 
 		data: null,
 		level: 0,
-	 }// defaultProps;
-	 
+	}// defaultProps;
 
 	render () {
 
 		if (is_object (this.props.data)) return <ObjectTree data={this.props.data} level={this.props.level} speed={this.props.animation_speed} />
-		if (is_array (this.props.data)) return <ArrayTree data={this.props.data} level={this.props.level} />
+		if (is_array (this.props.data)) return <ArrayTree data={this.props.data} level={this.props.level}  />
 
 		return isset (this.props.data) ? <div>{this.props.data}</div> : null;
 
@@ -32,11 +40,18 @@ class TreeView extends BaseControl {
 class TreeNode extends BaseControl {
 
 	static defaultProps = {
+
 		header: null,
 		data: null,
+
 		level: 0,
 		index: 0,
+
 	}// defaultProps;
+
+
+	static contextType = TreeListContext;
+
 
 	state = { opened: false }
 
@@ -52,43 +67,46 @@ class TreeNode extends BaseControl {
 
 		node.addEventListener ("transitionend", event => {
 			if (event.propertyName != "height") return;
-			if (node.offsetHeight == node.scrollHeight) node.style.height = null;
+			if (node.offsetHeight == node.children [0].scrollHeight) node.style.height = null;
 		});
 
 	}// componentDidMount;
 
 
 	render () {
+
+		let node_height = nested_value (this.node.current, "children", 0, "scrollHeight") ?? 0;
+
 		return <div>
 			<div className="two-column-table">
 				<div className="list-opener"
 
-					style={{ 
+					style={{
 						marginLeft: `${this.props.level}em`,
-						transition: `transform ${this.animation_speed ()}ms ease-in-out`,
+						transition: `transform ${Math.floor (this.animation_speed () / 2)}ms ease-in-out`,
 						transform: `rotate(${this.state.opened ? "90deg" : 0})`,
 						cursor: `pointer`,
 					}}
 					
 					onClick={() => {
-
-						let node = this.node.current;
-
-						if (this.state.opened) node.style.height = `${node.offsetHeight}px`;
+						if (this.state.opened) this.node.current.style.height = this.node.current.children [0].offsetHeight;
 						setTimeout (() => this.setState ({ opened: !this.state.opened }));
-					
 					}}>
 					
-					&gt;
+					<div className="arrow-glyph">
+ 						<Container visible={not_set (this.context.glyph)}>&gt;</Container>
+						<Container visible={isset (this.context.glyph)}>{this.context.glyph}</Container>
+					</div>
 					
 				</div>
 				<div>{this.props.header}</div>
 			</div>
-			<div ref={this.node} style={{
-				height: (this.state.opened ? `${nested_value (this.node.current, "scrollHeight")}px` : 0),
-				transition: `height ${this.animation_speed ()}ms ease-in-out`,
+			<div ref={this.node} className="tree-style" style={{
+				height: (this.state.opened ? `${node_height}px` : 0),
+				transition: `height ${Math.floor (this.animation_speed () * (node_height / benchmark_distance))}ms ease-in-out`,
 				overflow: `hidden`,
 			}}><TreeView data={this.props.data} level={this.props.level + 1} /></div>
+
 		</div>
 	}// render;
 
@@ -96,7 +114,6 @@ class TreeNode extends BaseControl {
 
 
 class ObjectTree extends BaseControl {
-
 
 	static defaultProps = {
 		data: null,
@@ -114,7 +131,8 @@ class ObjectTree extends BaseControl {
 			result.push (<TreeNode key={Math.random () * 1000} header={key} index={index} data={value} level={this.props.level} />);
 		}// for;
 
-		return result;
+		return <div id="fudfud" className="tree-branch">{result}</div>
+		
 
 	}// render;
 	
@@ -126,14 +144,14 @@ class ObjectTree extends BaseControl {
 
 class ArrayTree extends BaseControl {
 
-	static defaultProps = {
 
+	static defaultProps = {
 		data: null,
 		level: 0,
-
-		itemFormatter: null,
-
 	}// defaultProps;
+
+
+	static contextType = TreeListContext;
 
 
 	/********/
@@ -170,38 +188,41 @@ class ArrayTree extends BaseControl {
 	}/* object_list */;
 
 
+	default_format = (item, level) => {
+				
+		let values = [];
+
+		let style = { 
+			display: `inline-grid`,
+			gridTemplateColumns: `repeat(${nested_value (this.props, "children.length") ?? 1}, min-content)`,
+			columnGap: `1em`,
+			marginLeft: `${level}em` 
+		}// style;
+
+		if (is_object (item)) values.push (this.object_list (item))
+		else if (is_array (item)) values.push (this.array_list (item))
+		else values.push (item);
+
+		return <div style={style} key={randomized (new Date ().getTime ())}>{values}</div>
+
+	}// default_format;
+
+
 	/********/
 
 
 	render () {
 
 		let result = null;
+		let styles = { ...this.context.list_style, marginLeft: `${this.props.level + 1}em` }
 
 		for (let item of this.props.data) {
-
-			let value = isset (this.props.itemFormatter) ? this.props.itemFormatter (item) : null;
-
-			if (is_null (value)) {
-				
-				value = [];
-
-				if (is_object (item)) value.push (this.object_list (item))
-				else if (is_array (item)) value.push (this.array_list (item))
-				else value.push (value);
-
-			}// if;
-
 			if (is_null (result)) result = [];
-
-			result.push (<div style={{ 
-				marginLeft: `${this.props.level}em`,
-				// height: 0,
-				// overflow: "hidden",
-			}} key={randomized (new Date ().getTime ())}>{value}</div>);
+			result.push (is_function (this.context.format) ? this.context.format (item, this.props.level) : this.default_format (item, this.props.level));
 		}// for;
 
-		return result;
-
+		return <div className="tree-list" style={styles}>{result}</div>			
+			
 	}// render;
 
 
@@ -215,8 +236,15 @@ export default class TreeList extends BaseControl {
 
 
 	static defaultProps = {
+
 		data: null,
 		nodeFields: null,
+
+		format: null,
+
+		glyph: null,
+		listStyle: null,
+
 	}// defaultProps;
 
 
@@ -228,7 +256,7 @@ export default class TreeList extends BaseControl {
 
 		if (not_null (props.data) && not_object (props.data) && not_array (props.data)) throw "\"data\" must be of type Object or Array.";
 		if (not_null (props.nodeFields) && not_array (props.nodeFields)) throw "\"nodeFields\" must be of type Array.";
-		if (not_null (props.itemFormatter) && not_function (props.itemFormatter)) throw "\"itemFormatter\" must be a function.";
+		if (not_null (props.format) && not_function (props.format)) throw "\ormat\" must be a function.";
 
 	}// constructor;
 
@@ -275,6 +303,18 @@ export default class TreeList extends BaseControl {
 	/********/
 
 
-	render () { return <TreeView data={this.sorted_data (this.props.data, this.props.nodeFields)} level={0} /> }
+	render () { 
+		return <TreeListContext.Provider 
+
+			value={{
+				format: this.props.format,
+				list_style: this.props.listStyle,
+				glyph: this.props.glyph,
+			}}>
+
+			<TreeView level={0} data={this.sorted_data (this.props.data, this.props.nodeFields)} />
+
+		</TreeListContext.Provider>
+	}// render;
 
 }// TreeList;
