@@ -17,7 +17,8 @@
 	--error-color: #C00;
 	--warning-color: #A00;
 
-	--disabled-color: #D0D0D0;
+	--disabled-color: #989898;
+	--disabled-border: #4C4C4C;
 
 	--error-highlight: #FFFAFA;
 
@@ -33,7 +34,17 @@
 	--standard-column-gap: 0.5em;
 	--standard-row-gap: 0.2em;
 
-	--disabled-field: #EAE8E8;}/* root */
+	--disabled-field: #EAE8E8;
+}/* root */
+
+
+/**** Disabled Items ****/
+
+
+*.disabled, *.disabled * {
+	border-color: var(--disabled-border) !important;
+	color: var(--disabled-color) !important;
+}/* *.disabled, *.disabled * */
 
 
 /**** Globals ****/
@@ -60,6 +71,9 @@
 }/* *:focus */
 
 
+/**** HTML Root Styles ****/
+
+
 html, body, .full-screen, .full-size {
 	margin: 0;
 	padding: 0;
@@ -68,6 +82,9 @@ html, body, .full-screen, .full-size {
 
 html, body, .full-screen, .full-size, .full-width	{ width: 100% }
 html, body, .full-screen, .full-size, .full-height	{ height: 100% }
+
+
+/**** Anchors ****/
 
 
 a {
@@ -83,7 +100,7 @@ a:hover {
 }/* a:hover */
 
 
-/********/
+/**** Line Breaks ****/
 
 
 br.half 	{ line-height: 0.5em }
@@ -92,7 +109,7 @@ br.double	{ line-height: 2em }
 br.triple	{ line-height: 3em }
 
 
-/********/
+/**** Body ****/
 
 
 body {
@@ -100,6 +117,9 @@ body {
 	padding: 1em;
 	/* overflow-y: scroll; */
 }/* body */
+
+
+/**** Buttons ****/
 
 
 button, div, *.unselectable {
@@ -148,6 +168,9 @@ button, *.unselectable {
     -ms-user-select: none;		/* Microsoft */
     user-select: none;			/* Everyone else */
 }/* button, unselectable */
+
+
+/**** Inputs ****/
 
 
 input, select, div.bordered {
