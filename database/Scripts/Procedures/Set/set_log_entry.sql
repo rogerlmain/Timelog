@@ -1,15 +1,15 @@
 start transaction;
 
 drop procedure if exists save_entry;
+drop procedure if exists set_log_entry;
 
 delimiter ??
 
-create procedure save_entry (
+create procedure set_log_entry (
 	account_id	integer, 
     client_id	integer,
 	project_id	integer,
     notes		text,
-    billed		bit,
     time_stamp	datetime
 ) begin
 
@@ -31,7 +31,7 @@ create procedure save_entry (
             client_id,
 			project_id,
             notes,
-            billed,
+            false,
 			time_stamp,
 			null
 		);
@@ -40,8 +40,7 @@ create procedure save_entry (
 
 		update logging as log set
 			end_time = time_stamp,
-            notes = coalesce(notes, log.notes),
-            billed = coalesce(billed, log.billed)
+            notes = coalesce(notes, log.notes)
 		where
 			id = last_entry;
 

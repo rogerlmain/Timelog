@@ -4,10 +4,11 @@ import Calendar from "react-calendar";
 import BaseControl from "client/controls/abstract/base.control";
 
 import FadePanel from "client/controls/panels/fade.panel";
+import PopupPanel from "client/controls/panels/popup.panel";
 
 import calendar_glyph from "resources/images/glyphs/calendar.glyph.svg";
 
-import { is_null, notify } from "client/classes/common";
+import { is_null, notify, not_set } from "client/classes/common";
 import { date_formats } from "client/classes/types/constants";
 
 import "resources/styles/controls/date.input.css";
@@ -18,6 +19,7 @@ export default class DateInput extends BaseControl {
 
 	staging_panel = React.createRef ();
 	input_field = React.createRef ();
+	popup_calendar = React.createRef ();
 
 
 	state = { 
@@ -28,6 +30,7 @@ export default class DateInput extends BaseControl {
 
 	static defaultProps = { 
 		id: "date_field",
+		disabled: false,
 		onChange: null,
 	}// defaultProps;
 
@@ -44,26 +47,49 @@ export default class DateInput extends BaseControl {
 	/********/
 
 
+	componentDidMount () {
+		if (not_set (this.popup_calendar.current)) return;
+		this.popup_calendar.current.onClick = event => {alert ("clicked"); event.stopPropagation (); }
+	}// componentDidMount;
+
+
+dont = event => {
+	event => event.preventDefault ();
+	event => event.stopPropagation ();
+}	
+
+
 	render () {
 		return <div className="date-input">
 
-			<FadePanel id={`${this.props.id}_fade_panel`} visible={this.state.calendar_visible}>
+			<div id={this.props.id} style={{ cursor: this.props.disabled ? "default" : "pointer" }} 
+			
+				onClick={this.props.disabled ? null : event => {
+					this.setState ({ calendar_visible: true });
+					event.stopPropagation ();
+				}}>
+
+				<div id={`${this.props.id}_display_div`} name={this.props.id} className={`bordered ${this.props.disabled ? "disabled" : null}`} style={{ 
+					display: "inline-flex",
+					height: "2.05em",
+					padding: "0 3em 0 0.7em",
+					alignItems: "center",
+				}}>{this.selected_date ()}</div>
+
+				<FadePanel id={`${this.props.id}_glyph_fade_panel`} visible={!this.props.disabled}>
+					<img src={calendar_glyph} />
+				</FadePanel>
+
+			</div>
+
+			<PopupPanel className="calendar" visible={this.state.calendar_visible && !this.props.disabled}>
 				<div className="calendar">
 					<Calendar id="select_calendar" calendarType="US" onChange={selected_date => this.setState ({ 
 						calendar_visible: false,
 						value: selected_date,
-					}, () => this.props.onChange (selected_date) )} />
+					}, () => this.props.onChange (selected_date))} />
 				</div>
-			</FadePanel>
-
-			<div id={this.props.id} name={this.props.id} className="bordered" style={{ 
-				display: "inline-flex",
-				height: "2.05em",
-				padding: "0 3em 0 0.7em",
-				alignItems: "center",
-			}}>{this.selected_date ()}</div>
-
-			<img src={calendar_glyph} onClick={() => this.setState ({ calendar_visible: true })} />
+			</PopupPanel>
 
 		</div>
 	}// render;

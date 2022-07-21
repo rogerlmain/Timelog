@@ -38,39 +38,24 @@
 
 	</style>
 
+
+	<script type="text/javascript">
+
+		load_handler = () => document.querySelectorAll ("[onload]:not(body)").forEach (item => item.onload ());
+		click_handler = () => {}//window.dispatchAll ("onDesktopClick");
+
+	</script>
+
+
 </head>
 
 
-<body>
+<body onclick="click_handler ()" onload="load_handler ()">
+
 	<div id="program_panel" class="full-screen inset">
-
-		<div class="two-column-grid" style="display: none">
-
-			<div>
-
-				<div>Fade Panel</div>
-				<div id="fade_panel_test"></div>
-
-				<div>Resize Panel</div>
-				<div id="resize_panel_test"></div>
-
-			</div>
-
-			<div>
-
-				<div>Exploding Panel</div>
-				<div id="exploding_panel_test"></div>
-
-				<div>Slideshow Panel</div>
-				<div id="slideshow_panel_test"></div>
-
-			</div>
-
-		</div>
-
-		<div id="main_page" class="full-screen" style="display: flex; justify-content: center;"></div>
-
+		<div id="main_page" class="full-size" style="display: flex; justify-content: center;"></div>
 	</div>
+
 </body>
 
 

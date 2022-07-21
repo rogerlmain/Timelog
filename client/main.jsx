@@ -7,13 +7,13 @@ import React from "react";
 
 import Container from "controls/container";
 
-import BaseControl from "client/controls/abstract/base.control";
-import ExplodingPanel from "client/controls/panels/exploding.panel";
-import SelectList from "client/controls/lists/select.list";
+import BaseControl		from "client/controls/abstract/base.control";
+import ExplodingPanel	from "client/controls/panels/exploding.panel";
+import SelectList 		from "client/controls/lists/select.list";
+import ReportGrid 		from "client/controls/lists/report.grid";
 
 import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
-import OptionStorage from "client/classes/storage/options.storage";
 
 import MasterPanel from "client/master";
 
@@ -22,19 +22,29 @@ import SignupPage from "pages/sign.up";
 
 import { createRoot } from "react-dom/client";
 
-import { debugging, tracing, globals, date_formats, dash } from "client/classes/types/constants";
-import { isset, is_empty, not_set, nested_value, notify, numeric_value } from "client/classes/common";
+import { debugging, tracing, globals, date_formats } from "client/classes/types/constants";
+import { isset, is_empty, not_set, nested_value, notify, numeric_value, is_null, warning } from "client/classes/common";
 
 import { MainContext } from "client/classes/types/contexts";
-import TreeList from "./controls/lists/tree.list";
-import ReportsModel from "./classes/models/reports";
 
+import { BillingCheckbox } from "client/controls/abstract/input.control";
+
+
+// Guest Imports
+import ReportsModel from "./classes/models/reports";
+import OptionStorage from "./classes/storage/options.storage";
+
+import "resources/styles/forms.css";
+
+// import ReportsModel from "./classes/models/reports";
+// import TreeGrid from "client/controls/lists/tree.grid";
+// import OptionStorage from "./classes/storage/options.storage";
 
 //Special Guest Import
 //import ProjectSelector from "client/controls/selectors/project.selector";
 
 
-const version = "1.6.1";
+const version = "1.6.2";
 
 
 class Main extends BaseControl {
@@ -114,34 +124,38 @@ class Main extends BaseControl {
 		return <MainContext.Provider value={{ company_id: numeric_value (this.state.company_id), main_page: this }}>
 			<div ref={this.reference} className="vertically-spaced-out main-page">
 
-				<div className="vertically-centered horizontally-spaced-out page-header">
+				<div>
 
-					<div className="program-title">
-						<div className="title">RMPC Timelog</div>
-						<div className="tagline">Make every second count</div>
+					<div className="horizontally-spaced-out page-header">
+
+						<div className="program-title">
+							<div className="title">RMPC Timelog</div>
+							<div className="tagline">Make every second count</div>
+						</div>
+
+						{this.company_header ()}
+
 					</div>
-
-					{this.company_header ()}
-
-				</div>
-				
-				<div className="full-screen">
 					
-					<ExplodingPanel id="main_panel">
+					<div className="full-width">
+						
+						<ExplodingPanel id="main_panel">
 
-						<Container id="master_panel_container" visible={active_panel == "master_panel"}>
-							<MasterPanel id="master_panel" parent={this} companyId={this.state.company_id} />
-						</Container>
+							<Container id="master_panel_container" visible={active_panel == "master_panel"}>
+								<MasterPanel id="master_panel" parent={this} companyId={this.state.company_id} />
+							</Container>
 
-						<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
-							<SignupPage parent={this} />
-						</Container>
+							<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
+								<SignupPage parent={this} />
+							</Container>
 
-						<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
-							<SigninPage parent={this} />
-						</Container>
+							<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
+								<SigninPage parent={this} />
+							</Container>
 
-					</ExplodingPanel>
+						</ExplodingPanel>
+
+					</div>
 
 				</div>
 
@@ -160,10 +174,101 @@ class Main extends BaseControl {
 /**** FOR DEBUGGING ONLY *****/
 
 
+/*********/
+
+
 class QuickTest extends BaseControl {
 
-	render () { return <div>I got nothin'</div> }
-	
+
+	format_data = data => {
+
+		let result = null;
+
+		if (not_set (data)) return result;
+
+		data.forEach (item => {
+
+			let start_time = Date.validated (item.start_time);
+			let end_time = Date.validated (item.end_time);
+
+			let data_item = {
+				year: start_time.get_year (),
+				month: start_time.get_month_name (),
+				day: `${start_time.get_weekday_name ()} ${start_time.get_appended_day ()}`,
+				start_time: start_time.format (date_formats.timestamp),
+				end_time: end_time.same_day (start_time) ? end_time.format (date_formats.timestamp) : end_time.format (date_formats.report_datetime),
+				notes: item.notes,
+				total_time: item.total_time,
+				log_id: item.log_id,
+			}// data_item;
+
+			if (OptionStorage.can_bill ()) data_item = { ...data_item,
+				total_due: item.total_due,
+				rate: item.rate,
+			}// if;
+
+			if (is_null (result)) result = [];
+			result.push (data_item);
+
+		});
+
+		this.setState ({ data: result });
+
+	}/* format_data */;
+
+
+	componentDidMount () {
+		ReportsModel.fetch_by_project (163).then (data => this.format_data (data));
+	}// componentDidMount;
+
+
+	render () {
+		return <div>
+			<ReportGrid data={this.state.data} categories={["year", "month", "day"]}
+
+				header={data => {
+					return <Container inline={false} className="report-header">
+						<div>Start time</div>
+						<div>End time</div>
+						<div>Notes</div>
+						<div>Total time</div>
+						<Container visible={OptionStorage.can_bill ()}>{/*  && (data [0].rate > 0)}> */}
+							<div>Total due</div>
+							<div>Rate</div>
+							<div>Billed</div>
+						</Container>
+					</Container>
+				}}
+
+				row={data => {
+					return <Container inline={false} className={`report-grid ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : null}`} style={{ cursor: "pointer" }}>
+						
+						<div className="right-aligned-text">{data.start_time}</div>
+						<div className="right-aligned-text">{data.end_time}</div>
+						<div>{data.notes}</div>
+						<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
+
+						<Container visible={OptionStorage.can_bill ()}>{/*  && (data.rate > 0)}> */}
+							<div className="right-aligned-text">{data.total_due}</div>
+							<div className="right-aligned-text">{data.rate}</div>
+							<BillingCheckbox id={data.log_id} onClick={event => {
+								if (event.target.checked === false) return warning (`
+									This entry has been marked as billed!
+									If you continue, your client may be charged twice.
+
+									Are you sure?
+								`);
+								return true;
+							}} />
+						</Container>
+
+					</Container>
+				}}>
+				
+			</ReportGrid>
+		</div>
+	}// render;
+
 }// QuickTest;
 
 
@@ -172,13 +277,11 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
-	if (debugging) console.log (`Debug test: #53`);
-
+	if (debugging) console.log (`Debug test: ${new Date ().format (date_formats.full_datetime)}`);
 	createRoot (document.getElementById ("main_page")).render (<Main id="timelog_main_page" />);
 
-	//	Special Guest Render	
+	// Special Guest Render	
+	// createRoot (document.getElementById ("main_page")).render (<TestControl />);
 	// createRoot (document.getElementById ("main_page")).render (<QuickTest />);
-	// createRoot (document.getElementById ("main_page")).render (<ResizePanelTest />);
-	// createRoot (document.getElementById ("main_page")).render (<ExplodingPanelTest />);
 	
 }// document.ready;

@@ -259,7 +259,7 @@ export default class SettingsPage extends BaseControl {
 					</Container>
 
 					<Container id="billing_purchased_container" visible={option_purchased}>
-						<div className="horizontally-centered">
+						<div className="horizontally-aligned">
 							<div className="credit-centered">
 
 								<label htmlFor="default_rate">Default rate</label>
@@ -288,7 +288,7 @@ export default class SettingsPage extends BaseControl {
 
 			<div className="full-row section-header">Account Options</div>
 
-			<div className="full-row horizontally-centered" style={{ display: "flex", margin: "1em 0 2em" }}>
+			<div className="full-row horizontally-aligned" style={{ display: "flex", margin: "1em 0 2em" }}>
 				<div className="one-piece-form">
 					<label htmlFor="package">{get_key (constants.account_types, this.state.account_type).titled ()} account</label>
 					<ToggleSwitch id="package" onChange={option => this.setState ({ account_type: parseInt (option) })}>{this.account_options ()}</ToggleSwitch>
@@ -308,7 +308,7 @@ export default class SettingsPage extends BaseControl {
 				<div>
 					<div className="credit-centered">{this.rounding_options ()}</div>
 					<br />
-					<div className="horizontally-centered">{this.billing_options ()}</div>
+					<div className="horizontally-aligned">{this.billing_options ()}</div>
 				</div>
 
 			</div>
@@ -331,7 +331,7 @@ export default class SettingsPage extends BaseControl {
 				<Container visible={not_set (this.state.notification)}>
 					<form id="invite_form" ref={this.invite_form}>
 
-						<div className="horizontally-centered with-headspace">
+						<div className="horizontally-aligned with-headspace">
 
 							<label htmlFor="invitation">Invite a contributor</label>
 

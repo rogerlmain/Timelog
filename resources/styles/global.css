@@ -74,10 +74,10 @@
 /**** HTML Root Styles ****/
 
 
-html, body, .full-screen, .full-size {
+html, body, .full-screen {
 	margin: 0;
 	padding: 0;
-}/* html, body, .full-screen, .full-size */
+}/* html, body, .full-screen */
 
 
 html, body, .full-screen, .full-size, .full-width	{ width: 100% }
@@ -113,7 +113,7 @@ br.triple	{ line-height: 3em }
 
 
 body {
-	overflow: hidden;
+	/* overflow: hidden; */
 	padding: 1em;
 	/* overflow-y: scroll; */
 }/* body */

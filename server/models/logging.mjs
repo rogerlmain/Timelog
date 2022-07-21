@@ -15,6 +15,18 @@ class LoggingData extends Database {
 	}// latest_log_entry;
 
 
+	save_billing (fields) {
+
+		let parameters = [
+			fields.log_id,
+			fields.billed.equals ("true"),
+		];
+
+		return this.execute_query ("set_billing", parameters);
+
+	}// save_billing;
+
+
 	save_log_entry (fields) {
 
 		let parameters = [
@@ -22,11 +34,10 @@ class LoggingData extends Database {
 			parseInt (fields.client_id),
 			parseInt (fields.project_id),
 			fields.notes,
-			fields.billed.equals ("true"),
 			fields.time_stamp
 		];
 
-		this.execute_query ("save_entry", parameters);
+		this.execute_query ("set_log_entry", parameters);
 
 	}// save_log_entry;
 

@@ -155,6 +155,7 @@ app.post ("/logging", function (request, response) {
 		let logging_data = new LoggingData (request, response);
 		switch (fields.action) {
 			case "logging": logging_data.save_log_entry (fields); break;
+			case "billing": logging_data.save_billing (fields); break;
 		}// switch;
 	});
 });

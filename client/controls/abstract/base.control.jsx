@@ -2,20 +2,14 @@ import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
 import React from "react";
-import ReactDOM from "react-dom";
-
-import Container from "client/controls/container";
 
 import { default_settings } from "classes/types/constants";
-import { get_keys, is_array, is_null, jsonify, not_array } from "classes/common";
+import { get_keys, is_array, jsonify } from "classes/common";
 
-//import "classes/types/prototypes";
 import SettingsStorage from "client/classes/storage/settings.storage";
 
 
-
 const random_factor = 1000;
-
 
 
 export default class BaseControl extends React.Component {
@@ -31,6 +25,7 @@ export default class BaseControl extends React.Component {
 
 	
 	animation_speed = () => { return this.props.speed ?? SettingsStorage.animation_speed () ?? default_settings.animation_speed }
+	transition_style = (property) => { return `${property} ${SettingsStorage.animation_speed ()}ms ease-in-out` }
 
 	children = props => { return is_array (props.children) ? props.children : [props.children] }
 	context_item = (name) => { return common.isset (this.context) ? this.context [name] : null }

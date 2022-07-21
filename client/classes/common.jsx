@@ -1,10 +1,20 @@
 import { blank } from "client/classes/types/constants";
+import React from "react";
+
+
+const detab = (text) => { 
+	while (text.matches (/\n\t/g)) { text = text.replace (/\n\t/g, "\n") } 
+	return text;
+}// detab;
 
 
 /********/
 
 
 export function boolean_value (value) { return (is_string (value) && (value.equals ("true") || value.equals ("on"))) }
+
+
+export function dom_element (element) { return React.isValidElement (element) && is_string (element.type)}
 
 export function multiline_text () { return Array.from (arguments).join ("\n") }
 
@@ -15,6 +25,7 @@ export function get_keys (object) { return is_object (object) ? Object.keys (obj
 export function get_values (object) { return is_object (object) ? Object.values (object) : null }
 
 export function notify () { alert (not_empty (arguments) ? multiline_text (...arguments) : "paused") }
+export function warning (text) { return confirm (detab (text)) } // TEMPORARY - TO BE REPLACED WITH A POPUP WINDOW WHEN THE TIME IS RIGHT
 
 export function randomized (number) { return ((parseInt (number) * 1000) + (Math.random () * 1000)) }
 

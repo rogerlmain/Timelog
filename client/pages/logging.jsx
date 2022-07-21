@@ -16,7 +16,7 @@ import CalendarClock from "client/pages/gadgets/calendar.clock";
 import PopupNotice from "client/pages/gadgets/popup.notice";
 import ProjectSelector from "client/controls/selectors/project.selector";
 
-import LoggingModel from "client/classes/models/logging";
+import LoggingModel from "client/classes/models/logging.model";
 
 import { blank, date_formats, date_rounding, debugging, granularity_types, space } from "client/classes/types/constants";
 import { isset, is_empty, nested_value, not_set, multiline_text, null_value } from "client/classes/common";

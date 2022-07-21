@@ -45,7 +45,7 @@ export default class PopupWindow extends BaseControl {
 
 	render () {
 		return (
-			<FadePanel id={`${this.props.id}_fade_panel`} className="full-size" visible={this.props.visible} style={{ zIndex: this.state.zindex }}
+			<FadePanel id={`${this.props.id}_fade_panel`} className="full-screen" visible={this.props.visible} style={{ zIndex: this.state.zindex }}
 
 				beforeShowing={() => this.setState ({ zindex: visible_zindex }, () => this.execute (this.props.beforeOpening))}
 				afterHiding={() => this.setState ({ zindex: hidden_zindex }, () => this.execute (this.props.afterClosing))}
@@ -53,8 +53,8 @@ export default class PopupWindow extends BaseControl {
 				beforeHiding={() => this.execute (this.props.beforeClosing)}
 				afterShowing={() => this.execute (this.props.afterOpening)}>
 
-				<div className="full-size popup-panel">
-					{this.props.modal ? <div className="full-size fully-centered popup-modal" /> : null}
+				<div className="full-screen popup-panel">
+					{this.props.modal ? <div className="full-screen fully-centered popup-modal" /> : null}
 					<div className="popup-window">
 
 						{this.props.children}

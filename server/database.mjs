@@ -1,7 +1,7 @@
 import { createConnection } from "mysql";
 
 
-const local_testing = false;
+const local_testing = true;
 
 
 const local_database = {

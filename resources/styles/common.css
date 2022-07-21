@@ -52,8 +52,9 @@ div.ghost-box { display: contents }
 	align-items: center;
 }/* .centering-cell */
 
-
 .right-aligned-text { text-align: right !important }
+
+.indented { margin-left: 1em }
 
 .with-headspace { margin-top: 1em }
 .with-some-headspace {margin-top: 0.35em }
@@ -69,10 +70,17 @@ div.ghost-box { display: contents }
 }/* flex-row */
 
 
-.horizontally-centered {
+.horizontally-aligned {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
+}/* .horizontally-aligned */
+
+
+.horizontally-centered {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }/* .horizontally-centered */
 
 
@@ -104,12 +112,20 @@ div.credit-centered *:nth-child(::even) { justify-self: flex-start }
 /********/
 
 
-*.fully-centered {
+*.fully-centered, *.row-centered {
 	display: inline-flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-}/* .fully-centered */
+}/* *.fully-centered, *.row-centered */
+
+
+*.column-centered {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}/* .column-centered */
 
 
 *.self-centered {
@@ -251,7 +267,7 @@ div.button-column {
 /**** Class Definitions ****/
 
 
-.full-size {
+.full-screen {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -297,12 +313,12 @@ div.button-column {
 /**** Debugging ****/
 
 
-.borderline, .borderline > *, .outlined, .outlined * {
+.borderline, .borderline > *, .outlined, .outlined *, .outline * {
 	border: solid 1px red;
 }/* border styles */
 
 
-div.outlined label { 
+div.outlined label, .outline { 
 	border: solid 1px blue !important;
 }/* div.outlined label */
 
@@ -463,14 +479,14 @@ div.form-table label {
 }/* div.form-table */
 
 
-/**** Proving Ground ****/
+/**** Proving Ground **** /
 
 
 div.tree-style {
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-end;
-}/* div.tree-style */
+}/* div.tree-style * /
 
 
 div.tree-branch {
@@ -478,15 +494,12 @@ div.tree-branch {
 	flex-direction: column;
 }/* div.tree-branch */
 
-
-div.tree-list { display: grid }
-
-
+/*
 div.tree-list > * { 
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
-}/* div.tree-list > * */
+}/* div.tree-list > * * /
 
 
 div.tree-list div.tree-notes {
@@ -495,3 +508,16 @@ div.tree-list div.tree-notes {
 	padding-left: 1em;
 }/* div.tree-list div.tree-notes */
 
+
+
+div.tree-list div { border: solid 1px red }
+
+div.tree-list div.item-cell { margin: 0 0.5em }
+
+
+div.ttable { border: solid 1px blue }
+
+div.llist {
+	display: grid;
+	grid-template-columns: repeat(3, min-content);
+}

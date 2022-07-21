@@ -1,5 +1,5 @@
 import { blank, space, date_formats, date_rounding, directions, empty } from "classes/types/constants";
-import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys } from "classes/common";
+import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array } from "classes/common";
 
 
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -9,15 +9,18 @@ const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 
 
 Array.arrayify = (candidate) => { return (Array.isArray (candidate) ? candidate : (is_null (candidate) ? null : [candidate])) }
-
-
+Array.get_element = (array, index) => { return (Array.isArray (array) && (array.length >= index)) ? array [index] : null }
 Array.has_value = function (candidate) { return Array.isArray (candidate) && (candidate.length > 0) }
 
 
-Array.get_element = (array, index) => { return (Array.isArray (array) && (array.length >= index)) ? array [index] : null }
+Array.push = (array, ...datastuff) => { 
+	if (null_or_undefined (array)) array = [];
+	if (is_array (array)) array.push (...datastuff);
+	return array;
+}// push;
 
 
-Array.range = function (start, end) {
+Array.range = (start, end) => {
 	let result = new Array ();
 	for (let index = start; index <= end; index++) result.push (index);
 	return result;
@@ -61,9 +64,7 @@ Array.prototype.nest_item = function (value, ...path) {
 }// Array.nested_array;
 
 
-Array.prototype.prepend = function (item) {
-	this.insert (item, 0);
-}// prepend;
+Array.prototype.prepend = function (item) { this.insert (item, 0) }
 
 
 Array.prototype.remove = function (element) {
@@ -156,6 +157,7 @@ Date.increments.days			= Date.increments.hours * 24,
 Date.prototype.get_date = function () { return new Date (this.format (date_formats.database_date)) } // removes time component
 
 Date.prototype.get_day = function () { return this.getDate () }
+
 Date.prototype.get_weekday = function () { return this.getDay () }
 Date.prototype.get_weekday_name = function () { return Date.weekday_name (this.get_weekday ())};
 
@@ -172,8 +174,21 @@ Date.prototype.afternoon = Date.prototype.evening = function () { return this.ge
 Date.prototype.before = function (comparison) { return this - comparison < 0 }
 Date.prototype.after = function (comparison) { return this - comparison > 0 }
 
-
 Date.prototype.get_month_name = function () { return Date.month_name (this.get_month ()) }
+
+
+Date.prototype.get_appended_day = function () {
+
+	let day = this.get_day ();
+
+	switch (day) {
+		case 1: return `${day}st`;
+		case 2: return `${day}nd`;
+		case 3: return `${day}rd`;
+		default: return `${day}th`;
+	}// switch;
+	
+}// get_appended_day;
 
 
 Date.prototype.add = function (part, amount) { 
@@ -383,15 +398,23 @@ HTMLElement.prototype.availableHeight = function () {
 }// availableHeight;
 
 
-HTMLElement.prototype.freeze = function (height = false, width = false) {
-	if (width) this.style.width = `${this.offsetWidth}px`;
-	if (height) this.style.height = `${this.offsetHeight}px`;
+HTMLElement.prototype.freezeWidth = function () { this.style.width = `${this.clientWidth}px` }
+HTMLElement.prototype.freezeHeight = function () { this.style.height = `${this.clientHeight}px` }
+
+
+HTMLElement.prototype.freeze = function () {
+	this.freezeWidth ();
+	this.freezeHeight ();
 }// freeze;
 
 
-HTMLElement.prototype.thaw = function (height = false, width = false) {
-	if (width) this.style.width = null;
-	if (height) this.style.height = null;
+HTMLElement.prototype.thawWidth = function () { this.style.width = null }
+HTMLElement.prototype.thawHeight = function () { this.style.height = null }
+
+
+HTMLElement.prototype.thaw = function () {
+	this.thawWidth ();
+	this.thawHeight ();
 }// thaw;
 
 
@@ -501,10 +524,10 @@ HTMLElement.prototype.visible = function () {
 	if (this.style.visibility.equals ("hidden")) return false;
 	if (parseInt (this.style.opacity) == 0) return false;
 	return true;
-}// if;
+}// visible;
 
 
-/********/
+/**** HTMLFormElement ****/
 
 
 HTMLFormElement.prototype.validate = function () {
@@ -515,7 +538,7 @@ HTMLFormElement.prototype.validate = function () {
 }// validate;
 
 
-/********/
+/**** HTMLSelectElement ****/
 
 
 HTMLSelectElement.prototype.selectedText = function () {
@@ -596,3 +619,12 @@ String.prototype.splice = function (start_index, end_index, replacement = null) 
 
 
 String.prototype.titled = function () { return this.charAt (0).toUpperCase () + this.slice (1) }
+
+
+/**** Window Prototype ****/
+
+
+Window.prototype.dispatchAll = (event) => document.querySelectorAll ("*").forEach (item => item.dispatchEvent (is_string (event) ? new Event (event) : event));
+
+
+

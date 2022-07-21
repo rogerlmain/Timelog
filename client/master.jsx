@@ -150,7 +150,7 @@ export default class MasterPanel extends BaseControl {
 	render () {
 		return <MasterContext.Provider value={{ ...this.context, master_page: this }}>
 
-			<div ref={this.reference} id={this.props.id} className="full-screen">
+			<div ref={this.reference} id={this.props.id}>
 
 				<div className="home_button_panel">
 
@@ -169,7 +169,7 @@ export default class MasterPanel extends BaseControl {
 
 				</div>
 
-				<div className="full-screen horizontally-centered" style={{ marginTop: "2em" }}>
+				<div className="full-size horizontally-aligned" style={{ marginTop: "2em" }}>
 					<ExplodingPanel id="details_panel">
 						{this.page_items ()}
 					</ExplodingPanel>

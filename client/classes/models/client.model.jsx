@@ -11,7 +11,7 @@ export default class ClientModel {
 		let parameters = new FormData ();
 		parameters.set ("action", "delete");
 		parameters.set ("client_id", client_id);
-		return Database.save_data ("clients", parameters);
+		return Database.save_data (table_name, parameters);
 	}// delete_client;
 
 
@@ -22,7 +22,7 @@ export default class ClientModel {
 		let parameters = new FormData ();
 		parameters.set ("action", "list_by_company");
 		parameters.set ("company_id", company_id);
-		return Database.fetch_data ("clients", parameters);
+		return Database.fetch_data (table_name, parameters);
 	}// fetch_by_client;
 
 
@@ -30,7 +30,7 @@ export default class ClientModel {
 		let parameters = new FormData ();
 		parameters.set ("client_id", client_id.toString ());
 		parameters.set ("action", "details");
-		return Database.fetch_row ("clients", parameters);
+		return Database.fetch_row (table_name, parameters);
 	}// fetch_by_id;
 
 	

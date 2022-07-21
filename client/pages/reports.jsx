@@ -1,23 +1,23 @@
 import React from "react";
 
-import ReportsModel from "client/classes/models/reports";
-import OptionStorage from "client/classes/storage/options.storage";
+import ReportsModel		from "client/classes/models/reports";
+import OptionStorage	from "client/classes/storage/options.storage";
 
-import BaseControl from "client/controls/abstract/base.control";
-import TreeList from "client/controls/lists/tree.list";
-import FadePanel from "client/controls/panels/fade.panel";
-import SelectButton from "client/controls/buttons/select.button";
+import BaseControl		from "client/controls/abstract/base.control";
+import SelectButton		from "client/controls/buttons/select.button";
+import DateInput		from "client/controls/inputs/date.input";
+import ReportGrid		from "client/controls/lists/report.grid";
+import FadePanel		from "client/controls/panels/fade.panel";
+import ProjectSelector	from "client/controls/selectors/project.selector";
 
-import ProjectSelector from "client/controls/selectors/project.selector";
-
-import Container from "client/controls/container";
-import DateInput from "client/controls/inputs/date.input";
+import Container	from "client/controls/container";
 
 import { date_formats, debugging } from "client/classes/types/constants";
-import { get_keys, isset, is_null, is_object, not_array, not_set } from "client/classes/common";
+import { get_keys, isset, is_null, is_object, not_set } from "client/classes/common";
+
+import { BillingCheckbox } from "client/controls/abstract/input.control";
 
 import "resources/styles/pages/reports.css";
-
 
 
 const granularity = {
@@ -26,7 +26,6 @@ const granularity = {
 	yearly	: 3,
 	total	: 4
 }// granularity;
-
 
 
 export default class ReportsPage extends BaseControl {
@@ -42,6 +41,8 @@ export default class ReportsPage extends BaseControl {
 
 		entries: null,
 		granularity: granularity.daily,
+
+		use_dates: false,
 
 		start_date: new Date (),
 		end_date: new Date (),
@@ -162,7 +163,7 @@ export default class ReportsPage extends BaseControl {
 	}// yearly_entries;
 
 
-	// DEPRECATED - REVISE FOR OTHER LINEAR REPORTS
+	// ON ICE - REVISE FOR OTHER LINEAR REPORTS
 	list_entries () {
 
 		let entries = null;
@@ -180,7 +181,152 @@ export default class ReportsPage extends BaseControl {
 	}// list_entries;
 
 
-	/**** Tree Report ****/
+	/********/
+
+
+	format_data = data => {
+
+		let result = null;
+
+		if (not_set (data)) return result;
+
+		data.forEach (item => {
+
+			let start_time = Date.validated (item.start_time);
+			let end_time = Date.validated (item.end_time);
+
+			let data_item = {
+				year: start_time.get_year (),
+				month: start_time.get_month_name (),
+				day: `${start_time.get_weekday_name ()} ${start_time.get_appended_day ()}`,
+				start_time: start_time.format (date_formats.timestamp),
+				end_time: end_time.same_day (start_time) ? end_time.format (date_formats.timestamp) : end_time.format (date_formats.report_datetime),
+				notes: item.notes,
+				total_time: item.total_time,
+				log_id: item.log_id,
+			}// data_item;
+
+			if (OptionStorage.can_bill ()) data_item = { ...data_item,
+				total_due: item.total_due,
+				rate: item.rate,
+			}// if;
+
+			if (is_null (result)) result = [];
+			result.push (data_item);
+
+		});
+
+		return result;
+
+	}/* format_data */;
+
+
+	daily_breakdown () {
+		return <div>
+			<ReportGrid data={this.format_data (this.state.entries)} categories={["year", "month", "day"]}
+
+				header={data => {
+					return <Container inline={false} className="report-header">
+						<div>Start time</div>
+						<div>End time</div>
+						<div>Notes</div>
+						<div>Total time</div>
+						<Container visible={OptionStorage.can_bill ()}>{/*  && (data [0].rate > 0)}> */}
+							<div>Total due</div>
+							<div>Rate</div>
+							<div>Billed</div>
+						</Container>
+					</Container>
+				}}
+
+				row={data => {
+					return <Container inline={false} className={`report-grid ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : null}`} style={{ cursor: "pointer" }}>
+						
+						<div className="right-aligned-text">{data.start_time}</div>
+						<div className="right-aligned-text">{data.end_time}</div>
+						<div>{data.notes}</div>
+						<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
+
+						<Container visible={OptionStorage.can_bill ()}>{/*  && (data.rate > 0)}> */}
+							<div className="right-aligned-text">{data.total_due}</div>
+							<div className="right-aligned-text">{data.rate}</div>
+							<BillingCheckbox id={data.log_id} onClick={event => {
+								if (event.target.checked === false) return warning (`
+									This entry has been marked as billed!
+									If you continue, your client may be charged twice.
+
+									Are you sure?
+								`);
+								return true;
+							}} />
+						</Container>
+
+					</Container>
+				}}>
+				
+			</ReportGrid>
+		</div>
+	}// daily_breakdown;
+
+
+	/********/
+
+
+	show_options () {
+		return <Container>
+		
+			<div className="horizontally-centered">
+
+				<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
+					onClientChange={event => this.setState ({ client_id: event.target.value })}
+					onProjectChange={event => this.setState ({ project_id: event.target.value })}>
+				</ProjectSelector>
+
+	{/* 
+					<div>
+						<label htmlFor="granularity">Granularity</label>
+						<select id="granularity" onChange={event => this.setState ({ granularity: parseInt (event.target.value) })} defaultValue={granularity.daily}>
+							<option value={granularity.daily}>Day</option>
+							<option value={granularity.monthly}>Month</option>
+							<option value={granularity.yearly}>Year</option>
+							<option value={granularity.total}>Project Total</option>
+						</select>
+					</div>
+	*/}
+
+				<div className="two-column-table with-headspace">
+
+					<div className="horizontally-aligned">
+						<input type="checkbox" id="use_date_range" onClick={event => this.setState ({ use_dates: event.target.checked }) } />
+						<label htmlFor="use_date_range">Date range</label>
+					</div>
+					
+					<div className={`one-piece-form ${this.state.use_dates ? null : "disabled" }`}>
+
+						<label htmlFor="date_range_start">Start date</label>
+						<DateInput id="date_range_start" disabled={!this.state.use_dates} value={this.state.start_date} onChange={value => this.setState ({ start_date: value })} />
+
+						<label htmlFor="date_range_end">End date</label>
+						<DateInput id="date_range_end" disabled={!this.state.use_dates} value={this.state.end_date} onChange={value => this.setState ({ end_date: value })} />
+
+					</div>
+				
+				</div>
+			</div>	
+
+			<FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
+				<div className="button-panel with-headspace">
+					<SelectButton onClick={() => ReportsModel.fetch_by_project (this.state.project_id, this.state.use_dates ? {
+						start_date: this.state.start_date.format (date_formats.database_date), 
+						end_date: this.state.end_date.format (date_formats.database_date),
+					} : null).then (data => this.setState ({ entries: data }))}>Generate</SelectButton>
+				</div>
+			</FadePanel>
+
+		</Container>
+
+	}// show_options;
+
 
 
 	expand_dates (items) {
@@ -195,72 +341,73 @@ export default class ReportsPage extends BaseControl {
 			item.weekday = item_date.get_weekday_name ();
 
 		});
+
+/* 		
+	<div>{start_time.format (date_formats.timestamp)}</div>
+	<div>{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
+	<div className="tree-notes">{entry.notes}</div>
+	<div>{Date.elapsed (entry.total_time)}</div>
+
+	<Container visible={can_bill}>
+
+		<div style = {{
+			display: "flex",
+			color: (billed ? null : "var(--disabled-color)"),
+			justifyContent: (billed ? "flex-end" : "center"),
+		}}>{billed ? `$${entry.total_due}` : <>&mdash;</>}</div>
+
+		<div style={{ justifyContent: "center" }}>
+			<input type="checkbox" disabled={!billed} onClick={() => alert (entry.entry_id)
+				// "TO DO: update the log entry in the database")
+			} />
+		</div>
+
+	</Container>
+*/
+
+
+
 		return items;
 	}/* expand_dates */;
 
 
-	report_tree = () => {
-
-		let can_bill = OptionStorage.can_bill ();
-		let column_style = { gridTemplateColumns: "6em 6em 25em 6em" }
-
-		if (can_bill) column_style.gridTemplateColumns += " 6em 2em"
-
-		return <TreeList data={this.expand_dates (this.state.entries)} nodeFields={["year", "month", "day"]} 
-
-			glyph={<div className="tree-glyph" />}
-
-			listStyle={column_style}
-
-			format={entry => {
-			
-				let start_time = new Date (entry.start_time);
-				let end_time = new Date (entry.end_time);
-
-				let billed = isset (entry.total_due);
-
-				return <Container key={this.create_key ("array_list")}>
-
-					<div>{start_time.format (date_formats.timestamp)}</div>
-					<div>{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
-					<div className="tree-notes">{entry.notes}</div>
-					<div>{Date.elapsed (entry.total_time)}</div>
-
-					<Container visible={can_bill}>
-
-						<div style = {{
-							display: "flex",
-							color: (billed ? null : "var(--disabled-color)"),
-							justifyContent: (billed ? "flex-end" : "center"),
-						}}>{billed ? `$${entry.total_due}` : <>&mdash;</>}</div>
-
-						<div style={{ justifyContent: "center" }}>
-							<input type="checkbox" disabled={!billed} onClick={() => alert (entry.entry_id)
-								// "TO DO: update the log entry in the database")
-							} />
-						</div>
-
-					</Container>
-
-				</Container>
-
-			}}
-			
-			footer={entries => {
-				return <Container>
-					<div style={{ gridColumn: "1 / 4"}} />
-					<div>[total hours]</div>
-					<div>[total cost]</div>
-				</Container>
-			}}>
-
-		</TreeList>
-
-	}/* report_tree */;
 
 
-	/********/
 	
+
+	show_results () {
+
+		let has_data = isset (this.state.entries);
+
+		return <div className="horizontally-aligned">
+			<FadePanel id="report_results_panel" visible={has_data}>
+				
+				{/* 
+					REINSTATE WHEN LINEAR OPTION BECOMES NECESSARY 
+
+					<div className={`${OptionStorage.can_bill () ? "six-column-grid" : "five-column-grid"} report-grid"`}>
+						<hr className="report-rule" />
+						<Container visible={this.state.granularity < 4}>{this.list_entries ()}</Container>
+						<hr className="report-rule" />
+						{this.show_totals ()}
+					</div>
+				*/}
+
+				<Container visible={this.state.granularity < 4}>
+
+
+					{this.daily_breakdown ()}
+
+
+				</Container>
+
+				{this.show_totals ()}
+
+			</FadePanel>
+		</div>
+
+	}// show_results;
+
 
 	show_totals () {
 
@@ -276,86 +423,14 @@ export default class ReportsPage extends BaseControl {
 	}// show_totals;
 
 
+	/********/
+
+
 	render () {
-
-		let has_data = isset (this.state.entries);
-
-		return <div id={this.props.id}>
-
-			<div className="horizontally-centered">
-				<div>
-
-					<div className="two-column-grid" style={{ columnGap: "1em" }}>
-
-						<div>
-							<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
-								onClientChange={event => this.setState ({ client_id: event.target.value })}
-								onProjectChange={event => this.setState ({ project_id: event.target.value})}>
-							</ProjectSelector>
-						</div>
-
-						<div>
-							<label htmlFor="granularity">Granularity</label>
-							<select id="granularity" onChange={event => this.setState ({ granularity: parseInt (event.target.value) })} defaultValue={granularity.daily}>
-								<option value={granularity.daily}>Day</option>
-								<option value={granularity.monthly}>Month</option>
-								<option value={granularity.yearly}>Year</option>
-								<option value={granularity.total}>Project Total</option>
-							</select>
-						</div>
-
-					</div>
-
-					<div className="two-column-table with-headspace">
-
-						<div className="one-piece-form">
-							<label htmlFor="date_range_start">Start date</label>
-							<div><DateInput id="date_range_start" value={this.state.start_date} onChange={value => this.setState ({ start_date: value })} /></div>
-						</div>
-
-						<div className="one-piece-form">
-							<label htmlFor="date_range_end">End date</label>
-							<div><DateInput id="date_range_end" value={this.state.end_date} onChange={value => this.setState ({ end_date: value })} /></div>
-						</div>
-
-					</div>
-
-					<FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
-						<div className="button-panel with-headspace">
-							<SelectButton onClick={() => ReportsModel.fetch_by_project (this.state.project_id, {
-								start_date: this.state.start_date.format (date_formats.database_date), 
-								end_date: this.state.end_date.format (date_formats.database_date),
-							}).then (data => this.setState ({ entries: data }))}>Generate</SelectButton>
-						</div>
-					</FadePanel>
-
-				</div>
-			</div>
-
+		return <div id={this.props.id} className="horizontally-centered">
+			<div style={{ display: "inline-block" }}>{this.show_options ()}</div>
 			<br />
-
-			<div className="horizontally-centered">
-				<FadePanel id="report_results_panel" visible={has_data}>
-{/* 
-					<div className={`${OptionStorage.can_bill () ? "six-column-grid" : "five-column-grid"} report-grid"`}>
-						<hr className="report-rule" />
-						<Container visible={this.state.granularity < 4}>{this.list_entries ()}</Container>
-						<hr className="report-rule" />
-						{this.show_totals ()}
-					</div>
-*/}
-
-					<hr />
-
-					<Container visible={this.state.granularity < 4}>{this.report_tree ()}</Container>
-
-					<hr />
-
-					{this.show_totals ()}
-
-				</FadePanel>
-			</div>
-			
+			<div>{this.show_results ()}</div>
 		</div>
 	}// render;
 
