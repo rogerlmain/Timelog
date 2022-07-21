@@ -18,7 +18,8 @@ create procedure create_report (
         timestampdiff (second, log.start_time, log.end_time) as total_time,
         (timestampdiff (second, log.start_time, log.end_time) / 3600) * get_rate (project_id) as total_due,
         log.notes,
-        get_rate(project_id) as rate
+        get_rate(project_id) as rate,
+        (log.billed = 1) as billed -- cast bit to boolean
 	from
 		logging as log
 	where

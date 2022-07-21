@@ -196,14 +196,13 @@ export default class ReportsPage extends BaseControl {
 			let end_time = Date.validated (item.end_time);
 
 			let data_item = {
+				...item,
 				year: start_time.get_year (),
 				month: start_time.get_month_name (),
 				day: `${start_time.get_weekday_name ()} ${start_time.get_appended_day ()}`,
 				start_time: start_time.format (date_formats.timestamp),
 				end_time: end_time.same_day (start_time) ? end_time.format (date_formats.timestamp) : end_time.format (date_formats.report_datetime),
-				notes: item.notes,
-				total_time: item.total_time,
-				log_id: item.log_id,
+				billed: (item.billed == 1),
 			}// data_item;
 
 			if (OptionStorage.can_bill ()) data_item = { ...data_item,
@@ -258,7 +257,7 @@ export default class ReportsPage extends BaseControl {
 									Are you sure?
 								`);
 								return true;
-							}} />
+							}} checked={data.billed} />
 						</Container>
 
 					</Container>

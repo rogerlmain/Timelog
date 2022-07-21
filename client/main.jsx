@@ -44,7 +44,7 @@ import "resources/styles/forms.css";
 //import ProjectSelector from "client/controls/selectors/project.selector";
 
 
-const version = "1.6.2";
+const version = "1.7";
 
 
 class Main extends BaseControl {

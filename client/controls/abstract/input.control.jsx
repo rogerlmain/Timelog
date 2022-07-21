@@ -11,7 +11,7 @@ export const CheckboxCell = props => {
 		<input type="checkbox" style={{ 
 			margin: 0,
 			cursor: "pointer",
-		}} onClick={props.onClick} />
+		}} onClick={props.onClick} defaultChecked={props.value} />
 	</div> 
 }// CheckboxCell;
 
@@ -19,7 +19,7 @@ export const CheckboxCell = props => {
 export const BillingCheckbox = props => { return <CheckboxCell onClick={event => {
 	if (is_function (props.onClick) && (!props.onClick (event))) return false;
 	LoggingModel.bill (props.id, event.target.checked);
-}} />}
+}} value={props.checked} />}
 
 
 export default class InputControl extends BaseControl {
