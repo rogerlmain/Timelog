@@ -2,6 +2,8 @@ import * as constants from "classes/types/constants";
 
 import React from "react";
 
+import EmailModel from "client/classes/models/email.model";
+
 import OptionsStorage, { toggled } from "client/classes/storage/options.storage";
 import SettingsStorage from "client/classes/storage/settings.storage";
 
@@ -149,19 +151,12 @@ export default class SettingsPage extends BaseControl {
 
 		let data = this.state.invite_data;
 
-		data.append ("action", "invite");
 		data.append ("host_id", AccountStorage.account_id ());
 		data.append ("host_name", AccountStorage.full_name ());
 		data.append ("company_name", CompanyStorage.company_name ());
 		data.append ("company_id", CompanyStorage.active_company_id ());
 
-		return new Promise ((resolve, reject) => {
-			fetch_data ("/email", {
-				method: "post",
-				body: this.state.invite_data,
-				credentials: "same-origin"
-			}).then (response => response.json ()).then (data => resolve (Array.get_element (data, 0))).catch (reject);
-		});
+		return new Promise ((resolve, reject) => EmailModel.send_invite (data).then (data => resolve (Array.get_element (data, 0))).catch (reject));
 
 	}/* invite_contributor */;
 
@@ -338,10 +333,10 @@ export default class SettingsPage extends BaseControl {
 							<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
 								<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
 									onChange={event => this.setState ({ invitee: event.target.value })} required={true}
-									defaultValue={debugging ? "Rex" : null}>
+									defaultValue={debugging ? "Roger" : null}>
 								</input>
 								<input type="email" id="invitee_email" name="invitee_email" placeholder="Email address" required={true}
-									defaultValue={debugging ? "rex@rogerlmain.com" : null}>
+									defaultValue={debugging ? "roger.main@rexthestrange.com" : null}>
 								</input>
 								<button onClick={event => {
 									this.setState ({ invite_data: new FormData (this.invite_form.current) });

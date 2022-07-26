@@ -5,7 +5,7 @@ import CompanyData from "./companies.mjs";
 import LoggingData from "./logging.mjs";
 
 
-export default class AccountData extends Database {
+export default class AccountsModel extends Database {
 
 
 	get_accounts_by_company = company_id => {
@@ -61,5 +61,5 @@ export default class AccountData extends Database {
 	signin = (fields, response) => { return this.data_query ("get_account_by_credentials", [fields ["email"], fields ["password"]])	}
 
 
-}// AccountData;
+}// AccountsModel;
 

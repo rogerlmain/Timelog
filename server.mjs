@@ -5,7 +5,7 @@ import file_system from "fs";
 import https from "https";
 import multiparty from "multiparty";
 
-import AccountData from "./server/models/accounts.mjs";
+import AccountsModel from "./server/models/accounts.model.mjs";
 import AccountOptionsData from "./server/models/options.mjs";
 import AccountSettingsData from "./server/models/settings.mjs";
 import AddressData from "./server/models/addresses.mjs";
@@ -71,7 +71,7 @@ app.use (express.json ());
 app.post ("/accounts", function (request, response) {
 	try {
 		app.process (request, response, (fields) => {
-			let account_data = new AccountData (request, response);
+			let account_data = new AccountsModel (request, response);
 			switch (fields.action) {
 				case "save": account_data.save_account (fields); break;
 				case "company": account_data.get_accounts_by_company (fields.company_id); break;
@@ -136,6 +136,15 @@ app.post ("/company_cards", function (request, response) {
 		switch (fields.action) {
 			case "get": company_card_data.get_company_cards (fields.company_id); break;
 			case "save": company_card_data.save_company_card (fields); break;
+		}// switch;
+	});
+});
+
+
+app.post ("/email", function (request, response) {
+	app.process (request, response, async fields => {
+		switch (fields.action) {
+			case "invite": new EmailHandler (request, response, fields).send_invitation (); break;
 		}// switch;
 	});
 });
@@ -263,20 +272,11 @@ app.post ("/tasks", function (request, response) {
 /*********/
 
 
-app.post ("/email", function (request, response) {
-	app.process (request, response, async fields => {
-		switch (fields.action) {
-			case "invite": new EmailHandler (request, response, fields).send_invitation (); break;
-		}// switch;
-	});
-});
-
-
 app.post ("/payment", (request, response) => app.process (request, response, fields => new PaymentHandler (response).pay (fields.square_string, fields.path)));
 
 
 app.post ("/signin", function (request, response) {
-	app.process (request, response, fields => new AccountData (request, response).signin (fields, response).then (async results => {
+	app.process (request, response, fields => new AccountsModel (request, response).signin (fields, response).then (async results => {
 
 		global.account = (global.is_null (results) || (results.length < 1)) ? null : results [0];
 		
@@ -329,17 +329,6 @@ app.post ("/signin", function (request, response) {
 });
 
 
-// app.post ("/team", function (request, response) {
-// 	app.process (request, response, (fields) => {
-// 		let team_data = new TeamData (request, response);
-// 		switch (fields.action) {
-// 			case "team_list": team_data.get_teams (app.accounts.current_account ().account_id); break;
-// 			case "member_list": team_data.get_members (fields.team_id); break;
-// 		}// switch;
-// 	});
-// });
-
-
 /*********/
 
 
@@ -347,7 +336,7 @@ app.get ("/join", (request, response) => app.process (request, response, fields 
 
 
 	const bad_invitation = (data) => {
-		if (global.not_set (data) || global.not_set (data = data [0])) return true;
+		if (global.not_set (data)) return true;
 		if (invite.value != data.invite_id) return true;
 		if (company.value != data.company_id) return true;
 		if (host.value != data.host_id) return true;
@@ -387,7 +376,8 @@ app.get ("/join", (request, response) => app.process (request, response, fields 
 
 
 	new InvitationData ().get_invitation_by_id (invite.value).then (data => {
-		if (bad_invitation (data)) return response.send (condolences);
+		if (isset (data)) data = data [0]; 
+		if (isset (data) && bad_invitation (data)) return response.send (condolences);
 		response.redirect ("/");
 		response.end ();
 	});
@@ -396,6 +386,17 @@ app.get ("/join", (request, response) => app.process (request, response, fields 
 
 
 /*********/
+
+
+// app.post ("/team", function (request, response) {
+// 	app.process (request, response, (fields) => {
+// 		let team_data = new TeamData (request, response);
+// 		switch (fields.action) {
+// 			case "team_list": team_data.get_teams (app.accounts.current_account ().account_id); break;
+// 			case "member_list": team_data.get_members (fields.team_id); break;
+// 		}// switch;
+// 	});
+// });
 
 
 var options = {

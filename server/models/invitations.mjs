@@ -21,7 +21,8 @@ export default class InvitationData extends Database {
 	}/* set_invitation */;
 
 
-	get_invitation_by_id = invitation_id => { this.execute_query ("get_invitations", [invitation_id, null, null]) }
+	get_invitation_by_id = invitation_id => { return this.data_query ("get_invitations", [invitation_id, null, null]) }
+
 	get_invitations_by_company = company_id => { this.execute_query ("get_invitations", [null, company_id, null]) }
 	get_invitations_by_email = invitee_email => { this.execute_query ("get_invitations", [null, null, invitee_email]) }
 

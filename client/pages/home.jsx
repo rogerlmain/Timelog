@@ -65,7 +65,7 @@ export default class HomePage extends BaseControl {
 
 		let use_default = (is_null (LoggingStorage.project_name ()) && is_null (LoggingStorage.client_name ()));
 
-		return <div id={this.props.id} className="centering-cell">
+		return <div id={this.props.id} className="fully-centered">
 			<div className="two-column-table with-headspace" style={{ columnGap: "2em" }}>
 
 				{/* Invitations */}

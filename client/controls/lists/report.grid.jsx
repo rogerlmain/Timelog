@@ -93,8 +93,8 @@ export default class ReportGrid extends BaseControl {
 
 			if (is_null (result)) result = [];
 
-			result.push (<HeaderCell key={this.create_key ()} style={{ borderRight: "none", gridColumn: "1/-2" }}>{key}</HeaderCell>);
-			result.push (<HeaderCell key={this.create_key ()}><CheckboxCell /></HeaderCell>);
+			result.push (<HeaderCell key={this.create_key ()} style={{ gridColumn: "1/-1" }}>{key}</HeaderCell>);
+//			result.push (<HeaderCell key={this.create_key ()}><CheckboxCell /></HeaderCell>);
 
 			switch (is_empty (subcategories)) {
 				case true: result.push (this.report_items (dataset [key])); break;

@@ -6,6 +6,7 @@ import nodemailer from "nodemailer";
 import InvitationData from "../models/invitations.mjs";
 
 import { root_path } from "../constants.mjs";
+import AccountsModel from "../models/accounts.model.mjs";
 
 
 const email_details = {
@@ -66,11 +67,12 @@ export default class EmailHandler {
 
 	create_invite = (invitation) => { 
 
-		let code_string = (number) => { return `${number.toString ().length}${number.toString ()}` }
+		let code_string = (number) => { return  (global.is_null (number) || isNaN (number)) ? 0 : `${number.toString ().length}${number.toString ()}` }
 
 		let result = code_string (invitation.invite_id) +
 			code_string (invitation.company_id) +
 			code_string (invitation.host_id) +
+			code_string (invitation.invitee_account_id) +
 			`${invitation.date_created}${Number.random (10, 99)}`;
 
 		return result;
@@ -84,13 +86,18 @@ export default class EmailHandler {
 			host: this.fields.host_name,
 			company: this.fields.company_name,
 			domain: `${this.request.hostname}:${this.request.socket.localPort}`,
-			address: `join?invite=${this.create_invite (invitation)}`,
+			address: `?icd=${this.create_invite (invitation)}`,
 		});
 	}// text_template;
 	
 
-	send_invitation = () => {
+	send_invitation = async () => {
 		try {
+
+			let account = await new AccountsModel ().get_account_by_email (this.fields.invitee_email);
+
+			if (isset (account)) this.fields.invitee_account_id = account.id;
+
 			new InvitationData (this.request, this.response).set_invitation (this.fields).then (invitation => {
 
 				if (!Array.isArray (invitation) || (invitation.length == 0)) return this.response.send ("Error: invitation not sent");

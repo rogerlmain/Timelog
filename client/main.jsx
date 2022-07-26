@@ -20,6 +20,9 @@ import MasterPanel from "client/master";
 import SigninPage from "pages/sign.in";
 import SignupPage from "pages/sign.up";
 
+import logo from "resources/images/clock.png";
+
+
 import { createRoot } from "react-dom/client";
 
 import { debugging, tracing, globals, date_formats } from "client/classes/types/constants";
@@ -44,14 +47,15 @@ import "resources/styles/forms.css";
 //import ProjectSelector from "client/controls/selectors/project.selector";
 
 
-const version = "1.7";
+const version = "1.7.1";
 
 
 class Main extends BaseControl {
 
 	state = { 
 		signing_up: false,
-		company_id: null
+		company_id: null,
+		current_time: null,
 	}/* state */;
 
 
@@ -74,40 +78,51 @@ class Main extends BaseControl {
 	}// constructor;
 
 
+	/********/
+
+
 	company_header () {
 
 		let companies = CompanyStorage.company_list ();
 
-		if (!this.signed_in ()) return null
+		return <div style={{ marginLeft: "2em", fontStyle: "italic" }} className="right-aligned">
 
-		return <div>
+			<Container visible={this.signed_in ()}>
 
-			<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
-			
-			<div className="right-aligned-text" style={{ marginTop: "0.5em" }}>
-
-				<Container visible={CompanyStorage.company_count () > 1}>
-					<SelectList value={CompanyStorage.active_company_id ()} data={companies}
-					
-						textField="company_name" hasHeader={true}
-						
-						onChange={event => {
-							CompanyStorage.set_active_company (event.target.value);
-							this.setState ({ company_id: event.target.value }, this.forceRefresh);
-						}}>
-							
-					</SelectList>
-				</Container>
-
-				<Container visible={CompanyStorage.company_count () == 1}>
-					<div>{nested_value (CompanyStorage.active_company (), "company_name")}</div>
-				</Container>
-
-				<Container visible={is_empty (companies)}>
-					<div>Guest Account</div>
-				</Container>
+				<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
 				
-			</div>
+				<div className="right-aligned-text">
+
+					<Container visible={CompanyStorage.company_count () > 1}>
+						<SelectList value={CompanyStorage.active_company_id ()} data={companies}
+						
+							textField="company_name" hasHeader={true}
+							
+							onChange={event => {
+								CompanyStorage.set_active_company (event.target.value);
+								this.setState ({ company_id: event.target.value }, this.forceRefresh);
+							}}>
+								
+						</SelectList>
+					</Container>
+
+					<Container visible={CompanyStorage.company_count () == 1}>
+						<div>{nested_value (CompanyStorage.active_company (), "company_name")}</div>
+					</Container>
+
+					<Container visible={is_empty (companies)}>
+						<div>Guest Account</div>
+					</Container>
+					
+				</div>
+
+			</Container>
+
+			<Container visible={!this.signed_in ()}>
+				<div className="right-aligned-text">Welcome!</div>
+			</Container>
+
+			<div className="right-aligned-text">{this.state.current_time}</div>
 
 		</div>
 
@@ -117,6 +132,27 @@ class Main extends BaseControl {
 	error_handler (message, url, line) { notify (message, url, line) }
 
 
+	update_clock () {
+
+		let current_time = new Date ();
+		let target_time = new Date (current_time);
+
+		target_time.setMinutes (target_time.getMinutes () + 1);
+		target_time.setSeconds (0);
+		target_time.setMilliseconds (0);
+
+		this.setState ({ current_time: current_time.format (date_formats.full_datetime) });
+		setTimeout (this.update_clock.bind (this), target_time.getTime () - current_time.getTime ());
+
+	}// update_clock;
+
+
+	/********/
+
+
+	componentDidMount () { this.update_clock () }
+	
+	
     render () {
 
 		let active_panel = (this.signed_in () ? "master_panel" : (this.state.signing_up ? "signup_panel" : "signin_panel"));
@@ -128,16 +164,22 @@ class Main extends BaseControl {
 
 					<div className="horizontally-spaced-out page-header">
 
-						<div className="program-title">
-							<div className="title">RMPC Timelog</div>
-							<div className="tagline">Make every second count</div>
+						<div className="two-column-grid">
+
+							<img src={logo} style={{ height: "3em" }} />
+
+							<div className="program-title">
+								<div className="title">RMPC Timelog</div>
+								<div className="tagline">Make every second count</div>
+							</div>
+
 						</div>
 
 						{this.company_header ()}
 
 					</div>
 					
-					<div className="full-width">
+					<div className="full-width horizontally-centered">
 						
 						<ExplodingPanel id="main_panel">
 
@@ -215,6 +257,9 @@ class QuickTest extends BaseControl {
 		this.setState ({ data: result });
 
 	}/* format_data */;
+
+
+	/********/
 
 
 	componentDidMount () {
