@@ -18,7 +18,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging.model";
 
-import { blank, date_formats, date_rounding, debugging, granularity_types, space } from "client/classes/types/constants";
+import { blank, date_formats, date_rounding, debugging, granularity_types, space, text_highlights } from "client/classes/types/constants";
 import { isset, is_empty, nested_value, not_set, multiline_text, null_value } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
@@ -67,12 +67,11 @@ export default class LoggingPage extends BaseControl {
 
 		super (props);
 
-		this.state.current_entry = LoggingStorage.current_entry ();
+		this.state.current_entry = { ...LoggingStorage.current_entry (), end_time: this.end_time () }
 
 		let project_id = nested_value (this.state.current_entry, "project_id");
 		let client_id = nested_value (this.state.current_entry, "client_id");
 
-		if (isset (this.state.current_entry)) this.state.current_entry.end_time = this.end_time ();
 		ProjectStorage.billing_rate (project_id, client_id).then (result => this.setState ({ billing_rate: result }));
 		if (debugging) console.log ("logging page created");
 
@@ -282,31 +281,42 @@ export default class LoggingPage extends BaseControl {
 	}/* entry_details */;
 
 
+	// update_elapsed_time () {
+
+	// 	let increment = OptionsStorage.increment ();
+	// 	let current_time = new Date ().getTime ();
+	// 	let crossover_time = (current_time - (current_time % increment)) + (increment / 2);
+	// 	let lag_time = crossover_time - current_time;
+
+	// 	if (current_time > crossover_time) lag_time += increment;
+
+	// 	this.setState ({ current_entry: { ...this.state.current_entry, end_time: this.end_time () }}, () => setTimeout (this.update_elapsed_time.bind (this), lag_time));
+
+	// }// update_elapsed_time;
+
+
 	/********/
 
 
 	componentDidMount () {
-
-		let delay = 1000;
 
 		this.setState ({ 
 			editing: this.needs_editing (24),
 			initialized: true,
 		});
 
-		switch (OptionsStorage.granularity (CompanyStorage.active_company_id ())) {
-			case granularity_types.hourly	: delay *= Date.coefficient.hourly; break;
-			case granularity_types.quarterly: delay *= Date.coefficient.quarterly; break;
-			case granularity_types.minutely	: delay *= Date.coefficient.minutely; break;
-		}// switch;
+		// this.update_elapsed_time ();
 
 	}// componentDidMount;
 
 
 	componentDidUpdate () {
+
 		let needs_editing = this.needs_editing (24);
-		if (this.state.editable == needs_editing) return;
-		this.setState ({ editable: needs_editing });
+
+		if (this.state.editable != needs_editing) this.setState ({ editable: needs_editing });
+		this.setState ({ current_entry: { ...this.state.current_entry, end_time: this.end_time () }});
+		
 	}// componentDidUpdate;
 
 

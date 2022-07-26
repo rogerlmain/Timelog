@@ -23,7 +23,7 @@ export default class ClientStorage extends LocalStorage {
 		let value = isset (items) ? items.find (item => item.client_id == client.client_id) : null;
 
 		if (not_set (values)) values = {};
-		if (not_set (values [company_id])) values [company_id] = new Array ();
+		if (not_set (values [company_id])) values [company_id] = [];
 
 		if (isset (value)) values [company_id].remove (value);
 		values [company_id].push (client); 
@@ -36,14 +36,14 @@ export default class ClientStorage extends LocalStorage {
 	/********/
 
 
-	static save_client = (company_id, form_data) => {
-		return new Promise ((resolve, reject) => {
-			ClientModel.save_client (form_data).then (data => {
-				this.#set_client (company_id, data);
-				resolve (data);
-			}).catch (reject);
-		});
-	}/* save_client */;
+	// static save_client = (company_id, form_data) => {
+	// 	return new Promise ((resolve, reject) => {
+	// 		ClientModel.save_client (form_data).then (data => {
+	// 			this.#set_client (company_id, data);
+	// 			resolve (data);
+	// 		}).catch (reject);
+	// 	});
+	// }/* save_client */;
 
 
 	static remove_client (client_id) {
@@ -59,9 +59,6 @@ puke ();
 		}// if;
 
 	}// remove_client;
-
-
-	/********/
 
 
 	static get_by_company = (company_id) => { 
@@ -86,22 +83,17 @@ puke ();
 
 			let store = LocalStorage.get_all (store_name);
 
-			for (let company_id of Object.keys (store)) {
+			if (isset (store)) for (let company_id of Object.keys (store)) {
 				let client = nested_value (store, company_id, "find", item => { return item.client_id == client_id });
 				if (isset (client)) return resolve (client);
 			}// for;
 
 			ClientModel.fetch_by_id (client_id).then (client => {
-
-				if (not_empty (client)) {
-					if (not_set (store [company_id])) store [company_id] = [];
-					store [company_id].push (client);
-					LocalStorage.set (store_name, store);
-				}// if;
-				
+				ClientStorage.#set_client (CompanyStorage.active_company_id (), client)
 				resolve (client);
-			
 			});
+
+			reject ();
 
 		});
 	}/* get_by_id */;

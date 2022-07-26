@@ -1,10 +1,9 @@
-import * as constants from "classes/types/constants";
-
 import LocalStorage from "classes/local.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
 import OptionsModel from "client/classes/models/options.model";
 
+import { date_rounding, deadbeat_options, granularity_types, option_types } from "classes/types/constants";
 import { isset, not_set } from "classes/common";
 
 
@@ -23,7 +22,7 @@ export const toggled = {
 }// toggled;
 
 
-export default class OptionStorage extends LocalStorage {
+export default class OptionsStorage extends LocalStorage {
 
 
 	static #get (name) { 
@@ -64,41 +63,51 @@ export default class OptionStorage extends LocalStorage {
 	/********/
 
 
-	static granularity (company_id = null) { 
-		let granularity = OptionStorage.#get (constants.option_types.granularity, company_id);
-		let result = not_set (granularity) ? constants.deadbeat_options.granularity : parseInt (granularity);
+	static granularity () { 
+		let granularity = OptionsStorage.#get (option_types.granularity);
+		let result = not_set (granularity) ? deadbeat_options.granularity : parseInt (granularity);
 		return result;
 	}// granularity;
 
 
-	static start_rounding () { return OptionStorage.#get (constants.option_types.start_rounding) ?? constants.date_rounding.off }
-	static end_rounding () { return OptionStorage.#get (constants.option_types.end_rounding) ?? constants.date_rounding.off }
+	static increment () {
+		switch (OptionsStorage.granularity ()) {
+			case granularity_types.hourly	: return Date.increments.hours;
+			case granularity_types.quarterly: return 15 * Date.increments.minutes;
+			case granularity_types.minutely	: return Date.increments.minutes;
+			default: return Date.increments.seconds;
+		}// switch;
+	}// increment;
 
-	static single_client () { return OptionStorage.client_limit () == 1 }
-	static single_project () { return OptionStorage.project_limit () == 1}
 
-	static client_limit () { return OptionStorage.#get (constants.option_types.client_limit) ?? 1 }
-	static project_limit () { return OptionStorage.#get (constants.option_types.project_limit) ?? 1 }
+	static start_rounding () { return OptionsStorage.#get (option_types.start_rounding) ?? date_rounding.off }
+	static end_rounding () { return OptionsStorage.#get (option_types.end_rounding) ?? date_rounding.off }
 
-	static billing_option () { return OptionStorage.#get (constants.option_types.billing_option) ?? 1 }
-	static rounding_option () { return OptionStorage.#get (constants.option_types.rounding_option) ?? 1 }
+	static single_client () { return OptionsStorage.client_limit () == 1 }
+	static single_project () { return OptionsStorage.project_limit () == 1}
 
-	static can_bill () { return OptionStorage.billing_option () == toggled.true }
-	static can_round () { return OptionStorage.rounding_option () == toggled.true }
+	static client_limit () { return OptionsStorage.#get (option_types.client_limit) ?? 1 }
+	static project_limit () { return OptionsStorage.#get (option_types.project_limit) ?? 1 }
+
+	static billing_option () { return OptionsStorage.#get (option_types.billing_option) ?? 1 }
+	static rounding_option () { return OptionsStorage.#get (option_types.rounding_option) ?? 1 }
+
+	static can_bill () { return OptionsStorage.billing_option () == toggled.true }
+	static can_round () { return OptionsStorage.rounding_option () == toggled.true }
 
 	
 	static default_rate (value = null) { 
-		if (isset (value)) return OptionStorage.save_option (constants.option_types.default_rate, value);
-		return OptionStorage.#get (constants.option_types.default_rate) ?? 0; 
+		if (isset (value)) return OptionsStorage.save_option (option_types.default_rate, value);
+		return OptionsStorage.#get (option_types.default_rate) ?? 0; 
 	}// default_rate;
 
 
 	static subscribed (option) {
 		switch (option) {
-			case constants.option_types.granularity: return isset (this.granularity ());
-			case constants.option_types.rounding: return (isset (this.start_rounding ()) || isset (this.end_rounding ()));
+			case option_types.granularity: return isset (this.granularity ());
+			case option_types.rounding: return (isset (this.start_rounding ()) || isset (this.end_rounding ()));
 		}// switch;
 		return false;
 	}// subscribed;
 
-}// OptionStorage;
+}// OptionsStorage;

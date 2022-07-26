@@ -47,7 +47,7 @@ import "resources/styles/forms.css";
 //import ProjectSelector from "client/controls/selectors/project.selector";
 
 
-const version = "1.7.1";
+const version = "1.7.2";
 
 
 class Main extends BaseControl {
@@ -137,11 +137,10 @@ class Main extends BaseControl {
 		let current_time = new Date ();
 		let target_time = new Date (current_time);
 
-		target_time.setMinutes (target_time.getMinutes () + 1);
-		target_time.setSeconds (0);
+		target_time.setSeconds (target_time.getSeconds () + 1);
 		target_time.setMilliseconds (0);
 
-		this.setState ({ current_time: current_time.format (date_formats.full_datetime) });
+		this.setState ({ current_time: current_time.format (date_formats.detailed_timestamp) });
 		setTimeout (this.update_clock.bind (this), target_time.getTime () - current_time.getTime ());
 
 	}// update_clock;
