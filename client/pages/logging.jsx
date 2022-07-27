@@ -27,6 +27,12 @@ import { MainContext } from "client/classes/types/contexts";
 import "resources/styles/pages/logging.css";
 
 
+const action_types = {
+	log		: "log",
+	cancel	: "cancel",
+}// action_types;
+
+
 const ranges = {
 	start	: "start",
 	end		: "end",
@@ -45,8 +51,10 @@ export default class LoggingPage extends BaseControl {
 	state = {
 
 		current_entry: null,
-		project_selected: false,
 
+		action: null,
+
+		project_selected: false,
 		editable: false,
 		editing: false,
 		fixing: false,
@@ -136,11 +144,13 @@ export default class LoggingPage extends BaseControl {
 
 		LoggingModel.log (this.client_id (), this.project_id (), this.notes (), timestamp).then (entry => {
 
+			let start_time = Date.validated (entry.start_time);
+
 			if (is_empty (entry)) {
 				LoggingStorage.delete ();
 			} else {
-				entry.start_time = Date.validated (entry.start_time);
-				entry.end_time = this.end_time ();
+				entry.start_time = start_time;
+				entry.end_time = (this.state.action == action_types.log) ? this.end_time () : start_time;
 				LoggingStorage.set (entry);
 			}// if;
 
@@ -281,32 +291,14 @@ export default class LoggingPage extends BaseControl {
 	}/* entry_details */;
 
 
-	// update_elapsed_time () {
-
-	// 	let increment = OptionsStorage.increment ();
-	// 	let current_time = new Date ().getTime ();
-	// 	let crossover_time = (current_time - (current_time % increment)) + (increment / 2);
-	// 	let lag_time = crossover_time - current_time;
-
-	// 	if (current_time > crossover_time) lag_time += increment;
-
-	// 	this.setState ({ current_entry: { ...this.state.current_entry, end_time: this.end_time () }}, () => setTimeout (this.update_elapsed_time.bind (this), lag_time));
-
-	// }// update_elapsed_time;
-
-
 	/********/
 
 
 	componentDidMount () {
-
 		this.setState ({ 
 			editing: this.needs_editing (24),
 			initialized: true,
 		});
-
-		// this.update_elapsed_time ();
-
 	}// componentDidMount;
 
 
@@ -370,9 +362,32 @@ export default class LoggingPage extends BaseControl {
 					onEyecandy={this.log_entry}>
 
 					<FadePanel id="login_button" visible={this.project_selected ()} style={{ display: "flex" }}>
-						<button onClick={() => this.setState ({ updating: true })} style={{ flex: 1 }} disabled={logged_in && this.invalid_entry ()}>
-							{logged_in ? (elapsed_time == 0 ? "Cancel log entry" : "Log out") : "Log in"}
-						</button>
+						<div style={(elapsed_time == 0) ? null : {
+							display: "grid",
+							gridTemplateColumns: "repeat(2, 1fr)",
+							columnGap: "0.25em",
+							width: "100%",
+						}}>
+
+							<Container visible={logged_in}>
+								<button className="full-width"
+									onClick={() => this.setState ({ updating: true, action: action_types.cancel })}>
+									Cancel entry
+								</button>
+							</Container>
+
+							<Container visible={elapsed_time > 0}>
+								<button className="full-width"
+									onClick={() => this.setState ({ updating: true, action: action_types.log })} style={{ flex: 1 }} 
+									disabled={logged_in && this.invalid_entry ()}>
+
+									{logged_in ? "Log out" : "Log in"}
+
+								</button>
+							</Container>
+
+						</div>
+
 					</FadePanel>
 
 				</EyecandyPanel>

@@ -48,3 +48,8 @@ div.report-grid div.report-header div {
 
 div.overtime-grid > div { color: #C22 }
 
+
+/********/
+
+
+div.checkbox-form label { justify-content: flex-start }

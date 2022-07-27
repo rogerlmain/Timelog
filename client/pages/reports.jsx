@@ -17,6 +17,7 @@ import { get_keys, isset, is_null, is_object, not_set } from "client/classes/com
 
 import { BillingCheckbox } from "client/controls/abstract/input.control";
 
+import "resources/styles/forms.css";
 import "resources/styles/pages/reports.css";
 
 
@@ -42,6 +43,8 @@ export default class ReportsPage extends BaseControl {
 		entries: null,
 		granularity: granularity.daily,
 
+		use_billable: true,
+		use_cancelled: false,
 		use_dates: false,
 
 		start_date: new Date (),
@@ -195,6 +198,8 @@ export default class ReportsPage extends BaseControl {
 			let start_time = Date.validated (item.start_time);
 			let end_time = Date.validated (item.end_time);
 
+			if (not_set (end_time)) return;
+
 			let data_item = {
 				...item,
 				year: start_time.get_year (),
@@ -276,22 +281,27 @@ export default class ReportsPage extends BaseControl {
 		
 			<div className="horizontally-centered">
 
-				<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
-					onClientChange={event => this.setState ({ client_id: event.target.value })}
-					onProjectChange={event => this.setState ({ project_id: event.target.value })}>
-				</ProjectSelector>
+				<div className="two-column-table">
 
-	{/* 
-					<div>
-						<label htmlFor="granularity">Granularity</label>
-						<select id="granularity" onChange={event => this.setState ({ granularity: parseInt (event.target.value) })} defaultValue={granularity.daily}>
-							<option value={granularity.daily}>Day</option>
-							<option value={granularity.monthly}>Month</option>
-							<option value={granularity.yearly}>Year</option>
-							<option value={granularity.total}>Project Total</option>
-						</select>
+					<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
+						onClientChange={event => this.setState ({ client_id: event.target.value })}
+						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
+					</ProjectSelector>
+
+					<div className="vertically-centered">
+						<div className="one-piece-form checkbox-form">
+
+							<input type="checkbox" id="use_billable" onClick={event => this.setState ({ use_billable: event.target.checked }) } disabled={true} /> {/* DISABLED PENDING IMPLEMENTATION */}
+							<label htmlFor="use_billable" style={{ textAlign: "left" }}>Billable</label>
+
+							<input type="checkbox" id="use_cancelled" onClick={event => this.setState ({ use_cancelled: event.target.checked }) } disabled={true} /> {/* DISABLED PENDING IMPLEMENTATION */}
+							<label htmlFor="use_cancelled">Cancelled entries</label>
+
+						</div>
 					</div>
-	*/}
+
+				</div>
+
 
 				<div className="two-column-table with-headspace">
 
