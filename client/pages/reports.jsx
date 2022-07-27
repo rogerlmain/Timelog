@@ -403,11 +403,7 @@ export default class ReportsPage extends BaseControl {
 				*/}
 
 				<Container visible={this.state.granularity < 4}>
-
-
 					{this.daily_breakdown ()}
-
-
 				</Container>
 
 				{this.show_totals ()}

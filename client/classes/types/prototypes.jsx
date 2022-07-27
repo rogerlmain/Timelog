@@ -291,6 +291,7 @@ Date.prototype.format = function (selected_format) {
 		replace ("mm", this.getMinutes ().padded (2)).
 		replace ("ss", this.getSeconds ().padded (2)).
 		replace ("M", (month + 1).toString ()).
+		replace ("ad", this.get_appended_day ()).
 		replace ("d", this.getDate ().toString ()).
 		replace ("H", (hours % 12) || 12).
 		replace ("ap", (hours < 12) ? "am" : "pm").

@@ -18,8 +18,8 @@ export default class ReportGrid extends BaseControl {
 	static defaultProps = { 
 
 		data: null,
-		fields: null,
-		tally: null, 	// Fields that should be tallied
+		categories: null,
+		tally: null, 	// categories that should be tallied
 
 		header: null,
 		row: null,
@@ -71,7 +71,6 @@ export default class ReportGrid extends BaseControl {
 
 	report_branch = (data, categories) => {
 
-
 		const HeaderCell = props => { 
 
 			let depth = this.props.categories.length - subcategories.length;
@@ -109,7 +108,6 @@ export default class ReportGrid extends BaseControl {
 
 
 	render () {
-
 
 		const cell_count = (object) => {
 

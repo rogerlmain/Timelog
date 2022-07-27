@@ -57,13 +57,14 @@ export const horizontal_alignment = {
 
 
 export const date_formats = {
-	full_date			: "w, MMMM d, yyyy",
-	full_datetime		: "w, MMMM d, yyyy - H:mm ap",
-	timestamp			: "H:mm ap",
-	database_date		: "yyyy-MM-dd",
-	database_timestamp	: "yyyy-MM-dd HH:mm",
-	detailed_timestamp	: "w, M d yyyy HH:mm:ss",
-	report_datetime		: "w d, H:mm ap",
+	full_date				: "w, MMMM d, yyyy",
+	full_datetime			: "w, MMMM d, yyyy - H:mm ap",
+	timestamp				: "H:mm ap",
+	database_date			: "yyyy-MM-dd",
+	database_timestamp		: "yyyy-MM-dd HH:mm",
+	detailed_datetime		: "w, MMMM ad yyyy, H:mm:ss ap",
+	short_detailed_datetime	: "w, MMMM ad yyyy, H:mm ap",
+	report_datetime			: "w d, H:mm ap",
 }// date_formats;
 
 

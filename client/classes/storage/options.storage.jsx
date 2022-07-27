@@ -95,6 +95,9 @@ export default class OptionsStorage extends LocalStorage {
 	static can_bill () { return OptionsStorage.billing_option () == toggled.true }
 	static can_round () { return OptionsStorage.rounding_option () == toggled.true }
 
+
+	static truetime () { return (OptionsStorage.granularity () == granularity_types.truetime) }
+
 	
 	static default_rate (value = null) { 
 		if (isset (value)) return OptionsStorage.save_option (option_types.default_rate, value);

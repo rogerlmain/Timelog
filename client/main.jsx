@@ -38,6 +38,7 @@ import ReportsModel from "./classes/models/reports";
 import OptionStorage from "./classes/storage/options.storage";
 
 import "resources/styles/forms.css";
+import OptionsStorage from "./classes/storage/options.storage";
 
 // import ReportsModel from "./classes/models/reports";
 // import TreeGrid from "client/controls/lists/tree.grid";
@@ -122,7 +123,7 @@ class Main extends BaseControl {
 				<div className="right-aligned-text">Welcome!</div>
 			</Container>
 
-			<div className="right-aligned-text">{this.state.current_time}</div>
+			<div className="right-aligned-text with-some-headspace">{this.state.current_time}</div>
 
 		</div>
 
@@ -140,7 +141,7 @@ class Main extends BaseControl {
 		target_time.setSeconds (target_time.getSeconds () + 1);
 		target_time.setMilliseconds (0);
 
-		this.setState ({ current_time: current_time.format (date_formats.detailed_timestamp) });
+		this.setState ({ current_time: current_time.format (OptionsStorage.truetime () ? date_formats.detailed_datetime : date_formats.short_detailed_datetime) });
 		setTimeout (this.update_clock.bind (this), target_time.getTime () - current_time.getTime ());
 
 	}// update_clock;
@@ -213,9 +214,6 @@ class Main extends BaseControl {
 
 
 /**** FOR DEBUGGING ONLY *****/
-
-
-/*********/
 
 
 class QuickTest extends BaseControl {
