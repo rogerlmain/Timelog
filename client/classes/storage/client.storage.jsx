@@ -36,16 +36,6 @@ export default class ClientStorage extends LocalStorage {
 	/********/
 
 
-	// static save_client = (company_id, form_data) => {
-	// 	return new Promise ((resolve, reject) => {
-	// 		ClientModel.save_client (form_data).then (data => {
-	// 			this.#set_client (company_id, data);
-	// 			resolve (data);
-	// 		}).catch (reject);
-	// 	});
-	// }/* save_client */;
-
-
 	static remove_client (client_id) {
 
 		let values = LocalStorage.get_all (store_name);
@@ -89,11 +79,9 @@ puke ();
 			}// for;
 
 			ClientModel.fetch_by_id (client_id).then (client => {
-				ClientStorage.#set_client (CompanyStorage.active_company_id (), client)
+				ClientStorage.#set_client (CompanyStorage.active_company_id (), client);
 				resolve (client);
-			});
-
-			reject ();
+			}).catch (reject);
 
 		});
 	}/* get_by_id */;

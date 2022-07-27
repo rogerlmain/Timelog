@@ -80,7 +80,11 @@ export default class LoggingPage extends BaseControl {
 		let project_id = nested_value (this.state.current_entry, "project_id");
 		let client_id = nested_value (this.state.current_entry, "client_id");
 
-		ProjectStorage.billing_rate (project_id, client_id).then (result => this.setState ({ billing_rate: result }));
+		ProjectStorage.billing_rate (project_id, client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
+			console.log (error);
+			throw (error);
+		});
+		
 		if (debugging) console.log ("logging page created");
 
 	}// constructor;
@@ -140,18 +144,22 @@ export default class LoggingPage extends BaseControl {
 	
 	log_entry = () => {
 
-		let timestamp = this.rounded (new Date (), ranges.start);
+		let entry = this.state.current_entry;
+		let timestamp = isset (entry) ? ((this.state.action == action_types.cancel) ? entry.start_time : entry.end_time) : this.rounded (new Date (), ranges.start);
 
 		LoggingModel.log (this.client_id (), this.project_id (), this.notes (), timestamp).then (entry => {
-
-			let start_time = Date.validated (entry.start_time);
 
 			if (is_empty (entry)) {
 				LoggingStorage.delete ();
 			} else {
+
+				let start_time = Date.validated (entry.start_time);
+
 				entry.start_time = start_time;
-				entry.end_time = (this.state.action == action_types.log) ? this.end_time () : start_time;
+				entry.end_time = this.end_time ();
+
 				LoggingStorage.set (entry);
+
 			}// if;
 
 			this.setState ({ 

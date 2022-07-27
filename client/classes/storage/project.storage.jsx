@@ -143,7 +143,10 @@ export default class ProjectStorage extends LocalStorage {
 				ClientStorage.default_rate (client_id).then (result => {
 					if (not_null (result)) return resolve (result);
 					resolve (OptionsStorage.default_rate () ?? 0);
-				});
+				}).catch (error => {
+					console.log (error);
+					reject (error);
+				})
 			});
 		});
 	}// billing_rate;

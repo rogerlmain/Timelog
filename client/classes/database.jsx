@@ -35,7 +35,7 @@ export default class Database {
 
 	static fetch_row (name, parameters) {
 		return new Promise ((resolve, reject) => {
-			Database.fetch_data (name, parameters).then ((data) => {
+			Database.fetch_data (name, parameters).then (data => {
 				resolve (Array.isArray (data) && (data.length >= 1) ? data [0] : data);
 			}).catch (reject);
 		});
