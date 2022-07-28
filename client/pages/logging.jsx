@@ -327,6 +327,16 @@ export default class LoggingPage extends BaseControl {
 		let logged_in = this.logged_in ();
 		let elapsed_time = logged_in ? this.elapsed_time () : null;
 
+		let log_button_panel = {
+			columnGap: "0.25em",
+			width: "100%",
+		}// log_button_panel;
+
+		if (logged_in && (elapsed_time > 0)) log_button_panel = {...log_button_panel,
+			display: "grid",
+			gridTemplateColumns: "repeat(2, 1fr)",
+		}// if;
+
 		return <div id="log_panel">
 
 			<EyecandyPanel id="log_form_eyecandy" ref={this.log_form_panel} text="Loading..." eyecandyVisible={!this.state.initialized} stretchOnly={true}>
@@ -362,7 +372,7 @@ export default class LoggingPage extends BaseControl {
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 				
-					text={`Logging you ${logged_in ? "out" : "in"}...`}
+					text={(elapsed_time == 0) ? "Cancelling entry..." : `Logging you ${logged_in ? "out" : "in"}...`}
 					
 					eyecandyVisible={this.state.updating}
 					eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
@@ -370,12 +380,7 @@ export default class LoggingPage extends BaseControl {
 					onEyecandy={this.log_entry}>
 
 					<FadePanel id="login_button" visible={this.project_selected ()} style={{ display: "flex" }}>
-						<div style={(elapsed_time == 0) ? null : {
-							display: "grid",
-							gridTemplateColumns: "repeat(2, 1fr)",
-							columnGap: "0.25em",
-							width: "100%",
-						}}>
+						<div style={log_button_panel}>
 
 							<Container visible={logged_in}>
 								<button className="full-width"
@@ -384,18 +389,15 @@ export default class LoggingPage extends BaseControl {
 								</button>
 							</Container>
 
-							<Container visible={elapsed_time > 0}>
+							<Container visible={(!logged_in) || (elapsed_time > 0)}>
 								<button className="full-width"
 									onClick={() => this.setState ({ updating: true, action: action_types.log })} style={{ flex: 1 }} 
 									disabled={logged_in && this.invalid_entry ()}>
-
 									{logged_in ? "Log out" : "Log in"}
-
 								</button>
 							</Container>
 
 						</div>
-
 					</FadePanel>
 
 				</EyecandyPanel>
