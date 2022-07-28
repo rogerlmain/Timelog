@@ -78,7 +78,7 @@ export default class ProjectSelector extends BaseControl {
 
 		return <div id={this.props.id} className="one-piece-form">
 
-			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={true}
+			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={this.props.newButton}
 
 				hasHeader={this.props.hasHeader} 
 				headerSelectable={false} 
@@ -107,7 +107,7 @@ export default class ProjectSelector extends BaseControl {
 
 					data={isset (this.state.client_id) ? ProjectStorage.get_projects_by_client (this.state.client_id) : null}
 					
-					newButtonPage={this.props.newButton ? page_names.projects : null} 
+					newButtonPage={(this.props.newButton && isset (this.state.cliend_id)) ? page_names.projects : null} 
 					selectedItem={this.state.project_id}
 
 					style={{ width: "100%" }}
