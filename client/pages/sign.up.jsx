@@ -2,19 +2,23 @@ import React from "react";
 
 import AccountStorage from "client/classes/storage/account.storage";
 
-import Container from "controls/container";
-import BaseControl from "controls/abstract/base.control";
+import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
 
-import FadePanel from "controls/panels/fade.panel";
-import ExplodingPanel from "controls/panels/exploding.panel";
-import EyecandyPanel from "controls/panels/eyecandy.panel";
+import ImageUploader from "client/controls/inputs/image.uploader";
 
-import PasswordForm from "forms/password.form";
+import FadePanel from "client/controls/panels/fade.panel";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
+
+import PasswordForm from "client/forms/password.form";
 
 import AccountsModel from "client/classes/models/accounts";
 
 import { account_types, globals } from "classes/types/constants";
-import { get_keys, is_null, nested_value, not_empty } from "classes/common";
+import { get_keys, is_null, nested_value, notify, not_empty, pause } from "classes/common";
+
+import user_image from "resources/images/guest.user.svg";
 
 
 export default class SignupPage extends BaseControl {
@@ -44,11 +48,52 @@ export default class SignupPage extends BaseControl {
 	}// componentDidUpdate;
 
 
+	/********/
+
+
+	save_account = () => {
+
+		let form_data = new FormData (document.getElementById ("account_form"));
+		
+		AccountsModel.save_account (form_data).then (data => {
+
+			let account_id = nested_value (data, "account_id");
+			
+			if (this.signed_in ()) {
+				parent.active_panel = parent.pages.home_panel;
+				parent.setState ({ panel_states: { ...parent.state.panel_states, signup_panel: false } });
+				this.setState ({ eyecandy_visible: false });
+			}// if;
+			
+			if (is_null (account_id)) throw "Cannot create account.";
+
+			AccountStorage.set_all ({
+				account_id		: account_id,
+				first_name		: form_data.get ("first_name"),
+				last_name		: form_data.get ("last_name"),
+				friendly_name	: form_data.get ("friendly_name"),
+				email_address	: form_data.get ("email_address"),
+				account_type	: form_data.get ("account_type"),
+			});
+
+			return globals.main.forceUpdate ();
+		
+		}).catch (error => this.setState ({ 
+			error_message: error,
+			eyecandy_visible: true 
+		}));
+		
+	}// save_account;
+
+
+	/********/
+
+
 	render () {
 
 		let parent = this.props.parent;
 
-		return <div id={this.props.id} className={this.signed_out () ? "shadow-box" : null} style={{ alignSelf: "center" }}>
+		return <div id={this.props.id} className={`${this.signed_out () ? "shadow-box" : null} horizontally-centered`} style={{ alignSelf: "center" }}>
 
 			<PasswordForm visible={this.state.changing_password} />
 
@@ -62,9 +107,13 @@ export default class SignupPage extends BaseControl {
 				</Container>
 			</ExplodingPanel>
 
+
+			<Container visible={this.signed_in ()}><ImageUploader id="avatar" defaultImage={user_image} defaultWidth="7em" defaultHeight="7em" /></Container>
+
+
 			<form id="account_form" ref={this.account_form} encType="multipart/form-data">
 
-				<div className="two-piece-form">
+				<div className="two-piece-form with-lotsa-headspace">
 
 					<input id="account_id" name="account_id" type="hidden" defaultValue={AccountStorage.account_id ()} />
 
@@ -138,39 +187,7 @@ defaultValue="stranger" />
 
 				<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible}
 					text={this.signed_in () ? "Saving your information" : "Creating your account"}
-					onEyecandy = {() => {
-
-						let form_data = new FormData (document.getElementById ("account_form"));
-						
-						AccountsModel.save_account (form_data).then (data => {
-
-							let account_id = nested_value (data, "account_id");
-							
-							if (this.signed_in ()) {
-								parent.active_panel = parent.pages.home_panel;
-								parent.setState ({ panel_states: { ...parent.state.panel_states, signup_panel: false } });
-								this.setState ({ eyecandy_visible: false });
-							}// if;
-							
-							if (is_null (account_id)) throw "Cannot create account.";
-
-							AccountStorage.set_all ({
-								account_id		: account_id,
-								first_name		: form_data.get ("first_name"),
-								last_name		: form_data.get ("last_name"),
-								friendly_name	: form_data.get ("friendly_name"),
-								email_address	: form_data.get ("email_address"),
-								account_type	: form_data.get ("account_type"),
-							});
-
-							return globals.main.forceUpdate ();
-						
-						}).catch (error => this.setState ({ 
-							error_message: error,
-							eyecandy_visible: true 
-						}));
-						
-					}}>
+					onEyecandy = {this.save_account}>
 
 					<button onClick={() => { 
 

@@ -55,6 +55,7 @@ div.ghost-box { display: contents }
 
 .with-headspace { margin-top: 1em }
 .with-some-headspace {margin-top: 0.35em }
+.with-lotsa-headspace {margin-top: 1.5em }
 
 
 /** inline-flex **/

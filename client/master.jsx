@@ -35,7 +35,7 @@ import "resources/styles/home.page.css";
 /********/
 
 
-const version = "1.7.4";
+const version = "1.7.5";
 
 
 const user_image_style = {
@@ -48,12 +48,12 @@ const user_image_style = {
 
 
 const page_rule_style = {
-	margin: "2em 0",
+	margin: "1em 0 2em",
 	border: "none",
 	width: "95vw",
-	height: "1em",
-	borderBottom: "1px solid var(--border-color)",
-	boxShadow: "0 0.5em 0.5em -0.5em var(--shadow-color)",
+	height: 0,
+	borderTop: "solid 1px var(--border-color)"
+	// backgroundImage: "linear-gradient(var(--rule-color), var(--background-color))"
 }// page_rule_style;
 
 
@@ -66,11 +66,13 @@ const CompanyHeader = props => {
 
 	return <div style={{ marginLeft: "2em", fontStyle: "italic" }} className="right-aligned">
 
+		<div className="right-aligned-text">{props.currentTime}</div>
+
 		<Container visible={props.signedIn}>
 
-			<div className="two-column-table">
+			<div className="two-column-table with-headspace">
 
-				<div>
+				<div className="vertically-centered">
 
 					<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
 					
@@ -108,10 +110,8 @@ const CompanyHeader = props => {
 		</Container>
 
 		<Container visible={!props.signedIn}>
-			<div className="right-aligned-text">Welcome!</div>
+			<div className="right-aligned-text with-some-headspace">Welcome!</div>
 		</Container>
-
-		<div className="right-aligned-text with-some-headspace">{props.currentTime}</div>
 
 	</div>
 
@@ -322,7 +322,7 @@ export default class MasterPanel extends BaseControl {
 
 									<div ref={this.reference} id={this.props.id}>
 
-										<div className="full-size horizontally-aligned" style={{ marginTop: "2em" }}>
+										<div className="full-size horizontally-aligned">
 											<ExplodingPanel id="details_panel">
 												{this.page_items ()}
 											</ExplodingPanel>
