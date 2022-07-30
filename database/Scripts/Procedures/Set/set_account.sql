@@ -11,7 +11,8 @@ create procedure save_account (
     friendly_name varchar (45),
     email_address varchar (255),
     `password` varchar (45),
-    account_type int
+    account_type int,
+    avatar text
 ) begin
 
     if (account_id is null) then
@@ -25,6 +26,7 @@ create procedure save_account (
 			`password`,	--  to be encrypted
 			account_type,
 			0,
+            avatar,
             null,
             now(),
             now()
@@ -41,6 +43,7 @@ create procedure save_account (
 			acc.email_address = coalesce (email_address, acc.email_address),
 			acc.password = coalesce (`password`, acc.password),	--  to be encrypted
 			acc.account_type = coalesce (account_type, acc.account_type),
+            acc.avatar = coalesce (avatar, acc.avatar),
             acc.last_updated = coalesce (now(), acc.last_updated)
 		where
 			acc.id = account_id;
