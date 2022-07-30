@@ -171,6 +171,7 @@ export const credential_fields = {
 	account_id			: "account_id",
 	account_type		: "account_type",
 	administrator_type	: "administrator_type",
+	avatar				: "avatar",
 	square_id			: "square_id",
 	company_id			: "company_id",
 	email_address		: "email_address",

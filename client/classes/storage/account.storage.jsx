@@ -24,5 +24,7 @@ export default class AccountStorage extends LocalStorage {
 
 	static email_address = () => { return AccountStorage.get (credential_fields.email_address) }
 
+	static avatar = () => { return AccountStorage.get (credential_fields.avatar) }
+
 
 }// AccountStorage;

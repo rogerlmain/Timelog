@@ -61,7 +61,7 @@ export default class CreditCardSubform extends BaseControl {
 
 			<div className="horizontally-spaced-out">
 				<img src={"resources/images/logos/square.png"} className="square-logo" />
-				<div className="credit-card-logos right-justify">
+				<div className="credit-card-logos right-justified">
 					<img src={"resources/images/logos/mastercard.svg"} />
 					<img src={"resources/images/logos/visa.png"} />
 					<img src={"resources/images/logos/discover.svg"} />

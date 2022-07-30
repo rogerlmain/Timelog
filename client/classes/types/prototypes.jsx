@@ -545,6 +545,24 @@ HTMLFormElement.prototype.validate = function () {
 }// validate;
 
 
+/**** HTMLImageElement ****/
+
+
+HTMLImageElement.prototype.toDataURL = function () {
+   
+	const canvas = document.createElement ("canvas");
+	const context = canvas.getContext ("2d");
+	
+	canvas.width = this.offsetWidth;
+	canvas.height = this.offsetHeight;
+	
+	context.drawImage (this, 0, 0, canvas.width, canvas.height);
+
+	return canvas.toDataURL ("image/png");
+ 
+}// toDataURL;
+ 
+ 
 /**** HTMLSelectElement ****/
 
 

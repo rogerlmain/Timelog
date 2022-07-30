@@ -145,11 +145,11 @@ div.credit-centered *:nth-child(::even) { justify-self: flex-start }
 /** Flex Row **/
 
 
-.right-justify {
+.right-justified {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
-}/* .right-justify */
+}/* .right-justified */
 
 
 .horizontally-spaced-out {

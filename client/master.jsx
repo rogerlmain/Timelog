@@ -5,6 +5,8 @@ import CompanyStorage from "client/classes/storage/company.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
 import Container from "controls/container";
+import ThumbnailImage from "controls/thumbnail.image";
+
 import SelectButton from "controls/buttons/select.button";
 import ExplodingPanel from "controls/panels/exploding.panel";
 
@@ -41,8 +43,6 @@ const version = "1.7.5";
 const user_image_style = {
 	width: "3em",
 	height: "3em",
-	borderRadius: "3em",
-	border: "solid 1px black",
 	cursor: "pointer",
 }// user_image_style;
 
@@ -103,7 +103,7 @@ const CompanyHeader = props => {
 
 				</div>
 
-				<img src={user_image} style={user_image_style} onClick={() => props.changePage (page_names.account)} />
+				<ThumbnailImage src={AccountStorage.avatar () ?? user_image} style={user_image_style} onClick={() => props.changePage (page_names.account)} />
 					
 			</div>
 
@@ -295,20 +295,22 @@ export default class MasterPanel extends BaseControl {
 
 					</div>
 
-					<div className="home_button_panel">
+					<Container visible={this.signed_in ()}>
+						<div className="home_button_panel">
 
-						{this.button_list ()}
-						{this.signout_button ()}
+							{this.button_list ()}
+							{this.signout_button ()}
 
-						<SelectButton onClick={() => {
-							alert ("waiting for something to test")
-							}} style={{ 
-							position: "absolute",
-							right: "1em",
-							bottom: "1em"
-						}}>TEST</SelectButton>
+							<SelectButton onClick={() => {
+								alert ("waiting for something to test")
+								}} style={{ 
+								position: "absolute",
+								right: "1em",
+								bottom: "1em"
+							}}>TEST</SelectButton>
 
-					</div>
+						</div>
+					</Container>
 
 					<hr style={page_rule_style} />
 					

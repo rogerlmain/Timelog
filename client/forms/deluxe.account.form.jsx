@@ -266,7 +266,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 							<br />
 
-							<div className="right-justify" style={{ marginTop: "1em" }}>
+							<div className="right-justified" style={{ marginTop: "1em" }}>
 								<div className="one-piece-form">
 									<label htmlFor="new_card_checkbox">Use a different card</label>
 									<input type="checkbox" id="new_card_checkbox" onClick={event => this.setState ({ new_card: event.target.checked })} />
@@ -327,7 +327,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 					</Container>
 						
-					<div className="right-justify">
+					<div className="right-justified">
 						<EyecandyPanel id="payment_eyecandy" text="Processing. One moment, please..." 
 							eyecandyVisible={this.state.processing} onEyecandy={this.submit_payment}>
 							

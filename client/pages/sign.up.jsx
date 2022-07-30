@@ -21,6 +21,12 @@ import { get_keys, is_null, nested_value, notify, not_empty, pause } from "class
 import user_image from "resources/images/guest.user.svg";
 
 
+const image_uploader_style = { 
+	width: "8em", 
+	height: "8em", 
+}// image_uploader_style;
+
+
 export default class SignupPage extends BaseControl {
 
 
@@ -54,17 +60,15 @@ export default class SignupPage extends BaseControl {
 	save_account = () => {
 
 		let form_data = new FormData (document.getElementById ("account_form"));
+		let parent = this.props.parent;
+
+		form_data.append ("avatar", this.state.avatar);
 		
 		AccountsModel.save_account (form_data).then (data => {
 
 			let account_id = nested_value (data, "account_id");
 			
-			if (this.signed_in ()) {
-				parent.active_panel = parent.pages.home_panel;
-				parent.setState ({ panel_states: { ...parent.state.panel_states, signup_panel: false } });
-				this.setState ({ eyecandy_visible: false });
-			}// if;
-			
+			if (this.signed_in ()) this.setState ({ eyecandy_visible: false });
 			if (is_null (account_id)) throw "Cannot create account.";
 
 			AccountStorage.set_all ({
@@ -74,6 +78,7 @@ export default class SignupPage extends BaseControl {
 				friendly_name	: form_data.get ("friendly_name"),
 				email_address	: form_data.get ("email_address"),
 				account_type	: form_data.get ("account_type"),
+				avatar			: form_data.get ("avatar"),
 			});
 
 			return globals.main.forceUpdate ();
@@ -91,8 +96,6 @@ export default class SignupPage extends BaseControl {
 
 	render () {
 
-		let parent = this.props.parent;
-
 		return <div id={this.props.id} className={`${this.signed_out () ? "shadow-box" : null} horizontally-centered`} style={{ alignSelf: "center" }}>
 
 			<PasswordForm visible={this.state.changing_password} />
@@ -108,7 +111,12 @@ export default class SignupPage extends BaseControl {
 			</ExplodingPanel>
 
 
-			<Container visible={this.signed_in ()}><ImageUploader id="avatar" defaultImage={user_image} defaultWidth="7em" defaultHeight="7em" /></Container>
+			<Container visible={this.signed_in ()}>
+				<ImageUploader id="avatar" 
+					onUpload={image => this.setState ({ avatar: image.thumbnail })}
+					defaultImage={AccountStorage.avatar () ?? user_image} style={image_uploader_style}>
+				</ImageUploader>
+			</Container>
 
 
 			<form id="account_form" ref={this.account_form} encType="multipart/form-data">
@@ -168,41 +176,40 @@ defaultValue="stranger" />
 
 			</form>
 
-			<div className={`${this.signed_out () ? "horizontally-spaced-out" : "right-justify"} button-bar`}>
+			<div className="full-width right-justified vertically-centered with-headspace">
+				<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible} stretchOnly={true}
 
-				<FadePanel id="signup_panel" visible={!this.state.eyecandy_visible}>
-
-					<Container visible={this.signed_out ()}>
-						<div className="aside">
-							<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
-							<a onClick={() => { this.props.parent.setState ({ signing_up: false }) }}>Sign in</a>
-						</div>
-					</Container>
-
-					<Container visible={this.signed_in ()}>
-						<button onClick={() => this.setState ({ changing_password: true })}>Change password</button>
-					</Container>	
-
-				</FadePanel>
-
-				<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible}
 					text={this.signed_in () ? "Saving your information" : "Creating your account"}
 					onEyecandy = {this.save_account}>
 
-					<button onClick={() => { 
+					<div className={`${this.signed_in () ? "right-justified" : "horizontally-spaced-out"}`} style={{ columnGap: "0.5em" }}>
 
-						if (this.password_field.current.value != this.confirm_password_field.current.value) return this.setState ({ error_message: "Password and confirmation do not match." });
-						if (!this.account_form.current.validate ()) return this.setState ({ error_message: "Please complete the highlighted fields" });
-						
-						this.setState ({ 
-							error_message: null,
-							eyecandy_visible: true 
-						});
+						<Container visible={this.signed_in ()}>
+							<button onClick={() => this.setState ({ changing_password: true })}>Change password</button>
+						</Container>	
 
-					}}>{this.signed_out () ? "Sign up" : "Save changes"}</button>
+						<Container visible={this.signed_out ()}>
+							<div className="aside">
+								<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
+								<a onClick={() => { this.props.parent.setState ({ signing_up: false }) }}>Sign in</a>
+							</div>
+						</Container>
+
+						<button onClick={() => { 
+
+							if (this.signed_out () && (this.password_field.current.value != this.confirm_password_field.current.value)) return this.setState ({ error_message: "Password and confirmation do not match." });
+							if (!this.account_form.current.validate ()) return this.setState ({ error_message: "Please complete the highlighted fields" });
+							
+							this.setState ({ 
+								error_message: null,
+								eyecandy_visible: true 
+							});
+
+						}}>{this.signed_out () ? "Sign up" : "Save changes"}</button>
+
+					</div>
 
 				</EyecandyPanel>
-
 			</div>
 
 		</div>

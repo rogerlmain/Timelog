@@ -50,6 +50,7 @@ export default class AccountsModel extends Database {
 			fields ["password"],
 
 			fields ["account_type"],
+			fields ["avatar"],
 
 		];
 
