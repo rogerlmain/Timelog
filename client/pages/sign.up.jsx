@@ -16,7 +16,7 @@ import PasswordForm from "client/forms/password.form";
 import AccountsModel from "client/classes/models/accounts";
 
 import { account_types, globals } from "classes/types/constants";
-import { get_keys, is_null, nested_value, notify, not_empty, pause } from "classes/common";
+import { get_keys, isset, is_null, nested_value, notify, not_empty, pause } from "classes/common";
 
 import user_image from "resources/images/guest.user.svg";
 
@@ -60,9 +60,8 @@ export default class SignupPage extends BaseControl {
 	save_account = () => {
 
 		let form_data = new FormData (document.getElementById ("account_form"));
-		let parent = this.props.parent;
 
-		form_data.append ("avatar", this.state.avatar);
+		if (isset (this.state.avatar)) form_data.append ("avatar", this.state.avatar);
 		
 		AccountsModel.save_account (form_data).then (data => {
 

@@ -3,10 +3,11 @@ import * as common from "classes/common";
 
 import React from "react";
 
+import ActivityLog from "client/classes/activity.log";
+import SettingsStorage from "client/classes/storage/settings.storage";
+
 import { default_settings } from "classes/types/constants";
 import { get_keys, is_array, jsonify } from "classes/common";
-
-import SettingsStorage from "client/classes/storage/settings.storage";
 
 
 const random_factor = 1000;
@@ -36,7 +37,7 @@ export default class BaseControl extends React.Component {
 	
 
 	// Like forceUpdate except calls shouldComponentUpdate
-	forceRefresh = () => { this.setState (this.state) }
+	forceRefresh = (callback = null) => { this.setState (this.state, callback) }
 
 	// Like setState but doesn't update if states match 
 	updateState = (new_state, callback) => { if (!jsonify (this.state).matches (jsonify (new_state))) this.setState (new_state, callback) }
@@ -86,7 +87,7 @@ export default class BaseControl extends React.Component {
 				if (common.is_function (method)) resolve (method (...parameters));
 				resolve ();
 			} catch (error) { 
-				alert (error);
+				ActivityLog.log_error (error);
 				reject (error);
 			};
 		});

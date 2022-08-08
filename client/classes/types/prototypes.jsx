@@ -1,5 +1,5 @@
 import { blank, space, date_formats, date_rounding, directions, empty } from "classes/types/constants";
-import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array } from "classes/common";
+import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value } from "classes/common";
 
 
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -576,12 +576,33 @@ HTMLSelectElement.prototype.selectedValue = function () {
 }// selectedValue;
 
 
+/********/
+
+
+Location.prototype.urlParameters = function () {
+
+	let result = null;
+	let query_parameters = this.search.substring (1).split ("&");
+
+	query_parameters.forEach (parameter => {
+		let parts = parameter.split ("=");
+		if (parts.length != 2) return;
+		if (is_null (result)) result = {}
+		result [parts [0]] = parts [1];
+	})/* forEach */;
+
+	return result;
+
+}// urlParameters;
+
+
+Location.prototype.urlParameter = function (parameter) { return nested_value (this.urlParameters (), parameter) }
+
+
 /**** Number Prototype Functions ****/
 
 
-Number.prototype.padded = function (length) {
-	return this.toString ().padded (length, "0", directions.left);
-}// if;
+Number.prototype.padded = function (length) { return this.toString ().padded (length, "0", directions.left) }
 
 
 Number.prototype.toCurrency = function () {

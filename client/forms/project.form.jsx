@@ -14,7 +14,7 @@ import { blank, space, horizontal_alignment } from "classes/types/constants";
 import { nested_value, isset  } from "classes/common";
 
 import { SmallProgressMeter } from "controls/progress.meter";
-import { MainContext } from "classes/types/contexts";
+import { MasterContext } from "classes/types/contexts";
 
 
 import "resources/styles/forms.css"
@@ -35,7 +35,7 @@ export default class ProjectForm extends FormControl {
 	}// state;
 
 
-	static contextType = MainContext;
+	static contextType = MasterContext;
 
 
 	static defaultProps = {

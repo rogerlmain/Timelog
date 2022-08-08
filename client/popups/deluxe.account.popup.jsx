@@ -12,7 +12,7 @@ import PopupWindow from "pages/gadgets/popup.window";
 
 import DeluxeAccountForm from "forms/deluxe.account.form";
 
-import { MainContext } from "client/classes/types/contexts";
+import { MasterContext } from "client/classes/types/contexts";
 
 import "resources/styles/forms/deluxe.account.form.css";
 
@@ -33,7 +33,7 @@ export default class DeluxeAccountPopup extends BaseControl {
 	}/* state */;
 	
 
-	static contextType = MainContext;
+	static contextType = MasterContext;
 
 	static defaultProps = {  
 

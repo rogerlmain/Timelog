@@ -4,8 +4,8 @@ import Database from "../database.mjs";
 export default class SettingsData extends Database {
 
 
-	get_settings = () => { 
-		let result = this.data_query ("get_settings", [global.account.account_id], true);
+	get_settings = (account_id) => { 
+		let result = this.data_query ("get_settings", [account_id], true);
 		return result;
 	}/* get_settings */;
 

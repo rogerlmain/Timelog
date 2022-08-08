@@ -1,14 +1,11 @@
 start transaction;
 
 drop procedure if exists get_invitations;
+drop procedure if exists get_invitations_by_id;
 
 delimiter ??
 
-create procedure get_invitations (
-	invitation_id	integer,
-	company_id		integer,
-	invitee_email	varchar (320)
-) begin
+create procedure get_invitation_by_id (invitation_id integer) begin
 
 	select
 		inv.id as invite_id,
@@ -32,10 +29,6 @@ create procedure get_invitations (
 	on
 		(acc.id = inv.host_id)
 	where
-		(invitation_id = inv.id) or
-		((invitation_id is null) and (
-			((company_id = inv.company_id) or (company_id is null)) and
-			((invitee_email = inv.invitee_email) or (invitee_email is null))
-		));
+		(invitation_id = inv.id);
 	
 end??

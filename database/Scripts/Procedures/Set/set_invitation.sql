@@ -6,6 +6,7 @@ drop procedure if exists set_invitation;
 delimiter ??
 
 create procedure set_invitation (
+	invite_id			integer,
     company_id			integer,
 	host_id				integer,
 	invitee_name		varchar (32),
@@ -13,17 +14,7 @@ create procedure set_invitation (
 	invitee_account_id	integer
 ) begin
 
-	declare invitation_id int;
-    
-    select
-		inv.id into invitation_id
-	from
-		invitations as inv
-	where
-		(inv.company_id = company_id) and
-        (inv.invitee_email = invitee_email);
-        
-	if (invitation_id is null) then
+	if (invite_id is null) then
     
 		insert into invitations (
 			company_id,
@@ -43,18 +34,18 @@ create procedure set_invitation (
 			now()
 		);
         
-        select last_insert_id() into invitation_id;
+        select last_insert_id() into invite_id;
         
     else
     
 		update invitations as inv set 
 			invitee_account_id = coalesce (invitee_account_id, inv.invitee_account_id),
 			last_updated = now()
-		where inv.id = invitation_id;
+		where inv.id = invite_id;
     
     end if;
 
-	call get_invitations (invitation_id, null, null);
+	call get_invitation_by_id (invite_id);
 
 end??
 

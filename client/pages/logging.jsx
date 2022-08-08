@@ -22,7 +22,7 @@ import { blank, date_formats, date_rounding, debugging, granularity_types, space
 import { isset, is_empty, nested_value, not_set, multiline_text, null_value } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
-import { MainContext } from "client/classes/types/contexts";
+import { MasterContext } from "client/classes/types/contexts";
 
 import "resources/styles/pages/logging.css";
 
@@ -67,7 +67,7 @@ export default class LoggingPage extends BaseControl {
 	log_form_panel = React.createRef ();
 
 
-	static contextType = MainContext;
+	static contextType = MasterContext;
 	static defaultProps = { id: "logging_page" }
 
 

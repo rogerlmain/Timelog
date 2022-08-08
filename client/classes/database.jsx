@@ -1,11 +1,13 @@
+import ActivityLog from "client/classes/activity.log";
 import AccountStorage from "client/classes/storage/account.storage";
-import { is_empty, isset, not_null } from "classes/common";
+
+import { is_empty, isset, not_null, is_function } from "classes/common";
 
 
 export default class Database {
 
 
-	static async fetch_data (name, form_data) {
+	static async fetch_data (name, form_data, callback = null) {
 
 		let fetch_parameters = null;
 		let account_id = AccountStorage.account_id ();
@@ -23,10 +25,11 @@ export default class Database {
 			body: form_data
 		}// fetch_parameters;
 
-		return fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (response => { 
+		return fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (response => {
+			if (is_function (callback)) return callback (response);
 			return is_empty (response) ? null : response;
 		}).catch (error => {
-			alert (error);
+			ActivityLog.log_error (error);
 			return null;
  		});
 
@@ -48,7 +51,7 @@ export default class Database {
 				if (isset (response)) return resolve (response);
 				throw "save_data: no result returned";
 			}).catch (error => {
-				alert (error);	
+				ActivityLog.log_error (error);	
 				reject (error);
 			});
 		});

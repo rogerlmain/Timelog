@@ -104,6 +104,7 @@ export function jsonify (value) {
 
 
 export function is_array (value) { return Array.isArray (value) }
+export function is_boolean (value) { return typeof value == "boolean" }
 export function is_date (value) { return value instanceof Date }
 export function is_empty (value) { return (is_string (value) ? value.empty () : not_set (value, blank) || (value.length == 0)) }
 export function is_function (value) { return value instanceof Function }
@@ -122,6 +123,7 @@ export function not_function (value) { return !is_function (value) }
 export function not_set (value, ...nullables) { return (!isset (value)) || Array.from (nullables).includes (value) }
 export function not_null (value) { return !is_null (value) }
 export function not_object (value, include_arrays = false) { return !is_object (value, include_arrays) }
+export function not_string (value) { return !is_string (value) }
 export function not_undefined (value) { return !is_undefined (value) }
 
 export function nulled (value) { return (null_or_undefined (value)) ? null : value }
@@ -144,6 +146,29 @@ export function numeric_value (value) {
 
 
 /********/
+
+
+export function decode_string (input_string) {
+
+	let result = null;
+
+	if (not_string (input_string) || is_empty (input_string)) return result;
+
+	while (input_string.length > 0) {
+
+		let next_index = parseInt (input_string.substring (0, 2));
+		let next_item = input_string.substr (2, next_index);
+
+		input_string = input_string.substring (next_item.toString ().length + 2);
+
+		if (is_null (result)) result = [];
+		result.push (next_item);
+
+	}// while;
+
+	return result;
+
+}// decode_string;
 
 
 export function dimensions (object) {

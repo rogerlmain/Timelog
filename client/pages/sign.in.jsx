@@ -13,7 +13,7 @@ import Container from "client/controls/container";
 import { get_keys, not_empty } from "classes/common";
 
 import { globals } from "client/classes/types/constants";
-import { MainContext } from "classes/types/contexts";
+import { MasterContext } from "classes/types/contexts";
 
 
 const bad_credentials = <div id="bad_credentials" className="login-error">
@@ -36,7 +36,7 @@ export default class SigninPage extends BaseControl {
 	}// state;
 
 
-	static contextType= MainContext;
+	static contextType= MasterContext;
 	static defaultProps = { id: "signin_page" }
 
 
@@ -59,7 +59,7 @@ export default class SigninPage extends BaseControl {
 				let ids = get_keys (companies);
 
 				if (common.isset (ids) && (ids.length == 1)) CompanyStorage.set_active_company (ids [0]);
-				this.context.main_page.setState ({ company_id: CompanyStorage.active_company_id () });
+				this.context.master_page.setState ({ company_id: CompanyStorage.active_company_id () });
 				return globals.main.forceUpdate ();
 
 			}// if;

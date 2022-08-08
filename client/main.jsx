@@ -6,18 +6,17 @@ import "resources/styles/main.css";
 import React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
-import CompanyStorage from "client/classes/storage/company.storage";
 import MasterPanel from "client/master";
 
 import { createRoot } from "react-dom/client";
 
 import { debugging, tracing, globals, date_formats } from "client/classes/types/constants";
-import { isset, not_set, notify } from "client/classes/common";
 
 
 // Guest Imports
 
 import "resources/styles/forms.css";
+import ActivityLog from "./classes/activity.log";
 
 
 // import ReportsModel from "./classes/models/reports";
@@ -52,7 +51,7 @@ class Main extends BaseControl {
 	/********/
 
 
-	error_handler (message, url, line) { notify (message, url, line) }
+	error_handler (message, url, line) { ActivityLog.log_error (`Unhandled error: ${message}`, `\nAt ${url}`, `\nOn line #${line}`) }
 
 
 	/********/

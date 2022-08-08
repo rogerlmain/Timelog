@@ -21,10 +21,23 @@ global.not_number = value => { return !is_number (value) }
 global.null_if = (value, comparison) => { return (value == comparison) ? null : value }
 
 
+const directions = {
+	left: "left",
+	right: "right",
+	up: "up",
+	down: "down"
+}// directions;
+
+
 /********/
+
+
+Number.prototype.padded = function (length) { return `${"0".repeat (length - this.toString ().length)}${this.toString ()}` }
 
 
 String.prototype.equals = function (comparison, case_sensitive = false) {
 	if (is_null (comparison)) return false;
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
 }// equals;
+
+

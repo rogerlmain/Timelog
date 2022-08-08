@@ -29,8 +29,6 @@
 	--double-height: 2em;
 	--full-height: 3em;
 
-	--single-height:var(--standard-height);
-
 	--standard-column-gap: 0.5em;
 	--standard-row-gap: 0.2em;
 
@@ -172,6 +170,12 @@ button, *.unselectable {
     -ms-user-select: none;		/* Microsoft */
     user-select: none;			/* Everyone else */
 }/* button, unselectable */
+
+
+/********/
+
+
+button.minibutton { height: var(--standard-height) }
 
 
 /**** Inputs ****/

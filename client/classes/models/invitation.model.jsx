@@ -1,12 +1,20 @@
 import Database from "classes/database";
+
 import DataModel from "client/classes/models/data.model";
+import LocalStorage from "client/classes/local.storage";
 
 import AccountStorage from "client/classes/storage/account.storage";
 
-import * as common from "classes/common";
-
 
 export default class InvitationModel extends DataModel {
+
+
+	static respond = (response, invite_id) => {
+		return Database.fetch_data ("invitations", {
+			action:		response,
+			invite_id:	invite_id
+		}, () => LocalStorage.remove_store ("invitation"));
+	}/* respond */;
 
 
 	static fetch_all () { 

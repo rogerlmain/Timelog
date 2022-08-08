@@ -3,13 +3,20 @@ import React from "react";
 import Container from "client/controls/container";
 import BaseControl from "controls/abstract/base.control";
 
-import AccountStorage from "classes/storage/account.storage";
+import LoggingStorage from "client/classes/storage/logging.storage";
 
 import InvitationModel from "client/classes/models/invitation.model";
 
-import { isset, is_null, not_set } from "classes/common";
-import { blank } from "client/classes/types/constants";
-import LoggingStorage from "client/classes/storage/logging.storage";
+import { is_null, not_set } from "classes/common";
+import { MasterContext } from "client/classes/types/contexts";
+import CompanyModel from "client/classes/models/company.model";
+import CompanyStorage from "client/classes/storage/company.storage";
+
+
+const invite_responses = {
+	accepted: "accepted",
+	declined: "declined",
+}// responses;
 
 
 export default class HomePage extends BaseControl {
@@ -24,7 +31,28 @@ export default class HomePage extends BaseControl {
 	}// defaultProps;
 
 
+	static contextType = MasterContext;
+
+
 	/********/
+
+
+	respond = (invite, response) => {
+		InvitationModel.respond (response, invite.invite_id).then (() => {
+			if (response == invite_responses.accepted) {
+
+				this.context.master_page.update_company_list ().then (() => {
+					CompanyStorage.set_active_company (invite.company_id);
+					this.context.master_page.select_company (invite.company_id);
+				});
+
+			}// if;
+			this.update_invitations (() => alert (`Invitation ${response}`));
+		});
+	}// respond;
+
+
+	update_invitations = (callback) => InvitationModel.fetch_all ().then (data => this.setState ({ invitations: Array.arrayify (data) }, callback));
 
 
 	show_invitations = () => {
@@ -35,20 +63,22 @@ export default class HomePage extends BaseControl {
 
 		this.state.invitations.forEach (invite => {
 			if (is_null (result)) result = [];
-			result.push (<div key={invite.company_id}>
-				<a href="about:blank" style={{ fontSize: "11pt" }}
-					onClick={event => {
-						notify ("To be implemented...", "Stay tuned.");
-						event.preventDefault ();
-					}}>
-					{invite.host_name} at {invite.company_name}
-				</a><br />
-			</div>);
+			result.push (<Container key={invite.company_id}>
+
+				<div key={`text_${invite.company_id}`}>
+					<div>{invite.host_name} from</div>
+					<div>{invite.company_name}</div>
+				</div>
+
+				<div key={`button_${invite.company_id}`} className="button-bar">
+					<button className="minibutton" onClick={() => this.respond (invite, invite_responses.declined)}>Decline</button>
+					<button className="minibutton" onClick={() => this.respond (invite, invite_responses.accepted)}>Accept</button>
+				</div>
+
+			</Container>);
 		});
 
-		if (result.length == 1) return <Container>You have an invitation from<div className="with-some-headspace">{result}</div></Container>;
-
-		return <Container>You have invitations from: <br />{result}</Container>;
+		return <div className="vertically-center-justified two-column-table with-some-headspace">{result}</div>
 		
 	}// show_invitations;
 
@@ -56,9 +86,10 @@ export default class HomePage extends BaseControl {
 	/********/
 
 
-	componentDidMount () {
-		InvitationModel.fetch_all ().then (data => this.setState ({ invitations: Array.arrayify (data) }));
-	}/* componentDidMount */;
+	componentDidMount () { this.update_invitations () }
+
+
+	componentDidUpdate = this.componentDidMount;
 
 
 	render () {

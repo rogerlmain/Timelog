@@ -67,15 +67,16 @@ export default class EmailHandler {
 
 	create_invite = (invitation) => { 
 
-		let code_string = (number) => { return  (global.is_null (number) || isNaN (number)) ? 0 : `${number.toString ().length}${number.toString ()}` }
+		let encode_string = (number) => { return  (global.is_null (number) || isNaN (number)) ? "00" : `${number.toString ().length.padded (2)}${number.toString ()}` }
 
-		let result = code_string (invitation.invite_id) +
-			code_string (invitation.company_id) +
-			code_string (invitation.host_id) +
-			code_string (invitation.invitee_account_id) +
-			`${invitation.date_created}${Number.random (10, 99)}`;
+		let result = encode_string (invitation.invite_id) +
+			encode_string (invitation.company_id) +
+			encode_string (invitation.host_id) +
+			encode_string (invitation.invitee_account_id) +
+			encode_string (invitation.date_created) +
+			encode_string (Number.random (10, 99));
 
-		return result;
+			return result;
 
 	}// create_invite;
 

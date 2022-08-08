@@ -30,6 +30,12 @@ class Database {
 	request = null;
 	resposne = null;
 
+	// Standard response
+	send_result_data (data) {
+		this.response.send (data);
+		this.connection.end ();
+	}// send_result_data;
+
 
 	parse_integer (value) {
 		let parsed_value = parseInt (value);
@@ -45,13 +51,6 @@ class Database {
 		}// for;
 		return result;
 	}// normalized;
-
-
-	// Standard response
-	send_result_data (data) {
-		this.response.send (data);
-		this.connection.end ();
-	}// send_result_data;
 
 
 	// Use if special handling required before send 

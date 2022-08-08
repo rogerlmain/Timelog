@@ -10,8 +10,8 @@ class LoggingData extends Database {
 	}// get_logs;
 
 
-	latest_log_entry () {
-		return this.data_query ("get_latest_entry", [global.account.account_id]);
+	latest_log_entry (account_id) {
+		return this.data_query ("get_latest_entry", [account_id]);
 	}// latest_log_entry;
 
 

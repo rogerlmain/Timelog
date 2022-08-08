@@ -44,11 +44,7 @@ div.ghost-box { display: contents }
 }/* .overlay-container > * */
 
 
-/**** Justification and Layout Containers ****/
-
-
-.right-aligned * { text-align: right }
-.right-aligned-text { text-align: right !important }
+/**** Spacing ****/
 
 
 .indented { margin-left: 1em }
@@ -58,7 +54,7 @@ div.ghost-box { display: contents }
 .with-lotsa-headspace {margin-top: 1.5em }
 
 
-/** inline-flex **/
+/**** Flex directionals ****/
 
 
 .flex-row {
@@ -66,6 +62,9 @@ div.ghost-box { display: contents }
 	flex-direction: row;
 	align-items: center;
 }/* flex-row */
+
+
+/**** Flex alignments ****/
 
 
 .horizontally-aligned {
@@ -87,6 +86,21 @@ div.ghost-box { display: contents }
 	flex-direction: column;
 	justify-content: center;
 }/* .vertically-centered */
+
+
+/**** Text alignments ****/
+
+
+.right-aligned * { text-align: right }
+.right-aligned-text { text-align: right !important }
+
+
+/**** Table Alignments (justified) ****/
+
+
+.vertically-center-justified {
+	align-items: center;
+}/* vertically-center-justified */
 
 
 /********/

@@ -115,6 +115,7 @@ app.post ("/companies", function (request, response) {
 		let company_data = new CompanyData (request, response);
 		switch (fields.action) {
 			case "save": company_data.save_company (fields); break;
+			case "list": company_data.get_companies_by_account (fields.account_id).then (company_data.send_result_data.bind (company_data)); break;
 		}// switch;
 	});
 });
@@ -124,7 +125,7 @@ app.post ("/company_accounts", function (request, response) {
 	app.process (request, response, (fields) => {
 		let company_accounts_data = new CompanyAccountsData (request, response);
 		switch (fields.action) {
-			case "save": company_accounts_data.save_company_account (fields); break;
+			case "save": company_accounts_data.set_company_account (fields.account_id, fields.company_id); break;
 		}// switch;
 	});
 });
@@ -152,20 +153,29 @@ app.post ("/email", function (request, response) {
 
 app.post ("/invitations", (request, response) => {
 	app.process (request, response, (fields) => {
+
+		let invite = new InvitationData (request, response);
+
 		switch (fields.action) {
-			case "all": new InvitationData (request, response).get_invitations_by_email (fields.email_address); break;
+			case "all": invite.get_invitations_by_email (fields.email_address); break;
+			case "accepted": invite.accept_invitation (fields.account_id, fields.invite_id); break;
+			case "declined": invite.decline_invitation (fields.account_id, fields.invite_id); break;
 		}// switch;
+
 	});
 });
 
 
 app.post ("/logging", function (request, response) {
 	app.process (request, response, async fields => {
+
 		let logging_data = new LoggingData (request, response);
+
 		switch (fields.action) {
 			case "logging": logging_data.save_log_entry (fields); break;
 			case "billing": logging_data.save_billing (fields); break;
 		}// switch;
+
 	});
 });
 
@@ -247,7 +257,7 @@ app.post ("/settings", function (request, response) {
 		app.process (request, response, (fields) => {
 			let account_setting_data = new AccountSettingsData (request, response);
 			switch (fields.action) {
-				case "get": account_setting_data.get_settings (); break;	
+				case "get": account_setting_data.get_settings (fields.account_id); break;	
 				case "save": account_setting_data.save_setting (fields.account_id, fields.setting_id, fields.value); break;
 				default: break;
 			}// switch;
@@ -278,7 +288,7 @@ app.post ("/payment", (request, response) => app.process (request, response, fie
 app.post ("/signin", function (request, response) {
 	app.process (request, response, fields => new AccountsModel (request, response).signin (fields, response).then (async results => {
 
-		global.account = (global.is_null (results) || (results.length < 1)) ? null : results [0];
+		let account = (global.is_null (results) || (results.length < 1)) ? null : results [0];
 		
 		if (global.is_null (account)) {
 			response.send ({ 
@@ -291,9 +301,9 @@ app.post ("/signin", function (request, response) {
 
 		let result = { credentials: account };
 
-		let companies = await (new CompanyData ().get_companies_by_account (global.account.account_id));
+		let companies = await (new CompanyData ().get_companies_by_account (account.account_id));
 		let settings = await (new SettingsData ().get_settings ());
-		let logging = (await (new LoggingData ().latest_log_entry ()));
+		let logging = (await (new LoggingData ().latest_log_entry (account.account_id)));
 
 		if (companies.length > 0) {
 			

@@ -19,7 +19,7 @@ import SelectList from "controls/lists/select.list";
 import AddressForm from "forms/address.form"
 import CreditCardSubform from "client/forms/subforms/credit.card.subform";
 
-import { MainContext } from "classes/types/contexts";
+import { MasterContext } from "classes/types/contexts";
 import { dynamic_input_classname } from "controls/inputs/dynamic.input";
 
 import { isset, is_number, nested_value } from "classes/common";
@@ -68,7 +68,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	}/* state */;
 
 
-	static contextType = MainContext;
+	static contextType = MasterContext;
 
 
 	static defaultProps = {  

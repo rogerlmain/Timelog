@@ -16,7 +16,7 @@ import ClientModel from "client/classes/models/client.model";
 import RateSubform from "client/forms/subforms/rate.subform";
 
 import { SmallProgressMeter } from "controls/progress.meter";
-import { MainContext } from "classes/types/contexts";
+import { MasterContext } from "classes/types/contexts";
 
 
 import "resources/styles/forms.css";
@@ -25,7 +25,7 @@ import "resources/styles/forms.css";
 export default class ClientForm extends FormControl {
 
 
-	static contextType = MainContext;
+	static contextType = MasterContext;
 
 
 	static defaultProps = {

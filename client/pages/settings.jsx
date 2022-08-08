@@ -32,7 +32,7 @@ import { get_key, get_keys, isset, is_null, nested_value, not_set } from "classe
 import { resize_direction } from "controls/panels/resize.panel";
 import { client_limit_options } from "pages/clients";
 
-import { MainContext } from "classes/types/contexts";
+import { MasterContext } from "classes/types/contexts";
 
 import { Break } from "client/controls/html/components";
 
@@ -57,7 +57,6 @@ export default class SettingsPage extends BaseControl {
 	state = { 
 
 		account_type: constants.account_types.deadbeat,
-		company_id: null,
 
 		granularity: 1,
 		client_limit: 1,
@@ -80,7 +79,7 @@ export default class SettingsPage extends BaseControl {
 	}/* state */;
 
 
-	static contextType = MainContext;
+	static contextType = MasterContext;
 	static defaultProps = { id: "settings_page" }
 
 
@@ -123,7 +122,7 @@ export default class SettingsPage extends BaseControl {
 	}// deluxe_account_form;
 
 
-	process_option = (option, value) => this.set_option (option_types [option], value).then (() => this.setState ({ [option]: value }, () => this.context.main_page.forceUpdate ()));
+	process_option = (option, value) => this.set_option (option_types [option], value).then (() => this.setState ({ [option]: value }, () => this.context.master_page.forceUpdate ()));
 
 
 	initialize_settings () {
@@ -171,14 +170,14 @@ export default class SettingsPage extends BaseControl {
 
 
 	granularity_option = () => { 
-		return <ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={this.state.granularity}
+		return <ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={OptionsStorage.granularity ()}
 			option={option_types.granularity} parent={this} 
 			onPaymentConfirmed={selected_option => {
 				this.set_option (option_types.granularity, selected_option).then (() => this.setState ({
 					start_rounding: constants.date_rounding.off,
 					end_rounding: constants.date_rounding.off,
 					granularity: selected_option
-				}, this.context.main_page.forceRefresh));
+				}, this.context.master_page.forceRefresh));
 			}}>
 		</ToggleOption>
 	}/* granularity_option */;
@@ -187,7 +186,7 @@ export default class SettingsPage extends BaseControl {
 	rounding_options = () => {
 		return <Container>
 		
-			<ToggleOption id="rounding_option" title="Rounding option" values={["No", "Yes"]} value={this.state.rounding_option}
+			<ToggleOption id="rounding_option" title="Rounding option" values={["No", "Yes"]} value={OptionsStorage.rounding_option ()}
 				option={option_types.rounding_option} parent={this}
 				onPaymentConfirmed={selected_option => this.process_option ("rounding_option", selected_option)}>
 			</ToggleOption>
@@ -221,12 +220,12 @@ export default class SettingsPage extends BaseControl {
 	limit_options = () => {
 		return <Container>
 
-			<ToggleOption id="client_limit" title="Number of clients" values={get_keys (client_limit_options)} value={this.state.client_limit}
+			<ToggleOption id="client_limit" title="Number of clients" values={get_keys (client_limit_options)} value={OptionsStorage.client_limit ()}
 				option={option_types.client_limit} parent={this} 
 				onPaymentConfirmed={selected_option => this.process_option ("client_limit", selected_option)}>
 			</ToggleOption>
 
-			<ToggleOption id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={this.state.project_limit}
+			<ToggleOption id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={OptionsStorage.project_limit ()}
 				option={option_types.project_limit} parent={this} 
 				onPaymentConfirmed={selected_option => this.process_option ("project_limit", selected_option)}>
 			</ToggleOption>
@@ -246,7 +245,7 @@ export default class SettingsPage extends BaseControl {
 
 					<Container id="billing_available_container" visible={!option_purchased}>
 						<div className="credit-centered">
-							<ToggleOption id="billing_option" title="Billing option" values={["No", "Yes"]} value={this.state.billing_option}
+							<ToggleOption id="billing_option" title="Billing option" values={["No", "Yes"]} value={OptionsStorage.billing_option ()}
 								option={option_types.billing_option} parent={this}
 								onPaymentConfirmed={selected_option => this.process_option ("billing_option", selected_option)}>
 							</ToggleOption>
@@ -368,7 +367,7 @@ export default class SettingsPage extends BaseControl {
 					<Slider id="animation_speed" min={0} max={5000} value={SettingsStorage.animation_speed ()} 
 						onChange={value => {
 							SettingsStorage.animation_speed (value);
-							this.context.main_page.forceUpdate ();
+							this.context.master_page.forceUpdate ();
 						}} 
 						showValue={true}>
 					</Slider>
@@ -382,14 +381,6 @@ export default class SettingsPage extends BaseControl {
 	/**** React Routines ****/
 
 
-	componentDidMount () {
-		if (this.state.company_id != this.context.company_id) return this.setState ({ company_id: this.context.company_id }, this.initialize_settings);
-	}// componentDidMount;
-
-
-	componentDidUpdate () { this.componentDidMount () };
-
-	
 	render () {
 		return <Container>
 

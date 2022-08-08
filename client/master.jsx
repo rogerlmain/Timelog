@@ -23,10 +23,12 @@ import SettingsPage from "client/pages/settings";
 import BaseControl from "client/controls/abstract/base.control";
 import SelectList from "client/controls/lists/select.list";
 
+import CompanyModel from "client/classes/models/company.model";
+
 import { date_formats, globals } from "client/classes/types/constants";
 import { isset, is_empty, is_function, is_null, nested_value, not_set, numeric_value } from "client/classes/common";
 
-import { MainContext, MasterContext } from "classes/types/contexts";
+import { MasterContext } from "classes/types/contexts";
 
 import logo from "resources/images/clock.png";
 import user_image from "resources/images/guest.user.svg";
@@ -37,7 +39,7 @@ import "resources/styles/home.page.css";
 /********/
 
 
-const version = "1.7.5";
+const version = "1.8.0";
 
 
 const user_image_style = {
@@ -64,9 +66,9 @@ const CompanyHeader = props => {
 
 	let companies = CompanyStorage.company_list ();
 
-	return <div style={{ marginLeft: "2em", fontStyle: "italic" }} className="right-aligned">
+	return <div style={{ marginLeft: "2em" }} className="right-justified-column">
 
-		<div className="right-aligned-text">{props.currentTime}</div>
+		<div style={{ fontStyle: "italic" }} >{props.currentTime}</div>
 
 		<Container visible={props.signedIn}>
 
@@ -83,10 +85,7 @@ const CompanyHeader = props => {
 							
 								textField="company_name" hasHeader={true}
 								
-								onChange={event => {
-									CompanyStorage.set_active_company (event.target.value);
-									this.setState ({ company_id: event.target.value }, this.forceRefresh);
-								}}>
+								onChange={props.onChange}>
 									
 							</SelectList>
 						</Container>
@@ -118,6 +117,63 @@ const CompanyHeader = props => {
 }// CompanyHeader;
 
 
+const MainPanel = props => {
+
+
+	const page_items = () => {
+
+		let result = null;
+
+		for (let [key, page] of Object.entries (props.pages)) {
+			let id = `${key}_container`;
+			if (is_null (result)) result = [];
+			result.push (<Container key={`${id}_key`} id={id} visible={props.page == key}>{page}</Container>);
+		}// for;
+
+		return result;
+
+	}/* page_items */;
+
+
+	let icd = location.urlParameter ("icd");
+	let active_panel = "signin_panel";
+
+
+	if (isset (icd)) {
+		localStorage.setItem ("invitation", icd);
+		window.location.href = window.location.origin;
+		return null;
+	}// if;
+
+
+	active_panel = (props.signedIn ? "master_panel" : (props.signingUp || isset (localStorage.getItem ("invitation")) ? "signup_panel" : "signin_panel"));
+
+
+	return <div className="full-width horizontally-centered">
+		<ExplodingPanel id="main_panel">
+
+			<Container id="master_panel_container" visible={active_panel == "master_panel"}>
+				<div className="full-size horizontally-aligned">
+					<ExplodingPanel id="details_panel">
+						{page_items ()}
+					</ExplodingPanel>
+				</div>
+			</Container>
+
+			<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
+				<SignupPage parent={this} />
+			</Container>
+
+			<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
+				<SigninPage parent={this} />
+			</Container>
+
+		</ExplodingPanel>
+	</div>
+
+}// MainPanel;
+
+
 /********/
 
 
@@ -133,9 +189,6 @@ export const page_names = {
 
 
 export default class MasterPanel extends BaseControl {
-
-
-	reference = React.createRef ();
 
 
 	state = {
@@ -166,7 +219,7 @@ export default class MasterPanel extends BaseControl {
 	}// master_pages;
 	
 	
-	static contextType = MainContext;
+	static contextType = MasterContext;
 
 
 	static defaultProps = { 
@@ -224,6 +277,12 @@ export default class MasterPanel extends BaseControl {
 	}// button_list;
 
 
+	select_company = company_id => {
+		CompanyStorage.set_active_company (company_id);
+		this.setState ({ company_id: company_id});
+	}// select_company;
+
+
 	signout_button () {
 		return (
 			<SelectButton onClick={() => {
@@ -232,21 +291,6 @@ export default class MasterPanel extends BaseControl {
 			}}>Sign out</SelectButton>
 		);
 	}// signout_button;
-
-
-	page_items = () => {
-
-		let result = null;
-
-		for (let [key, page] of Object.entries (this.pages)) {
-			let id = `${key}_container`;
-			if (is_null (result)) result = [];
-			result.push (<Container key={`${id}_key`} id={id} visible={this.state.page == key}>{page}</Container>);
-		}// for;
-
-		return result;
-
-	}// page_items;
 
 
 	update_clock = () => {
@@ -263,6 +307,9 @@ export default class MasterPanel extends BaseControl {
 	}// update_clock;
 
 
+	update_company_list = () => CompanyModel.get_companies ().then (companies => CompanyStorage.add_companies (companies));
+
+
 	/********/
 
 
@@ -271,10 +318,10 @@ export default class MasterPanel extends BaseControl {
 	
 	render () {
 
-		let active_panel = (this.signed_in () ? "master_panel" : (this.state.signing_up ? "signup_panel" : "signin_panel"));
-
-		return <MainContext.Provider value={{ company_id: numeric_value (this.state.company_id), main_page: this }}>
-			<div ref={this.reference} className="vertically-spaced-out main-page">
+		let signed_in = this.signed_in ();
+		
+		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
+			<div className="vertically-spaced-out main-page">
 
 				<div>
 
@@ -291,11 +338,13 @@ export default class MasterPanel extends BaseControl {
 
 						</div>
 
-						<CompanyHeader signedIn={this.signed_in ()} currentTime={this.state.current_time} changePage={new_page => this.setState ({ page: new_page })} />
+						<CompanyHeader signedIn={signed_in} currentTime={this.state.current_time} 
+							onChange={event => this.select_company (event.target.value)}
+							changePage={new_page => this.setState ({ page: new_page })} />
 
 					</div>
 
-					<Container visible={this.signed_in ()}>
+					<Container visible={signed_in}>
 						<div className="home_button_panel">
 
 							{this.button_list ()}
@@ -313,42 +362,9 @@ export default class MasterPanel extends BaseControl {
 					</Container>
 
 					<hr style={page_rule_style} />
+
+					<MainPanel pages={this.pages} page={this.state.page} signedIn={signed_in} signingUp={this.state.signing_up} />
 					
-					<div className="full-width horizontally-centered">
-						
-						<ExplodingPanel id="main_panel">
-
-							<Container id="master_panel_container" visible={active_panel == "master_panel"}>
-
-								<MasterContext.Provider value={{ ...this.context, master_page: this }}>
-
-									<div ref={this.reference} id={this.props.id}>
-
-										<div className="full-size horizontally-aligned">
-											<ExplodingPanel id="details_panel">
-												{this.page_items ()}
-											</ExplodingPanel>
-										</div>
-
-									</div>
-
-								</MasterContext.Provider>
-
-
-							</Container>
-
-							<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
-								<SignupPage parent={this} />
-							</Container>
-
-							<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
-								<SigninPage parent={this} />
-							</Container>
-
-						</ExplodingPanel>
-
-					</div>
-
 				</div>
 
 				<div className="page-footer">
@@ -357,7 +373,7 @@ export default class MasterPanel extends BaseControl {
 				</div>
 
 			</div>
-		</MainContext.Provider>
+		</MasterContext.Provider>
 	}// render;
 
 }// MasterPanel;

@@ -15,4 +15,4 @@ export default class EmailModel extends DataModel {
 	}// send_invite;
 
 
-}// InvitationModel;
+}// EmailModel;

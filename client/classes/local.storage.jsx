@@ -48,8 +48,7 @@ export default class LocalStorage {
 		if (common.is_null (values)) values = {};
 		values [name] = value;
 		this.set_store (store, values);
-	}// set_item;
-
-
+	}// set_item;\
+	
 
 }// LocalStorage;

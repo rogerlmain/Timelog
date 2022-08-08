@@ -2,7 +2,7 @@ import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
 import AddressesModel from "client/classes/models/addresses";
-import CompaniesModel from "client/classes/models/companies";
+import CompanyModel from "client/classes/models/company.model";
 import CompanyAccountsModel from "client/classes/models/company.accounts";
 import CompanyCardModel from "client/classes/models/company.cards";
 
@@ -39,13 +39,13 @@ export default class CustomerHandler {
 		if (common.isset (data.company_name)) company_data.name = data.company_name;
 		if (common.isset (data.customer_id)) company_data.square_id = data.customer_id;
 
-		return { ...(await CompaniesModel.save_company (FormData.fromObject (company_data))), ...company_data };
+		return { ...(await CompanyModel.set_company (FormData.fromObject (company_data))), ...company_data };
 
 	}// save_company;
 
 
 	async save_company_association (data) {
-		await CompanyAccountsModel.save_company_account (FormData.fromObject ({
+		await CompanyAccountsModel.set_company_account (FormData.fromObject ({
 			account_id: AccountStorage.account_id (),
 			company_id: data.company_id
 		}));

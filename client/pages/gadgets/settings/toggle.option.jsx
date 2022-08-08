@@ -9,7 +9,8 @@ import ToggleSwitch from "controls/toggle.switch";
 import OptionsStorage from "client/classes/storage/options.storage";
 
 import { get_key, is_null, isset, not_set } from "classes/common";
-import { MainContext } from "client/classes/types/contexts";
+import { MasterContext } from "client/classes/types/contexts";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 
 export default class ToggleOption extends BaseControl {
@@ -18,7 +19,7 @@ export default class ToggleOption extends BaseControl {
 	state = { value: null }
 
 
-	static contextType = MainContext;
+	static contextType = MasterContext;
 
 	static defaultProps = {
 
@@ -45,7 +46,7 @@ export default class ToggleOption extends BaseControl {
 	change_handler = new_value => {
 
 		let key_name = get_key (constants.option_types, this.props.option);
-		let current_value = OptionsStorage [key_name] (this.context.company_id);
+		let current_value = OptionsStorage [key_name] (CompanyStorage.active_company_id ());
 
 		this.state.value = new_value + 1;
 
