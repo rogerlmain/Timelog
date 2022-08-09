@@ -92,9 +92,11 @@ export default class OptionsStorage extends LocalStorage {
 	static project_limit () { return OptionsStorage.#get (option_types.project_limit) ?? 1 }
 
 	static billing_option () { return OptionsStorage.#get (option_types.billing_option) ?? 1 }
+	static editing_option () { return OptionsStorage.#get (option_types.editing_option) ?? 1 }
 	static rounding_option () { return OptionsStorage.#get (option_types.rounding_option) ?? 1 }
 
 	static can_bill () { return OptionsStorage.billing_option () == toggled.true }
+	static can_edit () { return OptionsStorage.editing_option () == toggled.true }
 	static can_round () { return OptionsStorage.rounding_option () == toggled.true }
 
 

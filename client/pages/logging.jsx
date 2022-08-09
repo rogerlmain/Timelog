@@ -7,7 +7,6 @@ import ExplodingPanel from"client/controls/panels/exploding.panel";
 import EyecandyPanel from"client/controls/panels/eyecandy.panel";
 import FadePanel from"client/controls/panels/fade.panel";
 
-import CompanyStorage from "client/classes/storage/company.storage";
 import LoggingStorage from"client/classes/storage/logging.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
@@ -18,7 +17,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging.model";
 
-import { blank, date_formats, date_rounding, debugging, granularity_types, space, text_highlights } from "client/classes/types/constants";
+import { blank, date_formats, date_rounding, debugging, granularity_types, space } from "client/classes/types/constants";
 import { isset, is_empty, nested_value, not_set, multiline_text, null_value } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
@@ -114,12 +113,13 @@ export default class LoggingPage extends BaseControl {
 	}/* billable_time */;
 
 
-	needs_editing = limit => { 
+	// Time limit in hours
+	needs_editing = time_limit => { 
 
 		if (this.logged_out ()) return false;
 
 		let same_day = this.state.current_entry.start_time.same_day (this.state.current_entry.end_time);
-		let result = (!same_day || (this.elapsed_time () > (limit * Date.coefficient.hour)));
+		let result = (!same_day || (this.elapsed_time () > (time_limit * Date.coefficient.hour)));
 
 		return result;
 
@@ -190,9 +190,9 @@ export default class LoggingPage extends BaseControl {
 				"Click here to change your log times."
 			) : null} 
 		
-			className={editable ? "error-link" : null} 
+			className={editable && !OptionsStorage.can_edit () ? "error-link" : "standard-link"} 
 
-			onClick={editable ? () => this.setState ({ 
+			onClick={(editable || OptionsStorage.can_edit ()) ? () => this.setState ({ 
 				editing: true,
 				fixing: true
 			}) : null}>
@@ -227,7 +227,6 @@ export default class LoggingPage extends BaseControl {
 				</Container>
 
 				<Container id="overtime_instructions" visible={!this.state.fixing}>
-
 					<div style={{ padding: "0.5em 0" }}>
 
 						Whoa! Are you sure this is right?<br/>
@@ -273,13 +272,15 @@ export default class LoggingPage extends BaseControl {
 				<Break />
 
 				<label>Start</label>
-				<div>{nested_value (start_time, "format", date_formats.full_datetime)}</div>
+				{this.link_cell (nested_value (start_time, "format", date_formats.full_datetime))}
 
 				<label>Stop</label>
 				{this.link_cell (end_time.format (nested_value (start_time, "same_day", end_time) ? date_formats.timestamp : date_formats.full_datetime))}
 
+				<Break />
+
 				<label>Elapsed</label>
-				{this.link_cell (elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)) }
+				<div>{elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)}</div>
 				
 				<Container visible={OptionsStorage.can_bill () && (this.state.billing_rate > 0)}>
 

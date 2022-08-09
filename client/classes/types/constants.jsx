@@ -195,6 +195,7 @@ export const option_types = {
 	billing_option	: 6,
 	default_rate	: 7,
 	rounding_option	: 8,
+	editing_option	: 9,
 }// option_types;
 
 

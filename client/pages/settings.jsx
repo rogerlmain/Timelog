@@ -183,6 +183,14 @@ export default class SettingsPage extends BaseControl {
 	}/* granularity_option */;
 
 
+	editing_option = () => {
+		return <ToggleOption id="editing_option" title="Editing option" values={["No", "Yes"]} value={OptionsStorage.editing_option ()}
+			option={option_types.editing_option} parent={this}
+			onPaymentConfirmed={selected_option => this.process_option ("editing_option", selected_option)}>
+		</ToggleOption>
+	}// editing_option;
+
+
 	rounding_options = () => {
 		return <Container>
 		
@@ -300,9 +308,11 @@ export default class SettingsPage extends BaseControl {
 				</div>
 
 				<div>
-					<div className="credit-centered">{this.rounding_options ()}</div>
+					<div className="horizontally-aligned">{this.editing_option ()}</div>
 					<br />
 					<div className="horizontally-aligned">{this.billing_options ()}</div>
+					<br />
+					<div className="credit-centered">{this.rounding_options ()}</div>
 				</div>
 
 			</div>

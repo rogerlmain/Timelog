@@ -40,7 +40,10 @@ import OptionsModel from "./classes/models/options.model";
 /********/
 
 
-const version = "1.8.1";
+ // version.feature.bugfix
+ // Increment version at feature #100
+ 
+const version = "1.9.0";
 
 
 const user_image_style = {

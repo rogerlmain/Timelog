@@ -1,11 +1,11 @@
 div.log-details { width: 100% }
-
 div.log-details label { font-weight: bold }
 div.log-details div { text-align: right }
 
-div.error-link { 
-	color: var(--warning-color);
-	cursor: pointer;
-}/* div.error-link */
 
-div.error-link:hover { text-decoration: underline }
+div[class*=-link] { cursor: pointer }
+div[class*=-link]:hover { text-decoration: underline }
+
+
+div.error-link { color: var(--warning-color) }
+

@@ -14,6 +14,7 @@ import { get_keys, not_empty } from "classes/common";
 
 import { globals } from "client/classes/types/constants";
 import { MasterContext } from "classes/types/contexts";
+import { page_names } from "client/master";
 
 
 const bad_credentials = <div id="bad_credentials" className="login-error">
@@ -59,7 +60,12 @@ export default class SigninPage extends BaseControl {
 				let ids = get_keys (companies);
 
 				if (common.isset (ids) && (ids.length == 1)) CompanyStorage.set_active_company (ids [0]);
-				this.context.master_page.setState ({ company_id: CompanyStorage.active_company_id () });
+				
+				this.context.master_page.setState ({
+					page: page_names.home,
+					company_id: CompanyStorage.active_company_id (),
+				});
+
 				return globals.main.forceUpdate ();
 
 			}// if;

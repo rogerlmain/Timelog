@@ -82,22 +82,26 @@ export default class CustomerHandler {
 				address_id: address_data.address_id,
 			});
 
-			CompanyStorage.set ({
-				active_company: data.company_id,
-				[data.company_id]: {
-					company_name: data.company_name,
-					address_id: address_data.address_id,
-					street_address: data.street_address,
-					additional: data.additional_address,
-					city: data.city,
-					state_id: data.district,
-					state_name: data.district_name,
-					country_id: data.country,
-					country_name: data.country_name,
-					postcode: data.zip,
-					square_id: data.customer_id,
-				}
-			});
+
+			CompanyStorage.add_companies (data);
+
+			
+			// CompanyStorage.set ({
+			// 	active_company: data.company_id,
+			// 	[data.company_id]: {
+			// 		company_name: data.company_name,
+			// 		address_id: address_data.address_id,
+			// 		street_address: data.street_address,
+			// 		additional: data.additional_address,
+			// 		city: data.city,
+			// 		state_id: data.district,
+			// 		state_name: data.district_name,
+			// 		country_id: data.country,
+			// 		country_name: data.country_name,
+			// 		postcode: data.zip,
+			// 		square_id: data.customer_id,
+			// 	}
+			// });
 
 			resolve ({
 				company_data: company_data,
