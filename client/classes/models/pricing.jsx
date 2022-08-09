@@ -14,4 +14,4 @@ export default class PricingModel extends DataModel {
 	}// load_price;
 
 
-}// OptionsModel;
+}// PricingModel;

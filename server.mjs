@@ -8,6 +8,7 @@ import multiparty from "multiparty";
 import AccountsModel from "./server/models/accounts.model.mjs";
 import AccountOptionsData from "./server/models/options.mjs";
 import AccountSettingsData from "./server/models/settings.mjs";
+
 import AddressData from "./server/models/addresses.mjs";
 import ClientData from "./server/models/clients.mjs";
 import CompanyAccountsData from "./server/models/company.accounts.mjs";
@@ -17,7 +18,6 @@ import InvitationData from "./server/models/invitations.mjs";
 import LoggingData from "./server/models/logging.mjs";
 import LookupsData from "./server/models/lookups.mjs";
 import MiscData from "./server/models/misc.mjs";
-import OptionsData from "./server/models/options.mjs";
 import PricingData from "./server/models/pricing.mjs";
 import ProjectData from "./server/models/projects.mjs";
 import ReportData from "./server/models/reports.mjs";
@@ -203,13 +203,16 @@ app.post ("/misc", function (request, response) {
 
 app.post ("/options", function (request, response) {
 	try {
-		app.process (request, response, (fields) => {
+		app.process (request, response, async fields => {
+
 			let account_option_data = new AccountOptionsData (request, response);
+
 			switch (fields.action) {
-				case "get": account_option_data.get_options (); break;	
+				case "company": account_option_data.get_options_by_company (fields.company_id, true); break;	
 				case "save": account_option_data.save_option (fields); break;
 				default: break;
 			}// switch;
+			
 		});
 	} catch (except) { console.log (except) }
 });
@@ -306,22 +309,11 @@ app.post ("/signin", function (request, response) {
 		let logging = (await (new LoggingData ().latest_log_entry (account.account_id)));
 
 		if (companies.length > 0) {
-			
 			for (let company of companies) {
-
-				let options = await (new OptionsData ().get_options_by_company (company.company_id));
-
-				if (Array.isArray (options)) for (let option of options) {
-					if (not_set (result.options)) result.options = {};
-					if (not_set (result.options [company.company_id])) result.options [company.company_id] = {};
-					result.options [company.company_id][option.id] = option.value;
-				}// if;
-
+				result.options = { [company.company_id]: await (new AccountOptionsData ().get_options_by_company (company.company_id)) };
 				result.companies = { ...result.companies, [company.company_id]: company }
 				delete company.company_id;
-					
 			}// for;
-
 		}// if;
 
 		if (companies.length == 1) result.companies.active_company = companies [0].company_id;

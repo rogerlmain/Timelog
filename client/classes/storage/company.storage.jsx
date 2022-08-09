@@ -40,8 +40,8 @@ export default class CompanyStorage extends LocalStorage {
 			if (is_null (company_list)) company_list = {}
 			if (isset (company_list [company_id])) continue;
 
-			delete company.company_id;
-			company_list [company_id] = company;
+			company_list [company_id] = {...company};
+			delete company_list [company_id].company_id;
 
 		}// for;
 

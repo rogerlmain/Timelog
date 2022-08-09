@@ -67,9 +67,7 @@ class Database {
 
 
 	// Use for standard data response
-	execute_query (procedure, parameters= null) {
-		this.data_query (procedure, parameters).then (data => this.send_result_data (data));
-	}// execute_query;
+	execute_query (procedure, parameters = null) { this.data_query (procedure, parameters).then (data => this.send_result_data (data)) }
 
 
 	constructor (request, response) {

@@ -34,12 +34,13 @@ import logo from "resources/images/clock.png";
 import user_image from "resources/images/guest.user.svg";
 
 import "resources/styles/home.page.css";
+import OptionsModel from "./classes/models/options.model";
 
 
 /********/
 
 
-const version = "1.8.0";
+const version = "1.8.1";
 
 
 const user_image_style = {
@@ -277,9 +278,9 @@ export default class MasterPanel extends BaseControl {
 	}// button_list;
 
 
-	select_company = company_id => {
+	select_company = (company_id, callback = null) => {
 		CompanyStorage.set_active_company (company_id);
-		this.setState ({ company_id: company_id});
+		this.setState ({ company_id: company_id}, callback);
 	}// select_company;
 
 
@@ -307,7 +308,27 @@ export default class MasterPanel extends BaseControl {
 	}// update_clock;
 
 
-	update_company_list = () => CompanyModel.get_companies ().then (companies => CompanyStorage.add_companies (companies));
+	update_company_list = () => new Promise ((resolve, reject) => {
+		CompanyModel.get_companies ().then (companies => {
+
+			const resolve_all = () => {
+				if (processed == companies.length) return resolve ();
+				setTimeout (resolve_all);
+			}/* resolve_all */;
+	
+			let processed = 0;
+	
+			CompanyStorage.add_companies (companies);
+
+			companies.forEach (company => OptionsModel.get_options_by_company (company.company_id).then (options => {			
+				OptionsStorage.set_by_company_id (company.company_id, options);
+				processed++
+			}).catch (error => reject (error)));
+
+			resolve_all ();
+
+		}).catch (error => reject (error));
+	})// update_company_list;
 
 
 	/********/
@@ -321,6 +342,7 @@ export default class MasterPanel extends BaseControl {
 		let signed_in = this.signed_in ();
 		
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
+
 			<div className="vertically-spaced-out main-page">
 
 				<div>
@@ -340,7 +362,8 @@ export default class MasterPanel extends BaseControl {
 
 						<CompanyHeader signedIn={signed_in} currentTime={this.state.current_time} 
 							onChange={event => this.select_company (event.target.value)}
-							changePage={new_page => this.setState ({ page: new_page })} />
+							changePage={new_page => this.setState ({ page: new_page })}>
+						</CompanyHeader>
 
 					</div>
 

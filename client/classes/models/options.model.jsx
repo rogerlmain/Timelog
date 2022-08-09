@@ -6,11 +6,12 @@ import DataModel from "client/classes/models/data.model";
 export default class OptionsModel extends DataModel {
 
 
-	static get_options () {
+	static get_options_by_company (company_id) {
 		let parameters = new FormData ();
-		parameters.set ("action", "get");
+		parameters.set ("action", "company");
+		parameters.set ("company_id", company_id);
 		return Database.fetch_data ("options", parameters);
-	}// get_options;
+	}// get_options_by_company;
 
 
 	static save_option (option_id, value) {

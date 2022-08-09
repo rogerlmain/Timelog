@@ -206,6 +206,12 @@ export const granularity_types = {
 }// granularity_types;
 
 
+export const permissions = {
+	purchase: 62,
+	admin	: 63,
+}// permissions;
+
+
 /**** Default Settings and Options ****/
 
 

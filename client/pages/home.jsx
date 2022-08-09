@@ -39,15 +39,16 @@ export default class HomePage extends BaseControl {
 
 	respond = (invite, response) => {
 		InvitationModel.respond (response, invite.invite_id).then (() => {
+
 			if (response == invite_responses.accepted) {
-
-				this.context.master_page.update_company_list ().then (() => {
-					CompanyStorage.set_active_company (invite.company_id);
-					this.context.master_page.select_company (invite.company_id);
+				return this.context.master_page.update_company_list ().then (() => {
+					if (confirm (`Do you want to log into ${invite.company_name}, now?`)) this.context.master_page.select_company (invite.company_id);
+					this.update_invitations (() => alert (`Invitation accepted`))
 				});
-
 			}// if;
+
 			this.update_invitations (() => alert (`Invitation ${response}`));
+
 		});
 	}// respond;
 
