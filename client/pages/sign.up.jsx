@@ -13,7 +13,7 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import PasswordForm from "client/forms/password.form";
 
-import AccountsModel from "client/classes/models/accounts";
+import AccountsModel from "client/classes/models/accounts.model";
 
 import { account_types, globals } from "classes/types/constants";
 import { get_keys, isset, is_null, nested_value, notify, not_empty, pause } from "classes/common";

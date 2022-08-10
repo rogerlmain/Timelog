@@ -1,13 +1,13 @@
 import Database from "classes/database";
 
 
-const table_name = "projects";
+const table = "projects";
 
 
 export default class ProjectModel {
 
 
-	static save_project (data) { return Database.save_data (table_name, data) }
+	static save_project (data) { return Database.save_data (table, data) }
 
 
 	static async get_projects_by_client (client_id) {

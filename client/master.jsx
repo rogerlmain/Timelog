@@ -15,6 +15,7 @@ import ClientsPage from "client/pages/clients";
 import ProjectsPage from "client/pages/projects";
 import LoggingPage from "client/pages/logging";
 import ReportsPage from "client/pages/reports";
+import TeamsPage from "client/pages/teams";
 import AccountPage from "client/pages/sign.up";
 import SigninPage from "client/pages/sign.in";
 import SignupPage from "client/pages/sign.up";
@@ -42,8 +43,8 @@ import OptionsModel from "./classes/models/options.model";
 
  // version.feature.bugfix
  // Increment version at feature #100
- 
-const version = "1.9.0";
+
+const version = "1.9.1";
 
 
 const user_image_style = {
@@ -187,6 +188,7 @@ export const page_names = {
 	projects	: "projects",
 	logging		: "logging",
 	reports		: "reports",
+	teams		: "teams",
 	account		: "account",
 	settings	: "settings",
 }// page_names;
@@ -208,6 +210,7 @@ export default class MasterPanel extends BaseControl {
 		[page_names.projects]	: <ProjectsPage />,
 		[page_names.logging]	: <LoggingPage />,
 		[page_names.reports]	: <ReportsPage />,
+		[page_names.teams]		: <TeamsPage />,
 		[page_names.account]	: <AccountPage parent={this.props.parent} />,
 		[page_names.settings]	: <SettingsPage />,	
 	}// pages;
@@ -219,6 +222,7 @@ export default class MasterPanel extends BaseControl {
 		[page_names.projects]	: { name: "Projects", permission: () => { return OptionsStorage.project_limit () > 1 } }, 
 		[page_names.logging]	: { name: "Logging", permission: true }, 
 		[page_names.reports]	: { name: "Reports", permission: true },
+		[page_names.teams]		: { name: "Teams", permission: true },
 		[page_names.settings]	: { name: "Settings", permission: true }
 	}// master_pages;
 	

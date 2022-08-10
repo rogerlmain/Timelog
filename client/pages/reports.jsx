@@ -1,6 +1,6 @@
 import React from "react";
 
-import ReportsModel		from "client/classes/models/reports";
+import ReportsModel		from "client/classes/models/reports.model";
 import OptionStorage	from "client/classes/storage/options.storage";
 
 import BaseControl		from "client/controls/abstract/base.control";

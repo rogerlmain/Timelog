@@ -12,7 +12,7 @@ import Container from "controls/container";
 import BaseControl from "controls/abstract/base.control";
 import PhoneNumberInput from "controls/inputs/phone.number.input";
 
-import LookupsModel from "client/classes/models/lookups";
+import LookupsModel from "client/classes/models/lookups.model";
 
 
 const us_country_code = 236;

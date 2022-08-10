@@ -2,7 +2,11 @@ import Database from "classes/database";
 import DataModel from "client/classes/models/data.model";
 
 
+
+
+
 export default class TasksModel extends DataModel {
+
 
 	static fetch_tasks_by_assignee (account_id, callback) {
 		let parameters = new FormData ();
@@ -26,5 +30,6 @@ export default class TasksModel extends DataModel {
 		parameters.set ("action", "details");
 		Database.fetch_row ("tasks", parameters).then (callback);
 	}// fetch_task;
+
 
 }// TasksModel;

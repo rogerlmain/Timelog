@@ -1,9 +1,8 @@
 import Database from "classes/database";
 import DataModel from "client/classes/models/data.model";
 
-import AccountStorage from "client/classes/storage/account.storage";
 
-import * as common from "classes/common";
+const table = "email";
 
 
 export default class EmailModel extends DataModel {
@@ -11,7 +10,7 @@ export default class EmailModel extends DataModel {
 
 	static send_invite (data) { 
 		data.append ("action", "invite");
-		return Database.fetch_data ("email", data);
+		return Database.fetch_data (table, data);
 	}// send_invite;
 
 

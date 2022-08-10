@@ -6,22 +6,25 @@ import LocalStorage from "client/classes/local.storage";
 import AccountStorage from "client/classes/storage/account.storage";
 
 
+const table = "invitations";
+
+
 export default class InvitationModel extends DataModel {
 
 
 	static respond = (response, invite_id) => {
-		return Database.fetch_data ("invitations", {
+		return Database.fetch_data (table, {
 			action:		response,
 			invite_id:	invite_id
-		}, () => LocalStorage.remove_store ("invitation"));
+		}).then (() => LocalStorage.remove_store ("invitation"));
 	}/* respond */;
 
 
 	static fetch_all () { 
-		return Database.fetch_data ("invitations", {
+		return Database.fetch_data (table, {
 			action: "all",
 			email_address: AccountStorage.email_address (),
-		})
+		});
 	}// fetch_all;
 
 

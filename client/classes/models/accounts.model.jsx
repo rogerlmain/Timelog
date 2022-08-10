@@ -4,14 +4,17 @@ import DataModel from "client/classes/models/data.model";
 import * as common from "classes/common";
 
 
+const table = "accounts";
+
+
 export default class AccountsModel extends DataModel {
 
 
-	static fetch_by_company (company_id, callback) {
+	static fetch_by_company (company_id) {
 		let parameters = new FormData ();
 		parameters.set ("action", "company");
-		parameters.set ("company_id", company_id.toString ());
-		Database.fetch_data ("accounts", parameters).then (callback);
+		parameters.set ("company_id", parseInt (company_id));
+		return Database.fetch_data (table, parameters);
 	}// fetch_by_company;
 
 
@@ -20,7 +23,7 @@ export default class AccountsModel extends DataModel {
 		let parameters = new FormData ();
 		parameters.set ("action", "project");
 		parameters.set ("project_id", project_id.toString ());
-		Database.fetch_data ("accounts", parameters).then (() => DataModel.data_object (AccountsList, callback));
+		Database.fetch_data (table, parameters).then (() => DataModel.data_object (AccountsList, callback));
 	}// fetch_by_project;
 
 
@@ -28,13 +31,13 @@ export default class AccountsModel extends DataModel {
 		let parameters = new FormData ();
 		parameters.set ("action", "task");
 		parameters.set ("task_id", task_id.toString ());
-		Database.fetch_data ("accounts", parameters).then (callback);
+		Database.fetch_data (table, parameters).then (callback);
 	}// fetch_by_task;
 
 
 	static save_account (form_data) {
 		form_data.append ("action", "save");
-		return Database.save_data ("accounts", form_data);
+		return Database.save_data (table, form_data);
 	}// save_account;
 
 

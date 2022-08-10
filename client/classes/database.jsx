@@ -7,7 +7,7 @@ import { is_empty, isset, not_null, is_function } from "classes/common";
 export default class Database {
 
 
-	static async fetch_data (name, form_data, callback = null) {
+	static async fetch_data (name, form_data) {
 
 		let fetch_parameters = null;
 		let account_id = AccountStorage.account_id ();
@@ -25,14 +25,8 @@ export default class Database {
 			body: form_data
 		}// fetch_parameters;
 
-		return fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (response => {
-			if (is_function (callback)) return callback (response);
-			return is_empty (response) ? null : response;
-		}).catch (error => {
-			ActivityLog.log_error (error);
-			return null;
- 		});
-
+		return fetch (`/${name}`, fetch_parameters);
+		
 	}// fetch_data;
 
 

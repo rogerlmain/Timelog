@@ -19,12 +19,8 @@ import "resources/styles/forms.css";
 import ActivityLog from "./classes/activity.log";
 
 
-// import ReportsModel from "./classes/models/reports";
-// import TreeGrid from "client/controls/lists/tree.grid";
-// import OptionStorage from "./classes/storage/options.storage";
-
 //Special Guest Import
-//import ProjectSelector from "client/controls/selectors/project.selector";
+//no guest imports
 
 
 class Main extends BaseControl {

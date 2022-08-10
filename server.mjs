@@ -73,10 +73,10 @@ app.post ("/accounts", function (request, response) {
 		app.process (request, response, (fields) => {
 			let account_data = new AccountsModel (request, response);
 			switch (fields.action) {
-				case "save": account_data.save_account (fields); break;
-				case "company": account_data.get_accounts_by_company (fields.company_id); break;
-				case "project": account_data.get_accounts_by_project (fields.project_id); break;
-				case "task": account_data.get_accounts_by_task (fields.task_id); break;
+				case "save"		: account_data.save_account (fields); break;
+				case "company"	: account_data.get_accounts_by_company (fields.company_id); break;
+				case "project"	: account_data.get_accounts_by_project (fields.project_id); break;
+				case "task"		: account_data.get_accounts_by_task (fields.task_id); break;
 				default: break;
 			}// switch;
 		});

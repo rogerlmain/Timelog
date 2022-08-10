@@ -2,6 +2,9 @@ import Database from "classes/database";
 import DataModel from "client/classes/models/data.model";
 
 
+const table = "pricing";
+
+
 export default class PricingModel extends DataModel {
 
 
@@ -10,7 +13,7 @@ export default class PricingModel extends DataModel {
 		parameters.set ("action", "get");
 		parameters.set ("option", option);
 		parameters.set ("value", value);
-		return Database.fetch_data ("pricing", parameters);
+		return Database.fetch_data (table, parameters);
 	}// load_price;
 
 

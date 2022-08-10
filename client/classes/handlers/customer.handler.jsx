@@ -1,10 +1,10 @@
 import * as constants from "classes/types/constants";
 import * as common from "classes/common";
 
-import AddressesModel from "client/classes/models/addresses";
+import AddressModel from "client/classes/models/address.model";
 import CompanyModel from "client/classes/models/company.model";
-import CompanyAccountsModel from "client/classes/models/company.accounts";
-import CompanyCardModel from "client/classes/models/company.cards";
+import CompanyAccountsModel from "client/classes/models/company.accounts.model";
+import CompanyCardModel from "client/classes/models/company.cards.model";
 
 import AccountStorage from "classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
@@ -25,7 +25,7 @@ export default class CustomerHandler {
 			postcode: data.zip
 		}// address_data;
 
-		return await AddressesModel.save_address (FormData.fromObject (address_data));
+		return await AddressModel.save_address (FormData.fromObject (address_data));
 
 	}// save_address;
 

@@ -51,6 +51,12 @@ puke ();
 	}// remove_client;
 
 
+	static save_client = (company_id, client_data) => new Promise ((resolve, reject) => ClientModel.save_client (client_data).then (data => {
+		ClientStorage.#set_client (company_id, data);
+		resolve (data);
+	}));
+
+
 	static get_by_company = (company_id) => { 
 
 		let store = LocalStorage.get_all (store_name);
