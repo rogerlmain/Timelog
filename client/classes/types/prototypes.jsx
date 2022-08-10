@@ -30,6 +30,9 @@ Array.range = (start, end) => {
 /**** Array Prototype Functions ****/
 
 
+Array.prototype.empty = function () { return (this.length == 0) }
+
+
 Array.prototype.get_index = function (item) {
 	let index = this.indexOf (item);
 	return (index < 0) ? 0 : index;

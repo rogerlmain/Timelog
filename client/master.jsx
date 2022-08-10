@@ -44,7 +44,7 @@ import OptionsModel from "./classes/models/options.model";
  // version.feature.bugfix
  // Increment version at feature #100
 
-const version = "1.9.1";
+const version = "1.9.2";
 
 
 const user_image_style = {

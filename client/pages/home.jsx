@@ -7,10 +7,8 @@ import LoggingStorage from "client/classes/storage/logging.storage";
 
 import InvitationModel from "client/classes/models/invitation.model";
 
-import { is_null, not_set } from "classes/common";
+import { is_array, is_null, not_array, not_set, null_value } from "classes/common";
 import { MasterContext } from "client/classes/types/contexts";
-import CompanyModel from "client/classes/models/company.model";
-import CompanyStorage from "client/classes/storage/company.storage";
 
 
 const invite_responses = {
@@ -53,7 +51,7 @@ export default class HomePage extends BaseControl {
 	}// respond;
 
 
-	update_invitations = (callback) => InvitationModel.fetch_all ().then (data => this.setState ({ invitations: Array.arrayify (data) }, callback));
+	update_invitations = (callback) => InvitationModel.fetch_all ().then (data => this.setState ({ invitations: (not_array (data) || data.empty ()) ? null : data }, callback));
 
 
 	show_invitations = () => {

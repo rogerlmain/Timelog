@@ -12,20 +12,28 @@ const table = "invitations";
 export default class InvitationModel extends DataModel {
 
 
-	static respond = (response, invite_id) => {
-		return Database.fetch_data (table, {
-			action:		response,
-			invite_id:	invite_id
-		}).then (() => LocalStorage.remove_store ("invitation"));
-	}/* respond */;
-
-
 	static fetch_all () { 
-		return Database.fetch_data (table, {
+
+		let result = Database.fetch_data (table, {
 			action: "all",
 			email_address: AccountStorage.email_address (),
 		});
+
+		return result;
+		
 	}// fetch_all;
+
+
+	static respond = (response, invite_id) => {
+
+		let result = Database.fetch_data (table, {
+			action:		response,
+			invite_id:	invite_id
+		}).then (() => LocalStorage.remove_store ("invitation"));
+
+		return result;
+
+	}/* respond */;
 
 
 }// InvitationModel;
