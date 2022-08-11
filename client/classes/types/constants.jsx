@@ -9,7 +9,6 @@ export const access_token = "EAAAENzB7zMQb2M5FW6MpbnIMXfvwLdonwGI9XxqtkwT86LvxuW
 export const application_id = "sandbox-sq0idb-i9_IjjiYVUfBsBoNCFh9LA";
 export const location_id = "RMPCInc";
 
-export const debugging = true;
 export const tracing = false;
 
 export const space = " ";
@@ -281,12 +280,8 @@ export const enterprise_options = {
 
 
 export const globals = {
-
-	debugging: true,
-
 	main: null,
 	master: null,
-
 }// globals;
 
 

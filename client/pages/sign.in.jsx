@@ -38,7 +38,11 @@ export default class SigninPage extends BaseControl {
 
 
 	static contextType= MasterContext;
-	static defaultProps = { id: "signin_page" }
+
+	static defaultProps = { 
+		id		: "signin_page",
+		parent	: null,
+	}// defaultProps;
 
 
 	sign_in = () => {
@@ -123,11 +127,11 @@ export default class SigninPage extends BaseControl {
 					</div>
 				</form>
 
-				<div className="horizontally-spaced-out button-bar">
+				<div className="horizontally-spaced-out with-headspace">
 
 					<div className="aside">
 						<label style={{ marginRight: "0.5em" }}>New to RMPC Timelog?</label>
-						<a onClick={() => parent.setState ({ signing_up: true })}>Sign up</a>
+						<a onClick={() => this.props.parent.setState ({ signing_up: true })}>Sign up</a>
 					</div>
 
 					<EyecandyPanel id="signin_eyecandy" text="Signing you in." eyecandyVisible={this.state.eyecandy_visible} onEyecandy={this.sign_in}>

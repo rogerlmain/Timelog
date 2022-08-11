@@ -17,8 +17,8 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging.model";
 
-import { blank, date_formats, date_rounding, debugging, granularity_types, space } from "client/classes/types/constants";
-import { isset, is_empty, nested_value, not_set, multiline_text, null_value } from "client/classes/common";
+import { blank, date_formats, date_rounding, granularity_types, space } from "client/classes/types/constants";
+import { isset, is_empty, nested_value, not_set, multiline_text, null_value, debugging } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
 import { MasterContext } from "client/classes/types/contexts";
@@ -84,7 +84,7 @@ export default class LoggingPage extends BaseControl {
 			throw (error);
 		});
 		
-		if (debugging) console.log ("logging page created");
+		if (debugging ()) console.log ("logging page created");
 
 	}// constructor;
 
@@ -352,8 +352,8 @@ export default class LoggingPage extends BaseControl {
 						hasHeader={true} 
 						headerSelectable={false} 
 
-						onClientChange={event => this.setState ({ current_entry: {...this.state.current_entry, client_id: event.target.value }})}
-						onProjectChange={event => this.setState ({ current_entry: {...this.state.current_entry, project_id: event.target.value }})}>
+						onClientChange={event => this.setState ({ current_entry: {...this.state.current_entry, client_id: event.target.value } })}
+						onProjectChange={event => this.setState ({ current_entry: {...this.state.current_entry, project_id: event.target.value } })}>
 
 					</ProjectSelector>
 				</Container>
@@ -363,9 +363,9 @@ export default class LoggingPage extends BaseControl {
 			<div className="flex-column with-headspace">
 				<div style={{ paddingLeft: "0.75em" }}><label htmlFor="memo" style={{ fontWeight: "bold" }}>Notes</label></div>
 				<div className="textarea-container with-some-headspace">
-					<textarea id="notes" name="notes" 
-						placeholder="(optional)" value={this.notes () ?? blank}
-						onChange={event => this.setState ({ current_entry: {...this.state.current_entry, notes: event.target.value }})}>
+					<textarea id="notes" name="notes"
+						placeholder="(optional)" defaultValue={this.notes () ?? blank}
+						onBlur={event => this.setState ({ current_entry: {...this.state.current_entry, notes: event.target.value }})}>
 					</textarea>
 				</div>
 			</div>

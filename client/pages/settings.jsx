@@ -26,8 +26,8 @@ import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
 import OptionToggle from "pages/gadgets/toggles/option.toggle";
 
-import { blank, debugging, option_types } from "classes/types/constants";
-import { get_key, get_keys, isset, is_null, nested_value, not_set } from "classes/common";
+import { blank, option_types } from "classes/types/constants";
+import { debugging, get_key, get_keys, isset, is_null, nested_value, not_set } from "classes/common";
 
 import { resize_direction } from "controls/panels/resize.panel";
 import { client_limit_options } from "pages/clients";
@@ -342,10 +342,10 @@ export default class SettingsPage extends BaseControl {
 							<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
 								<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
 									onChange={event => this.setState ({ invitee: event.target.value })} required={true}
-									defaultValue={debugging ? "Roger" : null}>
+									defaultValue={debugging () ? "Roger" : null}>
 								</input>
 								<input type="email" id="invitee_email" name="invitee_email" placeholder="Email address" required={true}
-									defaultValue={debugging ? "roger.main@rexthestrange.com" : null}>
+									defaultValue={debugging () ? "roger.main@rexthestrange.com" : null}>
 								</input>
 								<button onClick={event => {
 									this.setState ({ invite_data: new FormData (this.invite_form.current) });

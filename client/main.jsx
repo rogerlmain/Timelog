@@ -10,13 +10,14 @@ import MasterPanel from "client/master";
 
 import { createRoot } from "react-dom/client";
 
-import { debugging, tracing, globals, date_formats } from "client/classes/types/constants";
+import { tracing, globals, date_formats } from "client/classes/types/constants";
 
 
 // Guest Imports
 
 import "resources/styles/forms.css";
 import ActivityLog from "./classes/activity.log";
+import { debugging } from "./classes/common";
 
 
 //Special Guest Import
@@ -40,7 +41,7 @@ class Main extends BaseControl {
 
 		// window.onerror = this.error_handler;
 
-		if ((debugging) || (tracing)) console.log ("creating main page");
+		if ((debugging ()) || (tracing)) console.log ("creating main page");
 	}// constructor;
 
 
@@ -75,7 +76,7 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
-	if (debugging) console.log (`Debug test: ${new Date ().format (date_formats.full_datetime)}`);
+	if (debugging ()) console.log (`Debug test: ${new Date ().format (date_formats.full_datetime)}`);
 	createRoot (document.getElementById ("main_page")).render (<Main id="timelog_main_page" />);
 
 	// Special Guest Render	

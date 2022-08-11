@@ -12,8 +12,8 @@ import ProjectSelector	from "client/controls/selectors/project.selector";
 
 import Container	from "client/controls/container";
 
-import { date_formats, debugging } from "client/classes/types/constants";
-import { get_keys, isset, is_null, is_object, not_set } from "client/classes/common";
+import { date_formats } from "client/classes/types/constants";
+import { debugging, get_keys, isset, is_null, is_object, not_set } from "client/classes/common";
 
 import { BillingCheckbox } from "client/controls/abstract/input.control";
 
@@ -55,7 +55,7 @@ export default class ReportsPage extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		if (debugging) console.log (`Creating reports page (${this.props.id})`);
+		if (debugging ()) console.log (`Creating reports page (${this.props.id})`);
 	}// constructor;
 
 

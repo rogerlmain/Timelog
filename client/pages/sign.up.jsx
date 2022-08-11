@@ -175,7 +175,7 @@ defaultValue="stranger" />
 
 			</form>
 
-			<div className="full-width right-justified vertically-centered with-headspace">
+			<div className="full-width with-headspace">
 				<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible} stretchOnly={true}
 
 					text={this.signed_in () ? "Saving your information" : "Creating your account"}

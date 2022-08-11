@@ -29,6 +29,8 @@ export function warning (text) { return confirm (detab (text)) } // TEMPORARY - 
 
 export function randomized (number) { return ((parseInt (number) * 1000) + (Math.random () * 1000)) }
 
+export function debugging () { window.location.hostname.equals ("localhost") }
+
 
 /********/
 

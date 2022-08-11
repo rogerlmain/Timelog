@@ -28,7 +28,7 @@ import CompanyModel from "client/classes/models/company.model";
 import OptionsModel from "./classes/models/options.model";
 
 import { date_formats, globals } from "client/classes/types/constants";
-import { isset, is_empty, is_function, is_null, nested_value, not_set, numeric_value } from "client/classes/common";
+import { debugging, isset, is_empty, is_function, is_null, nested_value, not_set, numeric_value } from "client/classes/common";
 
 import { MasterContext } from "classes/types/contexts";
 
@@ -44,7 +44,8 @@ import "resources/styles/home.page.css";
  // version.feature.bugfix
  // Increment version at feature #100
 
-const version = "1.9.3";
+
+const version = "1.9.4";
 
 
 const user_image_style = {
@@ -129,10 +130,10 @@ const MainPanel = props => {
 
 		let result = null;
 
-		for (let [key, page] of Object.entries (props.pages)) {
+		for (let [key, page] of Object.entries (props.master.pages)) {
 			let id = `${key}_container`;
 			if (is_null (result)) result = [];
-			result.push (<Container key={`${id}_key`} id={id} visible={props.page == key}>{page}</Container>);
+			result.push (<Container key={`${id}_key`} id={id} visible={props.master.state.page == key}>{page}</Container>);
 		}// for;
 
 		return result;
@@ -151,7 +152,7 @@ const MainPanel = props => {
 	}// if;
 
 
-	active_panel = (props.signedIn ? "master_panel" : (props.signingUp || isset (localStorage.getItem ("invitation")) ? "signup_panel" : "signin_panel"));
+	active_panel = (props.signedIn ? "master_panel" : (props.master.state.signing_up || isset (localStorage.getItem ("invitation")) ? "signup_panel" : "signin_panel"));
 
 
 	return <div className="full-width horizontally-centered">
@@ -166,11 +167,11 @@ const MainPanel = props => {
 			</Container>
 
 			<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
-				<SignupPage parent={this} />
+				<SignupPage parent={props.master} />
 			</Container>
 
 			<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
-				<SigninPage parent={this} />
+				<SigninPage parent={props.master} />
 			</Container>
 
 		</ExplodingPanel>
@@ -374,7 +375,7 @@ export default class MasterPanel extends BaseControl {
 
 					</div>
 
-					<Container visible={signed_in}>
+					<Container visible={signed_in && debugging () }>
 						<div className="home_button_panel">
 
 							{this.button_list ()}
@@ -393,7 +394,7 @@ export default class MasterPanel extends BaseControl {
 
 					<hr style={page_rule_style} />
 
-					<MainPanel pages={this.pages} page={this.state.page} signedIn={signed_in} signingUp={this.state.signing_up} />
+					<MainPanel master={this} signedIn={signed_in} />
 					
 				</div>
 

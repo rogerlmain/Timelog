@@ -7,7 +7,7 @@ import FadePanel from "client/controls/panels/fade.panel";
 import ResizePanel, { resize_state, resize_direction } from "client/controls/panels/resize.panel";
 
 import { isset, is_null, nested_value, not_array } from "client/classes/common";
-import { tracing, debugging } from "client/classes/types/constants";
+import { tracing } from "client/classes/types/constants";
 
 
 export default class ExplodingPanel extends BaseControl {
