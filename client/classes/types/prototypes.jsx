@@ -39,6 +39,26 @@ Array.prototype.get_index = function (item) {
 }// get_index;
 
 
+Array.prototype.group = function (field) {
+
+	let result = null;
+
+	for (let object of this) {
+
+		let group_key = object [field];
+		let fields = {...object};
+
+		delete fields [field];
+		if (is_null (result)) result = {}
+		result [group_key] = fields;
+
+	}// for;
+
+	return result;
+
+}// grouped_object;
+
+
 Array.prototype.insert = function (item, index) {
     this.splice (index, 0, item);
 }// insert;
@@ -428,6 +448,26 @@ HTMLElement.prototype.thaw = function () {
 }// thaw;
 
 
+HTMLElement.prototype.hardenWidth = function () { this.style.minWidth = `${this.clientWidth}px` }
+HTMLElement.prototype.hardenHeight = function () { this.style.minHeight = `${this.clientHeight}px` }
+
+
+HTMLElement.prototype.harden = function () {
+	this.hardenWidth ();
+	this.hardenHeight ();
+}// harden;
+
+
+HTMLElement.prototype.softenWidth = function () { this.style.minWidth = null }
+HTMLElement.prototype.softenHeight = function () { this.style.minHeight = null }
+
+
+HTMLElement.prototype.soften = function () {
+	this.softenWidth ();
+	this.softenHeight ();
+}// soften;
+
+
 HTMLElement.prototype.getNumber = function (attribute) {
 	let value = parseInt (this.getAttribute (attribute));
 	return isNaN (value) ? null : value;
@@ -674,6 +714,5 @@ String.prototype.titled = function () { return this.charAt (0).toUpperCase () + 
 
 
 Window.prototype.dispatchAll = (event) => document.querySelectorAll ("*").forEach (item => item.dispatchEvent (is_string (event) ? new Event (event) : event));
-
 
 

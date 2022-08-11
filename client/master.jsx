@@ -25,6 +25,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import SelectList from "client/controls/lists/select.list";
 
 import CompanyModel from "client/classes/models/company.model";
+import OptionsModel from "./classes/models/options.model";
 
 import { date_formats, globals } from "client/classes/types/constants";
 import { isset, is_empty, is_function, is_null, nested_value, not_set, numeric_value } from "client/classes/common";
@@ -35,7 +36,6 @@ import logo from "resources/images/clock.png";
 import user_image from "resources/images/guest.user.svg";
 
 import "resources/styles/home.page.css";
-import OptionsModel from "./classes/models/options.model";
 
 
 /********/
@@ -44,7 +44,7 @@ import OptionsModel from "./classes/models/options.model";
  // version.feature.bugfix
  // Increment version at feature #100
 
-const version = "1.9.2";
+const version = "1.9.3";
 
 
 const user_image_style = {
@@ -59,8 +59,8 @@ const page_rule_style = {
 	border: "none",
 	width: "95vw",
 	height: 0,
-	borderTop: "solid 1px var(--border-color)"
-	// backgroundImage: "linear-gradient(var(--rule-color), var(--background-color))"
+	borderTop: "solid 1px var(--border-color)",
+	backgroundImage: "linear-gradient(var(--rule-color), var(--background-color))"
 }// page_rule_style;
 
 

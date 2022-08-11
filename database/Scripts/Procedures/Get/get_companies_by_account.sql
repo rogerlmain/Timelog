@@ -19,7 +19,7 @@ create procedure get_companies_by_account (account_id integer) begin
         lkc.long_name as country_name,
         adr.postcode,
 
-        if (permission (cac.permissions, 62), cpy.square_id, null),
+        if (permission (cac.permissions, 62), cpy.square_id, null) as square_id,
 
 		cac.permissions
 

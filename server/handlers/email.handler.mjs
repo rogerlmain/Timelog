@@ -3,7 +3,7 @@ import "../prototypes.mjs";
 import FileSystem from "fs";
 import nodemailer from "nodemailer";
 
-import InvitationData from "../models/invitations.mjs";
+import InvitationModel from "../models/invitations.model.mjs";
 
 import { root_path } from "../constants.mjs";
 import AccountsModel from "../models/accounts.model.mjs";
@@ -99,7 +99,7 @@ export default class EmailHandler {
 
 			if (isset (account)) this.fields.invitee_account_id = account.id;
 
-			new InvitationData (this.request, this.response).set_invitation (this.fields).then (invitation => {
+			new InvitationModel (this.request, this.response).set_invitation (this.fields).then (invitation => {
 
 				if (!Array.isArray (invitation) || (invitation.length == 0)) return this.response.send ("Error: invitation not sent");
 

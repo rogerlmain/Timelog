@@ -1,7 +1,7 @@
 import ActivityLog from "client/classes/activity.log";
 import AccountStorage from "client/classes/storage/account.storage";
 
-import { is_empty, isset, not_null, is_function } from "classes/common";
+import { isset, not_null } from "classes/common";
 
 
 export default class Database {
@@ -25,7 +25,7 @@ export default class Database {
 			body: form_data
 		}// fetch_parameters;
 
-		return fetch (`/${name}`, fetch_parameters).then (response => response.json ());
+		return new Promise (async (resolve, reject) => await fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (result => resolve (result)).catch (reject));
 
 	}// fetch_data;
 

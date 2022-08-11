@@ -6,22 +6,23 @@ import https from "https";
 import multiparty from "multiparty";
 
 import AccountsModel from "./server/models/accounts.model.mjs";
-import AccountOptionsData from "./server/models/options.mjs";
-import AccountSettingsData from "./server/models/settings.mjs";
 
-import AddressData from "./server/models/addresses.mjs";
-import ClientData from "./server/models/clients.mjs";
-import CompanyAccountsData from "./server/models/company.accounts.mjs";
-import CompanyCardData from "./server/models/company.cards.mjs";
-import CompanyData from "./server/models/companies.mjs";
-import InvitationData from "./server/models/invitations.mjs";
-import LoggingData from "./server/models/logging.mjs";
-import LookupsData from "./server/models/lookups.mjs";
+import AddressModel from "./server/models/address.model.mjs";
+import ClientModel from "./server/models/client.model.mjs";
+import CompanyAccountsModel from "./server/models/company.accounts.model.mjs";
+import CompanyCardModel from "./server/models/company.cards.model.mjs";
+import CompaniesModel from "./server/models/companies.model.mjs";
+import InvitationModel from "./server/models/invitations.model.mjs";
+import LoggingModel from "./server/models/logging.model.mjs";
+import LookupsModel from "./server/models/lookups.model.mjs";
+import OptionsModel from "./server/models/options.model.mjs";
+import PermissionsModel from "./server/models/permissions.model.mjs";
+import PricingModel from "./server/models/pricing.model.mjs";
+import ProjectsModel from "./server/models/projects.model.mjs";
+import ReportsModel from "./server/models/reports.model.mjs";
+import SettingsModel from "./server/models/settings.model.mjs";
+
 import MiscData from "./server/models/misc.mjs";
-import PricingData from "./server/models/pricing.mjs";
-import ProjectData from "./server/models/projects.mjs";
-import ReportData from "./server/models/reports.mjs";
-import SettingsData from "./server/models/settings.mjs";
 import TaskData from "./server/models/tasks.mjs";
 
 import EmailHandler from "./server/handlers/email.handler.mjs";
@@ -87,7 +88,7 @@ app.post ("/accounts", function (request, response) {
 app.post ("/addresses", function (request, response) {
 	try {
 		app.process (request, response, (fields) => {
-			let address_data = new AddressData (request, response);
+			let address_data = new AddressModel (request, response);
 			switch (fields.action) {
 				case "save": address_data.save_address (fields); break;
 				default: break;
@@ -99,7 +100,7 @@ app.post ("/addresses", function (request, response) {
 
 app.post ("/clients", function (request, response) {
 	app.process (request, response, (fields) => {
-		let client_data = new ClientData (request, response);
+		let client_data = new ClientModel (request, response);
 		switch (fields.action) {
 			case "list_by_company": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
 			case "details": client_data.get_client_by_id (fields.client_id); break;
@@ -112,7 +113,7 @@ app.post ("/clients", function (request, response) {
 
 app.post ("/companies", function (request, response) {
 	app.process (request, response, (fields) => {
-		let company_data = new CompanyData (request, response);
+		let company_data = new CompaniesModel (request, response);
 		switch (fields.action) {
 			case "save": company_data.save_company (fields); break;
 			case "list": company_data.get_companies_by_account (fields.account_id).then (company_data.send_result_data.bind (company_data)); break;
@@ -123,7 +124,7 @@ app.post ("/companies", function (request, response) {
 
 app.post ("/company_accounts", function (request, response) {
 	app.process (request, response, (fields) => {
-		let company_accounts_data = new CompanyAccountsData (request, response);
+		let company_accounts_data = new CompanyAccountsModel (request, response);
 		switch (fields.action) {
 			case "save": company_accounts_data.set_company_account (fields.account_id, fields.company_id); break;
 		}// switch;
@@ -133,7 +134,7 @@ app.post ("/company_accounts", function (request, response) {
 
 app.post ("/company_cards", function (request, response) {
 	app.process (request, response, (fields) => {
-		let company_card_data = new CompanyCardData (request, response);
+		let company_card_data = new CompanyCardModel (request, response);
 		switch (fields.action) {
 			case "get": company_card_data.get_company_cards (fields.company_id); break;
 			case "save": company_card_data.save_company_card (fields); break;
@@ -154,7 +155,7 @@ app.post ("/email", function (request, response) {
 app.post ("/invitations", (request, response) => {
 	app.process (request, response, (fields) => {
 
-		let invite = new InvitationData (request, response);
+		let invite = new InvitationModel (request, response);
 
 		switch (fields.action) {
 			case "all": invite.get_invitations_by_email (fields.email_address); break;
@@ -169,7 +170,7 @@ app.post ("/invitations", (request, response) => {
 app.post ("/logging", function (request, response) {
 	app.process (request, response, async fields => {
 
-		let logging_data = new LoggingData (request, response);
+		let logging_data = new LoggingModel (request, response);
 
 		switch (fields.action) {
 			case "logging": logging_data.save_log_entry (fields); break;
@@ -182,7 +183,7 @@ app.post ("/logging", function (request, response) {
 
 app.post ("/lookups", function (request, response) {
 	app.process (request, response, async fields => {
-		let lookups_data = new LookupsData (request, response);
+		let lookups_data = new LookupsModel (request, response);
 		switch (fields.action) {
 			case "get_countries": lookups_data.get_lookups_by_category (countries_id); break;
 			case "get_districts": lookups_data.get_lookups_by_category (districts_id); break;
@@ -205,7 +206,7 @@ app.post ("/options", function (request, response) {
 	try {
 		app.process (request, response, async fields => {
 
-			let account_option_data = new AccountOptionsData (request, response);
+			let account_option_data = new OptionsModel (request, response);
 
 			switch (fields.action) {
 				case "company": account_option_data.get_options_by_company (fields.company_id, true); break;	
@@ -218,6 +219,19 @@ app.post ("/options", function (request, response) {
 });
 
 
+app.post ("/permissions", function (request, response) {
+	try {
+		app.process (request, response, fields => {
+			let account_permissions_data = new PermissionsModel (request, response);
+			switch (fields.action) {
+				case "get": account_option_data.get_options_by_company (fields.company_id, true); break;	
+				case "set": account_option_data.save_option (fields); break;
+			}// switch;
+		});
+	} catch (except) { console.log (except) }
+});
+
+
 app.get ("/packages", function (request, response) {
 	response.sendFile (`${root_path}/client/pages/static/packages.html`);
 });
@@ -225,7 +239,7 @@ app.get ("/packages", function (request, response) {
 
 app.post ("/pricing", function (request, response) {
 	app.process (request, response, (fields) => {
-		let project_data = new PricingData (request, response);
+		let project_data = new PricingModel (request, response);
 		switch (fields.action) {
 			case "get": project_data.get_pricing_by_option (fields.option, fields.value); break;
 		}// switch;
@@ -235,7 +249,7 @@ app.post ("/pricing", function (request, response) {
 
 app.post ("/projects", function (request, response) {
 	app.process (request, response, (fields) => {
-		let project_data = new ProjectData (request, response);
+		let project_data = new ProjectsModel (request, response);
 		switch (fields.action) {
 			case "list": project_data.get_projects_by_client (fields.client_id); break;
 			case "details": project_data.get_project_by_id (fields.project_id); break;
@@ -247,7 +261,7 @@ app.post ("/projects", function (request, response) {
 
 app.post ("/reports", function (request, response) {
 	app.process (request, response, (fields) => {
-		let report_data = new ReportData (request, response);
+		let report_data = new ReportsModel (request, response);
 		switch (fields.action) {
 			case "project": report_data.report_by_project (fields.project_id, fields.start_date, fields.end_date); break;
 		}// switch;
@@ -258,7 +272,7 @@ app.post ("/reports", function (request, response) {
 app.post ("/settings", function (request, response) {
 	try {
 		app.process (request, response, (fields) => {
-			let account_setting_data = new AccountSettingsData (request, response);
+			let account_setting_data = new SettingsModel (request, response);
 			switch (fields.action) {
 				case "get": account_setting_data.get_settings (fields.account_id); break;	
 				case "save": account_setting_data.save_setting (fields.account_id, fields.setting_id, fields.value); break;
@@ -304,13 +318,13 @@ app.post ("/signin", function (request, response) {
 
 		let result = { credentials: account };
 
-		let companies = await (new CompanyData ().get_companies_by_account (account.account_id));
-		let settings = await (new SettingsData ().get_settings ());
-		let logging = (await (new LoggingData ().latest_log_entry (account.account_id)));
+		let companies = await (new CompaniesModel ().get_companies_by_account (account.account_id));
+		let settings = await (new SettingsModel ().get_settings ());
+		let logging = (await (new LoggingModel ().latest_log_entry (account.account_id)));
 
 		if (companies.length > 0) {
 			for (let company of companies) {
-				result.options = { [company.company_id]: await (new AccountOptionsData ().get_options_by_company (company.company_id)) };
+				result.options = { [company.company_id]: await (new OptionsModel ().get_options_by_company (company.company_id)) };
 				result.companies = { ...result.companies, [company.company_id]: company }
 				delete company.company_id;
 			}// for;
@@ -377,7 +391,7 @@ app.get ("/join", (request, response) => app.process (request, response, fields 
 	/*********/
 
 
-	new InvitationData ().get_invitation_by_id (invite.value).then (data => {
+	new InvitationModel ().get_invitation_by_id (invite.value).then (data => {
 		if (isset (data)) data = data [0]; 
 		if (isset (data) && bad_invitation (data)) return response.send (condolences);
 		response.redirect ("/");

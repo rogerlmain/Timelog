@@ -24,7 +24,7 @@ import SelectButton from "client/controls/buttons/select.button";
 
 import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
-import ToggleOption from "pages/gadgets/settings/toggle.option";
+import OptionToggle from "pages/gadgets/toggles/option.toggle";
 
 import { blank, debugging, option_types } from "classes/types/constants";
 import { get_key, get_keys, isset, is_null, nested_value, not_set } from "classes/common";
@@ -170,7 +170,7 @@ export default class SettingsPage extends BaseControl {
 
 
 	granularity_option = () => { 
-		return <ToggleOption id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={OptionsStorage.granularity ()}
+		return <OptionToggle id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={OptionsStorage.granularity ()}
 			option={option_types.granularity} parent={this} 
 			onPaymentConfirmed={selected_option => {
 				this.set_option (option_types.granularity, selected_option).then (() => this.setState ({
@@ -179,42 +179,42 @@ export default class SettingsPage extends BaseControl {
 					granularity: selected_option
 				}, this.context.master_page.forceRefresh));
 			}}>
-		</ToggleOption>
+		</OptionToggle>
 	}/* granularity_option */;
 
 
 	editing_option = () => {
-		return <ToggleOption id="editing_option" title="Editing option" values={["No", "Yes"]} value={OptionsStorage.editing_option ()}
+		return <OptionToggle id="editing_option" title="Editing option" values={["No", "Yes"]} value={OptionsStorage.editing_option ()}
 			option={option_types.editing_option} parent={this}
 			onPaymentConfirmed={selected_option => this.process_option ("editing_option", selected_option)}>
-		</ToggleOption>
+		</OptionToggle>
 	}// editing_option;
 
 
 	rounding_options = () => {
 		return <Container>
 		
-			<ToggleOption id="rounding_option" title="Rounding option" values={["No", "Yes"]} value={OptionsStorage.rounding_option ()}
+			<OptionToggle id="rounding_option" title="Rounding option" values={["No", "Yes"]} value={OptionsStorage.rounding_option ()}
 				option={option_types.rounding_option} parent={this}
 				onPaymentConfirmed={selected_option => this.process_option ("rounding_option", selected_option)}>
-			</ToggleOption>
+			</OptionToggle>
 
 			<div className="span-all-columns">
 				<ExplodingPanel id="rounding_options_panel">
 					<Container id="rounding_options_container" visible={OptionsStorage.can_round ()}>
 						<div className="credit-centered with-headspace">
 
-							<ToggleOption id="start_time_rounding" title="Start time rounding"
+							<OptionToggle id="start_time_rounding" title="Start time rounding"
 								values={["Round down", "Round off", "Round up"]} value={this.state.start_rounding + 2}
 								option={option_types.start_rounding} parent={this} billable={false}
 								onChange={selected_value => this.set_option (option_types.start_rounding, selected_value - 1)}>
-							</ToggleOption>					
+							</OptionToggle>					
 
-							<ToggleOption id="end_time_rounding" title="End time rounding"
+							<OptionToggle id="end_time_rounding" title="End time rounding"
 								values={["Round down", "Round off", "Round up"]} value={this.state.end_rounding + 2}
 								option={option_types.end_rounding} parent={this} billable={false}
 								onChange={selected_value => this.set_option (option_types.end_rounding, selected_value - 2)}>
-							</ToggleOption>					
+							</OptionToggle>					
 
 						</div>
 					</Container>
@@ -228,15 +228,15 @@ export default class SettingsPage extends BaseControl {
 	limit_options = () => {
 		return <Container>
 
-			<ToggleOption id="client_limit" title="Number of clients" values={get_keys (client_limit_options)} value={OptionsStorage.client_limit ()}
+			<OptionToggle id="client_limit" title="Number of clients" values={get_keys (client_limit_options)} value={OptionsStorage.client_limit ()}
 				option={option_types.client_limit} parent={this} 
 				onPaymentConfirmed={selected_option => this.process_option ("client_limit", selected_option)}>
-			</ToggleOption>
+			</OptionToggle>
 
-			<ToggleOption id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={OptionsStorage.project_limit ()}
+			<OptionToggle id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={OptionsStorage.project_limit ()}
 				option={option_types.project_limit} parent={this} 
 				onPaymentConfirmed={selected_option => this.process_option ("project_limit", selected_option)}>
-			</ToggleOption>
+			</OptionToggle>
 
 		</Container>
 	}/* limit_options */;
@@ -253,10 +253,10 @@ export default class SettingsPage extends BaseControl {
 
 					<Container id="billing_available_container" visible={!option_purchased}>
 						<div className="credit-centered">
-							<ToggleOption id="billing_option" title="Billing option" values={["No", "Yes"]} value={OptionsStorage.billing_option ()}
+							<OptionToggle id="billing_option" title="Billing option" values={["No", "Yes"]} value={OptionsStorage.billing_option ()}
 								option={option_types.billing_option} parent={this}
 								onPaymentConfirmed={selected_option => this.process_option ("billing_option", selected_option)}>
-							</ToggleOption>
+							</OptionToggle>
 						</div>
 					</Container>
 

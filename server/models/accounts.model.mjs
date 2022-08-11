@@ -1,8 +1,8 @@
 import Database from "../database.mjs";
-import OptionsData from "./options.mjs";
-import SettingsData from "./settings.mjs";
-import CompanyData from "./companies.mjs";
-import LoggingData from "./logging.mjs";
+import OptionsModel from "./options.model.mjs";
+import SettingsModel from "./settings.model.mjs";
+import CompaniesModel from "./companies.model.mjs";
+import LoggingModel from "./logging.model.mjs";
 
 
 export default class AccountsModel extends Database {
@@ -10,8 +10,8 @@ export default class AccountsModel extends Database {
 
 	get_accounts_by_company = company_id => {
 		let procedure = "get_accounts_by_company";
-		let parameters = [company_id];
-		return this.data_query (procedure, parameters);
+		let parameters = [parseInt (company_id)];
+		this.execute_query (procedure, parameters);
 	}// get_accounts_by_company;
 
 
