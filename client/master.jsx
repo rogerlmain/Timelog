@@ -3,6 +3,7 @@ import React from "react";
 import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
+import PermissionsStorage from "client/classes/storage/permissions.storage";
 
 import Container from "controls/container";
 import ThumbnailImage from "controls/thumbnail.image";
@@ -15,7 +16,7 @@ import ClientsPage from "client/pages/clients";
 import ProjectsPage from "client/pages/projects";
 import LoggingPage from "client/pages/logging";
 import ReportsPage from "client/pages/reports";
-import TeamsPage from "client/pages/teams";
+import TeamPage from "client/pages/team";
 import AccountPage from "client/pages/sign.up";
 import SigninPage from "client/pages/sign.in";
 import SignupPage from "client/pages/sign.up";
@@ -28,7 +29,7 @@ import CompanyModel from "client/classes/models/company.model";
 import OptionsModel from "./classes/models/options.model";
 
 import { date_formats, globals } from "client/classes/types/constants";
-import { debugging, isset, is_empty, is_function, is_null, nested_value, not_set, numeric_value } from "client/classes/common";
+import { debugging, isset, is_empty, is_function, is_null, is_promise, nested_value, not_set, numeric_value } from "client/classes/common";
 
 import { MasterContext } from "classes/types/contexts";
 
@@ -41,11 +42,12 @@ import "resources/styles/home.page.css";
 /********/
 
 
- // version.feature.bugfix
+ // version.feature.partial.bugfix
  // Increment version at feature #100
+ // Increment feature at partial #100 or on feature completion
 
 
-const version = "1.9.4";
+const version = "1.9.5.1";
 
 
 const user_image_style = {
@@ -155,7 +157,7 @@ const MainPanel = props => {
 	active_panel = (props.signedIn ? "master_panel" : (props.master.state.signing_up || isset (localStorage.getItem ("invitation")) ? "signup_panel" : "signin_panel"));
 
 
-	return <div className="full-width horizontally-centered">
+	return <div className="full-height horizontally-centered" style={{ overflowY: "auto" }}>
 		<ExplodingPanel id="main_panel">
 
 			<Container id="master_panel_container" visible={active_panel == "master_panel"}>
@@ -183,13 +185,24 @@ const MainPanel = props => {
 /********/
 
 
+const client_permissions = () => {
+	return new Promise ((resolve, reject) => {
+		if (OptionsStorage.client_limit () <= 1) resolve (false);
+		PermissionsStorage.client_permission ().then (permission => resolve (permission)).catch (reject);
+	});
+}// client_permissions;
+
+
+/********/
+
+
 export const page_names = {
 	home		: "home",
 	clients		: "clients",
 	projects	: "projects",
 	logging		: "logging",
 	reports		: "reports",
-	teams		: "teams",
+	team		: "team",
 	account		: "account",
 	settings	: "settings",
 }// page_names;
@@ -211,7 +224,7 @@ export default class MasterPanel extends BaseControl {
 		[page_names.projects]	: <ProjectsPage />,
 		[page_names.logging]	: <LoggingPage />,
 		[page_names.reports]	: <ReportsPage />,
-		[page_names.teams]		: <TeamsPage />,
+		[page_names.team]		: <TeamPage />,
 		[page_names.account]	: <AccountPage parent={this.props.parent} />,
 		[page_names.settings]	: <SettingsPage />,	
 	}// pages;
@@ -219,11 +232,11 @@ export default class MasterPanel extends BaseControl {
 
 	master_pages = { 
 		[page_names.home]		: { name: "Home", permission: true }, 
-		[page_names.clients]	: { name: "Clients", permission: () => { return OptionsStorage.client_limit () > 1 } }, 
+		[page_names.clients]	: { name: "Clients", permission: client_permissions },
 		[page_names.projects]	: { name: "Projects", permission: () => { return OptionsStorage.project_limit () > 1 } }, 
 		[page_names.logging]	: { name: "Logging", permission: true }, 
 		[page_names.reports]	: { name: "Reports", permission: true },
-		[page_names.teams]		: { name: "Teams", permission: true },
+		[page_names.team]		: { name: "Team", permission: true },
 		[page_names.settings]	: { name: "Settings", permission: true }
 	}// master_pages;
 	
@@ -232,9 +245,10 @@ export default class MasterPanel extends BaseControl {
 
 
 	static defaultProps = { 
-		id: "master_page",
-		company_id: null,
-		parent: null
+		id			: "master_page",
+		button_list	: null,
+		company_id	: null,
+		parent		: null
 	}// defaultProps;
 
 
@@ -263,26 +277,45 @@ export default class MasterPanel extends BaseControl {
 
 
 	button_list () {
-		let result = null;
-		for (let page_name in page_names) {
+		return new Promise (async (resolve, reject) => {
 
-			let name = `${page_name}_button`;
+			let result = null;
 
-			if (not_set (this.master_pages [page_name])) continue;
+			try {
+				for (let page_name in page_names) {
 
-			if (!(is_function (this.master_pages [page_name].permission) ? this.master_pages [page_name].permission () : this.master_pages [page_name].permission)) continue;
-			if (is_null (result)) result = [];
+					if (not_set (this.master_pages [page_name])) continue;
 
-			result.push (<SelectButton id={name} name={name} key={name} page_name={name} selected={this.state.page == page_name}
-				disabled={this.buttons_disabled ()}
-				onClick={() => this.setState ({ page: page_name })}>
+					let name = `${page_name}_button`;
+					let permission = this.master_pages [page_name].permission;
+					let value = is_function (permission) ? permission () : permission;
 
-				{this.master_pages [page_name].name}
+					const nav_button = permission => {
 
-			</SelectButton>);
+						if (!permission) return;
+						if (is_null (result)) result = [];
 
-		}// for;
-		return result;
+						return <SelectButton id={name} name={name} key={name} page_name={name} selected={this.state.page == page_name}
+							disabled={this.buttons_disabled ()}
+							onClick={() => this.setState ({ page: page_name })}>
+
+							{this.master_pages [page_name].name}
+
+						</SelectButton>;
+
+					}/* create_button */;
+
+let the_button = nav_button (is_promise (value) ? await (value) : value);
+result.push (the_button);
+
+//					result.push (nav_button (is_promise (value) ? await (value) : value));
+
+				}// for;
+			} catch (error) { reject (error) }
+
+			resolve (result);
+
+		})// Promise;
 	}// button_list;
 
 
@@ -342,7 +375,14 @@ export default class MasterPanel extends BaseControl {
 	/********/
 
 
-	componentDidMount () { this.update_clock () }
+	componentDidUpdate () {
+		if (this.signed_in ()) this.button_list ().then (result => this.updateState ({ button_list: result }));
+	}// componentDidMount;
+
+
+	componentDidMount () {
+		this.update_clock ();
+	}// componentDidMount;
 	
 	
 	render () {
@@ -350,12 +390,11 @@ export default class MasterPanel extends BaseControl {
 		let signed_in = this.signed_in ();
 		
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
-
 			<div className="vertically-spaced-out main-page">
 
-				<div>
+				<div className="page-header">
 
-					<div className="horizontally-spaced-out page-header">
+					<div className="horizontally-spaced-out">
 
 						<div className="two-column-grid">
 
@@ -375,28 +414,24 @@ export default class MasterPanel extends BaseControl {
 
 					</div>
 
-					<Container visible={signed_in && debugging () }>
-						<div className="home_button_panel">
+					{signed_in && <div className="home_button_panel">
 
-							{this.button_list ()}
-							{this.signout_button ()}
+						{(() => {
+							return this.state.button_list
+						})()}
+						{this.signout_button ()}
 
-							<SelectButton onClick={() => {
-								alert ("waiting for something to test")
-								}} style={{ 
-								position: "absolute",
-								right: "1em",
-								bottom: "1em"
-							}}>TEST</SelectButton>
+						{debugging () && <SelectButton onClick={() => { alert ("waiting for something to test") }} style={{ 
+							position: "absolute",
+							right: "1em",
+							bottom: "1em"
+						}}>TEST</SelectButton>}
 
-						</div>
-					</Container>
+					</div>}
 
-					<hr style={page_rule_style} />
-
-					<MainPanel master={this} signedIn={signed_in} />
-					
 				</div>
+
+				<MainPanel master={this} signedIn={signed_in} />
 
 				<div className="page-footer">
 					<div>&copy; Copyright 2022 - Roger Main Programming Company (RMPC) - All rights reserved</div>

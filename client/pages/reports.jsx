@@ -12,7 +12,7 @@ import ProjectSelector	from "client/controls/selectors/project.selector";
 
 import Container	from "client/controls/container";
 
-import { date_formats } from "client/classes/types/constants";
+import { blank, date_formats } from "client/classes/types/constants";
 import { debugging, get_keys, isset, is_null, is_object, not_set } from "client/classes/common";
 
 import { BillingCheckbox } from "client/controls/abstract/input.control";
@@ -236,24 +236,24 @@ export default class ReportsPage extends BaseControl {
 						<div>Notes</div>
 						<div>Total time</div>
 						<Container visible={OptionStorage.can_bill ()}>{/*  && (data [0].rate > 0)}> */}
-							<div>Total due</div>
 							<div>Rate</div>
+							<div>Total due</div>
 							<div>Billed</div>
 						</Container>
 					</Container>
 				}}
 
 				row={data => {
-					return <Container inline={false} className={`report-grid ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : null}`} style={{ cursor: "pointer" }}>
+					return <Container inline={false} className={`report-grid ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
 						
 						<div className="right-aligned-text">{data.start_time}</div>
 						<div className="right-aligned-text">{data.end_time}</div>
-						<div>{data.notes}</div>
+						<div className="report-notes">{data.notes}</div>
 						<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
 
 						<Container visible={OptionStorage.can_bill ()}>{/*  && (data.rate > 0)}> */}
-							<div className="right-aligned-text">{data.total_due}</div>
 							<div className="right-aligned-text">{data.rate}</div>
+							<div className="right-aligned-text">{data.total_due}</div>
 							<BillingCheckbox id={data.log_id} onClick={event => {
 								if (event.target.checked === false) return warning (`
 									This entry has been marked as billed!

@@ -25,7 +25,14 @@ export default class Database {
 			body: form_data
 		}// fetch_parameters;
 
-		return new Promise (async (resolve, reject) => await fetch (`/${name}`, fetch_parameters).then (response => response.json ()).then (result => resolve (result)).catch (reject));
+		return new Promise (async (resolve, reject) => await fetch (`/${name}`, fetch_parameters).then (async response => {
+			let text = await response.text ();
+			try {
+				return JSON.parse (text);
+			} catch { 
+				return { response: text }
+			}// try;
+		}).then (result => resolve (result)).catch (reject));
 
 	}// fetch_data;
 

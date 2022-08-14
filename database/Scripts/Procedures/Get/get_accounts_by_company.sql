@@ -15,7 +15,8 @@ begin
         concat(acc.first_name, ' ', acc.last_name) as full_name,
         acc.email_address,
         acc.account_type,
-        acc.administrator_type
+        acc.administrator_type,
+        cac.permissions
 	from
 		accounts as acc
 	join

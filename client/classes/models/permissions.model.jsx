@@ -4,7 +4,7 @@ import DataModel from "client/classes/models/data.model";
 import CompanyStorage from "../storage/company.storage";
 
 
-const table = "options";
+const table = "permissions";
 
 
 export default class PermissionsModel extends DataModel {

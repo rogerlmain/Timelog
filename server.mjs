@@ -222,10 +222,10 @@ app.post ("/options", function (request, response) {
 app.post ("/permissions", function (request, response) {
 	try {
 		app.process (request, response, fields => {
-			let account_permissions_data = new PermissionsModel (request, response);
+			let permissions_data = new PermissionsModel (request, response);
 			switch (fields.action) {
-				case "get": account_option_data.get_options_by_company (fields.company_id, true); break;	
-				case "set": account_option_data.save_option (fields); break;
+				case "get": permissions_data.get_permissions (fields.company_id, fields.account_id); break;	
+				case "set": permissions_data.set_permissions (fields.company_id, fields.account_id, fields.permissions); break;
 			}// switch;
 		});
 	} catch (except) { console.log (except) }

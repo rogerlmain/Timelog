@@ -7,7 +7,10 @@ import Container from "client/controls/container";
 
 import PermissionToggle from "client/pages/gadgets/toggles/permission.toggle";
 
+import PermissionsModel from "client/classes/models/permissions.model";
 import AccountsModel from "client/classes/models/accounts.model";
+
+import PermissionObject from "client/classes/types/permission.object";
 import CompanyStorage from "client/classes/storage/company.storage";
 import ActivityLog from "client/classes/activity.log";
 
@@ -21,7 +24,20 @@ export default class TeamsPage extends BaseControl {
 	state = {
 		team			: null,
 		selected_account: null,
+		permissions		: null,
 	}// state;
+
+
+	/********/
+
+
+	get_permissions = event => PermissionsModel.get_permissions (event.target.value).then (value => this.setState ({
+		permissions: nested_value (value, 0, "permissions"),
+		selected_account: event.target.value,
+	}));
+
+
+	/********/
 
 
 	componentDidMount () {
@@ -32,12 +48,13 @@ export default class TeamsPage extends BaseControl {
 	render () {
 
 		let active_account = nested_value (this.state, "team", this.state.selected_account);
+		let permissions = new PermissionObject (nested_value (active_account, "permissions"));
 
 		return <Container>
 
 			<SelectList data={this.state.team} idField="account_id" textField="full_name" 
 				hasHeader={true} headerText="Select a team member"
-				onChange={event => this.setState ({ selected_account: event.target.value })}>
+				onChange={this.get_permissions}>
 			</SelectList>
 
 			{isset (active_account) ? <FadePanel id="team_panel" visible={isset (active_account)}>
@@ -48,7 +65,11 @@ export default class TeamsPage extends BaseControl {
 				</div>
 
 				<div className="two-column-table with-lotsa-headspace">
-					<PermissionToggle id="client_permission" label="Create clients" value={team_permissions.create_client} />
+					<PermissionToggle id="client_permission" label="Create clients" 
+						type={team_permissions.create_client} 
+						value={permissions.get (team_permissions.create_client)} 
+						account={this.state.selected_account}>
+					</PermissionToggle>
 				</div>
 
 			</FadePanel> : null}

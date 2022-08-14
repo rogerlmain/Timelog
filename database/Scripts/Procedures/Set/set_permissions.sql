@@ -15,6 +15,8 @@ create procedure set_permissions (
 	where
 		(cac.company_id = company_id) and
 		(cac.account_id = account_id);
+        
+	call get_permissions (company_id, account_id);
     
 end ??
 

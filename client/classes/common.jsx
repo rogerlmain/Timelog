@@ -218,19 +218,6 @@ export function nested_value () {
 }// nested_value;
 
 
-export function nested_object () {
-	
-	if (arguments.length == 0) return null;
-	if (arguments.length == 1) return arguments [0];
-
-	let next_item = arguments [0] ?? {};
-	next_item [arguments [1]] = nested_object (next_item [arguments [1]], ...(Array.from (arguments).slice (2)));
-
-	return next_item;
-
-}// set_nested_value;
-
-
 export function refresh (control, callback = null) {
 	if (isset (control.props) && isset (control.props.children)) {
 		let children = Array.isArray (control.props.children) ? control.props.children : [control.props.children];

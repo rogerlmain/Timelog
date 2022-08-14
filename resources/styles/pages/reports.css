@@ -12,3 +12,7 @@ hr.report-rule {
 div.report-grid div.ghost-box > div { padding: 0 1em }
 div.report-grid div.ghost-box > div:not(:first-child) { text-align: right }
 
+div.report-grid div.report-notes {
+	width: 25vw;
+	white-space: break-spaces;
+}/* div.report-grid div.report-notes */

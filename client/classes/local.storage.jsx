@@ -36,10 +36,14 @@ export default class LocalStorage {
 	}// get;
 
 
+	static get_store (store) { return localStorage.getItem (store) }
+
+
 	static set_store (store, values) {
 		localStorage.setItem (store, (is_array (values) || is_object (values)) ? JSON.stringify (LocalStorage.stripped (values)) : values);
 	}// set_store;
 
+	
 	static remove_store = (store) => localStorage.removeItem (store);
 
 
