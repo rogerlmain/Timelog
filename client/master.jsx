@@ -25,11 +25,12 @@ import SettingsPage from "client/pages/settings";
 import BaseControl from "client/controls/abstract/base.control";
 import SelectList from "client/controls/lists/select.list";
 
+import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/company.model";
-import OptionsModel from "./classes/models/options.model";
+import OptionsModel from "client/classes/models/options.model";
 
 import { date_formats, globals } from "client/classes/types/constants";
-import { debugging, isset, is_empty, is_function, is_null, is_promise, nested_value, not_set, numeric_value } from "client/classes/common";
+import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, nested_value, not_set, numeric_value } from "client/classes/common";
 
 import { MasterContext } from "classes/types/contexts";
 
@@ -65,6 +66,23 @@ const page_rule_style = {
 	borderTop: "solid 1px var(--border-color)",
 	backgroundImage: "linear-gradient(var(--rule-color), var(--background-color))"
 }// page_rule_style;
+
+
+/********/
+
+
+const client_permissions = () => new Promise ((resolve, reject) => {
+	if (OptionsStorage.client_limit () <= 1) resolve (false);
+	PermissionsStorage.client_permission ().then (permission => resolve (permission)).catch (reject);
+})// client_permissions;
+
+
+const team_permissions = () => new Promise ((resolve, reject) => {
+	AccountsModel.fetch_by_company (CompanyStorage.active_company_id ()).then (team => {
+		if (is_array (team) && (team.length == 1)) return resolve (false);
+		PermissionsStorage.team_permission ().then (permission => resolve (permission)).catch (reject);
+	}).catch (reject);
+})// team_permissions;
 
 
 /********/
@@ -185,17 +203,6 @@ const MainPanel = props => {
 /********/
 
 
-const client_permissions = () => {
-	return new Promise ((resolve, reject) => {
-		if (OptionsStorage.client_limit () <= 1) resolve (false);
-		PermissionsStorage.client_permission ().then (permission => resolve (permission)).catch (reject);
-	});
-}// client_permissions;
-
-
-/********/
-
-
 export const page_names = {
 	home		: "home",
 	clients		: "clients",
@@ -236,7 +243,7 @@ export default class MasterPanel extends BaseControl {
 		[page_names.projects]	: { name: "Projects", permission: () => { return OptionsStorage.project_limit () > 1 } }, 
 		[page_names.logging]	: { name: "Logging", permission: true }, 
 		[page_names.reports]	: { name: "Reports", permission: true },
-		[page_names.team]		: { name: "Team", permission: true },
+		[page_names.team]		: { name: "Team", permission: team_permissions },
 		[page_names.settings]	: { name: "Settings", permission: true }
 	}// master_pages;
 	

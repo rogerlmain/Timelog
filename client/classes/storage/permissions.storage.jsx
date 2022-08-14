@@ -14,7 +14,11 @@ const full_permission = 1125899906842623;
 
 
 export const team_permissions = {
-	create_client: 0,
+	create_client		: 0,
+	create_project		: 1,
+	create_reports		: 2,
+	team_permission		: 3,
+	purchase_permission	: 4,
 }// toggled;
 
 
@@ -53,7 +57,8 @@ export default class PermissionsStorage extends LocalStorage {
 	}// set_permissions;
 
 
-	static client_permission = () => this.#get (team_permissions.create_client)
+	static client_permission = () => this.#get (team_permissions.create_client);
+	static team_permission = () => this.#get (team_permissions.team_permission);
 	
 
 }// PermissionsStorage;
