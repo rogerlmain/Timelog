@@ -6,7 +6,7 @@ import AccountStorage from "client/classes/storage/account.storage";
 
 import ActivityLog from "client/classes/activity.log";
 
-import { boolean_value, nested_value, not_null } from "client/classes/common";
+import { nested_value, not_null } from "client/classes/common";
 
 
 const store = "permissions";
@@ -24,7 +24,7 @@ export default class PermissionsStorage extends LocalStorage {
 	static #get (type) { 
 		return new Promise ((resolve, reject) => {
 
-			let permissions = parseInt (LocalStorage.get_store (store));
+			let permissions = LocalStorage.get_store (store);
 
 			if (not_null (permissions)) return resolve (new PermissionObject (permissions).get (type));
 

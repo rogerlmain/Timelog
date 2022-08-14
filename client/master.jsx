@@ -43,11 +43,11 @@ import "resources/styles/home.page.css";
 
 
  // version.feature.partial.bugfix
- // Increment version at feature #100
- // Increment feature at partial #100 or on feature completion
+ // Increment version at feature #10
+ // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.9.5.1";
+const version = "1.9.5.2";
 
 
 const user_image_style = {
