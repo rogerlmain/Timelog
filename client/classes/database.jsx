@@ -17,7 +17,7 @@ export default class Database {
 			form_data = new FormData ().appendAll (form_data);
 		}// if;
 
-		if (not_null (account_id)) form_data.set ("account_id", account_id);
+		if ((!form_data.has ("account_id")) && not_null (account_id)) form_data.set ("account_id", account_id);
 		
 		fetch_parameters = {
 			method: "post",

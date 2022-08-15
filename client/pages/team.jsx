@@ -7,10 +7,11 @@ import Container from "client/controls/container";
 
 import PermissionToggle from "client/pages/gadgets/toggles/permission.toggle";
 
+import AccountStorage from "client/classes/storage/account.storage";
+
 import PermissionsModel from "client/classes/models/permissions.model";
 import AccountsModel from "client/classes/models/accounts.model";
 
-import PermissionObject from "client/classes/types/permission.object";
 import CompanyStorage from "client/classes/storage/company.storage";
 import ActivityLog from "client/classes/activity.log";
 
@@ -41,14 +42,17 @@ export default class TeamsPage extends BaseControl {
 
 
 	componentDidMount () {
-		AccountsModel.fetch_by_company (CompanyStorage.active_company_id ()).then (team => this.setState ({ team: team.group ("account_id") })).catch (ActivityLog.error);
+		AccountsModel.fetch_by_company (CompanyStorage.active_company_id ()).then (team => {
+			let accounts = team.group ("account_id");
+			delete accounts [AccountStorage.account_id ()];
+			this.setState ({ team: accounts })
+		}).catch (ActivityLog.error);
 	}// constructor;
 
 
 	render () {
 
-		let active_account = nested_value (this.state, "team", this.state.selected_account);
-		let permissions = new PermissionObject (nested_value (active_account, "permissions"));
+		let active_account = nested_value (this.state?.team, this.state.selected_account);
 
 		return <Container>
 
@@ -65,11 +69,18 @@ export default class TeamsPage extends BaseControl {
 				</div>
 
 				<div className="two-column-table with-lotsa-headspace">
+
 					<PermissionToggle id="client_permission" label="Create clients" 
-						type={team_permissions.create_client} 
-						value={permissions.get (team_permissions.create_client)} 
+						type={team_permissions.create_client} permissions={active_account?.permissions}
 						account={this.state.selected_account}>
 					</PermissionToggle>
+					
+					<PermissionToggle id="client_permission" label="Change team permissions" 
+onClick={event => (event.target.value ? confirm ("You can be shut out! Are you sure") : false)}
+						type={team_permissions.team_permission} permissions={active_account?.permissions}
+						account={this.state.selected_account}>
+					</PermissionToggle>
+					
 				</div>
 
 			</FadePanel> : null}

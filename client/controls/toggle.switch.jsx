@@ -1,13 +1,9 @@
-import * as common from "classes/common";
-
 import React from "react";
 
 import BaseControl from "controls/abstract/base.control";
-import SettingsStorage from "client/classes/storage/settings.storage";
 
-import { default_settings, horizontal_alignment } from "client/classes/types/constants";
-import { isset, is_number } from "classes/common";
-
+import { horizontal_alignment } from "client/classes/types/constants";
+import { isset, is_empty, is_function, is_null, is_number, not_set } from "classes/common";
 
 import "resources/styles/controls/toggle.switch.css";
 
@@ -32,13 +28,18 @@ export default class ToggleSwitch extends BaseControl {
 
 
 	static defaultProps = {
+
 		id: null,
+
 		speed: null,
 		value: null,		
 		singleStep: false,
 		showText: false,
 		textAlignment: horizontal_alignment.left,
+
 		onChange: null,
+		onClick	: null,
+
 	}/* defaultProps */;
 
 
@@ -105,10 +106,10 @@ export default class ToggleSwitch extends BaseControl {
 
 	render () {
 
-		let index = (common.is_empty (this.props.children) || common.not_set (this.state.option)) ? 0 : this.option_index ();
+		let index = (is_empty (this.props.children) || not_set (this.state.option)) ? 0 : this.option_index ();
 		let control_style = { left: ((item_width + 2) * index) + this.state.drag_offset }
 
-		if (common.is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.animation_speed ()}ms ease-in-out`}
+		if (is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.animation_speed ()}ms ease-in-out`}
 
 		return <div ref={this.switch_control} className={this.props.showText ? "two-column-grid" : null} style={{ ...this.props.style, position: "relative" }}>
 
@@ -116,14 +117,15 @@ export default class ToggleSwitch extends BaseControl {
 
 			<div id={this.props.id} className="toggle-switch unselectable">
 
-				{common.is_empty (this.props.children) ? null : this.props.children.map (child => {
+				{is_empty (this.props.children) ? null : this.props.children.map (child => {
 					return <div id={child.props.id} className="item" key={child.props.children} value={child.props.value} title={child.props.children} 
-					
-						onClick={event => this.setState ({ 
-							process_change: true, 
-							option: this.selection (event.target)
-						})}>
-						
+						onClick={event => {
+							event.target.value = this.selection (event.target);
+							if (is_function (this.props.onClick) && this.props.onClick (event)) this.setState ({ 
+								process_change: true, 
+								option: event.target.value
+							});
+						}}>
 					</div>
 				})}
 
