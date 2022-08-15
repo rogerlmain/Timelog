@@ -6,7 +6,7 @@ import FadePanel from "client/controls/panels/fade.panel";
 
 import ResizePanel, { resize_state, resize_direction } from "client/controls/panels/resize.panel";
 
-import { isset, is_null, nested_value, not_array } from "client/classes/common";
+import { isset, is_null, nested_value, not_array, not_empty } from "client/classes/common";
 import { tracing } from "client/classes/types/constants";
 
 
@@ -85,7 +85,8 @@ export default class ExplodingPanel extends BaseControl {
 	validate_children = children => {
 		if (not_array (children)) children = [children];
 		for (let child of children) {
-			if (nested_value (child.type, "name") != "Container") throw `Exploding panel can only contain Container objects: ${child.constructor.name} found (id: ${this.props.id})`;
+			if (is_null (child)) continue;
+			if (child?.type?.name != "Container") throw `Exploding panel can only contain Container objects: ${child.constructor.name} found (id: ${this.props.id})`;
 		}// for;
 		this.state.children = this.props.children;
 	}/* validate_children */;
@@ -103,13 +104,18 @@ export default class ExplodingPanel extends BaseControl {
 		let current_children = this.children (this.props);
 		let next_children = this.children (new_props);
 
-		for (let next_child of next_children) {
-			let current_child = current_children.find (child => child.props.id == next_child.props.id);
-			if (current_child.props.visible != next_child.props.visible) {
-				updated = true;
-				break;
-			}// if;
-		}// for;
+		if (not_empty (current_children)) {
+			for (let next_child of next_children) {
+
+				let current_child = current_children.find (child => child.props.id == next_child.props.id);
+
+				if (current_child.props.visible != next_child.props.visible) {
+					updated = true;
+					break;
+				}// if;
+				
+			}// for;
+		}// if;
 
 		if (this.transitioning) return is_null (setTimeout (() => this.forceUpdate ()));
 

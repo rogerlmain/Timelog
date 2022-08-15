@@ -58,6 +58,7 @@ export default class PermissionsStorage extends LocalStorage {
 
 
 	static client_permission = () => this.#get (team_permissions.create_client);
+	static project_permission = () => this.#get (team_permissions.create_project);
 	static team_permission = () => this.#get (team_permissions.team_permission);
 	
 

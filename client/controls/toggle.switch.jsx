@@ -3,7 +3,7 @@ import React from "react";
 import BaseControl from "controls/abstract/base.control";
 
 import { horizontal_alignment } from "client/classes/types/constants";
-import { isset, is_empty, is_function, is_null, is_number, not_set } from "classes/common";
+import { isset, is_empty, is_function, is_null, is_number, not_function, not_set } from "classes/common";
 
 import "resources/styles/controls/toggle.switch.css";
 
@@ -121,7 +121,7 @@ export default class ToggleSwitch extends BaseControl {
 					return <div id={child.props.id} className="item" key={child.props.children} value={child.props.value} title={child.props.children} 
 						onClick={event => {
 							event.target.value = this.selection (event.target);
-							if (is_function (this.props.onClick) && this.props.onClick (event)) this.setState ({ 
+							if (not_function (this.props.onClick) || this.props.onClick (event)) this.setState ({ 
 								process_change: true, 
 								option: event.target.value
 							});

@@ -77,6 +77,12 @@ const client_permissions = () => new Promise ((resolve, reject) => {
 })// client_permissions;
 
 
+const project_permissions = () => new Promise ((resolve, reject) => {
+	if (OptionsStorage.project_limit () <= 1) resolve (false);
+	PermissionsStorage.project_permission ().then (permission => resolve (permission)).catch (reject);
+})// project_permissions;
+
+
 const team_permissions = () => new Promise ((resolve, reject) => {
 	AccountsModel.fetch_by_company (CompanyStorage.active_company_id ()).then (team => {
 		if (is_array (team) && (team.length == 1)) return resolve (false);
@@ -240,7 +246,7 @@ export default class MasterPanel extends BaseControl {
 	master_pages = { 
 		[page_names.home]		: { name: "Home", permission: true }, 
 		[page_names.clients]	: { name: "Clients", permission: client_permissions },
-		[page_names.projects]	: { name: "Projects", permission: () => { return OptionsStorage.project_limit () > 1 } }, 
+		[page_names.projects]	: { name: "Projects", permission: project_permissions }, 
 		[page_names.logging]	: { name: "Logging", permission: true }, 
 		[page_names.reports]	: { name: "Reports", permission: true },
 		[page_names.team]		: { name: "Team", permission: team_permissions },

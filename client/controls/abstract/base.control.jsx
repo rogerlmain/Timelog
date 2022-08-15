@@ -28,7 +28,7 @@ export default class BaseControl extends React.Component {
 	animation_speed = () => { return this.props.speed ?? SettingsStorage.animation_speed () ?? default_settings.animation_speed }
 	transition_style = (property) => { return `${property} ${SettingsStorage.animation_speed ()}ms ease-in-out` }
 
-	children = props => { return is_array (props.children) ? props.children : [props.children] }
+	children = props => { return is_array (props.children) ? props.children : common.isset (props.children) ? [props.children] : null }
 	context_item = (name) => { return common.isset (this.context) ? this.context [name] : null }
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
 
