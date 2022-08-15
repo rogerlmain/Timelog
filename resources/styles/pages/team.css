@@ -1,3 +1,13 @@
+div.butterfly-ballot {
+	display: grid;
+	grid-template-columns: 1fr min-content min-content 1fr;
+}/* div.butterfly-ballot */
+
+
+div.butterfly-ballot label:first-of-type { text-align: right }
+
+
+/**** OLD SCHOOL TEAM ****
 
 
 #team_list {
@@ -7,14 +17,14 @@
 	border: solid 1px black;
 	border-radius: 0.7em;
 	overflow: hidden;
-}/* #team_list */
+}/* #team_list * /
 
 
 #team_list > div  {
 	border-bottom: solid 1px black;
 	white-space: nowrap;
 	padding: 0.2em 1em;
-}/* team_list > div */
+}/* team_list > div * /
 
 
 #team_list > div:hover { background-color: #FFF2CC }
@@ -22,7 +32,7 @@
 
 #team_list > div:last-child {
 	border-bottom: none;
-}/* #team_list > div:last-child */
+}/* #team_list > div:last-child * /
 
 
 .team_list_panel {
@@ -30,38 +40,38 @@
 	flex-direction: row;
 	column-gap: 0.5em;
 	align-items: center;
-}/* .team_list_panel */
+}/* .team_list_panel * /
 
 
 
-/********/
+/******** /
 
 
 #member_list_panel {
 	column-gap: 0;
-}/* member_list_panel */
+}/* member_list_panel * /
 
 
 #member_list_panel label {
 	margin-right: 1em;
-}/* member_list_panel label */
+}/* member_list_panel label * /
 
 
 #member_list_panel button {
 	margin-left: 0.5em;
-}/* member_list_panel button */
+}/* member_list_panel button * /
 
 
-/********/
+/******** /
 
 
-#members_list {/* border: solid 1px red; */margin-top: 1.2em;display: flex;flex-direction: column;}/* members_list */
+#members_list {/* border: solid 1px red; * /margin-top: 1.2em;display: flex;flex-direction: column;}/* members_list * /
 
 
 #members_list label {
 	font-weight: bold;
 	margin-bottom: 0.75em;
-}/* members_list */
+}/* members_list * /
 
 
 #member_list_entries {
@@ -70,26 +80,26 @@
 	white-space: nowrap;
 	justify-content: space-between;
 	align-items: center;
-	/* opacity: 0.3; */
+	/* opacity: 0.3; * /
 	row-gap: 0.25em;
-}/* member_list_entries */
+}/* member_list_entries * /
 
 
 #member_list_entries:hover {
 	background-color: #FFE;
 	opacity: 1;
 	cursor: pointer;
-}/* member_list_entries:hover */
+}/* member_list_entries:hover * /
 
 
 #member_list_entries .member_list_entry {
 	display: contents;
-}/* member_list_entries .member_list_entry */
+}/* member_list_entries .member_list_entry * /
 
 
 #member_list_entries .member_list_entry .member_name {
 	opacity: 1 !important;
-}/* member_list_entries .member_list_entry .member_options */
+}/* member_list_entries .member_list_entry .member_options * /
 
 
 #member_list_entries .member_list_entry .member_options {
@@ -97,7 +107,7 @@
 	flex-direction: row;
 	column-gap: 0.25em;
 	opacity: inherit;
-}/* member_list_entries .member_list_entry .member_options */
+}/* member_list_entries .member_list_entry .member_options * /
 
 
 #member_list_entries .member_list_entry .member_options .xbutton {
@@ -106,7 +116,7 @@
 	background-color: red;
 	color: white;
 	padding: 0;
-}/* #member_list_entries .xbutton */
+}/* #member_list_entries .xbutton * /
 
 
 #member_list_entries .select-list { width: 100% }

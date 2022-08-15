@@ -5,7 +5,7 @@ import SelectList from "client/controls/lists/select.list";
 import FadePanel from "client/controls/panels/fade.panel";
 import Container from "client/controls/container";
 
-import PermissionToggle from "client/pages/gadgets/toggles/permission.toggle";
+import PermissionToggle, { butterfly_alignment } from "client/pages/gadgets/toggles/permission.toggle";
 
 import AccountStorage from "client/classes/storage/account.storage";
 
@@ -17,7 +17,9 @@ import ActivityLog from "client/classes/activity.log";
 
 import { isset, nested_value } from "client/classes/common";
 import { team_permissions } from "client/classes/storage/permissions.storage";
+import { date_formats } from "client/classes/types/constants";
 
+import "resources/styles/pages/team.css";
 
 export default class TeamsPage extends BaseControl {
 
@@ -63,19 +65,25 @@ export default class TeamsPage extends BaseControl {
 
 			{isset (active_account) ? <FadePanel id="team_panel" visible={isset (active_account)}>
 
-				<div className="horizontally-centered with-lotsa-headspace">
-					{active_account.last_name}, {active_account.first_name}
-					<Container visible={isset (active_account.friendly_name)}>&nbsp;({active_account.friendly_name})</Container>
+				<div className="with-lotsa-headspace">
+					<div id="teamster_name">
+						{active_account.last_name}, {active_account.first_name}
+						<Container visible={isset (active_account.friendly_name)}>&nbsp;({active_account.friendly_name})</Container>
+					</div>
+					<div className="two-piece-form with-headspace">
+						<label>Member since:</label>
+						<div>{new Date (active_account.date_created).format (date_formats.full_date)}</div>
+					</div>
 				</div>
 
-				<div className="two-column-table with-lotsa-headspace">
+				<div className="butterfly-ballot with-lotsa-headspace">
 
-					<PermissionToggle id="client_permission" label="Create clients" 
+					<PermissionToggle id="client_permission" label="Create clients" align={butterfly_alignment.right}
 						type={team_permissions.create_client} permissions={active_account?.permissions}
 						account={this.state.selected_account}>
 					</PermissionToggle>
 					
-					<PermissionToggle id="client_permission" label="Change team permissions" 
+					<PermissionToggle id="client_permission" label="Change team permissions" align={butterfly_alignment.left}
 						onClick={event => (event.target.value ? confirm ("You can be shut out! Are you sure") : false)}
 						type={team_permissions.team_permission} permissions={active_account?.permissions}
 						account={this.state.selected_account}>

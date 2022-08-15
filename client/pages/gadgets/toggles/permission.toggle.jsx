@@ -8,7 +8,11 @@ import PermissionObject from "client/classes/types/permission.object";
 
 import PermissionsModel from "client/classes/models/permissions.model";
 
-import { boolean_value } from "client/classes/common";
+
+export const butterfly_alignment = {
+	left	: "left",
+	right	: "right"
+}// butterfly_alignment;
 
 
 export default class PermissionToggle extends BaseControl {
@@ -22,6 +26,8 @@ export default class PermissionToggle extends BaseControl {
 		account		: null,
 		permissions	: null,
 
+		align: "left",
+
 		onClick: null,
 
 	}// defaultProps;
@@ -32,7 +38,7 @@ export default class PermissionToggle extends BaseControl {
 		let permission_object = new PermissionObject (this.props.permissions);
 
 		return <Container>
-			<label htmlFor={this.props.id}>{this.props.label}</label>
+			{this.props.align.equals (butterfly_alignment.right) && <label htmlFor={this.props.id}>{this.props.label}</label>}
 			<ToggleSwitch id={this.props.id} value={permission_object.get (this.props.type) ? 1 : 0} onClick={this.props.onClick} 
 
 				onChange={value => {
@@ -44,6 +50,7 @@ export default class PermissionToggle extends BaseControl {
 				<option>On</option>
 
 			</ToggleSwitch>
+			{this.props.align.equals (butterfly_alignment.left) && <label htmlFor={this.props.id}>{this.props.label}</label>}
 		</Container>
 
 	}// render;

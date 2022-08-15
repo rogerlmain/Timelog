@@ -16,7 +16,8 @@ begin
         acc.email_address,
         acc.account_type,
         acc.administrator_type,
-        cac.permissions
+        cac.permissions,
+        cac.date_created
 	from
 		accounts as acc
 	join
