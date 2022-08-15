@@ -76,7 +76,7 @@ export default class TeamsPage extends BaseControl {
 					</PermissionToggle>
 					
 					<PermissionToggle id="client_permission" label="Change team permissions" 
-onClick={event => (event.target.value ? confirm ("You can be shut out! Are you sure") : false)}
+						onClick={event => (event.target.value ? confirm ("You can be shut out! Are you sure") : false)}
 						type={team_permissions.team_permission} permissions={active_account?.permissions}
 						account={this.state.selected_account}>
 					</PermissionToggle>
