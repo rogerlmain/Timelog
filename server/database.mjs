@@ -1,7 +1,8 @@
+import { getNamespace } from "continuation-local-storage";
 import { createConnection } from "mysql";
 
 
-const local_testing = true;
+const local_testing = false;
 
 
 const local_database = {
@@ -18,9 +19,6 @@ const interserver_database = {
 	password: "stranger",
 	database: "timelog"
 }/* local_database */
-
-
-const active_database = local_testing ? local_database : interserver_database;
 
 
 class Database {
@@ -70,18 +68,19 @@ class Database {
 	execute_query (procedure, parameters = null) { this.data_query (procedure, parameters).then (data => this.send_result_data (data)) }
 
 
-	constructor (request, response) {
+	constructor () {
 
-		this.request = request;
-		this.response = response;
+		let session = getNamespace (global.session_namespace);
 
+		this.request = session.get ("request");
+		this.response = session.get ("response");
+		
 		try {
-			this.connection = createConnection (active_database);
+			this.connection = createConnection ((local_testing ? local_database : interserver_database));
 			this.connection.connect ((error) => { if (isset (error)) console.log (error) });
 		} catch (except) {
 			console.log (except);
 		}// try;
-
 	}// constructor;
 
 }// Databases;

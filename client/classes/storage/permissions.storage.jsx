@@ -25,14 +25,14 @@ export const team_permissions = {
 export default class PermissionsStorage extends LocalStorage {
 
 
-	static #get (type) { 
+	static #get (account_id, type) { 
 		return new Promise ((resolve, reject) => {
 
 			let permissions = LocalStorage.get_store (store);
 
 			if (not_null (permissions)) return resolve (new PermissionObject (permissions).get (type));
 
-			PermissionsModel.get_permissions ().then (result => {
+			PermissionsModel.get_permissions (account_id).then (result => {
 
 				let permissions = (nested_value (result, 0, "permissions") ?? 0);
 
@@ -48,18 +48,21 @@ export default class PermissionsStorage extends LocalStorage {
 	/********/
 
 
-	static set_permission (type, value) {
-		this.#get (type).then (permissions => {
+	static set_permission (account_id, type, value) {
+		this.#get (account_id, type).then (permissions => {
+
 			let permissions_object = new PermissionObject (permissions);
+
 			(value == 1) ? permissions_object.set (type) : permissions_object.clear (type);
-			PermissionsModel.set_permissions (AccountStorage.account_id (), permissions_object.permissions).then (() => LocalStorage.set_store (store, permissions_object.permissions));
+			PermissionsModel.set_permissions (account_id, permissions_object.permissions).then (() => LocalStorage.set_store (store, permissions_object.permissions));
+
 		}).catch (ActivityLog.log_error);
 	}// set_permissions;
 
 
-	static client_permission = () => this.#get (team_permissions.create_client);
-	static project_permission = () => this.#get (team_permissions.create_project);
-	static team_permission = () => this.#get (team_permissions.team_permission);
+	static client_permission = () => this.#get (AccountStorage.account_id (), team_permissions.create_client);
+	static project_permission = () => this.#get (AccountStorage.account_id (), team_permissions.create_project);
+	static team_permission = () => this.#get (AccountStorage.account_id (), team_permissions.team_permission);
 	
 
 }// PermissionsStorage;

@@ -40,14 +40,10 @@ const templates = {
 export default class EmailHandler {
 
 
-	request = null;
-	response = null;
 	fields = null;
 
 
-	constructor (request, response, fields) {
-		this.request = request;
-		this.response = response;
+	constructor (fields) {
 		this.fields = fields;
 	}// constructor;
 
@@ -82,11 +78,14 @@ export default class EmailHandler {
 
 
 	invitation_template = (invitation, type) => {
+
+		let request = global.request ();
+
 		return this.#get_template (templates.invitation, type, {
 			invitee: this.fields.invitee_name,
 			host: this.fields.host_name,
 			company: this.fields.company_name,
-			domain: `${this.request.hostname}:${this.request.socket.localPort}`,
+			domain: `${request.hostname}:${request.socket.localPort}`,
 			address: `?icd=${this.create_invite (invitation)}`,
 		});
 	}// text_template;
@@ -95,13 +94,14 @@ export default class EmailHandler {
 	send_invitation = async () => {
 		try {
 
+			let response = global.response ();
 			let account = await new AccountsModel ().get_account_by_email (this.fields.invitee_email);
 
 			if (isset (account)) this.fields.invitee_account_id = account.id;
 
-			new InvitationModel (this.request, this.response).set_invitation (this.fields).then (invitation => {
+			new InvitationModel ().set_invitation (this.fields).then (invitation => {
 
-				if (!Array.isArray (invitation) || (invitation.length == 0)) return this.response.send ("Error: invitation not sent");
+				if (!Array.isArray (invitation) || (invitation.length == 0)) return response.send ("Error: invitation not sent");
 
 				nodemailer.createTransport (email_details).sendMail ({
 					from: inviter_email,
@@ -109,11 +109,11 @@ export default class EmailHandler {
 					subject: "You have been invited to travel through time",
 					text: this.invitation_template (invitation [0], email_types.text),
 					html: this.invitation_template (invitation [0], email_types.html),
-				}).then (() => this.response.send (JSON.stringify (invitation)));
+				}).then (() => response.send (JSON.stringify (invitation)));
 
 			});
 		} catch (except) {
-			return this.response.send (`Error: ${except}`);
+			return response.send (`Error: ${except}`);
 		}// try;
 	}// send_invitation;
 

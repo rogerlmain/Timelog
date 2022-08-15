@@ -29,4 +29,3 @@ export default class CompaniesModel extends Database {
 
 
 }// CompaniesModel;
-

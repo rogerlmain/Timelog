@@ -48,7 +48,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.9.5.4";
+const version = "1.9.5.5";
 
 
 const user_image_style = {

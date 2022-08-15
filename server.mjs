@@ -1,6 +1,7 @@
 import "./server/globals.mjs";
 
 import express from "express";
+
 import file_system from "fs";
 import https from "https";
 import multiparty from "multiparty";
@@ -28,6 +29,7 @@ import TaskData from "./server/models/tasks.mjs";
 import EmailHandler from "./server/handlers/email.handler.mjs";
 import PaymentHandler from "./server/handlers/payment.handler.mjs";
 
+import { createNamespace, getNamespace } from "continuation-local-storage";
 import { root_path } from "./server/constants.mjs";
 
 
@@ -40,12 +42,22 @@ const method = { get: "get", post: "post" };
 let app = express ();
 
 
-app.process = async (request, response, handler) => {
+/********/
+
+
+global.session_namespace = "timelog_session";
+
+global.request = () => getNamespace (global.session_namespace).get ("request");
+global.response = () => getNamespace (global.session_namespace).get ("response");
+
+
+app.process = async (handler) => {
 
 //	await new Promise (resolve => setTimeout (resolve, 2000)); // For debugging - used to pause
 
+	let request = global.request ();
 	let request_data = request.body;
-
+	
 	if (request.method.equals (method.get)) return handler (request.query);
 
 	new multiparty.Form ().parse (request, (error, fields, files) => {
@@ -66,13 +78,29 @@ app.use (express.urlencoded ({ extended: false }));
 app.use (express.json ());
 
 
+app.use ((request, response, next) => {
+
+	let session = getNamespace (global.session_namespace);
+
+	session.bindEmitter (request);
+	session.bindEmitter (response);
+
+	session.run (function () {
+		session.set ("request", request);
+		session.set ("response", response);
+		next ();
+	});
+
+});
+
+
 /**** Data Lookups ****/
 
 
-app.post ("/accounts", function (request, response) {
+app.post ("/accounts", () => {
 	try {
-		app.process (request, response, (fields) => {
-			let account_data = new AccountsModel (request, response);
+		app.process (fields => {
+			let account_data = new AccountsModel ();
 			switch (fields.action) {
 				case "save"		: account_data.save_account (fields); break;
 				case "company"	: account_data.get_accounts_by_company (fields.company_id); break;
@@ -85,10 +113,10 @@ app.post ("/accounts", function (request, response) {
 });
 
 
-app.post ("/addresses", function (request, response) {
+app.post ("/addresses", () => {
 	try {
-		app.process (request, response, (fields) => {
-			let address_data = new AddressModel (request, response);
+		app.process (fields => {
+			let address_data = new AddressModel ();
 			switch (fields.action) {
 				case "save": address_data.save_address (fields); break;
 				default: break;
@@ -98,9 +126,9 @@ app.post ("/addresses", function (request, response) {
 });
 
 
-app.post ("/clients", function (request, response) {
-	app.process (request, response, (fields) => {
-		let client_data = new ClientModel (request, response);
+app.post ("/clients", () => {
+	app.process (fields => {
+		let client_data = new ClientModel ();
 		switch (fields.action) {
 			case "list_by_company": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
 			case "details": client_data.get_client_by_id (fields.client_id); break;
@@ -111,9 +139,9 @@ app.post ("/clients", function (request, response) {
 });
 
 
-app.post ("/companies", function (request, response) {
-	app.process (request, response, (fields) => {
-		let company_data = new CompaniesModel (request, response);
+app.post ("/companies", () => {
+	app.process (fields => {
+		let company_data = new CompaniesModel ();
 		switch (fields.action) {
 			case "save": company_data.save_company (fields); break;
 			case "list": company_data.get_companies_by_account (fields.account_id).then (company_data.send_result_data.bind (company_data)); break;
@@ -122,9 +150,9 @@ app.post ("/companies", function (request, response) {
 });
 
 
-app.post ("/company_accounts", function (request, response) {
-	app.process (request, response, (fields) => {
-		let company_accounts_data = new CompanyAccountsModel (request, response);
+app.post ("/company_accounts", () => {
+	app.process (fields => {
+		let company_accounts_data = new CompanyAccountsModel ();
 		switch (fields.action) {
 			case "save": company_accounts_data.set_company_account (fields.account_id, fields.company_id); break;
 		}// switch;
@@ -132,9 +160,9 @@ app.post ("/company_accounts", function (request, response) {
 });
 
 
-app.post ("/company_cards", function (request, response) {
-	app.process (request, response, (fields) => {
-		let company_card_data = new CompanyCardModel (request, response);
+app.post ("/company_cards", () => {
+	app.process (fields => {
+		let company_card_data = new CompanyCardModel ();
 		switch (fields.action) {
 			case "get": company_card_data.get_company_cards (fields.company_id); break;
 			case "save": company_card_data.save_company_card (fields); break;
@@ -143,19 +171,19 @@ app.post ("/company_cards", function (request, response) {
 });
 
 
-app.post ("/email", function (request, response) {
-	app.process (request, response, async fields => {
+app.post ("/email", () => {
+	app.process (async fields => {
 		switch (fields.action) {
-			case "invite": new EmailHandler (request, response, fields).send_invitation (); break;
+			case "invite": new EmailHandler (fields).send_invitation (); break;
 		}// switch;
 	});
 });
 
 
-app.post ("/invitations", (request, response) => {
-	app.process (request, response, (fields) => {
+app.post ("/invitations", () => {
+	app.process (fields => {
 
-		let invite = new InvitationModel (request, response);
+		let invite = new InvitationModel ();
 
 		switch (fields.action) {
 			case "all": invite.get_invitations_by_email (fields.email_address); break;
@@ -167,10 +195,10 @@ app.post ("/invitations", (request, response) => {
 });
 
 
-app.post ("/logging", function (request, response) {
-	app.process (request, response, async fields => {
+app.post ("/logging", () => {
+	app.process (async fields => {
 
-		let logging_data = new LoggingModel (request, response);
+		let logging_data = new LoggingModel ();
 
 		switch (fields.action) {
 			case "logging": logging_data.save_log_entry (fields); break;
@@ -181,9 +209,9 @@ app.post ("/logging", function (request, response) {
 });
 
 
-app.post ("/lookups", function (request, response) {
-	app.process (request, response, async fields => {
-		let lookups_data = new LookupsModel (request, response);
+app.post ("/lookups", () => {
+	app.process (async fields => {
+		let lookups_data = new LookupsModel ();
 		switch (fields.action) {
 			case "get_countries": lookups_data.get_lookups_by_category (countries_id); break;
 			case "get_districts": lookups_data.get_lookups_by_category (districts_id); break;
@@ -192,9 +220,9 @@ app.post ("/lookups", function (request, response) {
 });
 
 
-app.post ("/misc", function (request, response) {
-	app.process (request, response, (fields) => {
-		let misc_data = new MiscData (request, response);
+app.post ("/misc", () => {
+	app.process (fields => {
+		let misc_data = new MiscData ();
 		switch (fields.action) {
 			case "status": misc_data.get_statuses (); break;
 		}// switch;
@@ -202,11 +230,11 @@ app.post ("/misc", function (request, response) {
 });
 
 
-app.post ("/options", function (request, response) {
+app.post ("/options", () => {
 	try {
-		app.process (request, response, async fields => {
+		app.process (async fields => {
 
-			let account_option_data = new OptionsModel (request, response);
+			let account_option_data = new OptionsModel ();
 
 			switch (fields.action) {
 				case "company": account_option_data.get_options_by_company (fields.company_id, true); break;	
@@ -219,10 +247,10 @@ app.post ("/options", function (request, response) {
 });
 
 
-app.post ("/permissions", function (request, response) {
+app.post ("/permissions", () => {
 	try {
-		app.process (request, response, fields => {
-			let permissions_data = new PermissionsModel (request, response);
+		app.process (fields => {
+			let permissions_data = new PermissionsModel ();
 			switch (fields.action) {
 				case "get": permissions_data.get_permissions (fields.company_id, fields.account_id); break;	
 				case "set": permissions_data.set_permissions (fields.company_id, fields.account_id, fields.permissions); break;
@@ -232,14 +260,14 @@ app.post ("/permissions", function (request, response) {
 });
 
 
-app.get ("/packages", function (request, response) {
+app.get ("/packages", () => {
 	response.sendFile (`${root_path}/client/pages/static/packages.html`);
 });
 
 
-app.post ("/pricing", function (request, response) {
-	app.process (request, response, (fields) => {
-		let project_data = new PricingModel (request, response);
+app.post ("/pricing", () => {
+	app.process (fields => {
+		let project_data = new PricingModel ();
 		switch (fields.action) {
 			case "get": project_data.get_pricing_by_option (fields.option, fields.value); break;
 		}// switch;
@@ -247,9 +275,9 @@ app.post ("/pricing", function (request, response) {
 });
 
 
-app.post ("/projects", function (request, response) {
-	app.process (request, response, (fields) => {
-		let project_data = new ProjectsModel (request, response);
+app.post ("/projects", () => {
+	app.process (fields => {
+		let project_data = new ProjectsModel ();
 		switch (fields.action) {
 			case "list": project_data.get_projects_by_client (fields.client_id); break;
 			case "details": project_data.get_project_by_id (fields.project_id); break;
@@ -259,9 +287,9 @@ app.post ("/projects", function (request, response) {
 });
 
 
-app.post ("/reports", function (request, response) {
-	app.process (request, response, (fields) => {
-		let report_data = new ReportsModel (request, response);
+app.post ("/reports", () => {
+	app.process (fields => {
+		let report_data = new ReportsModel ();
 		switch (fields.action) {
 			case "project": report_data.report_by_project (fields.project_id, fields.start_date, fields.end_date); break;
 		}// switch;
@@ -269,10 +297,10 @@ app.post ("/reports", function (request, response) {
 });
 
 
-app.post ("/settings", function (request, response) {
+app.post ("/settings", () => {
 	try {
-		app.process (request, response, (fields) => {
-			let account_setting_data = new SettingsModel (request, response);
+		app.process (fields => {
+			let account_setting_data = new SettingsModel ();
 			switch (fields.action) {
 				case "get": account_setting_data.get_settings (fields.account_id); break;	
 				case "save": account_setting_data.save_setting (fields.account_id, fields.setting_id, fields.value); break;
@@ -283,9 +311,9 @@ app.post ("/settings", function (request, response) {
 });
 
 
-app.post ("/tasks", function (request, response) {
-	app.process (request, response, (fields) => {
-		let task_data = new TaskData (request, response);
+app.post ("/tasks", () => {
+	app.process (fields => {
+		let task_data = new TaskData ();
 		switch (fields.action) {
 			case "assignee": task_data.get_tasks_by_assignee (fields.account_id); break;
 			case "project": task_data.get_tasks_by_project (fields.project_id); break;
@@ -299,13 +327,14 @@ app.post ("/tasks", function (request, response) {
 /*********/
 
 
-app.post ("/payment", (request, response) => app.process (request, response, fields => new PaymentHandler (response).pay (fields.square_string, fields.path)));
+app.post ("/payment", () => app.process (fields => new PaymentHandler (response).pay (fields.square_string, fields.path)));
 
 
-app.post ("/signin", function (request, response) {
-	app.process (request, response, fields => new AccountsModel (request, response).signin (fields, response).then (async results => {
+app.post ("/signin", () => {
+	app.process (fields => new AccountsModel ().signin (fields, response).then (async results => {
 
 		let account = (global.is_null (results) || (results.length < 1)) ? null : results [0];
+		let response = global.response ();
 		
 		if (global.is_null (account)) {
 			response.send ({ 
@@ -348,7 +377,7 @@ app.post ("/signin", function (request, response) {
 /*********/
 
 
-app.get ("/join", (request, response) => app.process (request, response, fields => {
+app.get ("/join", () => app.process (fields => {
 
 
 	const bad_invitation = (data) => {
@@ -404,15 +433,18 @@ app.get ("/join", (request, response) => app.process (request, response, fields 
 /*********/
 
 
-// app.post ("/team", function (request, response) {
-// 	app.process (request, response, (fields) => {
-// 		let team_data = new TeamData (request, response);
+// app.post ("/team", () => {
+// 	app.process (fields => {
+// 		let team_data = new TeamData ();
 // 		switch (fields.action) {
 // 			case "team_list": team_data.get_teams (app.accounts.current_account ().account_id); break;
 // 			case "member_list": team_data.get_members (fields.team_id); break;
 // 		}// switch;
 // 	});
 // });
+
+
+createNamespace (global.session_namespace);
 
 
 var options = {

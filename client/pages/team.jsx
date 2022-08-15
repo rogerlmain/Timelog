@@ -67,44 +67,40 @@ export default class TeamsPage extends BaseControl {
 			</SelectList>
 
 			<ExplodingPanel id="team_panel">
-				<Container id="team_container">
+				{isset (active_account) ? <Container>
 
-					{is_empty (active_account) ? <div /> : <Container>
-
-						<div className="with-lotsa-headspace">
-							<div id="teamster_name">
-								{active_account.last_name}, {active_account.first_name}
-								<Container visible={isset (active_account.friendly_name)}>&nbsp;({active_account.friendly_name})</Container>
-							</div>
-							<div className="two-piece-form with-headspace">
-								<label>Member since:</label>
-								<div>{new Date (active_account.date_created).format (date_formats.full_date)}</div>
-							</div>
+					<div className="with-lotsa-headspace">
+						<div id="teamster_name">
+							{active_account.last_name}, {active_account.first_name}
+							<Container visible={isset (active_account.friendly_name)}>&nbsp;({active_account.friendly_name})</Container>
 						</div>
-
-						<div className="butterfly-ballot with-lotsa-headspace">
-
-							<PermissionToggle id="client_permission" label="Create clients" align={butterfly_alignment.right}
-								type={team_permissions.create_client} permissions={active_account?.permissions}
-								account={this.state.selected_account}>
-							</PermissionToggle>
-							
-							<PermissionToggle id="team_permission" label="Change team permissions" align={butterfly_alignment.left}
-								onClick={event => (event.target.value ? confirm ("You can be shut out! Are you sure") : true)}
-								type={team_permissions.team_permission} permissions={active_account?.permissions}
-								account={this.state.selected_account}>
-							</PermissionToggle>
-							
-							<PermissionToggle id="project_permission" label="Create projects" align={butterfly_alignment.right}
-								type={team_permissions.create_project} permissions={active_account?.permissions}
-								account={this.state.selected_account}>
-							</PermissionToggle>
-							
+						<div className="two-piece-form with-headspace">
+							<label>Member since:</label>
+							<div>{new Date (active_account.date_created).format (date_formats.full_date)}</div>
 						</div>
+					</div>
 
-					</Container>}
+					<div className="butterfly-ballot with-lotsa-headspace">
 
-				</Container>
+						<PermissionToggle id="client_permission" label="Create clients" align={butterfly_alignment.right}
+							type={team_permissions.create_client} permissions={active_account?.permissions}
+							account={this.state.selected_account}>
+						</PermissionToggle>
+						
+						<PermissionToggle id="team_permission" label="Change team permissions" align={butterfly_alignment.left}
+							onClick={event => (event.target.value ? confirm ("You can be shut out! Are you sure") : true)}
+							type={team_permissions.team_permission} permissions={active_account?.permissions}
+							account={this.state.selected_account}>
+						</PermissionToggle>
+						
+						<PermissionToggle id="project_permission" label="Create projects" align={butterfly_alignment.right}
+							type={team_permissions.create_project} permissions={active_account?.permissions}
+							account={this.state.selected_account}>
+						</PermissionToggle>
+						
+					</div>
+
+				</Container> : null}
 			</ExplodingPanel>
 
 		</div>

@@ -7,8 +7,10 @@ import BaseControl		from "client/controls/abstract/base.control";
 import SelectButton		from "client/controls/buttons/select.button";
 import DateInput		from "client/controls/inputs/date.input";
 import ReportGrid		from "client/controls/lists/report.grid";
-import FadePanel		from "client/controls/panels/fade.panel";
 import ProjectSelector	from "client/controls/selectors/project.selector";
+
+import FadePanel		from "client/controls/panels/fade.panel";
+import ExplodingPanel 	from "client/controls/panels/exploding.panel";
 
 import Container	from "client/controls/container";
 
@@ -29,6 +31,12 @@ const granularity = {
 }// granularity;
 
 
+const reports_panels = {
+	project_report	: 1,
+	teamster_report	: 2,
+}// reports_panels;
+
+
 export default class ReportsPage extends BaseControl {
 
 
@@ -36,6 +44,8 @@ export default class ReportsPage extends BaseControl {
 
 
 	state = {
+
+		current_panel: reports_panels.project_report,
 
 		client_id: null,
 		project_id: null,
@@ -276,7 +286,7 @@ export default class ReportsPage extends BaseControl {
 	/********/
 
 
-	show_options () {
+	show_project_options () {
 		return <Container>
 		
 			<div className="horizontally-centered">
@@ -334,12 +344,13 @@ export default class ReportsPage extends BaseControl {
 
 		</Container>
 
-	}// show_options;
-
+	}// show_project_options;
 
 
 	expand_dates (items) {
+
 		items = Array.arrayify (items);
+
 		if (Array.isArray (items)) items.forEach (item => {
 
 			let item_date = new Date (item.start_time);
@@ -351,38 +362,10 @@ export default class ReportsPage extends BaseControl {
 
 		});
 
-/* 		
-	<div>{start_time.format (date_formats.timestamp)}</div>
-	<div>{end_time.format (start_time.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime)}</div>
-	<div className="tree-notes">{entry.notes}</div>
-	<div>{Date.elapsed (entry.total_time)}</div>
-
-	<Container visible={can_bill}>
-
-		<div style = {{
-			display: "flex",
-			color: (billed ? null : "var(--disabled-color)"),
-			justifyContent: (billed ? "flex-end" : "center"),
-		}}>{billed ? `$${entry.total_due}` : <>&mdash;</>}</div>
-
-		<div style={{ justifyContent: "center" }}>
-			<input type="checkbox" disabled={!billed} onClick={() => alert (entry.entry_id)
-				// "TO DO: update the log entry in the database")
-			} />
-		</div>
-
-	</Container>
-*/
-
-
-
 		return items;
+
 	}/* expand_dates */;
 
-
-
-
-	
 
 	show_results () {
 
@@ -428,15 +411,72 @@ export default class ReportsPage extends BaseControl {
 	}// show_totals;
 
 
+	project_report_panel = () => <Container id="project_report_panel" visible={this.state.current_panel == reports_panels.project_report}>
+		<div className="horizontally-centered">
+			<div style={{ display: "inline-block" }}>{this.show_project_options ()}</div>
+			<br />
+			<div>{this.show_results ()}</div>
+		</div>
+	</Container>;
+
+
+	teamster_report_panel = () => <Container id="teamster_report_panel" visible={this.state.current_panel == reports_panels.teamster_report}>
+		<div className="horizontally-centered">
+			<div>
+				Teamster options:<br />
+				<br />
+				Select teamster <select></select><br />
+			</div>
+			<br />
+			<div>Results include a breakdown by client and/or project</div>
+		</div>
+	</Container>
+
+
 	/********/
 
 
 	render () {
-		return <div id={this.props.id} className="horizontally-centered">
-			<div style={{ display: "inline-block" }}>{this.show_options ()}</div>
-			<br />
-			<div>{this.show_results ()}</div>
-		</div>
+
+
+		return <Container>
+
+			<div id={this.props.id} className="two-column-grid">
+
+				<div className="button-column">
+		
+					<SelectButton id="project_report_button" className="sticky-button" 
+						selected={this.state.current_panel == reports_panels.project_report} 
+
+						beforeClick={() => this.setState ({ current_panel: null })}
+						onClick={() => this.setState ({ current_panel: reports_panels.project_report })}>
+							
+						Projects
+						
+					</SelectButton>
+
+					<SelectButton id="teamster_button" className="sticky-button" 
+						selected={this.state.current_panel == reports_panels.teamster_report} 
+
+						beforeClick={() => this.setState ({ current_panel: null })}
+						onClick={() => this.setState ({current_panel: reports_panels.teamster_report })}>
+							
+						Teamsters
+						
+					</SelectButton>
+
+				</div>					
+					
+				<ExplodingPanel id="reports_exploding_panel">
+
+					{this.project_report_panel ()}
+					{this.teamster_report_panel ()}
+
+				</ExplodingPanel>
+
+			</div>
+
+		</Container>
 	}// render;
 
 }// ReportsPage;
