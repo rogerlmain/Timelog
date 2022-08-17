@@ -6,7 +6,8 @@ import AccountStorage from "client/classes/storage/account.storage";
 
 import ActivityLog from "client/classes/activity.log";
 
-import { nested_value, not_null } from "client/classes/common";
+import { is_null, nested_value, not_null, not_set } from "client/classes/common";
+import CompanyStorage from "./company.storage";
 
 
 const store = "permissions";
@@ -32,6 +33,7 @@ export default class PermissionsStorage extends LocalStorage {
 
 			let permissions = LocalStorage.get_store (store);
 
+			if (not_set (CompanyStorage.active_company_id ())) return resolve (0);
 			if (not_null (permissions)) return resolve (new PermissionObject (permissions).get (type));
 
 			PermissionsModel.get_permissions (account_id).then (result => {
