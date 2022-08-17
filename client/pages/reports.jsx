@@ -437,46 +437,40 @@ export default class ReportsPage extends BaseControl {
 
 
 	render () {
+		return <div id={this.props.id} className="two-column-grid">
 
+			<div className="button-column">
+	
+				<SelectButton id="project_report_button" className="sticky-button" 
+					selected={this.state.current_panel == reports_panels.project_report} 
 
-		return <Container>
-
-			<div id={this.props.id} className="two-column-grid">
-
-				<div className="button-column">
-		
-					<SelectButton id="project_report_button" className="sticky-button" 
-						selected={this.state.current_panel == reports_panels.project_report} 
-
-						beforeClick={() => this.setState ({ current_panel: null })}
-						onClick={() => this.setState ({ current_panel: reports_panels.project_report })}>
-							
-						Projects
+					beforeClick={() => this.setState ({ current_panel: null })}
+					onClick={() => this.setState ({ current_panel: reports_panels.project_report })}>
 						
-					</SelectButton>
-
-					<SelectButton id="teamster_button" className="sticky-button" 
-						selected={this.state.current_panel == reports_panels.teamster_report} 
-
-						beforeClick={() => this.setState ({ current_panel: null })}
-						onClick={() => this.setState ({current_panel: reports_panels.teamster_report })}>
-							
-						Teamsters
-						
-					</SelectButton>
-
-				</div>					
+					Projects
 					
-				<ExplodingPanel id="reports_exploding_panel">
+				</SelectButton>
 
-					{this.project_report_panel ()}
-					{this.teamster_report_panel ()}
+				<SelectButton id="teamster_button" className="sticky-button" 
+					selected={this.state.current_panel == reports_panels.teamster_report} 
 
-				</ExplodingPanel>
+					beforeClick={() => this.setState ({ current_panel: null })}
+					onClick={() => this.setState ({current_panel: reports_panels.teamster_report })}>
+						
+					Teamsters
+					
+				</SelectButton>
 
-			</div>
+			</div>					
+				
+			<ExplodingPanel id="reports_exploding_panel">
 
-		</Container>
+				{this.project_report_panel ()}
+				{this.teamster_report_panel ()}
+
+			</ExplodingPanel>
+
+		</div>
 	}// render;
 
 }// ReportsPage;

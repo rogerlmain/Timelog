@@ -67,14 +67,6 @@ export default class ResizePanel extends BaseControl {
 	vertical = () => { return ((this.props.direction == resize_direction.vertical) || (this.props.direction == resize_direction.both)) }
 
 
-	get_size = (control) => {
-		return isset (control.current) ? {
-			width: control.current.scrollWidth,
-			height: control.current.scrollHeight
-		} : null;
-	}/* inner_size */;
-
-
 	end_resizing = () => {
 		this.props.parent.setState ({ resize: resize_state.false });
 		this.setState ({ width: null, height: null }, () => {
@@ -110,6 +102,21 @@ export default class ResizePanel extends BaseControl {
 	}// transition_end;
 
 	
+	control_size (control = this) {
+		return (is_null (control)) ? null : {
+			width: control?.state.width,
+			height: control?.state.height
+		}// return;
+	}// control_size;
+
+	get_size = (control) => {
+		return isset (control.current) ? {
+			width: control.current.scrollWidth,
+			height: control.current.scrollHeight
+		} : null;
+	}/* inner_size */;
+
+
 	/********/
 
 
@@ -121,8 +128,28 @@ export default class ResizePanel extends BaseControl {
 
 	shouldComponentUpdate (new_props) {
 
-		let outer_size = this.state_size ();
-		let inner_size = this.get_size (this.inner_control);
+		const outer_size = {
+			width: this.state.width,
+			height: this.state.height,
+		}// outer_size;
+
+		const inner_size = {
+			width: this.inner_control?.current.scrollWidth,
+			height: this.inner_control?.current.scrollHeight,
+		}// inner_size;
+		
+		
+		const unsizable = (new_size) => {
+
+			if (matching_objects (inner_size, outer_size)) return true;
+
+			if (this.props.stretchOnly) {
+				if (inner_size.width > new_size.width) return true;
+				if (inner_size.height > new_size.height) return true;
+			}// if;
+
+		}/* unsizable */;
+
 
 		if (this.different_element (this.props.children, new_props.children)) {
 			this.setState (this.get_size (this.outer_control));
@@ -138,17 +165,12 @@ export default class ResizePanel extends BaseControl {
 
 			if (this.transitioning) return true;
 			
-			if (matching_objects (inner_size, outer_size)) {
+			if (unsizable (new_size)) {
 				this.props.parent.setState ({ resize: resize_state.false }, this.end_resizing);
 				return true;
 			}// if;
 
 			this.transitioning = true;
-
-			if ((this.props.stretchOnly) && (!matching_objects (inner_size, new_size))) {
-				this.props.parent.setState ({ resize: resize_state.false }, this.end_resizing);
-				return false;
-			}// if;
 
 			this.setState (inner_size);
 			return false;

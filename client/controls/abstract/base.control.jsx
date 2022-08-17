@@ -7,7 +7,7 @@ import ActivityLog from "client/classes/activity.log";
 import SettingsStorage from "client/classes/storage/settings.storage";
 
 import { default_settings } from "classes/types/constants";
-import { get_keys, is_array, jsonify } from "classes/common";
+import { isset, is_null, get_keys, is_array, jsonify } from "classes/common";
 
 
 const random_factor = 1000;
@@ -28,8 +28,8 @@ export default class BaseControl extends React.Component {
 	animation_speed = () => { return this.props.speed ?? SettingsStorage.animation_speed () ?? default_settings.animation_speed }
 	transition_style = (property) => { return `${property} ${SettingsStorage.animation_speed ()}ms ease-in-out` }
 
-	children = props => { return is_array (props.children) ? props.children : common.isset (props.children) ? [props.children] : null }
-	context_item = (name) => { return common.isset (this.context) ? this.context [name] : null }
+	children = props => { return is_array (props.children) ? props.children : isset (props.children) ? [props.children] : null }
+	context_item = (name) => { return isset (this.context) ? this.context [name] : null }
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
 
 	different_element  (first_element, second_element) { return !this.same_element (first_element, second_element) }
@@ -57,7 +57,7 @@ export default class BaseControl extends React.Component {
 
 
 	children () {
-		return common.isset (this.props.children) ? this.props.children : <div style={{ 
+		return isset (this.props.children) ? this.props.children : <div style={{ 
 			width: "1px",
 			height: "1px",
 			backgroundColor: "transparent"
@@ -67,16 +67,16 @@ export default class BaseControl extends React.Component {
 
 	controlStyleClass () {
 		let result = {};
-		if (common.isset (this.props.className)) result.className = this.props.className;
-		if (common.isset (this.props.style)) result.style = this.props.style;
+		if (isset (this.props.className)) result.className = this.props.className;
+		if (isset (this.props.style)) result.style = this.props.style;
 		return result;
 	}// controlStyleClass;
 
 
 	dom (name, property = null) {
 		let element = document.getElementById (name);
-		if (common.is_null (property)) return element;
-		if (common.is_null (element)) return null;
+		if (is_null (property)) return element;
+		if (is_null (element)) return null;
 		return element [property];
 	}// dom;
 
@@ -98,7 +98,7 @@ export default class BaseControl extends React.Component {
 
 
 	id_badge (stub = null) {
-		if (common.is_null (stub)) stub = this.constructor.name;
+		if (is_null (stub)) stub = this.constructor.name;
 		return this.props.id ?? stub + constants.underscore + Date.now ();
 	}// id_badge;
 
@@ -109,7 +109,7 @@ export default class BaseControl extends React.Component {
 
 		for (let key of get_keys (this.props)) {
 			if (key in this.constructor.defaultProps) continue;
-			if (common.is_null (properties)) properties = {}
+			if (is_null (properties)) properties = {}
 			properties [key] = this.props [key];
 		}// for;
 		
@@ -126,7 +126,7 @@ export default class BaseControl extends React.Component {
 
 		if (object instanceof Array) {
 			for (item of object) {
-				if (common.is_null (item) || (item === false)) continue;
+				if (is_null (item) || (item === false)) continue;
 				if (!this.react_element (item)) return false;
 			}// for;
 			return true;
@@ -137,23 +137,14 @@ export default class BaseControl extends React.Component {
 	}// react_element;
 
 
-	state_size (control = null) {
-		if (common.is_null (control)) control = this;
-		return {
-			width: control.state.width,
-			height: control.state.height
-		}// return;
-	}// state_size;
-
-
 	state_equals (state, value) {
-		return (common.isset (value) && value.equals (this.state [state]));
+		return (isset (value) && value.equals (this.state [state]));
 	}// state_equals;
 
 
 	state_object_field (state, field) {
 		let object = this.state [state];
-		if (common.is_null (object)) return null;
+		if (is_null (object)) return null;
 		return object [field] ?? constants.empty;
 	}// state_object_field;
 
@@ -188,23 +179,23 @@ export default class BaseControl extends React.Component {
 
 
 	get_width () {
-		return common.isset (this.props.domControl) ? this.props.domControl.clientWidth : 0;
+		return isset (this.props.domControl) ? this.props.domControl.clientWidth : 0;
 	}// get_width;
 
 
 	get_height () {
-		return common.isset (this.props.domControl) ? this.props.domControl.clientHeight : 0;
+		return isset (this.props.domControl) ? this.props.domControl.clientHeight : 0;
 	}// get_height;
 
 
 	set_visibility (property_value, comparison_value = null) {
-		let comparison = common.is_null (comparison_value) ? (property_value == true) : (property_value == comparison_value);
+		let comparison = is_null (comparison_value) ? (property_value == true) : (property_value == comparison_value);
 		return comparison ? null : { display:  "none" }
 	}// set_visibility;
 
 
 	signed_in () {
-		return common.isset (localStorage.getItem ("credentials"));
+		return isset (localStorage.getItem ("credentials"));
 	}// signed_in;
 
 
@@ -214,7 +205,7 @@ export default class BaseControl extends React.Component {
 
 
 	mapping (array, callback) {
-		if (common.is_null (array)) return;
+		if (is_null (array)) return;
 		return array.map (callback);
 	}// mapping;
 
@@ -239,16 +230,16 @@ export default class BaseControl extends React.Component {
 
 	show_states (cascade) {
 
-		let append = (object, value) => { return `${common.is_null (object) ? constants.blank : object}${value}`; }
+		let append = (object, value) => { return `${is_null (object) ? constants.blank : object}${value}`; }
 
 		let control_states = null;
 		let child_states = null;
 
 		let result = null;
 
-		if (common.isset (this.state)) {
+		if (isset (this.state)) {
 			get_keys (this.state).forEach (key => {
-				if (common.is_null (this.state [key])) return;
+				if (is_null (this.state [key])) return;
 				control_states = append (control_states, `\n${key}: ${this.state [key]}`);
 			});
 		}// if;
@@ -266,13 +257,13 @@ export default class BaseControl extends React.Component {
 		let control = this.constructor.name;
 		let children = props.children;
 
-		if (common.is_null (props.id)) throw `${control} requires an ID`;
+		if (is_null (props.id)) throw `${control} requires an ID`;
 		
 		if (parent_only) return true;
 		if (common.not_set (children)) return true;
 
 		if (!Array.isArray (children)) children = [children];
-		children.map (child => { if (common.isset (child.props) && common.not_set (child.props.id)) throw `${control} (${props.id}) child (${child.type.name}) must have a unique ID` });
+		children.map (child => { if (isset (child.props) && common.not_set (child.props.id)) throw `${control} (${props.id}) child (${child.type.name}) must have a unique ID` });
 
 	}// validate_ids;
 

@@ -248,7 +248,7 @@ export default class SettingsPage extends BaseControl {
 		let option_purchased = (OptionsStorage.can_bill ());
 
 		return <div className="span-all-columns">
-			<ExplodingPanel id="option_panel" direction={resize_direction.vertical} style={{ width: "100%" }}>
+			<ExplodingPanel id="option_panel" direction={resize_direction.vertical} className="full-width">
 				<Container id="billing_options_container" visible={option_available}>
 
 					<Container id="billing_available_container" visible={!option_purchased}>
@@ -394,7 +394,7 @@ export default class SettingsPage extends BaseControl {
 	render () {
 		return <Container>
 
-			<div className="two-column-grid">
+			<div className="two-column-grid full-width">
 
 				<div className="button-column">
 		
@@ -420,7 +420,7 @@ export default class SettingsPage extends BaseControl {
 
 				</div>					
 					
-				<ExplodingPanel id="settings_exploding_panel">
+				<ExplodingPanel id="settings_exploding_panel" className="full-width" stretchOnly={true}>
 
 					{this.user_settings_panel ()}
 					{this.account_options_panel ()}

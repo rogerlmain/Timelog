@@ -7,7 +7,7 @@ import LoggingStorage from "client/classes/storage/logging.storage";
 
 import InvitationModel from "client/classes/models/invitation.model";
 
-import { is_array, is_null, not_array, not_set, null_value } from "classes/common";
+import { is_null, not_array, not_set } from "classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 
@@ -95,7 +95,7 @@ export default class HomePage extends BaseControl {
 
 		let use_default = (is_null (LoggingStorage.project_name ()) && is_null (LoggingStorage.client_name ()));
 
-		return <div id={this.props.id} className="fully-centered">
+		return <div id={this.props.id} className="full-size horizontally-centered">
 			<div className="two-column-table with-headspace" style={{ columnGap: "2em" }}>
 
 				{/* Invitations */}
@@ -126,9 +126,6 @@ export default class HomePage extends BaseControl {
 					</Container>
 
 				</div>
-
-
-				{/* End */}
 
 			</div>
 		</div>

@@ -48,7 +48,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.0.6";
+const version = "1.0.0.8";
 
 
 const user_image_style = {
@@ -89,121 +89,6 @@ const team_permissions = () => new Promise ((resolve, reject) => {
 		PermissionsStorage.team_permission ().then (permission => resolve (permission)).catch (reject);
 	}).catch (reject);
 })// team_permissions;
-
-
-/********/
-
-
-const CompanyHeader = props => {
-
-	let companies = CompanyStorage.company_list ();
-
-	return <div style={{ marginLeft: "2em" }} className="right-justified-column">
-
-		<div style={{ fontStyle: "italic" }} >{props.currentTime}</div>
-
-		<Container visible={props.signedIn}>
-
-			<div className="two-column-table with-headspace">
-
-				<div className="vertically-centered">
-
-					<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
-					
-					<div className="right-aligned-text">
-
-						<Container visible={CompanyStorage.company_count () > 1}>
-							<SelectList value={CompanyStorage.active_company_id ()} data={companies}
-							
-								textField="company_name" hasHeader={true}
-								
-								onChange={props.onChange}>
-									
-							</SelectList>
-						</Container>
-
-						<Container visible={CompanyStorage.company_count () == 1}>
-							<div>{nested_value (CompanyStorage.active_company (), "company_name")}</div>
-						</Container>
-
-						<Container visible={is_empty (companies)}>
-							<div>Guest Account</div>
-						</Container>
-						
-					</div>
-
-				</div>
-
-				<ThumbnailImage src={AccountStorage.avatar () ?? user_image} style={user_image_style} onClick={() => props.changePage (page_names.account)} />
-					
-			</div>
-
-		</Container>
-
-		<Container visible={!props.signedIn}>
-			<div className="right-aligned-text with-some-headspace">Welcome!</div>
-		</Container>
-
-	</div>
-
-}// CompanyHeader;
-
-
-const MainPanel = props => {
-
-
-	const page_items = () => {
-
-		let result = null;
-
-		for (let [key, page] of Object.entries (props.master.pages)) {
-			let id = `${key}_container`;
-			if (is_null (result)) result = [];
-			result.push (<Container key={`${id}_key`} id={id} visible={props.master.state.page == key}>{page}</Container>);
-		}// for;
-
-		return result;
-
-	}/* page_items */;
-
-
-	let icd = location.urlParameter ("icd");
-	let active_panel = "signin_panel";
-
-
-	if (isset (icd)) {
-		localStorage.setItem ("invitation", icd);
-		window.location.href = window.location.origin;
-		return null;
-	}// if;
-
-
-	active_panel = (props.signedIn ? "master_panel" : (props.master.state.signing_up || isset (localStorage.getItem ("invitation")) ? "signup_panel" : "signin_panel"));
-
-
-	return <div className="full-height horizontally-centered" style={{ overflowY: "auto" }}>
-		<ExplodingPanel id="main_panel">
-
-			<Container id="master_panel_container" visible={active_panel == "master_panel"}>
-				<div className="full-size horizontally-aligned">
-					<ExplodingPanel id="details_panel">
-						{page_items ()}
-					</ExplodingPanel>
-				</div>
-			</Container>
-
-			<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
-				<SignupPage parent={props.master} />
-			</Container>
-
-			<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
-				<SigninPage parent={props.master} />
-			</Container>
-
-		</ExplodingPanel>
-	</div>
-
-}// MainPanel;
 
 
 /********/
@@ -252,6 +137,13 @@ export default class MasterPanel extends BaseControl {
 		[page_names.team]		: { name: "Team", permission: team_permissions },
 		[page_names.settings]	: { name: "Settings", permission: true }
 	}// master_pages;
+
+
+	viewer_style = {
+		width: "90rem", 
+		height: "100%", 
+		overflowY: "auto",
+	}// viewer_style;
 	
 	
 	static contextType = MasterContext;
@@ -271,11 +163,129 @@ export default class MasterPanel extends BaseControl {
 		let active_company = CompanyStorage.active_company_id ();
 
 		super (props);
-
+		
 		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
 		console.log ("creating master page");
 
 	}// constructor;
+
+
+	/********/
+
+
+	CompanyHeader = props => {
+
+		let companies = CompanyStorage.company_list ();
+	
+		return <div style={{ marginLeft: "2em" }} className="right-justified-column">
+	
+			<div style={{ fontStyle: "italic" }} >{props.currentTime}</div>
+	
+			<Container visible={props.signedIn}>
+	
+				<div className="two-column-table with-headspace">
+	
+					<div className="vertically-centered">
+	
+						<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
+						
+						<div className="right-aligned-text">
+	
+							<Container visible={CompanyStorage.company_count () > 1}>
+								<SelectList value={CompanyStorage.active_company_id ()} data={companies}
+									textField="company_name" hasHeader={true}
+									onChange={props.onChange}>
+								</SelectList>
+							</Container>
+	
+							<Container visible={CompanyStorage.company_count () == 1}>
+								<div>{nested_value (CompanyStorage.active_company (), "company_name")}</div>
+							</Container>
+	
+							<Container visible={is_empty (companies)}>
+								<div>Guest Account</div>
+							</Container>
+							
+						</div>
+	
+					</div>
+	
+					<ThumbnailImage src={AccountStorage.avatar () ?? user_image} style={user_image_style} onClick={() => props.changePage (page_names.account)} />
+						
+				</div>
+	
+			</Container>
+	
+			<Container visible={!props.signedIn}>
+				<div className="right-aligned-text with-some-headspace">Welcome!</div>
+			</Container>
+	
+		</div>
+	
+	}// CompanyHeader;
+	
+	
+	MainPanel = props => {
+
+
+		const page_items = () => {
+	
+			let result = null;
+	
+			for (let [key, page] of Object.entries (props.master.pages)) {
+				let id = `${key}_container`;
+				if (is_null (result)) result = [];
+				result.push (<Container key={`${id}_key`} id={id} visible={props.master.state.page == key}>{page}</Container>);
+			}// for;
+	
+			return result;
+	
+		}/* page_items */;
+	
+	
+		let icd = location.urlParameter ("icd");
+		let active_panel = "signin_panel";
+	
+	
+		if (isset (icd)) {
+			localStorage.setItem ("invitation", icd);
+			window.location.href = window.location.origin;
+			return null;
+		}// if;
+	
+	
+		active_panel = (props.signedIn ? "master_panel" : (props.master.state.signing_up || isset (localStorage.getItem ("invitation")) ? "signup_panel" : "signin_panel"));
+	
+	
+		return <div className="full-height horizontally-centered with-headspace" style={{ overflow: "hidden" }}>
+			<div style={this.viewer_style}>
+				<ExplodingPanel id="main_panel" stretchOnly={true} className="full-width">
+	
+					<Container id="master_panel_container" visible={active_panel == "master_panel"}>
+						<div className="full-size horizontally-aligned">
+							<ExplodingPanel id="details_panel" stretchOnly={true} className="full-width">
+								{page_items ()}
+							</ExplodingPanel>
+						</div>
+					</Container>
+	
+					<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
+						<div className="horizontally-centered">
+							<SignupPage parent={props.master} />
+						</div>
+					</Container>
+	
+					<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
+						<div className="horizontally-centered">
+							<SigninPage parent={props.master} />
+						</div>
+					</Container>
+	
+				</ExplodingPanel>
+			</div>
+		</div>
+	
+	}// MainPanel;
 
 
 	/********/
@@ -299,11 +309,10 @@ export default class MasterPanel extends BaseControl {
 
 					if (not_set (this.master_pages [page_name])) continue;
 
-					let name = `${page_name}_button`;
-					let permission = this.master_pages [page_name].permission;
-					let value = is_function (permission) ? permission () : permission;
 
 					const nav_button = permission => {
+
+						let name = `${page_name}_button`;
 
 						if (!permission) return;
 						if (is_null (result)) result = [];
@@ -318,17 +327,19 @@ export default class MasterPanel extends BaseControl {
 
 					}/* create_button */;
 
-let the_button = nav_button (is_promise (value) ? await (value) : value);
-result.push (the_button);
+					
+					let permission = this.master_pages [page_name].permission;
+					let value = is_function (permission) ? permission () : permission;
+					let next_button = nav_button (is_promise (value) ? await (value) : value);
 
-//					result.push (nav_button (is_promise (value) ? await (value) : value));
-
+					result.push (next_button);
+					
 				}// for;
 			} catch (error) { reject (error) }
 
 			resolve (result);
 
-		})// Promise;
+		})// promise;
 	}// button_list;
 
 
@@ -420,18 +431,16 @@ result.push (the_button);
 
 						</div>
 
-						<CompanyHeader signedIn={signed_in} currentTime={this.state.current_time} 
+						<this.CompanyHeader signedIn={signed_in} currentTime={this.state.current_time}
 							onChange={event => this.select_company (event.target.value)}
 							changePage={new_page => this.setState ({ page: new_page })}>
-						</CompanyHeader>
+						</this.CompanyHeader>
 
 					</div>
 
 					{signed_in && <div className="home_button_panel">
 
-						{(() => {
-							return this.state.button_list
-						})()}
+						{this.state.button_list}
 						{this.signout_button ()}
 
 						{debugging () && <SelectButton onClick={() => { alert ("waiting for something to test") }} style={{ 
@@ -444,7 +453,7 @@ result.push (the_button);
 
 				</div>
 
-				<MainPanel master={this} signedIn={signed_in} />
+				<this.MainPanel master={this} signedIn={signed_in} />
 
 				<div className="page-footer">
 					<div>&copy; Copyright 2022 - Roger Main Programming Company (RMPC) - All rights reserved</div>
