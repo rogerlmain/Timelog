@@ -5,7 +5,7 @@ import "resources/styles/main.css";
 
 import React from "react";
 
-import Container from "controls/container";
+import Container from "client/controls/container";
 
 import BaseControl		from "client/controls/abstract/base.control";
 

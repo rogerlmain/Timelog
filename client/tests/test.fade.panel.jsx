@@ -1,25 +1,19 @@
 import React from "react";
 
-import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 import FadePanel from "client/controls/panels/fade.panel";
 
 
-interface FadePanelTestState extends DefaultState { 
-	animate: boolean;
-	visible: boolean;
-}// FadePanelTestState;
+export default class FadePanelTest extends BaseControl {
 
 
-export default class FadePanelTest extends BaseControl<DefaultProps, FadePanelTestState> {
-
-
-	public state: FadePanelTestState = { 
+	state = { 
 		visible: false,
 		animate: false
-	}
+	}// state;
 
 
-	public render () {
+	render () {
 		return (
 			<div className="centering-container v" style={{ border: "solid 1px blue", padding: "2em" }}>
 

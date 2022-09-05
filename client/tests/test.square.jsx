@@ -1,5 +1,5 @@
 import React from "react";
-import BaseControl from "controls/abstract/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
 
 
