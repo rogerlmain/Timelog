@@ -1,11 +1,11 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
 import React from "react";
 
-import BaseControl from "controls/abstract/base.control";
-import Container from "controls/container";
+import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
 
-import { not_set } from "classes/common";
+import { not_set } from "client/classes/common";
 
 import "resources/styles/controls/slider.css";
 

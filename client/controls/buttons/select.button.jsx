@@ -1,5 +1,5 @@
 
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";

@@ -1,5 +1,5 @@
-import LocalStorage from "classes/local.storage";
-import { isset, is_object } from "classes/common";
+import LocalStorage from "client/classes/local.storage";
+import { isset, is_object } from "client/classes/common";
 
 
 const store_name = "logging";

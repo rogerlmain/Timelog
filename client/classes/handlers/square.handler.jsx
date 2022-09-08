@@ -1,9 +1,9 @@
-import * as constants from "classes/types/constants";
-import * as common from "classes/common";
+import * as constants from "client/classes/types/constants";
+import * as common from "client/classes/common";
 
 import FormHandler from "client/classes/handlers/form.handler";
 
-import AccountStorage from "classes/storage/account.storage";
+import AccountStorage from "client/classes/storage/account.storage";
 
 import { v4 as uuid } from "uuid";
 

@@ -1,10 +1,10 @@
 import React from "react";
 
-import InputControl from "controls/abstract/input.control";
-import Container from "controls/container";
+import InputControl from "client/controls/abstract/input.control";
+import Container from "client/controls/container";
 
-import { blank } from "classes/types/constants";
-import { is_number } from "classes/common";
+import { blank } from "client/classes/types/constants";
+import { is_number } from "client/classes/common";
 
 
 export default class AlphaCapitalInput extends InputControl {

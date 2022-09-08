@@ -1,5 +1,5 @@
 import React from "react";
-import BaseControl from "controls/abstract/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
 import { tracing } from "client/classes/types/constants";
 import { nested_value, null_value } from "client/classes/common";
@@ -26,7 +26,7 @@ export default class Container extends BaseControl {
 
 	render () { 
 
-		let styles = {...this.props.style}
+		let styles = {...this.props.style};
 		let properties = {...this.props};
 
 		delete properties.style;

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { not_set } from "classes/common";
+import { not_set } from "client/classes/common";
 
 
 // export class Break extends BaseControl {

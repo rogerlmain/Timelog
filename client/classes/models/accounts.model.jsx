@@ -1,7 +1,7 @@
-import Database from "classes/database";
+import Database from "client/classes/database";
 import DataModel from "client/classes/models/data.model";
 
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
 
 const table = "accounts";

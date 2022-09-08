@@ -8,6 +8,11 @@ import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 import MasterPanel from "client/master";
 
+import FadePanelTest from "client/tests/test.fade.panel";
+import ResizePanelTest from "client/tests/test.resize.panel";
+import ExplodingPanelTest from "client/tests/test.exploding.panel";
+import EyecandyPanelTest from "client/tests/test.eyecandy.panel";
+
 import { createRoot } from "react-dom/client";
 
 import { tracing, globals, date_formats } from "client/classes/types/constants";
@@ -15,9 +20,12 @@ import { tracing, globals, date_formats } from "client/classes/types/constants";
 
 // Guest Imports
 
-import "resources/styles/forms.css";
 import ActivityLog from "./classes/activity.log";
+import Container from "./controls/container";
+
 import { debugging } from "./classes/common";
+
+import "resources/styles/forms.css";
 
 
 //Special Guest Import
@@ -27,7 +35,6 @@ import { debugging } from "./classes/common";
 class Main extends BaseControl {
 
 	state = { 
-		signing_up: false,
 		current_time: null,
 	}/* state */;
 
@@ -80,7 +87,14 @@ document.onreadystatechange = () => {
 	createRoot (document.getElementById ("main_page")).render (<Main id="timelog_main_page" />);
 
 	// Special Guest Render	
-	// createRoot (document.getElementById ("main_page")).render (<TestControl />);
-	// createRoot (document.getElementById ("main_page")).render (<QuickTest />);
+	// createRoot (document.getElementById ("main_page")).render (<FadePanelTest />);
+	// createRoot (document.getElementById ("main_page")).render (<ResizePanelTest />);
+	// createRoot (document.getElementById ("main_page")).render (<ExplodingPanelTest />);
+	// createRoot (document.getElementById ("main_page")).render (<EyecandyPanelTest />);
 	
+	// createRoot (document.getElementById ("main_page")).render (<div className="two-column-table">
+	// 	<ExplodingPanelTest />
+	// 	<EyecandyPanelTest />
+	// </div>);
+
 }// document.ready;

@@ -2,7 +2,7 @@ import * as React from "react";
 
 import * as common from "client/classes/common";
 
-import BaseControl, { DefaultProps } from "controls/base.control";
+import BaseControl, { DefaultProps } from "client/controls/base.control";
 import { SyntheticEvent } from "react";
 
 

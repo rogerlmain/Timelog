@@ -1,5 +1,5 @@
-import * as common from "classes/common";
-import Database from "classes/database";
+import * as common from "client/classes/common";
+import Database from "client/classes/database";
 
 
 const table = "company_cards";

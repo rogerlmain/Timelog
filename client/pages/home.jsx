@@ -1,13 +1,13 @@
 import React from "react";
 
 import Container from "client/controls/container";
-import BaseControl from "controls/abstract/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
 import LoggingStorage from "client/classes/storage/logging.storage";
 
 import InvitationModel from "client/classes/models/invitation.model";
 
-import { is_null, not_array, not_set } from "classes/common";
+import { is_null, not_array, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 

@@ -1,16 +1,16 @@
-import * as common from "classes/common";
-import * as constants from "classes/types/constants";
+import * as common from "client/classes/common";
+import * as constants from "client/classes/types/constants";
 
 import React from "react";
 
-import AccountStorage from "classes/storage/account.storage";
+import AccountStorage from "client/classes/storage/account.storage";
 
-import DynamicInput from "controls/inputs/dynamic.input";
-import SelectList from "controls/lists/select.list";
-import Container from "controls/container";
+import DynamicInput from "client/controls/inputs/dynamic.input";
+import SelectList from "client/controls/lists/select.list";
+import Container from "client/controls/container";
 
-import BaseControl from "controls/abstract/base.control";
-import PhoneNumberInput from "controls/inputs/phone.number.input";
+import BaseControl from "client/controls/abstract/base.control";
+import PhoneNumberInput from "client/controls/inputs/phone.number.input";
 
 import LookupsModel from "client/classes/models/lookups.model";
 

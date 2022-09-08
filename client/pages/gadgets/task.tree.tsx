@@ -1,10 +1,10 @@
 import React, { BaseSyntheticEvent } from "react";
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
+import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
 
 import TasksModel, { TaskItem } from "models/tasks";
 
 import { AccountsList } from "models/accounts";
-import { TreeView } from "controls/treeview";
+import { TreeView } from "client/controls/treeview";
 
 interface TaskTreeProperties extends DefaultProps {
 	accountID: number;

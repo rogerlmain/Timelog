@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as common from "client/classes/common";
 
-import BaseControl from "controls/base.control";
+import BaseControl from "client/controls/base.control";
 
 import { SizeRecord } from "client/types/datatypes";
 
@@ -13,7 +13,7 @@ export default class FreezePanel extends BaseControl<any> {
 
 	public constructor (props: any) {
 		super (props);
-		this.id = this.id_badge (props.id);
+		this.id = this.get_id ("FreezePanel");
 	}// constructor;
 
 

@@ -1,4 +1,4 @@
-import Database from "classes/database";
+import Database from "client/classes/database";
 import CompanyStorage from "client/classes/storage/company.storage";
 import DataModel from "client/classes/models/data.model";
 

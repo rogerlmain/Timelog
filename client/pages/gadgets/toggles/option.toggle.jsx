@@ -1,16 +1,17 @@
-import * as constants from "classes/types/constants";
+import * as constants from "client/classes/types/constants";
 
 import React from "react";
 
-import BaseControl from "controls/abstract/base.control";
-import Container from "controls/container";
-import ToggleSwitch from "controls/toggle.switch";
+import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
+import ToggleSwitch from "client/controls/toggle.switch";
 
+import CompanyStorage from "client/classes/storage/company.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
-import { get_key, is_null, isset, not_set } from "classes/common";
+import { get_key, is_null, isset, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
-import CompanyStorage from "client/classes/storage/company.storage";
+import { option_types } from "client/classes/types/options";
 
 
 export default class OptionToggle extends BaseControl {
@@ -45,7 +46,7 @@ export default class OptionToggle extends BaseControl {
 
 	change_handler = new_value => {
 
-		let key_name = get_key (constants.option_types, this.props.option);
+		let key_name = get_key (option_types, this.props.option);
 		let current_value = OptionsStorage [key_name] (CompanyStorage.active_company_id ());
 
 		this.state.value = new_value + 1;

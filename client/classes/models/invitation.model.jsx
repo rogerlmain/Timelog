@@ -1,4 +1,4 @@
-import Database from "classes/database";
+import Database from "client/classes/database";
 
 import DataModel from "client/classes/models/data.model";
 import LocalStorage from "client/classes/local.storage";

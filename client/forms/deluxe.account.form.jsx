@@ -1,5 +1,5 @@
-import * as constants from "classes/types/constants";
-import * as common from "classes/common";
+import * as constants from "client/classes/types/constants";
+import * as common from "client/classes/common";
 
 import React from "react";
 
@@ -9,20 +9,21 @@ import CompanyStorage from "client/classes/storage/company.storage";
 import CustomerHandler from "client/classes/handlers/customer.handler";
 import SquareHandler from "client/classes/handlers/square.handler";
 
-import BaseControl from "controls/abstract/base.control";
-import ExplodingPanel from "controls/panels/exploding.panel";
-import EyecandyPanel from "controls/panels/eyecandy.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import Container from "controls/container";
-import SelectList from "controls/lists/select.list";
+import Container from "client/controls/container";
+import SelectList from "client/controls/lists/select.list";
 
 import AddressForm from "forms/address.form"
 import CreditCardSubform from "client/forms/subforms/credit.card.subform";
 
-import { MasterContext } from "classes/types/contexts";
-import { dynamic_input_classname } from "controls/inputs/dynamic.input";
+import { MasterContext } from "client/classes/types/contexts";
+import { dynamic_input_classname } from "client/controls/inputs/dynamic.input";
 
-import { isset, is_number, nested_value } from "classes/common";
+import { isset, is_number, nested_value } from "client/classes/common";
+import { option_types } from "client/classes/types/options";
 
 import "resources/styles/forms/deluxe.account.form.css";
 
@@ -120,7 +121,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	create_payment = async (data) => {
 
-		let option_name = isset (this.props.option) ? common.get_key (constants.option_types, this.props.option).titled () : null;
+		let option_name = isset (this.props.option) ? common.get_key (option_types, this.props.option).titled () : null;
 
 		return this.state.square_handler.create_payment ({
 			amount: this.state.selected_item.equals (purchase_options.item) ? this.props.optionPrice : JSON.parse (this.package_list.current.value).price,

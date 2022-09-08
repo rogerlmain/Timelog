@@ -1,4 +1,4 @@
-import LocalStorage from "classes/local.storage"
+import LocalStorage from "client/classes/local.storage"
 
 import { credential_fields } from "client/classes/types/constants";
 

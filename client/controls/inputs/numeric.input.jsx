@@ -1,9 +1,9 @@
-import * as constants from "classes/types/constants";
-import * as common from "classes/common";
+import * as constants from "client/classes/types/constants";
+import * as common from "client/classes/common";
 
 import React from "react";
-import InputControl from "controls/abstract/input.control";
-import Container from "controls/container";
+import InputControl from "client/controls/abstract/input.control";
+import Container from "client/controls/container";
 
 
 export default class NumericInput extends InputControl {

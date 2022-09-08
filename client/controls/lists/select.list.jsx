@@ -1,9 +1,9 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
 import React from "react";
-import BaseControl from "controls/abstract/base.control"
+import BaseControl from "client/controls/abstract/base.control"
 
-import { get_values, zero_value } from "classes/common";
+import { get_values, zero_value } from "client/classes/common";
 
 
 const header_value = -1;

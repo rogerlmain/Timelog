@@ -1,13 +1,13 @@
-import * as constants from "classes/types/constants";
+import * as constants from "client/classes/types/constants";
 
-import LocalStorage from "classes/local.storage";
-import ClientStorage from "classes/storage/client.storage";
-import CompanyStorage from "classes/storage/company.storage";
-import OptionsStorage from "classes/storage/options.storage";
+import LocalStorage from "client/classes/local.storage";
+import ClientStorage from "client/classes/storage/client.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 import ProjectModel from "client/classes/models/project.model";
 
-import { isset, not_set, not_null, nested_value, null_value, not_array, is_null } from "classes/common";
+import { isset, not_set, not_null, nested_value, null_value, not_array, is_null } from "client/classes/common";
 
 
 const store_name = constants.stores.projects;

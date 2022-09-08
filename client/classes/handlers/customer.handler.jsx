@@ -1,12 +1,12 @@
-import * as constants from "classes/types/constants";
-import * as common from "classes/common";
+import * as constants from "client/classes/types/constants";
+import * as common from "client/classes/common";
 
 import AddressModel from "client/classes/models/address.model";
 import CompanyModel from "client/classes/models/company.model";
 import CompanyAccountsModel from "client/classes/models/company.accounts.model";
 import CompanyCardModel from "client/classes/models/company.cards.model";
 
-import AccountStorage from "classes/storage/account.storage";
+import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
 

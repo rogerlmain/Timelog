@@ -341,7 +341,6 @@ app.post ("/signin", () => {
 				error: 1,
 				error_message: "Unknown account"
 			});
-			this.connection.end ();
 			return;
 		}// if;
 

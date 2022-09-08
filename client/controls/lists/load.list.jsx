@@ -65,6 +65,18 @@ export default class LoadList extends BaseControl {
 	}// defaultProps;
 
 
+	constructor (props) {
+		
+		super (props);
+		
+		if (this.props.id.equals (load_list_id)) console.warn ("Your LoadList really should have a unique ID");
+		if (tracing) console.log (`${props.id} list created`);
+
+		this.state.list_data = this.props.data;
+		
+	}// constructor;
+
+
 	load_data = (input_data) => {
 
 		let update_state = data => {
@@ -81,18 +93,6 @@ export default class LoadList extends BaseControl {
 		update_state (input_data);
 
 	}/* load_data */;
-
-
-	constructor (props) {
-		
-		super (props);
-		
-		if (this.props.id.equals (load_list_id)) console.warn ("Your LoadList really should have a unique ID");
-		if (tracing) console.log (`${props.id} list created`);
-
-		this.load_data (props.data);
-
-	}// constructor;
 
 
 	shouldComponentUpdate (new_props) {

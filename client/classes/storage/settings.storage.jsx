@@ -1,9 +1,9 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
-import LocalStorage from "classes/local.storage";
+import LocalStorage from "client/classes/local.storage";
 import SettingsModel from "client/classes/models/settings.model";
 
-import { default_settings, setting_types } from "classes/types/constants";
+import { default_settings, setting_types } from "client/classes/types/constants";
 
 
 const store_name = "settings";

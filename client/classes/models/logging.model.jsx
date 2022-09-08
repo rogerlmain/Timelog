@@ -1,7 +1,7 @@
-import Database from "classes/database";
+import Database from "client/classes/database";
 
-import { blank, date_formats } from "classes/types/constants";
-import { isset } from "classes/common";
+import { blank, date_formats } from "client/classes/types/constants";
+import { isset } from "client/classes/common";
 
 
 const table = "logging";

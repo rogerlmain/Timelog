@@ -6,6 +6,9 @@ import Container from "client/controls/container";
 import { horizontal_alignment } from "client/classes/types/constants";
 
 
+import test_image from "resources/images/square.png";
+
+
 export default class ResizePanelTest extends BaseControl {
 
 
@@ -48,22 +51,35 @@ contents: null,
 				This is the new content in a longer line.<br />
 				With even more rows<br />
 
-<div className="borderline">
-	<ResizePanel id="test2" parent={this} ref={this.nested_panel} stretchOnly={false} alignment={horizontal_alignment.center} animating={this.state.animating}>
-		<div className="horizontally-centered">
-			{get_piece (1)}
-		</div>
-	</ResizePanel>
-	<button onClick={() => this.nested_panel.current.animate (get_piece (1))}>First</button>
-	<button onClick={() => this.nested_panel.current.animate (get_piece (2))}>Another</button>
-</div>
+				<div className="borderline">
+					<ResizePanel id="test2" parent={this} ref={this.nested_panel} stretchOnly={false} alignment={horizontal_alignment.center} animating={this.state.animating}>
+						<div className="horizontally-centered">
+							{get_piece (1)}
+						</div>
+					</ResizePanel>
+					<button onClick={() => this.nested_panel.current.animate (get_piece (1))}>First</button>
+					<button onClick={() => this.nested_panel.current.animate (get_piece (2))}>Another</button>
+				</div>
 
 				This line is also different
 			</Container>
 
-			case 4: return <Container visible={this.state.selected_index == 4}>
+			case 4: return <Container>
 				Here's one with a text area<br />
 				<textarea />
+			</Container>
+
+			case 5: return <Container>
+				this<br />
+				one<br />
+				is<br />
+				very<br />
+				long
+			</Container>
+
+			case 6: return <Container>
+				Here's one with an image<br />
+				<img src={test_image} style={{ width: "200px", height: "auto" }} />
 			</Container>
 
 			default: return null;
@@ -93,6 +109,8 @@ contents: null,
 			<button onClick={() => this.resize_panel.current.animate (this.get_page (2))}>Medium contents</button>
 			<button onClick={() => this.resize_panel.current.animate (this.get_page (3))}>Large contents</button>
 			<button onClick={() => this.resize_panel.current.animate (this.get_page (4))}>With textarea</button>
+			<button onClick={() => this.resize_panel.current.animate (this.get_page (5))}>Long one</button>
+			<button onClick={() => this.resize_panel.current.animate (this.get_page (6))}>Image included</button>
 
 			<br /><br />
 

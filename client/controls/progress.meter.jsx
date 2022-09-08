@@ -1,9 +1,9 @@
 import React from "react";
 
-import BaseControl from "controls/abstract/base.control";
-import FadePanel from "controls/panels/fade.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import FadePanel from "client/controls/panels/fade.panel";
 
-import { horizontal_alignment } from "classes/types/constants";
+import { horizontal_alignment } from "client/classes/types/constants";
 
 
 export class SmallProgressMeter extends BaseControl {

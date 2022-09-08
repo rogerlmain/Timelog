@@ -2,10 +2,10 @@ import React from "react";
 
 import Calendar from "react-calendar";
 
-import BaseControl from "controls/abstract/base.control";
-import TimePicker from "controls/time.picker";
+import BaseControl from "client/controls/abstract/base.control";
+import TimePicker from "client/controls/time.picker";
 
-import Container from "controls/container";
+import Container from "client/controls/container";
 import ToggleButton from "client/controls/toggle.button";
 import ToggleSwitch from "client/controls/toggle.switch";
 

@@ -1,7 +1,7 @@
 import React from "react";
-import BaseControl from "controls/abstract/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
-import { isset, is_null, is_number } from "classes/common";
+import { isset, is_null, is_number } from "client/classes/common";
 
 import "resources/styles/controls.css";
 

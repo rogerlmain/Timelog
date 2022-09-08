@@ -1,8 +1,8 @@
 import React from "react";
 import SelectButton from "./select.button";
 
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
-import BaseFadePanel from "controls/panels/base.fade.panel";
+import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
+import BaseFadePanel from "client/controls/panels/base.fade.panel";
 
 
 interface FadeButtonProps extends DefaultProps { 

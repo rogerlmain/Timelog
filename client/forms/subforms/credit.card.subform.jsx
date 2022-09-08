@@ -1,12 +1,12 @@
-import * as constants from "classes/types/constants";
+import * as constants from "client/classes/types/constants";
 
 import React from "react";
 
-import AccountStorage from "classes/storage/account.storage";
+import AccountStorage from "client/classes/storage/account.storage";
 import SquareHandler from "client/classes/handlers/square.handler";
 
-import BaseControl from "controls/abstract/base.control";
-import Container from "controls/container";
+import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
 
 import "resources/styles/pages/forms.css";
 

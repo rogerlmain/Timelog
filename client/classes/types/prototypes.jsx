@@ -1,5 +1,5 @@
-import { blank, space, date_formats, date_rounding, directions, empty } from "classes/types/constants";
-import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value } from "classes/common";
+import { blank, space, date_formats, date_rounding, directions, empty } from "client/classes/types/constants";
+import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value } from "client/classes/common";
 
 
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -8,7 +8,7 @@ const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 /**** Array Helper Functions ****/
 
 
-Array.arrayify = (candidate) => { return (Array.isArray (candidate) ? candidate : (is_null (candidate) ? null : [candidate])) }
+Array.arrayify = (candidate, return_empty = false) => { return (Array.isArray (candidate) ? candidate : (is_null (candidate) ? (return_empty ? [] : null) : [candidate])) }
 Array.get_element = (array, index) => { return (Array.isArray (array) && (array.length >= index)) ? array [index] : null }
 Array.has_value = function (candidate) { return Array.isArray (candidate) && (candidate.length > 0) }
 
@@ -328,6 +328,25 @@ Date.prototype.format = function (selected_format) {
 /***** DOMRect ****/
 
 
+try { let rect = new DOMRect () } catch {
+
+	global.DOMRect = class DOMRect {
+		bottom = 0;
+		left=0;
+		right=0;
+		top=0;
+		constructor (x=0, y=0, width=0, height=0) {};
+		static fromRect(other) {
+			return new DOMRect (other.x,other.y,other.width,other.height)
+		}
+		toJSON() {
+			return JSON.stringify(this)
+		}
+	}
+
+}// try;
+
+
 DOMRect.prototype.contains = function (point) {
 	if (not_set (point)) return false;
 	if (isset (point.x) && ((point.x < this.left) || (point.x > this.right))) return false;
@@ -428,8 +447,8 @@ HTMLElement.prototype.availableHeight = function () {
 }// availableHeight;
 
 
-HTMLElement.prototype.freezeWidth = function () { this.style.width = `${this.clientWidth}px` }
-HTMLElement.prototype.freezeHeight = function () { this.style.height = `${this.clientHeight}px` }
+HTMLElement.prototype.freezeWidth = function () { this.style.width = `${this.scrollWidth}px` }
+HTMLElement.prototype.freezeHeight = function () { this.style.height = `${this.scrollHeight}px` }
 
 
 HTMLElement.prototype.freeze = function () {
@@ -448,14 +467,14 @@ HTMLElement.prototype.thaw = function () {
 }// thaw;
 
 
-HTMLElement.prototype.hardenWidth = function () { this.style.minWidth = `${this.clientWidth}px` }
-HTMLElement.prototype.hardenHeight = function () { this.style.minHeight = `${this.clientHeight}px` }
+HTMLElement.prototype.semifreezeWidth = function () { this.style.minWidth = `${this.scrollWidth}px` }
+HTMLElement.prototype.semifreezeHeight = function () { this.style.minHeight = `${this.scrollHeight}px` }
 
 
-HTMLElement.prototype.harden = function () {
-	this.hardenWidth ();
-	this.hardenHeight ();
-}// harden;
+HTMLElement.prototype.semifreeze = function () {
+	this.semifreezeWidth ();
+	this.semifreezeHeight ();
+}// semifreeze;
 
 
 HTMLElement.prototype.softenWidth = function () { this.style.minWidth = null }
@@ -520,6 +539,31 @@ HTMLElement.prototype.addValidator = function (validator) {
 		return true;
 	}// validate;
 }// addValidator;
+
+
+HTMLElement.prototype.client_size = function () {
+	return {
+		width: this.clientWidth,
+		height: this.clientHeight,
+	};
+}// client_size;
+
+
+HTMLElement.prototypescroll_size = function () {
+	return {
+		width: this.scrollWidth,
+		height: this.scrollHeight
+	};
+}// scroll_size;
+
+
+HTMLElement.prototype.offset_size = function () {
+	return {
+		width: this.offsetWidth,
+		height: this.offsetHeight
+	};
+}// offset_size;
+
 
 
 // Returns optional boolean = valid, for chaining.
@@ -692,6 +736,19 @@ String.prototype.empty = function () { return this.trim () == blank }
 String.prototype.not_empty = function () { return !this.empty () }
 
 
+String.prototype.last_match_index = function (compare) {
+
+	if (not_string (compare)) return 0;
+
+	for (let i = 0; i < Math.min (compare.length, this.length); i++) {
+		if (this [i] != compare [i]) return i;
+	}// for;
+
+	return this.length;
+
+}// last_match_index;
+
+
 String.prototype.matches = function (pattern) { return isset (this.match (pattern)) }
 
 
@@ -710,9 +767,11 @@ String.prototype.splice = function (start_index, end_index, replacement = null) 
 String.prototype.titled = function () { return this.charAt (0).toUpperCase () + this.slice (1) }
 
 
-/**** Window Prototype ****/
+/**** Global / Window Prototype ****/
 
 
-Window.prototype.dispatchAll = (event) => document.querySelectorAll ("*").forEach (item => item.dispatchEvent (is_string (event) ? new Event (event) : event));
+let global_prototype = null;
 
+try { global_prototype = Window.prototype; } catch { global_prototype = global.__proto__; }
 
+global_prototype.dispatchAll = (event) => document.querySelectorAll ("*").forEach (item => item.dispatchEvent (is_string (event) ? new Event (event) : event));

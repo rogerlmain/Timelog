@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent } from "react";
 
-import BaseControl, { DefaultProps } from "controls/base.control";
-import SelectList from "controls/select.list";
+import BaseControl, { DefaultProps } from "client/controls/base.control";
+import SelectList from "client/controls/select.list";
 import TasksModel from "models/tasks";
 
 import ProjectSelectorGadget from "pages/gadgets/selectors/project.selector.gadget";

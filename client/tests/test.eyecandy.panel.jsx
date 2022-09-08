@@ -50,6 +50,8 @@ export default class EyecandyPanelTest extends BaseControl {
 				<div style={{ border: "solid 1px red", padding: "0.5em", display: "flex" }}>
 
 					<EyecandyPanel id="eyecandy_test" ref={this.eyecandy_panel} eyecandyVisible={this.state.eyecandy_visible} static={this.state.static} text="Testing eyecandy"
+
+stretchOnly={true}					
 					
 onEyecandy={async () => {
 

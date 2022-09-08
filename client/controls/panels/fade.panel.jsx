@@ -1,7 +1,7 @@
 import BaseControl from "client/controls/abstract/base.control";
 import React from "react";
 
-import { is_null, not_set } from "classes/common";
+import { is_null, not_set } from "client/classes/common";
 
 
 export default class FadePanel extends BaseControl {
@@ -9,7 +9,7 @@ export default class FadePanel extends BaseControl {
 
 	fade_panel = React.createRef ();
 
-
+	
 	static defaultProps = {
 
 		id: null,
@@ -32,27 +32,25 @@ export default class FadePanel extends BaseControl {
 	}// defaultProps;
 
 
-	constructor (props) {
-		super (props);
-		if (is_null (this.props.id)) throw "FadePanel requires an ID";
-	}// constructor;
-
-
 	transition_start = event => {
+
 		if (event.propertyName != "opacity") return;
-		if (event.currentTarget != event.srcElement) return;
+		if (event.target !== this.fade_panel) return;
+
 		this.execute (this.props.beforeTransition);
+
 		switch (this.props.visible) {
 			case true: this.execute (this.props.beforeShowing, event); break;
 			default: this.execute (this.props.beforeHiding, event); break;
 		}// switch;
+
 	}/* transition_start */;
 
 
 	transition_end = event => {
 
 		if (event.propertyName != "opacity") return;
-		if (event.currentTarget != event.srcElement) return;
+		if (event.target !== this.fade_panel.current) return;
 
 		switch (this.props.visible) {
 			case true: this.execute (this.props.afterShowing, event); break;
@@ -69,14 +67,12 @@ export default class FadePanel extends BaseControl {
 
 
 	componentDidMount () {
-		if (not_set (this.fade_panel.current)) return;
 		this.fade_panel.current.addEventListener ("transitionstart", this.transition_start);
 		this.fade_panel.current.addEventListener ("transitionend", this.transition_end);
 	}// componentDidMount;
 
 
 	componentWillUnmount () {
-		if (not_set (this.fade_panel.current)) return;
 		this.fade_panel.current.removeEventListener ("transitionstart", this.transition_start);
 		this.fade_panel.current.removeEventListener ("transitionend", this.transition_end);
 	}// componentWillUnmount;
@@ -84,16 +80,15 @@ export default class FadePanel extends BaseControl {
 
 	render () {
 
-		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0) }
+		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0)
+		
+, border: "solid 1px blue"
 
-		if (!this.props.visible) style.visibility = "hidden";
+		}
+		let control_id = `${this.props.id ?? `fade_panel_${Date.now ()}`}_control`;
 
 		if (this.props.animate) style = { ...style, transition: `opacity ${this.animation_speed ()}ms ease-in-out` }
-		return <div id={this.props.id} ref={this.fade_panel} className={this.props.className} style={style}>
-
-			{this.props.children}
-		
-		</div>
+		return <div id={control_id} key={control_id} ref={this.fade_panel} className={this.props.className} style={style}>{this.props.children}</div>
 
 	}// render;
 

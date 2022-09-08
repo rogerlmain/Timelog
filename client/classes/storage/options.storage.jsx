@@ -1,10 +1,11 @@
-import LocalStorage from "classes/local.storage";
+import LocalStorage from "client/classes/local.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
 import OptionsModel from "client/classes/models/options.model";
 
-import { date_rounding, deadbeat_options, granularity_types, option_types } from "classes/types/constants";
-import { isset, not_set } from "classes/common";
+import { date_rounding, granularity_types } from "client/classes/types/constants";
+import { isset, not_set } from "client/classes/common";
+import { deadbeat_options, option_types } from "client/classes/types/options";
 
 
 const store_name = "options";

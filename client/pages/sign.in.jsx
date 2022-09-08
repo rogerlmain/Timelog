@@ -1,19 +1,17 @@
-import * as common from "classes/common";
-
 import React from "react";
 
 import CompanyStorage from "client/classes/storage/company.storage";
 
-import BaseControl from "controls/abstract/base.control";
-import ExplodingPanel from "controls/panels/exploding.panel";
-import EyecandyPanel from "controls/panels/eyecandy.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import Container from "client/controls/container";
 
-import { get_keys, not_empty } from "classes/common";
+import { get_keys, isset } from "client/classes/common";
 
-import { globals } from "client/classes/types/constants";
-import { MasterContext } from "classes/types/contexts";
+import { empty, empty_cell, globals, horizontal_alignment } from "client/classes/types/constants";
+import { MasterContext } from "client/classes/types/contexts";
 import { page_names } from "client/master";
 
 
@@ -26,18 +24,28 @@ const bad_credentials = <div id="bad_credentials" className="login-error">
 export default class SigninPage extends BaseControl {
 
 
+	eyecandy_panel = React.createRef ();
+	error_panel = React.createRef ();
+
+
+	signin_button = () => <button onClick={() => {
+		this.error_panel.current.animate ();
+		this.eyecandy_panel.current.animate ();
+	}}>Sign in</button>;
+
+
+	error_message = error => <div id="signin_error_message">{error}</div>
+
+
 	state = { 
-
-		error_message: null,
-
 		password_visible: false,
 		eyecandy_visible: false,
 		button_visible: true
-	
 	}// state;
 
 
 	static contextType= MasterContext;
+
 
 	static defaultProps = { 
 		id		: "signin_page",
@@ -45,41 +53,50 @@ export default class SigninPage extends BaseControl {
 	}// defaultProps;
 
 
-	sign_in = () => {
-		fetch ("/signin", {
-			method: "post",
-			body: new FormData (document.getElementById ("signin_form")),
-			credentials: "same-origin"
-		}).then (response => response.json ()).then (info => {
+	sign_in = async eyecandy_panel => {
 
-			if (common.isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
+		let parameters = new FormData (document.getElementById ("signin_form"));
 
-			for (let key of get_keys (info)) {
-				localStorage.setItem (key, JSON.stringify (info [key]));
-			}// for;
+		await new Promise ((resolve, reject) => {
 
-			if (this.signed_in ()) {
+			fetch ("/signin", {
+				method: "post",
+				body: parameters,
+				credentials: "same-origin"
+			}).then (response => response.json ()).then (info => {
 
-				let companies = CompanyStorage.company_list ();
-				let ids = get_keys (companies);
+				if (isset (info?.error)) {
+					eyecandy_panel.contents = this.signin_button ();
+					this.error_panel.current.animate (this.error_message (bad_credentials));
+					return resolve ();
+				}// if;
 
-				if (common.isset (ids) && (ids.length == 1)) CompanyStorage.set_active_company (ids [0]);
+				if (isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
+
+				for (let key of get_keys (info)) {
+					localStorage.setItem (key, JSON.stringify (info [key]));
+				}// for;	
 				
-				this.context.master_page.setState ({
-					page: page_names.home,
-					company_id: CompanyStorage.active_company_id (),
-				});
+				if (this.signed_in ()) {
 
-				return globals.main.forceUpdate ();
+					let companies = CompanyStorage.company_list ();
+					let ids = get_keys (companies);
 
-			}// if;
+					if (isset (ids) && (ids.length == 1)) CompanyStorage.set_active_company (ids [0]);
+					
+					this.context.master_page.setState ({ company_id: CompanyStorage.active_company_id () });
+					this.context.master_page.set_page (page_names.home);
 
-			this.setState ({ 
-				eyecandy_visible: false,
-				error_message: bad_credentials
-			});
+					return globals.main.forceUpdate ();
+
+				}// if;
+
+				resolve ();
+
+			}).catch (reject);
 
 		});
+
 	}/* sign_in */;
 
 
@@ -87,24 +104,15 @@ export default class SigninPage extends BaseControl {
 
 
 	render () {
+		return <div id={this.props.id} className="shadow-box" style={{ alignSelf: "center" }}>
 
-		var parent = this.props.parent;
+			<ExplodingPanel id="signin_error" ref={this.error_panel} />
 
-		return (
+			<form id="signin_form" encType="multipart/form-data">
+				<div className="one-piece-form form-table">
 
-			<div id={this.props.id} className="shadow-box" style={{ alignSelf: "center" }}>
-
-				<ExplodingPanel id="signin_error">
-					<Container id="error_container" visible={not_empty (this.state.error_message)}>
-						<div id="signin_error_message">{this.state.error_message}</div>
-					</Container>
-				</ExplodingPanel>
-
-				<form id="signin_form" encType="multipart/form-data">
-					<div className="one-piece-form form-table">
-
-						<label htmlFor="email">Email</label>
-						<input id="email" name="email" type="text"
+					<label htmlFor="email">Email</label>
+					<input id="email" name="email" type="text"
 
 //defaultValue="betty@riverdale.edu"
 //defaultValue="rex@rogerlmain.com"
@@ -113,38 +121,39 @@ export default class SigninPage extends BaseControl {
 //defaultValue="rex@rexthestrange.com"
 //defaultValue="tastetestdude@gmail.com"
 
-						/>
+					/>
 
 
-						<label htmlFor="password">Password</label>
-						<div style={{display: 'flex', flexDirection: 'row'}}>
-							<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue="stranger" style={{ width: "100%" }} />
-							<img className="link-control" src={"resources/images/eyeball." + (this.state.password_visible ? "off" : "on") + ".svg"}
-								onClick={() => { this.setState ({ password_visible: !this.state.password_visible }); }}>
-							</img>
-						</div>
-
+					<label htmlFor="password">Password</label>
+					<div style={{display: 'flex', flexDirection: 'row'}}>
+						<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue="stranger" style={{ width: "100%" }} />
+						<img className="link-control" src={"resources/images/eyeball." + (this.state.password_visible ? "off" : "on") + ".svg"}
+							onClick={() => { this.setState ({ password_visible: !this.state.password_visible }); }}>
+						</img>
 					</div>
-				</form>
-
-				<div className="horizontally-spaced-out with-headspace">
-
-					<div className="aside">
-						<label style={{ marginRight: "0.5em" }}>New to RMPC Timelog?</label>
-						<a onClick={() => this.props.parent.setState ({ signing_up: true })}>Sign up</a>
-					</div>
-
-					<EyecandyPanel id="signin_eyecandy" text="Signing you in." eyecandyVisible={this.state.eyecandy_visible} onEyecandy={this.sign_in}>
-						<button onClick={() => this.setState ({ 
-							error_message: null,
-							eyecandy_visible: true 
-						})}>Sign in</button>
-					</EyecandyPanel>
 
 				</div>
+			</form>
+
+			<div className="horizontally-spaced-out with-headspace">
+
+				<div className="aside">
+					<label style={{ marginRight: "0.5em" }}>New to RMPC Timelog?</label>
+					<a onClick={this.props.parent.sign_up}>Sign up</a>
+				</div>
+
+				<EyecandyPanel id="signin_eyecandy" text="Signing you in." ref={this.eyecandy_panel} 
+				
+					stretchOnly={true} hAlign={horizontal_alignment.right}
+					eyecandyVisible={this.state.eyecandy_visible} onEyecandy={this.sign_in}>
+
+					{this.signin_button ()}
+
+				</EyecandyPanel>
 
 			</div>
-		);
+
+		</div>
 	}// render;
 
 }// SigninPage;

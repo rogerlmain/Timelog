@@ -1,8 +1,8 @@
-import * as constants from "classes/types/constants";
-import * as common from "classes/common";
+import * as constants from "client/classes/types/constants";
+import * as common from "client/classes/common";
 
 import React from "react";
-import BaseControl from "controls/abstract/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
 
 export const dynamic_input_classname = "dynamic-input";

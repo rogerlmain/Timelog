@@ -15,10 +15,11 @@ import PasswordForm from "client/forms/password.form";
 
 import AccountsModel from "client/classes/models/accounts.model";
 
-import { account_types, globals } from "classes/types/constants";
-import { get_keys, isset, is_null, nested_value, notify, not_empty, pause } from "classes/common";
+import { account_types, globals } from "client/classes/types/constants";
+import { get_keys, isset, is_null, nested_value, notify, not_empty, pause } from "client/classes/common";
 
 import user_image from "resources/images/guest.user.svg";
+import { resize_direction } from "client/controls/panels/resize.panel";
 
 
 const image_uploader_style = { 
@@ -94,7 +95,6 @@ export default class SignupPage extends BaseControl {
 
 
 	render () {
-
 		return <div id={this.props.id} className={`${this.signed_out () ? "shadow-box" : null} horizontally-centered`} style={{ alignSelf: "center" }}>
 
 			<PasswordForm visible={this.state.changing_password} />
@@ -120,7 +120,7 @@ export default class SignupPage extends BaseControl {
 
 			<form id="account_form" ref={this.account_form} encType="multipart/form-data">
 
-				<div className="two-piece-form with-lotsa-headspace">
+				<div className="two-piece-form">
 
 					<input id="account_id" name="account_id" type="hidden" defaultValue={AccountStorage.account_id ()} />
 
@@ -176,23 +176,25 @@ defaultValue="stranger" />
 			</form>
 
 			<div className="full-width with-headspace">
-				<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible} stretchOnly={true}
+				<div className={`${this.signed_in () ? "right-justified" : "horizontally-spaced-out"}`} style={{ columnGap: "0.5em" }}>
 
-					text={this.signed_in () ? "Saving your information" : "Creating your account"}
-					onEyecandy = {this.save_account}>
+					<Container visible={this.signed_in ()}>
+						<button onClick={() => this.setState ({ changing_password: true })}>Change password</button>
+					</Container>	
 
-					<div className={`${this.signed_in () ? "right-justified" : "horizontally-spaced-out"}`} style={{ columnGap: "0.5em" }}>
-
-						<Container visible={this.signed_in ()}>
-							<button onClick={() => this.setState ({ changing_password: true })}>Change password</button>
-						</Container>	
-
-						<Container visible={this.signed_out ()}>
+					<Container visible={this.signed_out ()}>
+						<FadePanel visible={!this.state.eyecandy_visible}>
 							<div className="aside">
 								<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
-								<a onClick={() => { this.props.parent.setState ({ signing_up: false }) }}>Sign in</a>
+								<a onClick={this.props.parent.sign_in}>Sign in</a>
 							</div>
-						</Container>
+						</FadePanel>
+					</Container>
+
+					<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible} stretchOnly={false}
+
+						text={this.signed_in () ? "Saving your information" : "Creating your account"}
+						onEyecandy = {this.save_account}>
 
 						<button onClick={() => { 
 
@@ -206,13 +208,12 @@ defaultValue="stranger" />
 
 						}}>{this.signed_out () ? "Sign up" : "Save changes"}</button>
 
-					</div>
-
-				</EyecandyPanel>
+					</EyecandyPanel>
+					
+				</div>
 			</div>
 
 		</div>
-
 	}// render;
 
 

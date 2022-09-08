@@ -1,14 +1,14 @@
 import React, { SyntheticEvent } from "react";
 
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 import { AccountData } from "types/datatypes";
 
-import BaseControl, { DefaultProps, DefaultState } from "controls/base.control";
+import BaseControl, { DefaultProps, DefaultState } from "client/controls/base.control";
 
-import ModularSelectList from "controls/modular.select.list";
-import SelectButton from "controls/buttons/select.button";
+import ModularSelectList from "client/controls/modular.select.list";
+import SelectButton from "client/controls/buttons/select.button";
 
-import ExplodingPanel from "controls/panels/exploding.panel";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 import AccountsModel from "models/accounts";
 

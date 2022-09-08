@@ -1,9 +1,9 @@
 import React from "react";
-import BaseControl from "controls/abstract/base.control";
-import NumberRangeInput from "controls/inputs/number.range.input";
+import BaseControl from "client/controls/abstract/base.control";
+import NumberRangeInput from "client/controls/inputs/number.range.input";
 
-import { blank } from "classes/types/constants";
-import { is_number, isset } from "classes/common";
+import { blank } from "client/classes/types/constants";
+import { is_number, isset } from "client/classes/common";
 
 import "resources/styles/controls/number.picker.css";
 

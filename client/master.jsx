@@ -5,11 +5,11 @@ import CompanyStorage from "client/classes/storage/company.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 import PermissionsStorage from "client/classes/storage/permissions.storage";
 
-import Container from "controls/container";
-import ThumbnailImage from "controls/thumbnail.image";
+import Container from "client/controls/container";
+import ThumbnailImage from "client/controls/thumbnail.image";
 
-import SelectButton from "controls/buttons/select.button";
-import ExplodingPanel from "controls/panels/exploding.panel";
+import SelectButton from "client/controls/buttons/select.button";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 import HomePage from "client/pages/home";
 import ClientsPage from "client/pages/clients";
@@ -29,12 +29,12 @@ import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/company.model";
 import OptionsModel from "client/classes/models/options.model";
 
-import { date_formats, globals } from "client/classes/types/constants";
+import { date_formats, globals, horizontal_alignment } from "client/classes/types/constants";
 import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, nested_value, not_set, numeric_value } from "client/classes/common";
 
-import { MasterContext } from "classes/types/contexts";
+import { MasterContext } from "client/classes/types/contexts";
 
-import logo from "resources/images/clock.png";
+import logo from "resources/images/bundy.png";
 import user_image from "resources/images/guest.user.svg";
 
 import "resources/styles/home.page.css";
@@ -108,24 +108,14 @@ export const page_names = {
 
 export default class MasterPanel extends BaseControl {
 
+	main_panel = React.createRef ();
 
 	state = {
+		signing_up: false,
 		eyecandy_visible: false,
 		eyecandy_callback: null,
-		page: page_names.home,
+		refresh: false,
 	}// state;
-
-
-	pages = {
-		[page_names.home]		: <HomePage parent={this} />,
-		[page_names.clients]	: <ClientsPage />,
-		[page_names.projects]	: <ProjectsPage />,
-		[page_names.logging]	: <LoggingPage />,
-		[page_names.reports]	: <ReportsPage />,
-		[page_names.team]		: <TeamPage />,
-		[page_names.account]	: <AccountPage parent={this.props.parent} />,
-		[page_names.settings]	: <SettingsPage />,	
-	}// pages;
 
 
 	master_pages = { 
@@ -153,23 +143,180 @@ export default class MasterPanel extends BaseControl {
 		id			: "master_page",
 		button_list	: null,
 		company_id	: null,
-		parent		: null
+		parent		: null,
 	}// defaultProps;
 
 
 	constructor (props) {
 
+		super (props);
+		
 		let company_list = CompanyStorage.company_list ();
 		let active_company = CompanyStorage.active_company_id ();
 
-		super (props);
-		
 		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
+
 		console.log ("creating master page");
 
 	}// constructor;
 
 
+	/********/
+
+
+	sign_in = () => this.setState ({ signing_up: false }, () => this.main_panel.current.animate (this.initial_page ()));
+	sign_up = () => this.setState ({ signing_up: true }, () => this.main_panel.current.animate (this.initial_page ()));
+
+
+	initial_page = () => {
+		if (this.signed_in ()) return this.get_page (page_names.home);
+		if (this.state.signing_up || isset (localStorage.getItem ("invitation"))) return <SignupPage parent={this} />
+		return <SigninPage parent={this} />
+	}/* initial_page */;
+
+
+	buttons_disabled () {
+		let company_list = CompanyStorage.company_list ();
+		if (is_empty (company_list) || (company_list.length == 1)) return false;
+		if (CompanyStorage.company_selected ()) return false;
+		return true;
+	}// buttons_disabled;
+
+
+	get_buttons () {
+		return new Promise (async (resolve, reject) => {
+
+			let result = null;
+
+			try {
+				for (let page_name in page_names) {
+
+					if (not_set (this.master_pages [page_name])) continue;
+
+
+					const nav_button = permission => {
+
+						let name = `${page_name}_button`;
+
+						if (!permission) return;
+						if (is_null (result)) result = [];
+
+						return <SelectButton id={name} name={name} key={name} page_name={name} selected={this.state.page == page_name}
+							disabled={this.buttons_disabled ()}
+							onClick={() => this.set_page (page_name)}> {/* () => this.setState ({ refresh: true }) */}
+
+							{this.master_pages [page_name].name}
+
+						</SelectButton>;
+
+					}/* create_button */;
+
+					
+					let permission = this.master_pages [page_name].permission;
+					let value = is_function (permission) ? permission () : permission;
+					let next_button = nav_button (is_promise (value) ? await (value) : value);
+
+					result.push (next_button);
+					
+				}// for;
+			} catch (error) { reject (error) }
+
+			resolve (result);
+
+		})// promise;
+	}// get_buttons;
+
+
+	select_company = (company_id, callback = null) => {
+		CompanyStorage.set_active_company (company_id);
+		this.setState ({ company_id: company_id}, callback);
+	}// select_company;
+
+
+	get_page = (page) => {
+		switch (page) {
+			case page_names.home		: return <HomePage parent={this} />;
+			case page_names.clients		: return <ClientsPage />;
+			case page_names.projects	: return <ProjectsPage />;
+			case page_names.logging		: return <LoggingPage />;
+			case page_names.reports		: return <ReportsPage />;
+			case page_names.team		: return <TeamPage />;
+			case page_names.account		: return <AccountPage parent={this.props.parent} />;
+			case page_names.settings	: return <SettingsPage />;
+		}// switch;
+	}// get_page;
+
+
+	set_page = page => this.main_panel.current.animate (this.get_page (page));
+
+
+	signout_button () {
+		return (
+			<SelectButton onClick={() => {
+				localStorage.clear ();
+				globals.main.forceUpdate ();
+			}}>Sign out</SelectButton>
+		);
+	}// signout_button;]
+
+
+	update_clock = () => {
+
+		let current_time = new Date ();
+		let target_time = new Date (current_time);
+
+		target_time.setSeconds (target_time.getSeconds () + 1);
+		target_time.setMilliseconds (0);
+
+		this.setState ({ current_time: current_time.format (OptionsStorage.truetime () ? date_formats.detailed_datetime : date_formats.short_detailed_datetime) });
+		setTimeout (this.update_clock.bind (this), target_time.getTime () - current_time.getTime ());
+
+	}// update_clock;
+
+
+	update_company_list = () => new Promise ((resolve, reject) => {
+		CompanyModel.get_companies ().then (companies => {
+
+			const resolve_all = () => {
+				if (processed == companies.length) return resolve ();
+				setTimeout (resolve_all);
+			}/* resolve_all */;
+	
+			let processed = 0;
+	
+			CompanyStorage.add_companies (companies);
+
+			companies.forEach (company => OptionsModel.get_options_by_company (company.company_id).then (options => {			
+				OptionsStorage.set_by_company_id (company.company_id, options);
+				processed++
+			}).catch (error => reject (error)));
+
+			resolve_all ();
+
+		}).catch (error => reject (error));
+	})// update_company_list;
+
+
+	/********/
+
+
+	shouldComponentUpdate (new_props, new_state) {
+		console.log ("testing component");
+		return true;
+	}
+
+
+	componentDidUpdate () {
+		if (this.signed_in ()) this.get_buttons ().then (result => this.updateState ({ button_list: result }));
+	}// componentDidMount;
+
+
+	componentDidMount () {
+//		this.update_clock ();
+		this.componentDidUpdate ();
+	}// componentDidMount;
+	
+	
 	/********/
 
 
@@ -225,194 +372,21 @@ export default class MasterPanel extends BaseControl {
 	}// CompanyHeader;
 	
 	
-	MainPanel = props => {
+	/********/
+	
 
+	render () {
 
-		const page_items = () => {
-	
-			let result = null;
-	
-			for (let [key, page] of Object.entries (props.master.pages)) {
-				let id = `${key}_container`;
-				if (is_null (result)) result = [];
-				result.push (<Container key={`${id}_key`} id={id} visible={props.master.state.page == key}>{page}</Container>);
-			}// for;
-	
-			return result;
-	
-		}/* page_items */;
-	
-	
+		let signed_in = this.signed_in ();
 		let icd = location.urlParameter ("icd");
-		let active_panel = "signin_panel";
-	
 	
 		if (isset (icd)) {
 			localStorage.setItem ("invitation", icd);
 			window.location.href = window.location.origin;
 			return null;
 		}// if;
-	
-	
-		active_panel = (props.signedIn ? "master_panel" : (props.master.state.signing_up || isset (localStorage.getItem ("invitation")) ? "signup_panel" : "signin_panel"));
-	
-	
-		return <div className="full-height horizontally-centered with-headspace" style={{ overflow: "hidden" }}>
-			<div style={this.viewer_style}>
-				<ExplodingPanel id="main_panel" stretchOnly={true} className="full-width">
-	
-					<Container id="master_panel_container" visible={active_panel == "master_panel"}>
-						<div className="full-size horizontally-aligned">
-							<ExplodingPanel id="details_panel" stretchOnly={true} className="full-width">
-								{page_items ()}
-							</ExplodingPanel>
-						</div>
-					</Container>
-	
-					<Container id="signup_panel_container" visible={active_panel == "signup_panel"}>
-						<div className="horizontally-centered">
-							<SignupPage parent={props.master} />
-						</div>
-					</Container>
-	
-					<Container id="signin_panel_container" visible={active_panel == "signin_panel"}>
-						<div className="horizontally-centered">
-							<SigninPage parent={props.master} />
-						</div>
-					</Container>
-	
-				</ExplodingPanel>
-			</div>
-		</div>
-	
-	}// MainPanel;
 
 
-	/********/
-
-
-	buttons_disabled () {
-		let company_list = CompanyStorage.company_list ();
-		if (is_empty (company_list) || (company_list.length == 1)) return false;
-		if (CompanyStorage.company_selected ()) return false;
-		return true;
-	}// buttons_disabled;
-
-
-	button_list () {
-		return new Promise (async (resolve, reject) => {
-
-			let result = null;
-
-			try {
-				for (let page_name in page_names) {
-
-					if (not_set (this.master_pages [page_name])) continue;
-
-
-					const nav_button = permission => {
-
-						let name = `${page_name}_button`;
-
-						if (!permission) return;
-						if (is_null (result)) result = [];
-
-						return <SelectButton id={name} name={name} key={name} page_name={name} selected={this.state.page == page_name}
-							disabled={this.buttons_disabled ()}
-							onClick={() => this.setState ({ page: page_name })}>
-
-							{this.master_pages [page_name].name}
-
-						</SelectButton>;
-
-					}/* create_button */;
-
-					
-					let permission = this.master_pages [page_name].permission;
-					let value = is_function (permission) ? permission () : permission;
-					let next_button = nav_button (is_promise (value) ? await (value) : value);
-
-					result.push (next_button);
-					
-				}// for;
-			} catch (error) { reject (error) }
-
-			resolve (result);
-
-		})// promise;
-	}// button_list;
-
-
-	select_company = (company_id, callback = null) => {
-		CompanyStorage.set_active_company (company_id);
-		this.setState ({ company_id: company_id}, callback);
-	}// select_company;
-
-
-	signout_button () {
-		return (
-			<SelectButton onClick={() => {
-				localStorage.clear ();
-				globals.main.forceUpdate ();
-			}}>Sign out</SelectButton>
-		);
-	}// signout_button;
-
-
-	update_clock = () => {
-
-		let current_time = new Date ();
-		let target_time = new Date (current_time);
-
-		target_time.setSeconds (target_time.getSeconds () + 1);
-		target_time.setMilliseconds (0);
-
-		this.setState ({ current_time: current_time.format (OptionsStorage.truetime () ? date_formats.detailed_datetime : date_formats.short_detailed_datetime) });
-		setTimeout (this.update_clock.bind (this), target_time.getTime () - current_time.getTime ());
-
-	}// update_clock;
-
-
-	update_company_list = () => new Promise ((resolve, reject) => {
-		CompanyModel.get_companies ().then (companies => {
-
-			const resolve_all = () => {
-				if (processed == companies.length) return resolve ();
-				setTimeout (resolve_all);
-			}/* resolve_all */;
-	
-			let processed = 0;
-	
-			CompanyStorage.add_companies (companies);
-
-			companies.forEach (company => OptionsModel.get_options_by_company (company.company_id).then (options => {			
-				OptionsStorage.set_by_company_id (company.company_id, options);
-				processed++
-			}).catch (error => reject (error)));
-
-			resolve_all ();
-
-		}).catch (error => reject (error));
-	})// update_company_list;
-
-
-	/********/
-
-
-	componentDidUpdate () {
-		if (this.signed_in ()) this.button_list ().then (result => this.updateState ({ button_list: result }));
-	}// componentDidMount;
-
-
-	componentDidMount () {
-		this.update_clock ();
-	}// componentDidMount;
-	
-	
-	render () {
-
-		let signed_in = this.signed_in ();
-		
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
 			<div className="vertically-spaced-out main-page">
 
@@ -422,10 +396,10 @@ export default class MasterPanel extends BaseControl {
 
 						<div className="two-column-grid">
 
-							<img src={logo} style={{ height: "3em" }} />
+							<img src={logo} style={{ height: "64px", width: "auto" }} />
 
 							<div className="program-title">
-								<div className="title">RMPC Timelog</div>
+								<div className="title">Bundyon Timeclock</div>
 								<div className="tagline">Make every second count</div>
 							</div>
 
@@ -433,7 +407,7 @@ export default class MasterPanel extends BaseControl {
 
 						<this.CompanyHeader signedIn={signed_in} currentTime={this.state.current_time}
 							onChange={event => this.select_company (event.target.value)}
-							changePage={new_page => this.setState ({ page: new_page })}>
+							changePage={new_page => this.set_page (new_page)}>
 						</this.CompanyHeader>
 
 					</div>
@@ -453,7 +427,11 @@ export default class MasterPanel extends BaseControl {
 
 				</div>
 
-				<this.MainPanel master={this} signedIn={signed_in} />
+				<div className="full-height horizontally-centered with-headspace" style={{ overflow: "hidden" }}>
+					<div style={this.viewer_style} className="horizontally-centered">
+						<ExplodingPanel ref={this.main_panel} id="main_panel" stretchOnly={true} vAlign="flex-start">{this.initial_page ()}</ExplodingPanel>
+					</div>
+				</div>
 
 				<div className="page-footer">
 					<div>&copy; Copyright 2022 - Roger Main Programming Company (RMPC) - All rights reserved</div>
@@ -462,6 +440,7 @@ export default class MasterPanel extends BaseControl {
 
 			</div>
 		</MasterContext.Provider>
+
 	}// render;
 
 }// MasterPanel;

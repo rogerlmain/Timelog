@@ -1,6 +1,6 @@
-import "classes/types/prototypes";
+import "client/classes/types/prototypes";
 import BaseControl from "client/controls/abstract/base.control";
-import { is_empty } from "classes/common";
+import { is_empty } from "client/classes/common";
 
 
 export default class FormControl extends BaseControl {

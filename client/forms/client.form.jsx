@@ -3,8 +3,8 @@ import * as constants from "client/classes/types/constants";
 
 import React from "react";
 
-import FormControl from "controls/form.control";
-import Container from "controls/container";
+import FormControl from "client/controls/form.control";
+import Container from "client/controls/container";
 import CurrencyInput from "client/controls/inputs/currency.input";
 import FadePanel from "client/controls/panels/fade.panel";
 
@@ -15,8 +15,8 @@ import ClientModel from "client/classes/models/client.model";
 
 import RateSubform from "client/forms/subforms/rate.subform";
 
-import { SmallProgressMeter } from "controls/progress.meter";
-import { MasterContext } from "classes/types/contexts";
+import { SmallProgressMeter } from "client/controls/progress.meter";
+import { MasterContext } from "client/classes/types/contexts";
 
 
 import "resources/styles/forms.css";
@@ -108,7 +108,7 @@ export default class ClientForm extends FormControl {
 		let client_id = this.client_data ("client_id");
 		let billing_option = OptionsStorage.can_bill ();
 
-		return <Container>
+		return <div>
 
 			<form id="client_form" ref={this.client_form}>
 
@@ -150,7 +150,7 @@ export default class ClientForm extends FormControl {
 
 			</div>
 
-		</Container>
+		</div>
 		
 	}// render;
 

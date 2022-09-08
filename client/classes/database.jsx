@@ -1,7 +1,7 @@
 import ActivityLog from "client/classes/activity.log";
 import AccountStorage from "client/classes/storage/account.storage";
 
-import { isset, not_null } from "classes/common";
+import { isset, not_null } from "client/classes/common";
 
 
 export default class Database {

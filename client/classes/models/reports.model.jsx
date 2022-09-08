@@ -1,5 +1,5 @@
-import BaseControl from "controls/abstract/base.control";
-import Database from "classes/database";
+import BaseControl from "client/controls/abstract/base.control";
+import Database from "client/classes/database";
 
 
 const table = "reports";

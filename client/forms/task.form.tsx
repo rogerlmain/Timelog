@@ -1,11 +1,11 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 import * as constants from "types/constants";
 
-import FormControl from "controls/form.control";
+import FormControl from "client/controls/form.control";
 import React from "react";
 import DatePicker from "react-datepicker";
 
-import { DefaultProps, DefaultState } from "controls/base.control";
+import { DefaultProps, DefaultState } from "client/controls/base.control";
 import { TaskData } from "types/datatypes";
 
 

@@ -1,4 +1,4 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
 
 export default class DataModel {

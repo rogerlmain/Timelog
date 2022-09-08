@@ -1,7 +1,7 @@
 import React from "react";
 
-import Container from "controls/container";
-import BaseControl from "controls/abstract/base.control";
+import Container from "client/controls/container";
+import BaseControl from "client/controls/abstract/base.control";
 
 import SettingsStorage from "client/classes/storage/settings.storage";
 import ThumbnailImage from "../thumbnail.image";

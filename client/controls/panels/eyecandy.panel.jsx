@@ -1,14 +1,10 @@
 import React from "react";
 
-import BaseControl from "controls/abstract/base.control";
-import SlideshowPanel from "controls/panels/slideshow.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
 
-import { eyecandy_images } from "classes/types/constants";
-import { is_null, nested_value } from "classes/common";
-
-
-const eyecandy_index = 1;
-const contents_index = 2;
+import { eyecandy_images, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
+import { is_null } from "client/classes/common";
 
 
 export const eyecandy_sizes = {
@@ -19,9 +15,11 @@ export const eyecandy_sizes = {
 
 export default class EyecandyPanel extends BaseControl {
 
+	contents = null;
 
-	item_container = React.createRef ();
-	slideshow_panel = React.createRef ();
+	eyecandy_panel = React.createRef ();
+
+	state = { eyecandy_visible: false }
 
 
 	static defaultProps = { 
@@ -33,8 +31,10 @@ export default class EyecandyPanel extends BaseControl {
 
 		text: null,
 
+		hAlign: horizontal_alignment.center,
+		vAlign: vertical_alignment.middle,
+
 		eyecandySize: eyecandy_sizes.small,
-		eyecandyVisible: false,
 
 		onEyecandy: null,
 		onContents: null,
@@ -45,44 +45,45 @@ export default class EyecandyPanel extends BaseControl {
 	/********/
 
 
-	forceResize = () => this.slideshow_panel.current.forceResize ();
+	eyecandy_style = () => { return {
+		display: (this.state.eyecandy_visible ? "inline-flex" : "none"),
+		flexDirection: "row", 
+		alignItems: "center",
+		...this.props.eyecandyStyle,
+	}}/* eyecandy_style */;
 
 
-	/********/
+	eyecandy = () => <div id={`${this.props.id}_eyecandy`} style={this.eyecandy_style ()}>
+		<img src={eyecandy_images [this.props.eyecandySize]} style={{ marginRight: "0.5em", alignSelf: "center" }} />
+		{this.props.text}
+	</div>
+
+
+	animate = contents => {
+		this.contents = contents;
+		this.setState ({ eyecandy_visible: true }, () => this.eyecandy_panel.current.animate (this.eyecandy ()));
+	}/* animate */;
 
 
 	render () {
 
 		if (is_null (this.props.id)) throw ("Eyecandy requires an ID");
 
-		let eyecandy_style = {
-			display: "flex",
-			flexDirection: "row", 
-			minHeight: nested_value (this, "item_container", "current", "offsetHeight"),
-			alignItems: "center",
-			...this.props.eyecandyStyle
-		}// eyecandy_style;
-
-		let index = (this.props.eyecandyVisible) ? eyecandy_index : contents_index;
 		let id = `${this.props.id}_eyecandy_panel`;
 
-		return <SlideshowPanel id={id} ref={this.slideshow_panel} index={index} speed={this.animation_speed ()} stretchOnly={this.props.stretchOnly}
+		return <ExplodingPanel id={id} ref={this.eyecandy_panel} speed={this.animation_speed ()} stretchOnly={this.props.stretchOnly} hAlign={this.props.hAlign} vAlign={this.props.vAlign}
 
 			beforeChanging={() => this.execute (this.props.beforeChanging)}
 
 			afterChanging={() => {
-				this.execute ((index == eyecandy_index) ? this.props.onEyecandy : this.props.onContents);
-				this.execute (this.props.afterChanging);
+				if (this.state.eyecandy_visible) {
+					this.execute (this.props.onEyecandy, this).then (() => this.setState ({ eyecandy_visible: false }, () => this.eyecandy_panel.current.animate (this.contents)));
+				}
 			}}>
 
-			<div id={`${id}_eyecandy`} style={eyecandy_style}>
-				<img src={eyecandy_images [this.props.eyecandySize]} style={{ marginRight: "0.5em", alignSelf: "center" }} />
-				{this.props.text}
-			</div>
+			<div id={`${id}_container`} style={{ display: (this.state.eyecandy_visible ? "none" : "inline-flex") }}>{this.props.children}</div>
 
-			<div id={`${id}_container`} ref={this.item_container}>{this.props.children}</div>
-
-		</SlideshowPanel>
+		</ExplodingPanel>
 
 	}// render;
 

@@ -10,7 +10,7 @@ import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 import ClientSelector from "client/controls/selectors/client.selector";
 
-import { isset, integer_value, nested_value, not_set } from "classes/common";
+import { isset, integer_value, nested_value, not_set } from "client/classes/common";
 import { page_names } from "client/master";
 import { tracing } from "client/classes/types/constants";
 

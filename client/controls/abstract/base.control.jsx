@@ -1,13 +1,14 @@
-import * as constants from "classes/types/constants";
-import * as common from "classes/common";
+import * as constants from "client/classes/types/constants";
+import * as common from "client/classes/common";
 
 import React from "react";
+import ReactDOMServer from "react-dom/server";
 
 import ActivityLog from "client/classes/activity.log";
 import SettingsStorage from "client/classes/storage/settings.storage";
 
-import { default_settings } from "classes/types/constants";
-import { isset, is_null, get_keys, is_array, jsonify } from "classes/common";
+import { default_settings } from "client/classes/types/constants";
+import { isset, is_null, get_keys, is_array, jsonify } from "client/classes/common";
 
 
 const random_factor = 1000;
@@ -28,19 +29,68 @@ export default class BaseControl extends React.Component {
 	animation_speed = () => { return this.props.speed ?? SettingsStorage.animation_speed () ?? default_settings.animation_speed }
 	transition_style = (property) => { return `${property} ${SettingsStorage.animation_speed ()}ms ease-in-out` }
 
-	children = props => { return is_array (props.children) ? props.children : isset (props.children) ? [props.children] : null }
 	context_item = (name) => { return isset (this.context) ? this.context [name] : null }
 	current_entry = ()  => { return JSON.parse (localStorage.getItem ("current_entry")) }
 
-	different_element  (first_element, second_element) { return !this.same_element (first_element, second_element) }
-	same_element (first_element, second_element) { return jsonify (first_element == jsonify (second_element)) }
-	
+	same_elements (first_element, second_element) { return ReactDOMServer.renderToString (first_element).equals (ReactDOMServer.renderToString (second_element)) };
+	same_objects (first_element, second_element) { return (jsonify (first_element) == jsonify (second_element)) }
+
+	same_parents (first_element, second_element) { 
+
+		const lead_tag = element => {
+
+			let dom_string = ReactDOMServer.renderToString (element);
+			let dom_element = new DOMParser ().parseFromString (dom_string, "text/html")?.body?.children [0];
+
+			let result = isset (dom_element) ? (dom_element.innerHTML ? dom_element.outerHTML.slice (0, dom_element.outerHTML.indexOf (dom_element.innerHTML)) : dom_element.outerHTML) : null;
+
+			return result;
+
+		}/* lead_tag */;
+
+		return lead_tag (first_element) == lead_tag (second_element);
+
+	}// same_parents;
+
+
+	different_elements (first_element, second_element) { return !this.same_elements (first_element, second_element) }
+	different_objects  (first_element, second_element) { return !this.same_objects (first_element, second_element) }
+	different_parents (first_element, second_element) { return !this.same_parents (first_element, second_element) }
+
 
 	// Like forceUpdate except calls shouldComponentUpdate
-	forceRefresh = (callback = null) => { this.setState (this.state, callback) }
+	forceRefresh = (callback = null) => { 
+		
+//		let children = Array.arrayify (this.props.children);
+
+		this.setState (this.state, callback);
+//		if (children) children.forEach (child => child?.forceRefresh ());
+	
+	}
+
+
+	renderState = (new_state, callback) => this.setState (new_state, () => this.forceUpdate (callback));
+
 
 	// Like setState but doesn't update if states match 
-	updateState = (new_state, callback) => { if (!jsonify (this.state).matches (jsonify (new_state))) this.setState (new_state, callback) }
+	updateState = (new_state, callback) => { 
+
+		let update_required = false;
+
+		for (let key of Object.keys (new_state)) {
+
+			let state_item = this.state [key];
+			let new_item = new_state [key];
+
+			if (jsonify (state_item) != jsonify (new_item)) {
+				update_required = true;
+				break;
+			}// if;
+
+		}// for;
+
+		if (update_required) this.setState (new_state, callback);
+	}// update_state;
 
 
 	filtered_properties = (...used_properties) => {
@@ -97,10 +147,10 @@ export default class BaseControl extends React.Component {
 	run (method, ...parameters) { return (common.is_function (method)) ? method (...parameters) : null }
 
 
-	id_badge (stub = null) {
-		if (is_null (stub)) stub = this.constructor.name;
-		return this.props.id ?? stub + constants.underscore + Date.now ();
-	}// id_badge;
+	get_id (control) {
+		if (is_null (control) || is_null (control?.props?.id)) return `control_${Date.now ()}`;
+		return `${control.props.id}_${Date.now ()}`;
+	}// get_id;
 
 
 	inherited_properties () {
@@ -262,7 +312,7 @@ export default class BaseControl extends React.Component {
 		if (parent_only) return true;
 		if (common.not_set (children)) return true;
 
-		if (!Array.isArray (children)) children = [children];
+		if (Array.arrayify (children)) children = [children];
 		children.map (child => { if (isset (child.props) && common.not_set (child.props.id)) throw `${control} (${props.id}) child (${child.type.name}) must have a unique ID` });
 
 	}// validate_ids;
@@ -272,6 +322,15 @@ export default class BaseControl extends React.Component {
 
 
 	shouldComponentUpdate (new_props, new_state, new_context) {
+
+		let xx = jsonify (new_props);
+		let yx = jsonify (new_state);
+		let zx = jsonify (new_context);
+		let ax = jsonify (this.props);
+		let bx = jsonify (this.state);
+		let cx = jsonify (this.context);
+
+
 		if (jsonify (this.props) != jsonify (new_props)) return true;
 		if (jsonify (this.state) != jsonify (new_state)) return true;
 		if (jsonify (this.context) != jsonify (new_context)) return true;

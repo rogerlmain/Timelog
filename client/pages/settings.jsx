@@ -1,4 +1,4 @@
-import * as constants from "classes/types/constants";
+import * as constants from "client/classes/types/constants";
 
 import React from "react";
 
@@ -26,13 +26,14 @@ import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
 import OptionToggle from "pages/gadgets/toggles/option.toggle";
 
-import { blank, option_types } from "classes/types/constants";
-import { debugging, get_key, get_keys, isset, is_null, nested_value, not_set } from "classes/common";
+import { account_types, blank, date_rounding } from "client/classes/types/constants";
+import { option_type, deadbeat_options, option_types } from "client/classes/types/options";
+import { debugging, get_key, get_keys, isset, is_null, nested_value, not_set } from "client/classes/common";
 
-import { resize_direction } from "controls/panels/resize.panel";
+import { resize_direction } from "client/controls/panels/resize.panel";
 import { client_limit_options } from "pages/clients";
 
-import { MasterContext } from "classes/types/contexts";
+import { MasterContext } from "client/classes/types/contexts";
 
 import { Break } from "client/controls/html/components";
 
@@ -56,7 +57,7 @@ export default class SettingsPage extends BaseControl {
 
 	state = { 
 
-		account_type: constants.account_types.deadbeat,
+		account_type: account_types.deadbeat,
 
 		granularity: 1,
 		client_limit: 1,
@@ -65,8 +66,8 @@ export default class SettingsPage extends BaseControl {
 		billing_option: toggled.false,
 		rounding_option: toggled.false,
 
-		start_rounding: constants.date_rounding.off,
-		end_rounding: constants.date_rounding.off,
+		start_rounding: date_rounding.off,
+		end_rounding: date_rounding.off,
 
 		current_panel: options_panels.account_options,
 
@@ -90,9 +91,9 @@ export default class SettingsPage extends BaseControl {
 
 		let options = null;
 
-		get_keys (constants.account_types).map (key => {
+		get_keys (account_types).map (key => {
 
-			let next_item = <option key={`${key}_option`} value={constants.account_types [key]}>{key.titled ()}</option>
+			let next_item = <option key={`${key}_option`} value={account_types [key]}>{key.titled ()}</option>
 			if (is_null (options)) options = new Array ();
 			options.push (next_item);
 
@@ -131,7 +132,7 @@ export default class SettingsPage extends BaseControl {
 		
 		let option_value = option => { 
 			if (isset (options) && isset (options [option])) return parseInt (options [option]);
-			return constants.deadbeat_options [get_key (option_types, option)];
+			return deadbeat_options [get_key (option_types, option)];
 		}/* option_value */;
 
 		let settings = null;
@@ -174,8 +175,8 @@ export default class SettingsPage extends BaseControl {
 			option={option_types.granularity} parent={this} 
 			onPaymentConfirmed={selected_option => {
 				this.set_option (option_types.granularity, selected_option).then (() => this.setState ({
-					start_rounding: constants.date_rounding.off,
-					end_rounding: constants.date_rounding.off,
+					start_rounding: date_rounding.off,
+					end_rounding: date_rounding.off,
 					granularity: selected_option
 				}, this.context.master_page.forceRefresh));
 			}}>
@@ -292,7 +293,7 @@ export default class SettingsPage extends BaseControl {
 
 			<div className="full-row horizontally-aligned" style={{ display: "flex", margin: "1em 0 2em" }}>
 				<div className="one-piece-form">
-					<label htmlFor="package">{get_key (constants.account_types, this.state.account_type).titled ()} account</label>
+					<label htmlFor="package">{get_key (account_types, this.state.account_type).titled ()} account</label>
 					<ToggleSwitch id="package" onChange={option => this.setState ({ account_type: parseInt (option) })}>{this.account_options ()}</ToggleSwitch>
 				</div>
 			</div>

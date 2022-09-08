@@ -1,6 +1,6 @@
-import LocalStorage from "classes/local.storage"
+import LocalStorage from "client/classes/local.storage"
 
-import { isset, get_values, is_null, nested_value, not_array, not_set } from "classes/common";
+import { isset, get_values, is_null, nested_value, not_array, not_set } from "client/classes/common";
 
 
 const store_name = "companies";

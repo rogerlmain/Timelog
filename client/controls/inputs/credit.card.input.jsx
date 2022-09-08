@@ -1,12 +1,12 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
 import React from "react";
 import InputMask from "react-input-mask";
 
-import InputControl from "controls/abstract/input.control";
-import ExplodingPanel from "controls/panels/exploding.panel";
+import InputControl from "client/controls/abstract/input.control";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
 
-import { get_keys, get_values } from "classes/common";
+import { get_keys, get_values } from "client/classes/common";
 
 
 /// DEPRECATED! - DO NOT USE - FOR CANNIBALIZATION ONLY!!!

@@ -1,6 +1,6 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
-import { is_array, is_object, is_empty, get_keys } from "classes/common";
+import { is_array, is_object, is_empty, get_keys } from "client/classes/common";
 
 
 export default class LocalStorage {

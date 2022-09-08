@@ -173,8 +173,13 @@ export function decode_string (input_string) {
 }// decode_string;
 
 
-export function dimensions (object) {
+/********/
+
+
+export function actual_size (object) {
+
 	let result = null;
+
 	if (isset (object)) {
 		let current_style = {
 			visibility: object.style.visibility,
@@ -182,15 +187,27 @@ export function dimensions (object) {
 		}// current_style;
 		object.style.visibility = "hidden";
 		object.style.display = null;
-		result = {
-			width: object.offsetWidth,
-			height: object.offsetHeight
-		}// result;
+		result = control_size (object);
 		object.style.display = current_style.display;
 		object.style.visibility = current_style.visibility;
 		return result;
 	}// if;
-}// dimensions;
+
+}// actual_size;
+
+
+export function same_size (first_size, second_size) {
+	if (not_object (first_size) || not_object (second_size)) return false;
+	if (first_size.width != second_size.width) return false;
+	if (first_size.height != second_size.height) return false;
+	return true;
+}// same_size;
+
+
+export const different_sizes = (first_size, second_size) => !same_size (first_size, second_size);
+
+
+/********/
 
 
 export function exists (object, ...methods) {

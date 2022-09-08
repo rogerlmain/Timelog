@@ -1,174 +1,106 @@
 import React from "react";
 
-
 import BaseControl from "client/controls/abstract/base.control";
 import FadePanel from "client/controls/panels/fade.panel";
+import ResizePanel, { resize_direction } from "client/controls/panels/resize.panel";
 
-import ResizePanel, { resize_state, resize_direction } from "client/controls/panels/resize.panel";
-
-import { isset, is_null, nested_value, not_array, not_empty } from "client/classes/common";
-import { tracing } from "client/classes/types/constants";
+import { empty_cell, horizontal_alignment, tracing, vertical_alignment } from "client/classes/types/constants";
 
 
 export default class ExplodingPanel extends BaseControl {
 
 
+	contents = null;
+
+
+	fade_panel = React.createRef ();
+	resize_panel = React.createRef ();
+
+
 	state = {
 
-		children: null,
-
-		resize: resize_state.false,
-		resize_static: false,
-
-		animate: false,
+		animating: false,
 		visible: true,
+
+		selected_index: 1,
 
 	}// state;
 
 
-	transitioning = false;
-
-
 	static defaultProps = {
 
-		id: null,
+		hAlign: horizontal_alignment.center,
+		vAlign: vertical_alignment.middle,
 
+		contents: null,
+		direction: resize_direction.both,
 		speed: null,
 
-		stretchOnly: false,
-		direction: resize_direction.both,
-
-		beforeShowing: null,
-		beforeHiding: null,
-
-		afterShowing: null,
-		afterHiding: null
+		afterChanging: null,
 
 	}// ExplodingPanelProps;
 
 
 	constructor (props) {
-
 		super (props);
-
-		this.validate_ids (props);
-		this.validate_children (props.children);
-
 		if (tracing) console.log (`exploding panel ${this.props.id} created`);
-
+		this.state.contents = this.props.children;
 	}// constructor;
 
 
 	/********/
 
 
-	forceResize = () => this.setState ({ resize: this.props.animate ? resize_state.animate : resize_state.true });
+	animate = contents => {
+		if (this.state.animating) return setTimeout (() => this.animate (contents));
+		this.contents = contents ?? empty_cell;
+		this.setState ({ animating: true });
+	}// animate;
 
 
 	/********/
 
 
-	load_contents = (new_children) => {
+	shouldComponentUpdate (new_props, new_state) {
 
-		const run_animation = () => {
-			if (this.state.children != new_children) return setTimeout (run_animation);
-			this.forceResize ();
-		}// run_animation;
-
-		this.transitioning = false;
-
-		this.setState ({ children: new_children }, run_animation);
-
-	}// load_contents;
-
-
-	validate_children = children => {
-		if (not_array (children)) children = [children];
-		for (let child of children) {
-			if (is_null (child)) continue;
-			if (child?.type?.name != "Container") throw `Exploding panel can only contain Container objects: ${child.constructor.name} found (id: ${this.props.id})`;
-		}// for;
-		this.state.children = this.props.children;
-	}/* validate_children */;
-
-
-	/********/
-
-
-	componentDidMount () { this.setState ({ animate: true }) }
-
-
-	shouldComponentUpdate (new_props) {
-
-		let updated = false;
-		let current_children = this.children (this.props);
-		let next_children = this.children (new_props);
-
-		if (not_empty (current_children)) {
-			for (let next_child of next_children) {
-
-				let current_child = current_children.find (child => child.props.id == next_child.props.id);
-
-				if (current_child.props.visible != next_child.props.visible) {
-					updated = true;
-					break;
-				}// if;
-				
-			}// for;
-		}// if;
-
-		if (this.transitioning) return is_null (setTimeout (() => this.forceUpdate ()));
-
-		if ((updated) && (this.state.visible)) {
-			this.transitioning = true; 
-			this.setState ({ visible: false }); 
+		if (this.state.animating) {
+			if (!new_state.animating) setTimeout (this.forceRefresh);
 			return false;
 		}// if;
 
- 		return true; 
+		if (new_state.animating) return !!this.renderState ({ visible: false });
+		return true;
 
   	}// shouldComponentUpdate;
 
 
 	render () {
 
-		let target_speed = Math.floor (this.animation_speed () / 2);
+		let speed = Math.floor ((this.props.speed ?? this.animation_speed ()) / 3);
 
-		let has_width = ((this.props.direction == resize_direction.vertical) && (isset (nested_value (this.props.style, "width"))));
-		let has_height = ((this.props.direction == resize_direction.horizontal) && (isset (nested_value (this.props.style, "height"))));
+		let fade_panel_id = `${this.props.id ?? `exploding_panel_${Date.now ()}`}_fade_panel`;
+		let resize_panel_id = `${this.props.id ?? `exploding_panel_${Date.now ()}`}_resize_panel`;
 
-		let panel_style = has_width ? { width: this.props.style.width } : (has_height ? { height: this.props.style.height } : null);
+		return <FadePanel id={fade_panel_id} key={fade_panel_id} ref={this.fade_panel} visible={this.state.visible} speed={speed}
 
-		return <FadePanel id={`${this.props.id}_exploding_panel_fade_panel`} speed={target_speed} animated={this.state.animate} 
-
-			visible={this.state.visible} style={panel_style}
-
-			beforeHiding={this.props.beforeHiding}
+			afterHiding={() => this.resize_panel.current.animate (this.contents)}
 
 			afterShowing={() => {
-				this.transitioning = false;
-				this.execute (this.props.afterShowing);
-			}}// afterShowing;
-
-			afterHiding={() => {
-				this.load_contents (this.props.children);
-				this.execute (this.props.afterHiding);
+				this.state.animating = false;
+				this.execute (this.props.afterChanging);
 			}}>
-
-			<ResizePanel id={`${this.props.id}_exploding_panel_resize_panel`} parent={this}
+				
+			<ResizePanel id={resize_panel_id} key={resize_panel_id} ref={this.resize_panel} stretchOnly={this.props.stretchOnly} hAlign={this.props.hAlign} vAlign={this.props.vAlign}
 			
-					direction={this.props.direction} speed={target_speed} style={panel_style}
-					resize={this.state.resize} stretchOnly={this.props.stretchOnly} static={this.state.resize_static}
-
-					beforeResizing={() => this.execute (this.props.beforeShowing)}
-					afterResizing={() => this.setState ({ visible: isset (this.state.children) })}>
-
-					{this.transitioning ? this.state.children : this.props.children}
+				speed={speed} alignment={this.props.alignment} direction={this.props.direction}
+				afterResizing={() => this.renderState ({ visible: true })}>
+					
+				{this.state.contents}
 
 			</ResizePanel>
 
 		</FadePanel>
-
+	
 	}// render;
 
 

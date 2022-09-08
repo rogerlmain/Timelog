@@ -1,10 +1,10 @@
-import CompanyStorage from "classes/storage/company.storage";
-import LocalStorage from "classes/local.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
+import LocalStorage from "client/classes/local.storage";
 
 import ClientModel from "client/classes/models/client.model";
 
-import { stores } from "classes/types/constants";
-import { isset, not_set, not_empty, nested_value, nulled } from "classes/common";
+import { stores } from "client/classes/types/constants";
+import { isset, not_set, not_empty, nested_value, nulled } from "client/classes/common";
 
 
 const store_name = stores.clients;

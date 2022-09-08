@@ -1,9 +1,9 @@
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
 import React from "react";
 
-import BaseControl from "controls/abstract/base.control";
-import EyecandyPanel, { eyecandy_sizes } from "controls/panels/eyecandy.panel";
+import BaseControl from "client/controls/abstract/base.control";
+import EyecandyPanel, { eyecandy_sizes } from "client/controls/panels/eyecandy.panel";
 
 import CompanyCardModel from "client/classes/models/company.cards.model";
 import PricingModel from "client/classes/models/pricing.model";

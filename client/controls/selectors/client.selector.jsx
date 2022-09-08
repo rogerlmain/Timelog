@@ -10,7 +10,7 @@ import LoadList from "client/controls/lists/load.list";
 import Container from "client/controls/container";
 
 import { integer_value } from "client/classes/common";
-import { master_pages, page_names } from "client/master";
+import { page_names } from "client/master";
 import { tracing } from "client/classes/types/constants";
 
 

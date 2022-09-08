@@ -1,7 +1,7 @@
 import React from "react";
-import BaseControl from "controls/abstract/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
-import { is_null } from "classes/common";
+import { is_null } from "client/classes/common";
 
 
 // Companion piece to ToggleSwitch - requires a ToggleSwitch to be meaningful

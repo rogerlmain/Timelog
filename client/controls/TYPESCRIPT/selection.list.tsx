@@ -1,9 +1,9 @@
 import React from "react";
 
-import * as common from "classes/common";
+import * as common from "client/classes/common";
 
-import BaseControl, { DefaultProps } from "controls/base.control";
-import ExplodingPanel from "controls/panels/exploding.panel";
+import BaseControl, { DefaultProps } from "client/controls/base.control";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 
 interface selectionListProps extends DefaultProps {

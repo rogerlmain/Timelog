@@ -1,4 +1,4 @@
-import Database from "classes/database";
+import Database from "client/classes/database";
 
 
 const table = "clients";

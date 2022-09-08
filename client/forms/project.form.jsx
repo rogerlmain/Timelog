@@ -2,19 +2,19 @@ import React from "react";
 
 import ProjectStorage from "client/classes/storage/project.storage";
 
-import FormControl from "controls/form.control";
-import Container from "controls/container";
+import FormControl from "client/controls/form.control";
+import Container from "client/controls/container";
 
-import AlphaCapitalInput from "controls/inputs/alpha.capital.input";
-import FadePanel from "controls/panels/fade.panel";
+import AlphaCapitalInput from "client/controls/inputs/alpha.capital.input";
+import FadePanel from "client/controls/panels/fade.panel";
 
 import RateSubform from "client/forms/subforms/rate.subform";
 
-import { blank, space, horizontal_alignment } from "classes/types/constants";
-import { nested_value, isset  } from "classes/common";
+import { blank, space, horizontal_alignment } from "client/classes/types/constants";
+import { nested_value, isset  } from "client/classes/common";
 
-import { SmallProgressMeter } from "controls/progress.meter";
-import { MasterContext } from "classes/types/contexts";
+import { SmallProgressMeter } from "client/controls/progress.meter";
+import { MasterContext } from "client/classes/types/contexts";
 
 
 import "resources/styles/forms.css"
