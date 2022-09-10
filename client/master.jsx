@@ -108,13 +108,18 @@ export const page_names = {
 
 export default class MasterPanel extends BaseControl {
 
+
+	button_panel = React.createRef ();
 	main_panel = React.createRef ();
+	user_data_panel = React.createRef ();
+
 
 	state = {
 		signing_up: false,
 		eyecandy_visible: false,
 		eyecandy_callback: null,
 		refresh: false,
+		user: null,
 	}// state;
 
 
@@ -134,8 +139,8 @@ export default class MasterPanel extends BaseControl {
 		height: "100%", 
 		overflowY: "auto",
 	}// viewer_style;
-	
-	
+
+
 	static contextType = MasterContext;
 
 
@@ -164,15 +169,15 @@ export default class MasterPanel extends BaseControl {
 	/********/
 
 
-	sign_in = () => this.setState ({ signing_up: false }, () => this.main_panel.current.animate (this.initial_page ()));
-	sign_up = () => this.setState ({ signing_up: true }, () => this.main_panel.current.animate (this.initial_page ()));
+	sign_in = () => this.setState ({ signing_up: false }, () => this.main_panel.current.animate (this.contents ()));
+	sign_up = () => this.setState ({ signing_up: true }, () => this.main_panel.current.animate (this.contents ()));
 
 
-	initial_page = () => {
+	contents = () => {
 		if (this.signed_in ()) return this.get_page (page_names.home);
 		if (this.state.signing_up || isset (localStorage.getItem ("invitation"))) return <SignupPage parent={this} />
 		return <SigninPage parent={this} />
-	}/* initial_page */;
+	}/* contents */;
 
 
 	buttons_disabled () {
@@ -181,6 +186,13 @@ export default class MasterPanel extends BaseControl {
 		if (CompanyStorage.company_selected ()) return false;
 		return true;
 	}// buttons_disabled;
+
+
+	test_button = () => <SelectButton key="test_button" onClick={() => { 
+	
+		alert ("waiting for something to test") 
+		
+	}}>TEST</SelectButton>;
 
 
 	get_buttons () {
@@ -203,7 +215,7 @@ export default class MasterPanel extends BaseControl {
 
 						return <SelectButton id={name} name={name} key={name} page_name={name} selected={this.state.page == page_name}
 							disabled={this.buttons_disabled ()}
-							onClick={() => this.set_page (page_name)}> {/* () => this.setState ({ refresh: true }) */}
+							onClick={() => this.set_page (page_name)}>
 
 							{this.master_pages [page_name].name}
 
@@ -219,6 +231,10 @@ export default class MasterPanel extends BaseControl {
 					result.push (next_button);
 					
 				}// for;
+
+				result.push (this.signout_button ());
+				if (debugging ()) result.push (this.test_button ());
+
 			} catch (error) { reject (error) }
 
 			resolve (result);
@@ -251,12 +267,19 @@ export default class MasterPanel extends BaseControl {
 
 
 	signout_button () {
-		return (
-			<SelectButton onClick={() => {
+		return <SelectButton key="signout_button" 
+
+			onClick={() => {
 				localStorage.clear ();
-				globals.main.forceUpdate ();
-			}}>Sign out</SelectButton>
-		);
+				this.setState ({ company_id: null });
+				this.button_panel.current.animate ();
+				this.user_data_panel.current.animate ();
+				this.main_panel.current.animate (this.contents ());
+			}}>
+				
+			Sign out
+			
+		</SelectButton>
 	}// signout_button;]
 
 
@@ -300,19 +323,16 @@ export default class MasterPanel extends BaseControl {
 	/********/
 
 
-	shouldComponentUpdate (new_props, new_state) {
-		console.log ("testing component");
-		return true;
-	}
-
-
 	componentDidUpdate () {
-		if (this.signed_in ()) this.get_buttons ().then (result => this.updateState ({ button_list: result }));
+		if (this.signed_in ()) {
+			this.get_buttons ().then (result => this.button_panel.current.animate (result));
+			setTimeout (() => this.user_data_panel.current.animate (this.user_data ()));
+		}// if;
 	}// componentDidMount;
 
 
 	componentDidMount () {
-//		this.update_clock ();
+		if (!(debugging ())) this.update_clock ();
 		this.componentDidUpdate ();
 	}// componentDidMount;
 	
@@ -320,15 +340,16 @@ export default class MasterPanel extends BaseControl {
 	/********/
 
 
-	CompanyHeader = props => {
+	user_data = () => {
 
 		let companies = CompanyStorage.company_list ();
+		let signed_in = this.signed_in ();
 	
 		return <div style={{ marginLeft: "2em" }} className="right-justified-column">
 	
-			<div style={{ fontStyle: "italic" }} >{props.currentTime}</div>
+			<div style={{ fontStyle: "italic" }} >{this.state.current_time}</div>
 	
-			<Container visible={props.signedIn}>
+			<Container visible={signed_in}>
 	
 				<div className="two-column-table with-headspace">
 	
@@ -341,7 +362,7 @@ export default class MasterPanel extends BaseControl {
 							<Container visible={CompanyStorage.company_count () > 1}>
 								<SelectList value={CompanyStorage.active_company_id ()} data={companies}
 									textField="company_name" hasHeader={true}
-									onChange={props.onChange}>
+									onChange={event => this.select_company (event.target.value)}>
 								</SelectList>
 							</Container>
 	
@@ -357,19 +378,19 @@ export default class MasterPanel extends BaseControl {
 	
 					</div>
 	
-					<ThumbnailImage src={AccountStorage.avatar () ?? user_image} style={user_image_style} onClick={() => props.changePage (page_names.account)} />
+					<ThumbnailImage src={AccountStorage.avatar () ?? user_image} style={user_image_style} onClick={() => this.set_page (page_names.account)} />
 						
 				</div>
 	
 			</Container>
 	
-			<Container visible={!props.signedIn}>
+			<Container visible={!signed_in}>
 				<div className="right-aligned-text with-some-headspace">Welcome!</div>
 			</Container>
 	
 		</div>
 	
-	}// CompanyHeader;
+	}// UserData;
 	
 	
 	/********/
@@ -405,23 +426,13 @@ export default class MasterPanel extends BaseControl {
 
 						</div>
 
-						<this.CompanyHeader signedIn={signed_in} currentTime={this.state.current_time}
-							onChange={event => this.select_company (event.target.value)}
-							changePage={new_page => this.set_page (new_page)}>
-						</this.CompanyHeader>
+						<ExplodingPanel id="user_data_panel" ref={this.user_data_panel} hAlign={horizontal_alignment.right} />
 
 					</div>
 
 					{signed_in && <div className="home_button_panel">
 
-						{this.state.button_list}
-						{this.signout_button ()}
-
-						{debugging () && <SelectButton onClick={() => { alert ("waiting for something to test") }} style={{ 
-							position: "absolute",
-							right: "1em",
-							bottom: "1em"
-						}}>TEST</SelectButton>}
+						<ExplodingPanel id="main_button_panel" ref={this.button_panel} />
 
 					</div>}
 
@@ -429,7 +440,7 @@ export default class MasterPanel extends BaseControl {
 
 				<div className="full-height horizontally-centered with-headspace" style={{ overflow: "hidden" }}>
 					<div style={this.viewer_style} className="horizontally-centered">
-						<ExplodingPanel ref={this.main_panel} id="main_panel" stretchOnly={true} vAlign="flex-start">{this.initial_page ()}</ExplodingPanel>
+						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true} vAlign="flex-start">{this.contents ()}</ExplodingPanel>
 					</div>
 				</div>
 

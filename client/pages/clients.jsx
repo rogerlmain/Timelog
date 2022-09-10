@@ -28,6 +28,7 @@ export default class ClientsPage extends BaseControl {
 
 
 	client_selector = React.createRef ();
+	eyecandy_panel = React.createRef ();
 
 
 	state = {
@@ -43,6 +44,11 @@ export default class ClientsPage extends BaseControl {
 
 
 	/********/
+
+
+	client_form = () => <ClientForm formData={this.state.client_data} parent={this} disabled={(!can_create) && (is_null (this.state.client_data))}
+		onSave={() => this.client_selector.current.setState ({ clients_loading: true })}>
+	</ClientForm>
 
 
 	render () {
@@ -64,14 +70,14 @@ export default class ClientsPage extends BaseControl {
 
 					onChange={(event) => this.setState ({ 
 						selected_client: numeric_value (event.target.value),
-						updating: true 
+						updating: true
 					})}>
 
 				</ClientSelector>
 
 			</div>
 
-			<EyecandyPanel id="edit_client_panel" text="Loading..." eyecandyVisible={this.state.updating} 
+			<EyecandyPanel id="edit_client_panel" text="Loading..." ref={this.eyecandy_panel} eyecandyVisible={this.state.updating} 
 			
 				onEyecandy={async () => {
 
@@ -86,9 +92,7 @@ export default class ClientsPage extends BaseControl {
 
 				}}>
 
-				<ClientForm formData={this.state.client_data} parent={this} disabled={(!can_create) && (is_null (this.state.client_data))}
-					onSave={() => this.client_selector.current.setState ({ clients_loading: true })}>
-				</ClientForm>
+				{this.client_form}
 
 			</EyecandyPanel>
 

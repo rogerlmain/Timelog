@@ -41,13 +41,18 @@ export default class ExplodingPanelTest extends BaseControl {
 				<img src="resources/images/bundy.png" style={{ width: "200px", height: "auto" }} />
 			</div>
 
-			case 3 : return <div key="large_page" style={{ border: "solid 1px green" }} id="large">
+			case 3: return <div key="large_page" style={{ border: "solid 1px green" }} id="large">
 				<button onClick={() => this.inner_panel.current.animate (get_contents ())}>Click me</button><br />
 
 				<ExplodingPanel parent={this} ref={this.inner_panel} id="inner_exploder" key="inner_exploder">
 					{get_contents ()}
 				</ExplodingPanel>
 
+			</div>
+
+			case 4: return <div id={`${this.props.id}_eyecandy`} style={this.eyecandy_style ()}>
+				<img src={eyecandy_images [this.props.eyecandySize]} style={{ marginRight: "0.5em", alignSelf: "center" }} />
+				{this.props.text}
 			</div>
 
 			default: return null;

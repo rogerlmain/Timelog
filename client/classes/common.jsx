@@ -11,25 +11,19 @@ const detab = (text) => {
 /********/
 
 
+export const debugging = () => window.location.hostname.equals ("localhost");
+
+
 export function boolean_value (value) { return (is_string (value) && (value.equals ("true") || value.equals ("on"))) }
-
-
 export function dom_element (element) { return React.isValidElement (element) && is_string (element.type)}
-
 export function multiline_text () { return Array.from (arguments).join ("\n") }
-
 export function integer_value (value) { return isset (value) ? parseInt (value) : null }
-
 export function get_key (object, value) { return get_keys (object).find (key => object [key] === value) }
 export function get_keys (object) { return is_object (object) ? Object.keys (object) : null }
 export function get_values (object) { return is_object (object) ? Object.values (object) : null }
-
 export function notify () { alert (not_empty (arguments) ? multiline_text (...arguments) : "paused") }
 export function warning (text) { return confirm (detab (text)) } // TEMPORARY - TO BE REPLACED WITH A POPUP WINDOW WHEN THE TIME IS RIGHT
-
 export function randomized (number) { return ((parseInt (number) * 1000) + (Math.random () * 1000)) }
-
-export function debugging () { window.location.hostname.equals ("localhost") }
 
 
 /********/

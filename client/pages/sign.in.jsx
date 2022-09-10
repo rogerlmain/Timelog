@@ -27,14 +27,9 @@ export default class SigninPage extends BaseControl {
 	eyecandy_panel = React.createRef ();
 	error_panel = React.createRef ();
 
-
-	signin_button = () => <button onClick={() => {
-		this.error_panel.current.animate ();
-		this.eyecandy_panel.current.animate ();
-	}}>Sign in</button>;
-
-
+	
 	error_message = error => <div id="signin_error_message">{error}</div>
+	signin_button = () => <button onClick={() => this.setState ({ eyecandy_visible: true })}>Sign in</button>;
 
 
 	state = { 

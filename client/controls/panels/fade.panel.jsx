@@ -80,11 +80,7 @@ export default class FadePanel extends BaseControl {
 
 	render () {
 
-		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0)
-		
-, border: "solid 1px blue"
-
-		}
+		let style = { ...this.props.style, opacity: (this.props.visible ? 1 : 0) }
 		let control_id = `${this.props.id ?? `fade_panel_${Date.now ()}`}_control`;
 
 		if (this.props.animate) style = { ...style, transition: `opacity ${this.animation_speed ()}ms ease-in-out` }

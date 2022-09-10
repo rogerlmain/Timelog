@@ -13,8 +13,9 @@ export default class EyecandyPanelTest extends BaseControl {
 
 	state = {
 		eyecandy_visible: false,
-		item: 1,
-		static: true
+		index: 1,
+		selected_index: 1,
+		static: true,
 	}// state;
 
 
@@ -42,6 +43,12 @@ export default class EyecandyPanelTest extends BaseControl {
 	}// get_contents;
 
 
+	update = index => this.setState ({ 
+		selected_index: index,
+		eyecandy_visible: true,
+	});
+
+
 	render () {
 
 		return (
@@ -53,18 +60,10 @@ export default class EyecandyPanelTest extends BaseControl {
 
 stretchOnly={true}					
 					
-onEyecandy={async () => {
-
-		// const date = Date.now();
-		// let currentDate = null;
-		// do {
-		//   currentDate = Date.now();
-		// } while (currentDate - date < 10000);
-
-}}
+onEyecandy={() => this.setState ({ index: this.state.selected_index, eyecandy_visible: false })}
 					
 						>
-						{this.get_contents (1)}
+						{this.get_contents (this.state.index)}
 					</EyecandyPanel>
 
 				</div>
@@ -76,11 +75,11 @@ onEyecandy={async () => {
 					<button onClick={() => this.setState ({ eyecandy_visible: true })}>Show Eyecandy</button>
 					<button onClick={() => this.setState ({ eyecandy_visible: false })}>Hide Eyecandy</button>
 */}
-					<button onClick={() => this.eyecandy_panel.current.animate (this.get_contents (1))}>Small Contents</button>
-					<button onClick={() => this.eyecandy_panel.current.animate (this.get_contents (2))}>Medium Contents</button>
-					<button onClick={() => this.eyecandy_panel.current.animate (this.get_contents (3))}>Large Contents</button>
+					<button onClick={() => this.update (1)}>Small Contents</button>
+					<button onClick={() => this.update (2)}>Medium Contents</button>
+					<button onClick={() => this.update (3)}>Large Contents</button>
 
-					<button className="span-all-columns" onClick={() => this.setState ({ item: 0 })}>Clear</button>
+					<button className="span-all-columns" onClick={() => this.setState ({ index: 0 })}>Clear</button>
 
 				</div>
 
