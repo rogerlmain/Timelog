@@ -8,9 +8,6 @@ import Container from "client/controls/container";
 export default class EyecandyPanelTest extends BaseControl {
 
 
-	eyecandy_panel = React.createRef ();
-
-
 	state = {
 		eyecandy_visible: false,
 		index: 1,
@@ -56,10 +53,8 @@ export default class EyecandyPanelTest extends BaseControl {
 								
 				<div style={{ border: "solid 1px red", padding: "0.5em", display: "flex" }}>
 
-					<EyecandyPanel id="eyecandy_test" ref={this.eyecandy_panel} eyecandyVisible={this.state.eyecandy_visible} static={this.state.static} text="Testing eyecandy"
+					<EyecandyPanel id="eyecandy_test" eyecandyVisible={this.state.eyecandy_visible} text="Testing eyecandy"
 
-stretchOnly={true}					
-					
 onEyecandy={() => this.setState ({ index: this.state.selected_index, eyecandy_visible: false })}
 					
 						>

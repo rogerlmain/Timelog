@@ -46,11 +46,6 @@ export default class ClientsPage extends BaseControl {
 	/********/
 
 
-	client_form = () => <ClientForm formData={this.state.client_data} parent={this} disabled={(!can_create) && (is_null (this.state.client_data))}
-		onSave={() => this.client_selector.current.setState ({ clients_loading: true })}>
-	</ClientForm>
-
-
 	render () {
 
 		let limit = OptionsStorage.client_limit ();
@@ -79,20 +74,17 @@ export default class ClientsPage extends BaseControl {
 
 			<EyecandyPanel id="edit_client_panel" text="Loading..." ref={this.eyecandy_panel} eyecandyVisible={this.state.updating} 
 			
-				onEyecandy={async () => {
-
-					let data = null;
-
-					if (this.state.selected_client > 0) data = await ClientStorage.get_by_id (this.state.selected_client);
-					
-					this.setState ({ 
+				onEyecandy={() => {
+					if (this.state.selected_client > 0) ClientStorage.get_by_id (this.state.selected_client).then (data => this.setState ({ 
 						client_data: data,
 						updating: false,
-					});
-
+					}));
 				}}>
 
-				{this.client_form}
+				<ClientForm formData={this.state.client_data} parent={this} 
+					disabled={(!can_create) && (is_null (this.state.client_data))}
+					onSave={() => this.client_selector.current.setState ({ clients_loading: true })}>
+				</ClientForm>
 
 			</EyecandyPanel>
 

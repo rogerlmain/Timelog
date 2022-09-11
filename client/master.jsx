@@ -138,6 +138,7 @@ export default class MasterPanel extends BaseControl {
 		width: "90rem", 
 		height: "100%", 
 		overflowY: "auto",
+		overflowX: "hidden",
 	}// viewer_style;
 
 

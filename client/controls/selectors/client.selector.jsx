@@ -7,9 +7,7 @@ import CompanyStorage from "client/classes/storage/company.storage";
 import BaseControl from "client/controls/abstract/base.control";
 import LoadList from "client/controls/lists/load.list";
 
-import Container from "client/controls/container";
-
-import { integer_value } from "client/classes/common";
+import { integer_value, is_null, is_promise } from "client/classes/common";
 import { page_names } from "client/master";
 import { tracing } from "client/classes/types/constants";
 
@@ -17,7 +15,11 @@ import { tracing } from "client/classes/types/constants";
 export default class ClientSelector extends BaseControl {
 
 
-	state = { client_id: null }
+	state = { 
+		client_id: null,
+		client_count: null,
+		client_data: null,
+	}// state;
 
 
 	static defaultProps = { 
@@ -46,34 +48,51 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	client_selected = () => { return (this.state.client_id > 0) || OptionsStorage.single_client () }
+	client_selected = () => ((this.state.client_id > 0) || OptionsStorage.single_client ());
 
 
 	/*********/
 
 
+	shouldComponentUpdate (new_props, new_state) {
+
+		if (is_null (new_state.client_count)) return !!this.setState ({ client_count: OptionsStorage.client_limit () });
+
+		if (is_null (new_state.client_data)) {
+			let data = ClientStorage.get_by_company (CompanyStorage.active_company_id ());
+			return !!this.setState ({ client_data: data });
+		}// if;
+
+		return true;
+
+	}// shouldComponentUpdate;
+
+
+	componentDidMount = this.forceRefresh;
+
+
 	render () {
 
-		let multiple_clients = (OptionsStorage.client_limit () > 1);
+		if (is_null (this.state.client_data)) return null;// setTimeout (this.forceRefresh ());
+		if (this.state.client_count == 0) return null;
 
-		return <Container visible={multiple_clients}>
-			<LoadList id={this.props.id}
+		if (this.state.client_count == 1) return <div className="one-piece-form">
+			<div>Client</div>
+			<div>{this.state.client_data [0].client_name}</div>
+		</div>
 
-				data={ClientStorage.get_by_company (CompanyStorage.active_company_id ())}
-				dataIdField="client_id"
-				dataTextField="name"
+		return <LoadList id={`${this.props.id}_load_list`} label="Client"
 
-				newButtonPage={this.props.newButton ? page_names.clients : null}
+			dataIdField="client_id" dataTextField="name" data={this.state.client_data}
 
-				label="Client"
-				
-				listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
-				selectedItem={this.props.selectedClient}
+			newButtonPage={this.props.newButton ? page_names.clients : null}
 
-				onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
+			listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
+			selectedItem={this.props.selectedClient}
 
-			</LoadList>
-		</Container>
+			onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
+
+		</LoadList>
 
 	}// render;
 
