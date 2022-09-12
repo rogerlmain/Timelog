@@ -9,7 +9,7 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import { debugging, isset, is_null, is_promise, null_value } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
-import { tracing } from "client/classes/types/constants";
+import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 
 
 const load_list_id = "load_list";
@@ -22,12 +22,8 @@ export default class LoadList extends BaseControl {
 
 
 	state = {
-
 		data: undefined, // cannot initialize to null because parent may want null.
-
-		item_selected: false,
 		data_loading: false,
-
 	}// state;
 
 
@@ -51,6 +47,9 @@ export default class LoadList extends BaseControl {
 
 		listHeader: null,
 		selectedItem: null,
+
+		hAlign: horizontal_alignment.left,
+		vAlign: vertical_alignment.center,
 
 		style: null,
 
@@ -100,10 +99,7 @@ export default class LoadList extends BaseControl {
 			
 			idField={this.props.dataIdField} textField={this.props.dataTextField}
 
-			onChange={event => {
-				this.setState ({ item_selected: true });
-				this.execute (this.props.onChange, event);							
-			}}>
+			onChange={event => this.execute (this.props.onChange, event)}>
 
 		</SelectList>
 		
@@ -128,8 +124,8 @@ export default class LoadList extends BaseControl {
 	shouldComponentUpdate (new_props) {
 
 		if (is_promise (new_props.data)) {
-			if (!this.state.data_loading) setTimeout (() => this.setState ({ data_loading: true }));
-			return true;
+			if ((new_props.data.pending) && (!this.state.data_loading)) return !setTimeout (() => this.setState ({ data_loading: true }));
+			return this.state.data_loading;
 		}// if;
 
 		if (isset (new_props.data) && (new_props.data != this.state.data)) return !!this.setState ({ data: new_props.data }, () => this.eyecandy_panel.current.animate (false));
@@ -146,7 +142,7 @@ export default class LoadList extends BaseControl {
 
 		let list_panel_id = `${this.props.id}_list_panel`;
 
-		return <EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} ref={this.eyecandy_panel} text="Loading..." stretchOnly={true}
+		return <EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} ref={this.eyecandy_panel} text="Loading..." stretchOnly={true} hAlign={this.props.hAlign} vAlign={this.props.vAlign}
 			eyecandyVisible={this.state.data_loading} onEyecandy={this.update_data}>
 			{is_promise (this.state.data) ? null : this.select_list ()}
 		</EyecandyPanel>

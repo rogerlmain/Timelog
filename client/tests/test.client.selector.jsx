@@ -11,7 +11,7 @@ import CompanyStorage from "client/classes/storage/company.storage";
 import ClientSelector from "client/controls/selectors/client.selector";
 
 
-export default class LoadListTest extends BaseControl {
+export default class ClientSelectorTest extends BaseControl {
 
 
 	state = { client_data: null }
@@ -41,19 +41,10 @@ export default class LoadListTest extends BaseControl {
 			<br /><br />
 
 			<div className="one-piece-form">
-				<label htmlFor="test_load_list">Clients</label>
-				<LoadList id="test_load_list"
-
-					dataIdField="client_id" dataTextField="name" data={this.state.client_data}
-
-					newButtonPage={this.props.newButton ? page_names.clients : null}
-
-					listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
-					selectedItem={this.props.selectedClient}
-
-					onChange={event => this.forceRefresh ()}>
-
-				</LoadList>
+				<ClientSelector id="client_selector" ref={this.client_selector} parent={this}
+					headerText="New client"
+					selectedClient={this.state.selected_client}>
+				</ClientSelector>
 			</div>
 
 			<br /><br />

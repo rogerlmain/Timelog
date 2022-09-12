@@ -35,7 +35,7 @@ export default class FadePanel extends BaseControl {
 	transition_start = event => {
 
 		if (event.propertyName != "opacity") return;
-		if (event.target !== this.fade_panel) return;
+		if (event.target !== this.fade_panel.current) return;
 
 		this.execute (this.props.beforeTransition);
 

@@ -24,6 +24,7 @@ import ExplodingPanelTest from "client/tests/test.exploding.panel";
 import EyecandyPanelTest from "client/tests/test.eyecandy.panel";
 
 import LoadListTest from "client/tests/test.load.list";
+import ClientSelectorTest from "client/tests/test.client.selector";
 
 import ActivityLog from "./classes/activity.log";
 
@@ -93,10 +94,11 @@ document.onreadystatechange = () => {
 	// createRoot (document.getElementById ("main_page")).render (<EyecandyPanelTest />);
 
 	// createRoot (document.getElementById ("main_page")).render (<LoadListTest />);
+	// createRoot (document.getElementById ("main_page")).render (<ClientSelectorTest />);
 
 	// createRoot (document.getElementById ("main_page")).render (<div className="two-column-table">
-	// 	<ExplodingPanelTest />
-	// 	<EyecandyPanelTest />
+	// 	<LoadListTest />
+	// 	<ClientSelectorTest />
 	// </div>);
 
 }// document.ready;

@@ -1,5 +1,5 @@
 import { blank, space, date_formats, date_rounding, directions, empty } from "client/classes/types/constants";
-import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value } from "client/classes/common";
+import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value, jsonify } from "client/classes/common";
 
 
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -697,6 +697,19 @@ Number.prototype.toCurrency = function () {
 	let cents = this % 100;
 	return `${dollars}.${cents}`;
 }// toCurrency;
+
+
+/********/
+
+
+Promise.prototype.pending = true;
+Promise.prototype.before = Promise.prototype.then;
+
+
+Promise.prototype.then = function () { 
+	this.pending = false;
+	return this.before (...Array.from (arguments));
+}// then;
 
 
 /********/

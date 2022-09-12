@@ -5,14 +5,14 @@ import ProjectStorage from "client/classes/storage/project.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
 
-import Container from "client/controls/container";
-
 import LoadList from "client/controls/lists/load.list";
+import FadePanel from "client/controls/panels/fade.panel";
 import ClientSelector from "client/controls/selectors/client.selector";
 
-import { isset, integer_value, nested_value, not_set } from "client/classes/common";
+import Container from "client/controls/container";
+
+import { isset, integer_value, nested_value, not_set, debugging } from "client/classes/common";
 import { page_names } from "client/master";
-import { tracing } from "client/classes/types/constants";
 
 import "resources/styles/gadgets/selector.gadget.css";
 
@@ -55,8 +55,7 @@ export default class ProjectSelector extends BaseControl {
 		this.state.client_id = this.props.clientId;
 		this.state.project_id = this.props.projectId;
 
-//		if (tracing) 
-		console.log (`${props.id} object created`);
+		if (debugging (false)) console.log (`${props.id} object created`);
 
 	}// constructor;
 
@@ -64,8 +63,8 @@ export default class ProjectSelector extends BaseControl {
 	/********/
 
 
-	client_selected = () => { return nested_value (this.client_selector.current, "client_selected") }
-	project_selected = () => { return ((this.state.project_id > 0) || (OptionsStorage.single_project () && this.client_selected ())) }
+	// client_selected = () => { return nested_value (this.client_selector.current, "client_selected") }
+	// project_selected = () => { return ((this.state.project_id > 0) || (OptionsStorage.single_project () && this.client_selected ())) }
 
 	
 	/********/
@@ -86,34 +85,36 @@ export default class ProjectSelector extends BaseControl {
 
 				selectedClient={this.state.client_id}
 
-				onChange={event => this.setState ({ 
-					client_id: integer_value (event.target.value),
-					project_id: null,
-				}, () => this.execute (this.props.onClientChange, event))}>
+				onChange={event => {
+
+					let client_id = integer_value (event.target.value);
+
+					this.setState ({ 
+						client_id: client_id,
+						project_data: ProjectStorage.get_by_client (client_id),
+					}, () => this.execute (this.props.onClientChange, event))
+					
+				}}>
 
 			</ClientSelector>
-
 			
 			<Container visible={multiple_projects}>
-				<LoadList id={this.props.id}
 
-					label="Project"
+				<FadePanel visible={isset (this.state.client_id)}>
+					<label htmlFor={`${this.props.id}_load_list`}>Project</label>
+				</FadePanel>
+
+				<LoadList id={this.props.id} label="Project"
 
 					listHeader={this.props.headerSelectable ? "New project" : "Select a project"}
 					headerSelectable={this.props.headerSelectable}
 
-					dataIdField="project_id"
-					dataTextField="name"
-
-					data={isset (this.state.client_id) ? ProjectStorage.get_projects_by_client (this.state.client_id) : null}
-					
+					dataIdField="project_id" dataTextField="name" data={this.state.project_data} selectedItem={this.state.project_id}
 					newButtonPage={(this.props.newButton && isset (this.state.cliend_id)) ? page_names.projects : null} 
-					selectedItem={this.state.project_id}
-
-					style={{ width: "100%" }}
+					
 					disabled={not_set (this.state.client_id) && (!single_client)}
 
-					onChange={event => this.setState ({ project_id: integer_value (event.target.value) }, () => this.execute (this.props.onProjectChange, event))}>
+					onChange={event => this.setState ({ project_id: integer_value (event.target.value) }), event => this.execute (this.props.onProjectChange, event)}>
 
 				</LoadList>
 			</Container>

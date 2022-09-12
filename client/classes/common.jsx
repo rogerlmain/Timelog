@@ -211,7 +211,10 @@ export function exists (object, ...methods) {
 }// exists;
 
 
+// DEPRECATED - USE BUILD-IN ?.
 export function nested_value () {
+
+	if (debugging (false)) console.log ("nested_value is deprecated. Use built-in ?. instead.");
 
 	if (is_null (arguments [0])) return null;
 

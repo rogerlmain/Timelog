@@ -41,7 +41,7 @@ export default class OptionsStorage extends LocalStorage {
 
 		options [company_id][name] = value;
 
-		super.set_store (store_name, options);
+		LocalStorage.set_store (store_name, options);
 	}// #set;
 
 

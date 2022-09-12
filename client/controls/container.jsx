@@ -19,7 +19,7 @@ export default class Container extends BaseControl {
 	constructor (props) {
 		super (props);
 		let name = null_value (this.props.id) ?? nested_value (this.container.current, "pathed_id");
-		if (debugging ()) console.log (`container ${name} created`);
+		if (debugging (false)) console.log (`container ${name} created`);
 	}// constructor;
 
 

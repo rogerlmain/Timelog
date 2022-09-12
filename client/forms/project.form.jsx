@@ -122,7 +122,7 @@ export default class ProjectForm extends FormControl {
 
 		let project_id = this.project_data ("project_id");
 
-		return <Container>
+		return <div>
 			<form id="project_form" ref={this.project_form}>
 
 				<input type="hidden" id="project_id" name="project_id" value={project_id || blank} />
@@ -199,12 +199,12 @@ export default class ProjectForm extends FormControl {
 				</SmallProgressMeter>
 
 				<FadePanel id="delete_button_panel" visible={isset (project_id)}>
-					<button className="double-column" onClick={this.delete_project}>Delete</button>
+					<button className="right-aligned" onClick={this.delete_project}>Delete</button>
 				</FadePanel>
 
 			</div>
 
-		</Container>
+		</div>
 
 	}// render;
 

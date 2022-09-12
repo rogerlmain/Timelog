@@ -20,7 +20,7 @@ export default class LoggingStorage extends LocalStorage {
 	/********/
 
 
-	static set = (value) => { return super.set_store (store_name, value) }
+	static set = (value) => { return LocalStorage.set_store (store_name, value) }
 
 	static delete = () => super.remove_store (store_name);	
 

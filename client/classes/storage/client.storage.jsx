@@ -96,7 +96,7 @@ puke ();
 	/********/
 
 
-	static default_rate = async (client_id, new_rate = null) => {
+	static client_rate = async (client_id, new_rate = null) => {
 
 		let result = null;
 
@@ -113,7 +113,7 @@ puke ();
 
 		return result;
 
-	}/* default_rate */
+	}/* client_rate */
 
 
 }// ClientStorage;

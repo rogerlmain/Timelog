@@ -8,9 +8,9 @@ import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 
-import { integer_value, is_null, is_promise } from "client/classes/common";
+import { debugging, integer_value, is_null, is_promise } from "client/classes/common";
 import { page_names } from "client/master";
-import { tracing } from "client/classes/types/constants";
+import { horizontal_alignment } from "client/classes/types/constants";
 
 
 export default class ClientSelector extends BaseControl {
@@ -44,8 +44,8 @@ export default class ClientSelector extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		if (tracing) console.log (`${props.id} object created`);
 		this.state.client_data = ClientStorage.get_by_company (CompanyStorage.active_company_id ());
+		if (debugging (false)) console.log (`${props.id} object created`);
 	}// constructor;
 
 
@@ -83,18 +83,16 @@ export default class ClientSelector extends BaseControl {
 			<div>{this.state.client_data [0].client_name}</div>
 		</div>
 
-		return <Container id="client_selector_container" inline={false} className="one-piece-form">
+		return <Container id="client_selector_container">
 
 			<label htmlFor={`${this.props.id}_load_list`}>Client</label>
 
-			<LoadList id={`${this.props.id}_load_list`} label="Client"
-
-				dataIdField="client_id" dataTextField="name" data={this.state.client_data}
-
-				newButtonPage={this.props.newButton ? page_names.clients : null}
+			<LoadList id={`${this.props.id}_load_list`} label="Client" hAlign={horizontal_alignment.left}
 
 				listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
-				selectedItem={this.props.selectedClient}
+
+				dataIdField="client_id" dataTextField="name" data={this.state.client_data} selectedItem={this.props.selectedClient}
+				newButtonPage={this.props.newButton ? page_names.clients : null}
 
 				onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
 

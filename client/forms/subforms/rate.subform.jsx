@@ -43,8 +43,8 @@ export default class RateSubform extends BaseControl {
 
 
 	componentDidMount () {
-		ProjectStorage.default_rate (this.props.projectId).then (result => this.setState ({ project_rate: result }, () => {
-			ClientStorage.default_rate (this.props.clientId).then (result => this.setState ({ client_rate: result }, () => {
+		ProjectStorage.project_rate (this.props.projectId).then (result => this.setState ({ project_rate: result }, () => {
+			ClientStorage.client_rate (this.props.clientId).then (result => this.setState ({ client_rate: result }, () => {
 				this.setState ({ current_rate: this.state.project_rate ?? this.state.client_rate ?? OptionsStorage.default_rate () ?? 0 });
 			}));
 		}));

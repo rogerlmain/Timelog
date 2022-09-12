@@ -10,7 +10,7 @@ export default class CompanyStorage extends LocalStorage {
 
 
 	static #get (company_id) { return super.get (store_name, company_id) }
-	static #set (values) { super.set_store (store_name, values) }
+	static #set (values) { LocalStorage.set_store (store_name, values) }
 
 
 	/**** Public Methods ****/

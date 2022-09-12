@@ -40,7 +40,7 @@ export default class PermissionsStorage extends LocalStorage {
 
 				let permissions = (nested_value (result, 0, "permissions") ?? 0);
 
-				super.set_store (store, permissions);
+				LocalStorage.set_store (store, permissions);
 				resolve (new PermissionObject (permissions).get (type));
 				
 			}).catch (reject);
