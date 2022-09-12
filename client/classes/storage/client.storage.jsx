@@ -45,7 +45,7 @@ puke ();
 
 		if (isset (values)) {
 			let value = values.find (candidate => candidate.client_id == client_id);
-			return LocalStorage.set_store (store_name, values.remove (value));
+			return ClientStorage.#set (store_name, values.remove (value));
 		}// if;
 
 	}// remove_client;

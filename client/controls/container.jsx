@@ -1,8 +1,7 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 
-import { tracing } from "client/classes/types/constants";
-import { nested_value, null_value } from "client/classes/common";
+import { debugging , nested_value, null_value } from "client/classes/common";
 
 
 export default class Container extends BaseControl {
@@ -20,7 +19,7 @@ export default class Container extends BaseControl {
 	constructor (props) {
 		super (props);
 		let name = null_value (this.props.id) ?? nested_value (this.container.current, "pathed_id");
-		if (tracing) console.log (`container ${name} created`);
+		if (debugging ()) console.log (`container ${name} created`);
 	}// constructor;
 
 
@@ -30,13 +29,10 @@ export default class Container extends BaseControl {
 		let properties = {...this.props};
 
 		delete properties.style;
-
 		delete properties.visible;
 		delete properties.inline;
-			
 		delete properties.children;
 
-		if (this.props.inline === false) styles.display = "contents";
 		if (this.props.visible === false) styles.display = "none";
 		
 		return this.props.visible ? (this.props.inline ? this.props.children : <div ref={this.container} style={styles} {...properties}>{this.props.children}</div>) : null;

@@ -1,15 +1,12 @@
 
 import React from "react";
 
-import Container from "client/controls/container";
-
 import BaseControl from "client/controls/abstract/base.control";
-import FadePanel from "client/controls/panels/fade.panel";
 
 import SelectList from "client/controls/lists/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import { isset, is_empty, is_null, is_promise, not_set, null_value } from "client/classes/common";
+import { debugging, isset, is_null, is_promise, null_value } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
 import { tracing } from "client/classes/types/constants";
@@ -21,14 +18,20 @@ const load_list_id = "load_list";
 export default class LoadList extends BaseControl {
 
 
-	 state = { 
+	eyecandy_panel = React.createRef ();
 
-		data: null,
+
+	state = {
+
+		data: undefined, // cannot initialize to null because parent may want null.
 
 		item_selected: false,
 		data_loading: false,
 
 	}// state;
+
+
+	/*********/
 
 
 	static contextType = MasterContext;
@@ -67,21 +70,24 @@ export default class LoadList extends BaseControl {
 		super (props);
 		
 		if (this.props.id.equals (load_list_id)) console.warn ("Your LoadList really should have a unique ID");
-		if (tracing) console.log (`${props.id} list created`);
 
 		this.state.data = this.props.data;
 		
+		if (debugging ()) console.log (`${props.id} list created`);
+
 	}// constructor;
 
 
 	/*********/
 
 
-	data_list = () => {
+	select_list = () => {
 
 		let header = null_value (this.props.listHeader);
 
-		if (isset (this.props.newButtonPage) && is_empty (this.state.data)) return <button onClick={() => { 
+		if (is_null (this.state.data)) return null;
+
+		if (isset (this.props.newButtonPage)) return <button onClick={() => { 
 			this.context.master_page.setState ({ page: this.props.newButtonPage })
 		}}>New</button>
 		
@@ -101,7 +107,19 @@ export default class LoadList extends BaseControl {
 
 		</SelectList>
 		
-	}// get_data;
+	}// select_list;
+
+
+	update_data = () => {
+
+		if (is_null (this.props.data)) return setTimeout (this.update_data);
+
+		if (is_promise (this.props.data)) this.props.data.then (data => this.setState ({ 
+			data: data,
+			data_loading: false,
+		}));
+
+	}// update_data;
 
 
 	/*********/
@@ -109,41 +127,30 @@ export default class LoadList extends BaseControl {
 
 	shouldComponentUpdate (new_props) {
 
-		if (is_promise (new_props.data) || not_set (new_props.data)) return !!this.setState ({ data_loading: true });
+		if (is_promise (new_props.data)) {
+			if (!this.state.data_loading) setTimeout (() => this.setState ({ data_loading: true }));
+			return true;
+		}// if;
 
-		if (this.props.data != this.state.data) return !!this.setState ({ 
-			data_loading: true,
-			list_data: this.props.data
-		});
+		if (isset (new_props.data) && (new_props.data != this.state.data)) return !!this.setState ({ data: new_props.data }, () => this.eyecandy_panel.current.animate (false));
 
 		return true;
 
 	}// shouldComponentUpdate;
 
 
-	componentDidMount = () => this.shouldComponentUpdate (this.state);
+	componentDidMount = this.forceRefresh;
 
 
 	render () {
 
 		let list_panel_id = `${this.props.id}_list_panel`;
 
-		return <Container>
+		return <EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} ref={this.eyecandy_panel} text="Loading..." stretchOnly={true}
+			eyecandyVisible={this.state.data_loading} onEyecandy={this.update_data}>
+			{is_promise (this.state.data) ? null : this.select_list ()}
+		</EyecandyPanel>
 
-			<FadePanel id={`${this.props.id}_label_panel`} animated={this.props.animated} visible={this.props.visible}>
-				<label htmlFor={this.props.id} style={{
-					display: "block", 
-					width: "100%",
-				}}>{this.props.label}</label>
-			</FadePanel>
-
-			<FadePanel id={list_panel_id} animated={this.props.animated} visible={this.props.visible}>
-				<EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} text="Loading..." eyecandyVisible={this.state.data_loading} stretchOnly={true}>
-					{this.data_list ()}
-				</EyecandyPanel>
-			</FadePanel>
-
-		</Container>
 	}// render;
 
 }// LoadList;

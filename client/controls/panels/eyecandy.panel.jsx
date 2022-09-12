@@ -68,7 +68,7 @@ export default class EyecandyPanel extends BaseControl {
 
 
 	shouldComponentUpdate (new_props) {
-		if ((!this.props.eyecandyVisible) && new_props.eyecandyVisible) return !!this.animate (true);
+		if (this.props.eyecandyVisible != new_props.eyecandyVisible) return !!this.animate (new_props.eyecandyVisible);
 		return true;
 	}// shouldComponentUpdate;
 
@@ -79,7 +79,7 @@ export default class EyecandyPanel extends BaseControl {
 
 		return <ExplodingPanel id={`${this.props.id}_exploding_panel`} ref={this.exploding_panel} speed={this.animation_speed ()} stretchOnly={this.props.stretchOnly} hAlign={this.props.hAlign} vAlign={this.props.vAlign}
 			beforeChanging={() => this.execute (this.props.beforeChanging)}
-			afterChanging={() => { if (this.state.eyecandy_visible) this.execute (this.props.onEyecandy, this).then (() => this.setState ({ eyecandy_visible: false }, () => this.animate (false))) }}>
+			afterChanging={() => { if (this.state.eyecandy_visible) this.execute (this.props.onEyecandy, this) }}>
 			{this.contents ()}
 		</ExplodingPanel>
 

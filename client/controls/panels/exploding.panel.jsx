@@ -52,9 +52,13 @@ export default class ExplodingPanel extends BaseControl {
 
 
 	animate = contents => {
+
 		if (this.state.animating) return setTimeout (() => this.animate (contents));
+		if (this.same_elements (this.contents, contents)) return;
+
 		this.contents = contents ?? empty_cell;
 		this.setState ({ animating: true });
+		
 	}// animate;
 
 
