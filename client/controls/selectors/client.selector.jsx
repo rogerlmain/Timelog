@@ -5,6 +5,7 @@ import ClientStorage from "client/classes/storage/client.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 
 import { integer_value, is_null, is_promise } from "client/classes/common";
@@ -34,6 +35,8 @@ export default class ClientSelector extends BaseControl {
 		hasHeader: true,
 		headerSelectable: false,
 
+		inline: true,
+
 		onChange: null,
 
 	}// defaultProps;
@@ -42,6 +45,7 @@ export default class ClientSelector extends BaseControl {
 	constructor (props) {
 		super (props);
 		if (tracing) console.log (`${props.id} object created`);
+		this.state.client_data = ClientStorage.get_by_company (CompanyStorage.active_company_id ());
 	}// constructor;
 
 
@@ -60,6 +64,7 @@ export default class ClientSelector extends BaseControl {
 
 		if (is_null (new_state.client_data)) {
 			let data = ClientStorage.get_by_company (CompanyStorage.active_company_id ());
+			if (is_promise (data)) return !data.then (clients => this.setState ({ client_data: clients }));
 			return !!this.setState ({ client_data: data });
 		}// if;
 
@@ -73,26 +78,29 @@ export default class ClientSelector extends BaseControl {
 
 	render () {
 
-		if (is_null (this.state.client_data)) return null;// setTimeout (this.forceRefresh ());
-		if (this.state.client_count == 0) return null;
-
 		if (this.state.client_count == 1) return <div className="one-piece-form">
 			<div>Client</div>
 			<div>{this.state.client_data [0].client_name}</div>
 		</div>
 
-		return <LoadList id={`${this.props.id}_load_list`} label="Client"
+		return <Container id="client_selector_container" inline={false} className="one-piece-form">
 
-			dataIdField="client_id" dataTextField="name" data={this.state.client_data}
+			<label htmlFor={`${this.props.id}_load_list`}>Client</label>
 
-			newButtonPage={this.props.newButton ? page_names.clients : null}
+			<LoadList id={`${this.props.id}_load_list`} label="Client"
 
-			listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
-			selectedItem={this.props.selectedClient}
+				dataIdField="client_id" dataTextField="name" data={this.state.client_data}
 
-			onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
+				newButtonPage={this.props.newButton ? page_names.clients : null}
 
-		</LoadList>
+				listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
+				selectedItem={this.props.selectedClient}
+
+				onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
+
+			</LoadList>
+
+		</Container>
 
 	}// render;
 
