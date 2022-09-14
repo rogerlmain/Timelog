@@ -58,9 +58,6 @@ export default class ProjectsPage extends BaseControl {
 	/********/
 
 
-	componentDidMount = () => this.setState ({ form_visible: nested_value (this.project_selector.current, "client_selected") });
-
-
 	shouldComponentUpdate (new_props, new_state) {
 
 		let client_selected = nested_value (this.project_selector.current, "client_selected");
