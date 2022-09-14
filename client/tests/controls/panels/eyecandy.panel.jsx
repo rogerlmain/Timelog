@@ -54,10 +54,7 @@ export default class EyecandyPanelTest extends BaseControl {
 				<div style={{ border: "solid 1px red", padding: "0.5em", display: "flex" }}>
 
 					<EyecandyPanel id="eyecandy_test" eyecandyVisible={this.state.eyecandy_visible} text="Testing eyecandy"
-
-onEyecandy={() => this.setState ({ index: this.state.selected_index, eyecandy_visible: false })}
-					
-						>
+						onEyecandy={() => this.setState ({ index: this.state.selected_index, eyecandy_visible: false })}>
 						{this.get_contents (this.state.index)}
 					</EyecandyPanel>
 

@@ -23,7 +23,7 @@ export default class LoadList extends BaseControl {
 
 	state = {
 		data: undefined, // cannot initialize to null because parent may want null.
-		data_loading: false,
+		eyecandy_visible: false,
 	}// state;
 
 
@@ -106,29 +106,20 @@ export default class LoadList extends BaseControl {
 	}// select_list;
 
 
-	update_data = () => {
-
-		if (is_null (this.props.data)) return setTimeout (this.update_data);
-
-		if (is_promise (this.props.data)) this.props.data.then (data => this.setState ({ 
-			data: data,
-			data_loading: false,
-		}));
-
-	}// update_data;
-
-
 	/*********/
 
 
 	shouldComponentUpdate (new_props) {
 
 		if (is_promise (new_props.data)) {
-			if ((new_props.data.pending) && (!this.state.data_loading)) return !setTimeout (() => this.setState ({ data_loading: true }));
-			return this.state.data_loading;
+			if ((new_props.data.pending) && (!this.state.eyecandy_visible)) return !setTimeout (() => this.setState ({ eyecandy_visible: true }));
+			return true;
 		}// if;
-
-		if (isset (new_props.data) && (new_props.data != this.state.data)) return !!this.setState ({ data: new_props.data }, () => this.eyecandy_panel.current.animate (false));
+		
+		if (isset (new_props.data) && (new_props.data != this.props.data)) return !!this.eyecandy_panel.current?.exploding_panel?.current?.animate (() => this.setState ({ 
+			data: new_props.data,
+			eyecandy_visible: false,
+		}));
 
 		return true;
 
@@ -142,9 +133,18 @@ export default class LoadList extends BaseControl {
 
 		let list_panel_id = `${this.props.id}_list_panel`;
 
-		return <EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} ref={this.eyecandy_panel} text="Loading..." stretchOnly={true} hAlign={this.props.hAlign} vAlign={this.props.vAlign}
-			eyecandyVisible={this.state.data_loading} onEyecandy={this.update_data}>
+		return <EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} ref={this.eyecandy_panel} text="Loading..." 
+		
+			hAlign={this.props.hAlign} vAlign={this.props.vAlign} stretchOnly={true}
+			eyecandyVisible={this.state.eyecandy_visible} 
+
+			onEyecandy={() => this.props.data.then (data => this.setState ({ 
+				data: data,
+				eyecandy_visible: false,
+			}))}>
+
 			{is_promise (this.state.data) ? null : this.select_list ()}
+
 		</EyecandyPanel>
 
 	}// render;
