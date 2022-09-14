@@ -81,6 +81,13 @@ div.ghost-box { display: contents }
 }/* .horizontally-centered */
 
 
+.vertically-aligned {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}/* .vertically-centered */
+
+
 .vertically-centered {
 	display: flex;
 	flex-direction: column;

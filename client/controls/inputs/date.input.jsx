@@ -53,12 +53,6 @@ export default class DateInput extends BaseControl {
 	}// componentDidMount;
 
 
-dont = event => {
-	event => event.preventDefault ();
-	event => event.stopPropagation ();
-}	
-
-
 	render () {
 		return <div className="date-input">
 

@@ -437,8 +437,8 @@ export default class ReportsPage extends BaseControl {
 
 
 	render () {
-		return <div id={this.props.id} className="two-column-grid">
-
+		return <div id={this.props.id} className="borderline">{/*  className="two-column-grid"> */}
+{/* 
 			<div className="button-column">
 	
 				<SelectButton id="project_report_button" className="sticky-button" 
@@ -463,13 +463,14 @@ export default class ReportsPage extends BaseControl {
 
 			</div>					
 				
+ */}
 			<ExplodingPanel id="reports_exploding_panel">
-
 				{this.project_report_panel ()}
+{/* 				
 				{this.teamster_report_panel ()}
-
+ */}
 			</ExplodingPanel>
-
+			
 		</div>
 	}// render;
 

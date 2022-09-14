@@ -35,13 +35,13 @@ div.program-title {
 
 
 div.title, div.tagline {
-	font-size: 18pt;
-	font-weight: bold;
+	font-size: 16pt;
 	font-style: italic;
+	margin-top: 0.25em;
 }/* div.title, div.tagline */
 
 
-div.tagline { font-size: 14pt }
+div.tagline { font-size: 12pt }
 
 
 label.mini-title {

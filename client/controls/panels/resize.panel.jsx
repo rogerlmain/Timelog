@@ -1,8 +1,8 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 
-import { is_null, jsonify, not_empty, not_set, same_size } from "client/classes/common";
-import { axes, horizontal_alignment, tracing, vertical_alignment } from "client/classes/types/constants";
+import { is_function, is_null, not_empty } from "client/classes/common";
+import { horizontal_alignment, tracing, vertical_alignment } from "client/classes/types/constants";
 
 
 export const resize_direction = {
@@ -22,10 +22,7 @@ export default class ResizePanel extends BaseControl {
 	inner_control = React.createRef ();
 	
 
-	state = { 
-		animating: false,
-		contents: null,
-	}// state;
+	state = {  animating: false }
 
 
 	static defaultProps = {
@@ -47,9 +44,6 @@ export default class ResizePanel extends BaseControl {
 		super (props);
 		
 		if (is_null (this.props.id)) throw "ResizePanel requires an ID";
-
-		this.contents = this.state.contents = this.props.children;
-
 		if (tracing) console.log (`resize_panel '${this.props.id}' created`);
 
 	}// constructor;
@@ -58,11 +52,12 @@ export default class ResizePanel extends BaseControl {
 	/********/
 
 
-	animate (contents) {
-		this.contents = contents;
-		this.setState ({ animating: true });
-	}// animate;
+	animate = () => this.setState ({ animating: true });
 
+	freeze = callback => {
+		this.outer_control.current.freeze ();
+		if (is_function (callback)) callback ();
+	}// freeze;
 
 	null_if = (value, threshold) => { return (value == threshold ? null : value) }
 
@@ -147,12 +142,7 @@ export default class ResizePanel extends BaseControl {
 
 	shouldComponentUpdate (new_props, new_state) {
 
-		if ((!this.state.animating) && (new_state.animating)) {
-			this.outer_control.current.freeze ();
-			this.setState ({ contents: this.contents }, this.forceRefresh);
-			return false;
-		}// if;
-
+//		if (new_props.children != this.props.children) this.outer_control.current.freeze ();
 		return true;
 
 	}// shouldComponentUpdate;
@@ -196,7 +186,7 @@ export default class ResizePanel extends BaseControl {
 		}// switch;
 
 		return <div id={outer_control_id} key={outer_control_id} ref={this.outer_control} style={outer_style}>
-			<div id={inner_control_id} key={inner_control_id} ref={this.inner_control} style={inner_style}>{this.state.contents}</div>
+			<div id={inner_control_id} key={inner_control_id} ref={this.inner_control} style={inner_style}>{this.props.children}</div>
 		</div>
 
 	}// render;

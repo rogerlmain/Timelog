@@ -318,7 +318,7 @@ export default class BaseControl extends React.Component {
 	}// validate_ids;
 
 
-	/**** React Component Methods ****/
+	/**** React Component Methods ****
 
 
 	shouldComponentUpdate (new_props, new_state, new_context) {
@@ -337,5 +337,8 @@ export default class BaseControl extends React.Component {
 		return false;
 	}// shouldComponentUpdate;
 
+	
+	/********/
+	
 
 }// BaseControl;

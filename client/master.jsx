@@ -113,13 +113,17 @@ export default class MasterPanel extends BaseControl {
 	main_panel = React.createRef ();
 	user_data_panel = React.createRef ();
 
+	new_company = true;
+
 
 	state = {
+		active_page: page_names.home,
 		signing_up: false,
 		eyecandy_visible: false,
 		eyecandy_callback: null,
 		refresh: false,
 		user: null,
+		user_data: null,
 	}// state;
 
 
@@ -170,12 +174,15 @@ export default class MasterPanel extends BaseControl {
 	/********/
 
 
+	set_page = page => this.main_panel.current.animate (() => this.setState ({ active_page: page }));
+
+
 	sign_in = () => this.setState ({ signing_up: false }, () => this.main_panel.current.animate (this.contents ()));
 	sign_up = () => this.setState ({ signing_up: true }, () => this.main_panel.current.animate (this.contents ()));
 
 
 	contents = () => {
-		if (this.signed_in ()) return this.get_page (page_names.home);
+		if (this.signed_in ()) return this.get_page (this.state.active_page);
 		if (this.state.signing_up || isset (localStorage.getItem ("invitation"))) return <SignupPage parent={this} />
 		return <SigninPage parent={this} />
 	}/* contents */;
@@ -264,9 +271,6 @@ export default class MasterPanel extends BaseControl {
 	}// get_page;
 
 
-	set_page = page => this.main_panel.current.animate (this.get_page (page));
-
-
 	signout_button () {
 		return <SelectButton key="signout_button" 
 
@@ -274,7 +278,11 @@ export default class MasterPanel extends BaseControl {
 				localStorage.clear ();
 				this.setState ({ company_id: null });
 				this.button_panel.current.animate ();
+
+
 				this.user_data_panel.current.animate ();
+
+
 				this.main_panel.current.animate (this.contents ());
 			}}>
 				
@@ -324,10 +332,14 @@ export default class MasterPanel extends BaseControl {
 	/********/
 
 
+	shouldComponentUpdate (new_props, new_state) { if (this.state.company_id != new_state.company_id) this.new_company = true; return true; }
+
+
 	componentDidUpdate () {
-		if (this.signed_in ()) {
-			this.get_buttons ().then (result => this.button_panel.current.animate (result));
-			setTimeout (() => this.user_data_panel.current.animate (this.user_data ()));
+		if (this.signed_in () && this.new_company) {
+			this.get_buttons ().then (result => this.button_panel.current.animate (() => this.setState ({ buttons: result })));
+			setTimeout (() => this.user_data_panel.current.animate (() => this.setState ({ user_data: this.user_data () })));
+			this.new_company = false;
 		}// if;
 	}// componentDidMount;
 
@@ -416,25 +428,25 @@ export default class MasterPanel extends BaseControl {
 
 					<div className="horizontally-spaced-out">
 
-						<div className="two-column-grid">
+						<div className="vertically-aligned">
 
 							<img src={logo} style={{ height: "64px", width: "auto" }} />
 
 							<div className="program-title">
-								<div className="title">Bundyon Timeclock</div>
+								<img src={"resources/images/bundion.svg"} style={{ width: "200px", height: "auto" }} />
 								<div className="tagline">Make every second count</div>
 							</div>
 
 						</div>
 
-						<ExplodingPanel id="user_data_panel" ref={this.user_data_panel} hAlign={horizontal_alignment.right} />
+						<ExplodingPanel id="user_data_panel" ref={this.user_data_panel} hAlign={horizontal_alignment.right}>
+							{this.state.user_data}
+						</ExplodingPanel>
 
 					</div>
 
 					{signed_in && <div className="home_button_panel">
-
-						<ExplodingPanel id="main_button_panel" ref={this.button_panel} />
-
+						<ExplodingPanel id="main_button_panel" ref={this.button_panel}><div className="with-headspace">{this.state.buttons}</div></ExplodingPanel>
 					</div>}
 
 				</div>

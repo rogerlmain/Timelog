@@ -15,18 +15,19 @@ import { tracing, globals, date_formats } from "client/classes/types/constants";
 import { debugging } from "client/classes/common";
 
 
-
 // Guest Imports
 
-import FadePanelTest from "client/tests/test.fade.panel";
-import ResizePanelTest from "client/tests/test.resize.panel";
-import ExplodingPanelTest from "client/tests/test.exploding.panel";
-import EyecandyPanelTest from "client/tests/test.eyecandy.panel";
+import FadePanelTest from "client/tests/controls/panels/fade.panel";
+import ResizePanelTest from "client/tests/controls/panels/resize.panel";
+import ExplodingPanelTest from "client/tests/controls/panels/exploding.panel";
+import EyecandyPanelTest from "client/tests/controls/panels/eyecandy.panel";
 
-import LoadListTest from "client/tests/test.load.list";
-import ClientSelectorTest from "client/tests/test.client.selector";
+import LoadListTest from "client/tests/controls/lists/load.list";
+import ClientSelectorTest from "client/tests/controls/selectors/client.selector";
+import DateInputTest from "client/tests/controls/inputs/date.input";
 
-import ActivityLog from "./classes/activity.log";
+import ActivityLog from "client/classes/activity.log";
+import ReportsPage from "client/pages/reports";
 
 
 //Special Guest Import
@@ -85,20 +86,20 @@ class QuickTest extends BaseControl {
 document.onreadystatechange = () => {
 
 	if (debugging ()) console.log (`Debug test: ${new Date ().format (date_formats.full_datetime)}`);
-	createRoot (document.getElementById ("main_page")).render (<Main id="timelog_main_page" />);
 
-	// Special Guest Render	
-	// createRoot (document.getElementById ("main_page")).render (<FadePanelTest />);
-	// createRoot (document.getElementById ("main_page")).render (<ResizePanelTest />);
-	// createRoot (document.getElementById ("main_page")).render (<ExplodingPanelTest />);
-	// createRoot (document.getElementById ("main_page")).render (<EyecandyPanelTest />);
+	createRoot (document.getElementById ("main_page")).render (<div>
+		
+		<Main id="timelog_main_page" />
 
-	// createRoot (document.getElementById ("main_page")).render (<LoadListTest />);
-	// createRoot (document.getElementById ("main_page")).render (<ClientSelectorTest />);
+		{/* <FadePanelTest /> */}
+		{/* <ResizePanelTest /> */}
+		{/* <ExplodingPanelTest /> */}
+		{/* <EyecandyPanelTest /> */}
+		{/* <LoadListTest /> */}
+		{/* <ClientSelectorTest /> */}
+		{/* <DateInputTest /> */}
+		{/* <ReportsPage /> */}
 
-	// createRoot (document.getElementById ("main_page")).render (<div className="two-column-table">
-	// 	<LoadListTest />
-	// 	<ClientSelectorTest />
-	// </div>);
+	</div>);
 
 }// document.ready;
