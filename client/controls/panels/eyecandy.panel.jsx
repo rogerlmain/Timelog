@@ -18,6 +18,7 @@ export default class EyecandyPanel extends BaseControl {
 
 	exploding_panel = React.createRef ();
 
+
 	state = { eyecandy_visible: false }
 
 
@@ -34,6 +35,7 @@ export default class EyecandyPanel extends BaseControl {
 		vAlign: vertical_alignment.middle,
 
 		eyecandySize: eyecandy_sizes.small,
+		eyecandyVisible: false,
 
 		onEyecandy: null,
 		onContents: null,
@@ -61,14 +63,11 @@ export default class EyecandyPanel extends BaseControl {
 	}}/* eyecandy_style */;
 
 
-	animate = eyecandy => this.setState ({ eyecandy_visible: eyecandy }, () => this.exploding_panel.current.animate (eyecandy ? this.eyecandy () : this.contents ()));
-
-
 	/********/
 
 
 	shouldComponentUpdate (new_props) {
-		if (this.props.eyecandyVisible != new_props.eyecandyVisible) return !!this.animate (new_props.eyecandyVisible);
+		if (this.props.eyecandyVisible != new_props.eyecandyVisible) return !!this.exploding_panel.current.animate (() => this.setState ({ eyecandy_visible: new_props.eyecandyVisible }));
 		return true;
 	}// shouldComponentUpdate;
 
@@ -77,10 +76,13 @@ export default class EyecandyPanel extends BaseControl {
 
 		if (is_null (this.props.id)) throw ("Eyecandy requires an ID");
 
-		return <ExplodingPanel id={`${this.props.id}_exploding_panel`} ref={this.exploding_panel} speed={this.animation_speed ()} stretchOnly={this.props.stretchOnly} hAlign={this.props.hAlign} vAlign={this.props.vAlign}
-			beforeChanging={() => this.execute (this.props.beforeChanging)}
+		return <ExplodingPanel id={`${this.props.id}_exploding_panel`} ref={this.exploding_panel} speed={this.animation_speed ()} 
+
+			hAlign={this.props.hAlign} vAlign={this.props.vAlign} stretchOnly={this.props.stretchOnly}
 			afterChanging={() => { if (this.state.eyecandy_visible) this.execute (this.props.onEyecandy, this) }}>
-			{this.contents ()}
+
+			{this.state.eyecandy_visible ? this.eyecandy () : this.contents ()}
+			
 		</ExplodingPanel>
 
 	}// render;

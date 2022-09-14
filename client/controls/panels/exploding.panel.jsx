@@ -67,7 +67,8 @@ export default class ExplodingPanel extends BaseControl {
 
 		return <FadePanel id={fade_panel_id} key={fade_panel_id} ref={this.fade_panel} visible={this.state.visible} speed={speed}
 
-			afterHiding={() => this.resize_panel.current.freeze (() => this.execute (this.state.handler).then (() => setTimeout (this.resize_panel.current.animate)))}>
+			afterHiding={() => this.resize_panel.current.freeze (() => this.execute (this.state.handler).then (() => setTimeout (this.resize_panel.current.animate)))}
+			afterShowing={()=> this.execute (this.props.afterChanging)}>
 
 			<ResizePanel id={resize_panel_id} key={resize_panel_id} ref={this.resize_panel} stretchOnly={this.props.stretchOnly} hAlign={this.props.hAlign} vAlign={this.props.vAlign}
 			
