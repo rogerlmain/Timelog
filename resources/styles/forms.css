@@ -21,35 +21,4 @@ input[type=number].rate-field {
 /********/
 
 
-div.report-grid {
-	border-left: solid 1px var(--border-color);
-	border-bottom: solid 1px var(--border-color);
-}
-
-
-div.report-grid > div {
-	border: solid 1px var(--border-color);
-	border-left: none;
-	border-bottom: none;
-}/* div.report-grid */
-
-
-div.report-grid div {
-	padding: 0.2em 0.5em;
-}/* div.report-grid div */
-
-
-div.report-grid div.report-header div { 
-	background-color: #DDEEFF;
-	border-top: solid 1px var(--border-color);
-	border-right: solid 1px var(--border-color);
-}/* div.report-grid div.report-header div */
-
-
-div.overtime-grid > div { color: #C22 }
-
-
-/********/
-
-
 div.checkbox-form label { justify-content: flex-start }

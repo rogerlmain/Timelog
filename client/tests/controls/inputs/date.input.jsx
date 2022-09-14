@@ -12,7 +12,7 @@ import DateInput from "client/controls/inputs/date.input";
 export default class LoadListTest extends BaseControl {
 
 
-	state = { use_dates: false }
+	state = { use_dates: true }
 
 
 	/********/
@@ -27,10 +27,18 @@ export default class LoadListTest extends BaseControl {
 
 
 	render () {
-		return <div className="outlined full-width fully-centered" style={{ border: "solid 1px blue" }}>
+		return <div className="full-width fully-centered" style={{ border: "solid 1px blue" }}>
 			<div>
 
 				<DateInput id="date_range_start" disabled={!this.state.use_dates} value={this.state.start_date} onChange={value => this.setState ({ start_date: value })} />
+
+				<br />
+
+				<div style={{
+					border: "solid 1px red",
+					width: "300px",
+					height: "1em",
+				}} />
 
 				<br /><br />
 

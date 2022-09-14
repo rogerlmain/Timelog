@@ -6,7 +6,9 @@ export default class ClientModel extends Database {
 
 	get_clients_by_company (company_id) {
 		let parameters = [company_id];
+//setTimeout (() => {
 		this.execute_query ("get_clients_by_company", parameters);
+//}, 3000);
 	}// get_clients;
 
 

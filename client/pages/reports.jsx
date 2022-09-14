@@ -14,7 +14,7 @@ import ExplodingPanel 	from "client/controls/panels/exploding.panel";
 
 import Container	from "client/controls/container";
 
-import { blank, date_formats } from "client/classes/types/constants";
+import { blank, date_formats, horizontal_alignment } from "client/classes/types/constants";
 import { debugging, get_keys, isset, is_null, is_object, not_set } from "client/classes/common";
 
 import { BillingCheckbox } from "client/controls/abstract/input.control";
@@ -40,7 +40,8 @@ const reports_panels = {
 export default class ReportsPage extends BaseControl {
 
 
-	static defaultProps = { id: "reports_page" }
+	reports_panel = React.createRef ();
+	results_panel = React.createRef ();
 
 
 	state = {
@@ -61,6 +62,9 @@ export default class ReportsPage extends BaseControl {
 		end_date: new Date (),
 
 	}// state;
+
+
+	static defaultProps = { id: "reports_page" }
 
 
 	constructor (props) {
@@ -254,7 +258,7 @@ export default class ReportsPage extends BaseControl {
 				}}
 
 				row={data => {
-					return <Container inline={false} className={`report-grid ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
+					return <Container inline={false} className={`report-entry ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
 						
 						<div className="right-aligned-text">{data.start_time}</div>
 						<div className="right-aligned-text">{data.end_time}</div>
@@ -333,14 +337,14 @@ export default class ReportsPage extends BaseControl {
 				</div>
 			</div>	
 
-			<FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
+			{isset (this.state.project_id) && <FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
 				<div className="button-panel with-headspace">
-					<SelectButton onClick={() => ReportsModel.fetch_by_project (this.state.project_id, this.state.use_dates ? {
+					<SelectButton onClick={() => this.results_panel.current.animate (() => ReportsModel.fetch_by_project (this.state.project_id, this.state.use_dates ? {
 						start_date: this.state.start_date.format (date_formats.database_date), 
 						end_date: this.state.end_date.format (date_formats.database_date),
-					} : null).then (data => this.setState ({ entries: data }))}>Generate</SelectButton>
+					} : null).then (data => this.setState ({ entries: data })))}>Generate</SelectButton>
 				</div>
-			</FadePanel>
+			</FadePanel>}
 
 		</Container>
 
@@ -371,8 +375,8 @@ export default class ReportsPage extends BaseControl {
 
 		let has_data = isset (this.state.entries);
 
-		return <div className="horizontally-aligned">
-			<FadePanel id="report_results_panel" visible={has_data}>
+		return <ExplodingPanel id="report_results_panel" ref={this.results_panel}>
+			<Container visible={has_data}>
 				
 				{/* 
 					REINSTATE WHEN LINEAR OPTION BECOMES NECESSARY 
@@ -391,8 +395,8 @@ export default class ReportsPage extends BaseControl {
 
 				{this.show_totals ()}
 
-			</FadePanel>
-		</div>
+			</Container>
+		</ExplodingPanel>
 
 	}// show_results;
 
@@ -437,25 +441,23 @@ export default class ReportsPage extends BaseControl {
 
 
 	render () {
-		return <div id={this.props.id} className="borderline">{/*  className="two-column-grid"> */}
-{/* 
+		return <div id={this.props.id} className="two-column-grid">
+
 			<div className="button-column">
 	
 				<SelectButton id="project_report_button" className="sticky-button" 
-					selected={this.state.current_panel == reports_panels.project_report} 
 
-					beforeClick={() => this.setState ({ current_panel: null })}
-					onClick={() => this.setState ({ current_panel: reports_panels.project_report })}>
+					selected={this.state.current_panel == reports_panels.project_report} 
+					onClick={() => this.reports_panel.current.animate (() => this.setState ({current_panel: reports_panels.project_report }))}>
 						
 					Projects
 					
 				</SelectButton>
 
 				<SelectButton id="teamster_button" className="sticky-button" 
-					selected={this.state.current_panel == reports_panels.teamster_report} 
 
-					beforeClick={() => this.setState ({ current_panel: null })}
-					onClick={() => this.setState ({current_panel: reports_panels.teamster_report })}>
+					selected={this.state.current_panel == reports_panels.teamster_report} 
+					onClick={() => this.reports_panel.current.animate (() => this.setState ({current_panel: reports_panels.teamster_report }))}>
 						
 					Teamsters
 					
@@ -463,12 +465,9 @@ export default class ReportsPage extends BaseControl {
 
 			</div>					
 				
- */}
-			<ExplodingPanel id="reports_exploding_panel">
+			<ExplodingPanel id="reports_reports_panel" ref={this.reports_panel} stretchOnly={true} hAlign={horizontal_alignment.left}>
 				{this.project_report_panel ()}
-{/* 				
 				{this.teamster_report_panel ()}
- */}
 			</ExplodingPanel>
 			
 		</div>

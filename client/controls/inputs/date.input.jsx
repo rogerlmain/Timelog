@@ -65,6 +65,7 @@ export default class DateInput extends BaseControl {
 
 				<div id={`${this.props.id}_display_div`} name={this.props.id} className={`bordered ${this.props.disabled ? "disabled" : null}`} style={{ 
 					display: "inline-flex",
+					width: "100%",
 					height: "2.05em",
 					padding: "0 3em 0 0.7em",
 					alignItems: "center",
