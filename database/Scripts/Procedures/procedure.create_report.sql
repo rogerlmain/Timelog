@@ -1,3 +1,5 @@
+use timelog;
+
 start transaction;
 
 drop procedure if exists report_by_project;
@@ -16,9 +18,9 @@ create procedure create_report (
 		log.start_time,
         log.end_time,
         timestampdiff (second, log.start_time, log.end_time) as total_time,
-        (timestampdiff (second, log.start_time, log.end_time) / 3600) * get_rate (project_id) as total_due,
+        get_rate (project_id) as rate,
+        round((timestampdiff (second, log.start_time, log.end_time) / 3600) * get_rate (project_id)) as total_due,
         log.notes,
-        get_rate(project_id) as rate,
         (log.billed = 1) as billed -- cast bit to boolean
 	from
 		logging as log

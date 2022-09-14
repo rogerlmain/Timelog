@@ -36,7 +36,7 @@ div.report-grid div.report-header { display: contents }
 
 
 div.report-grid div.report-header div { 
-	background-color: #DDEEFF;
+	background-color: var(--report-subheader-color);
 	border-top: solid 1px var(--border-color);
 	border-right: solid 1px var(--border-color);
 }/* div.report-grid div.report-header div */
@@ -65,5 +65,19 @@ div.report-entry div.report-notes {
 	width: 25vw;
 	white-space: break-spaces;
 }/* div.report-entry div.report-notes */
+
+
+div.report-grid div.footer, div.report-grid div.footer-total { display: contents }
+
+
+div.report-grid div.footer > div, div.report-grid div.footer-total > div {
+	border-top: solid 1px var(--border-color);
+	border-right: solid 1px var(--border-color);
+	background-color: var(--report-footer-color);
+	text-align: right;
+}/* div.report-grid div.footer > div, div.report-grid div.footer-total > div */
+
+
+div.report-grid div.footer-total > div { background-color: var(--report-footer-total-color) }
 
 

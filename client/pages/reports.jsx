@@ -15,12 +15,15 @@ import ExplodingPanel 	from "client/controls/panels/exploding.panel";
 import Container	from "client/controls/container";
 
 import { blank, date_formats, horizontal_alignment } from "client/classes/types/constants";
-import { debugging, get_keys, isset, is_null, is_object, not_set } from "client/classes/common";
+import { debugging, get_keys, isset, is_null, is_object, not_set, warning } from "client/classes/common";
 
 import { BillingCheckbox } from "client/controls/abstract/input.control";
 
 import "resources/styles/forms.css";
 import "resources/styles/pages/reports.css";
+
+
+const currency_symbol = "$"; // Add other symbols for foreign markets, as needed.
 
 
 const granularity = {
@@ -266,8 +269,8 @@ export default class ReportsPage extends BaseControl {
 						<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
 
 						<Container visible={OptionStorage.can_bill ()}>{/*  && (data.rate > 0)}> */}
-							<div className="right-aligned-text">{data.rate}</div>
-							<div className="right-aligned-text">{data.total_due}</div>
+							<div className="right-aligned-text">{currency_symbol}{data.rate?.toCurrency ()}</div>
+							<div className="right-aligned-text">{currency_symbol}{data.total_due?.toCurrency ()}</div>
 							<BillingCheckbox id={data.log_id} onClick={event => {
 								if (event.target.checked === false) return warning (`
 									This entry has been marked as billed!
@@ -280,7 +283,9 @@ export default class ReportsPage extends BaseControl {
 						</Container>
 
 					</Container>
-				}}>
+				}}
+				
+				footer={() => this.show_totals ()}>
 				
 			</ReportGrid>
 		</div>
@@ -393,8 +398,6 @@ export default class ReportsPage extends BaseControl {
 					{this.daily_breakdown ()}
 				</Container>
 
-				{this.show_totals ()}
-
 			</Container>
 		</ExplodingPanel>
 
@@ -403,13 +406,38 @@ export default class ReportsPage extends BaseControl {
 
 	show_totals () {
 
-		let total = 0;
+		let total_time = 0;
+		let total_earned = 0;
+		let total_due = 0;
 
-		if (isset (this.state.entries)) this.state.entries.map (row => total += row.total_time);
+		if (isset (this.state.entries)) this.state.entries.map (row => {
+			total_time += row.total_time;
+			total_earned += row.total_due;
+			if (!row.billed) total_due += row.total_due;
+		});
 
 		return <Container>
-			<div className="entry" style={{ gridColumn: "1 / 5" }}>Total</div>
-			<div className="entry">{Date.elapsed (total)}</div>
+
+			<div className="footer">
+
+				<div style={{ textAlign: "left", gridColumn: "1 / 4" }}>Paid</div>
+				<div style={{ gridColumn: "4", gridRow: "auto / span 2" }} className="vertically-centered">{Date.elapsed (total_time)}</div>
+				<div style={{ gridColumn: "5 / 7" }}>{currency_symbol}{(total_earned - total_due).toCurrency ()}</div>
+				<div />
+
+				<div style={{ textAlign: "left", gridColumn: "1 / 4" }}>Outstanding</div>
+				<div style={{ gridColumn: "5 / 7" }}>{currency_symbol}{total_due.toCurrency ()}</div>
+				<div />
+
+			</div>
+
+			<div className="footer-total">
+				<div style={{ textAlign: "left", gridColumn: "1 / 5" }}>Total</div>
+				<div style={{ gridColumn: "5 / 7" }}>{currency_symbol}{total_earned.toCurrency ()}</div>
+				<div />
+			</div>
+
+
 		</Container>
 
 	}// show_totals;

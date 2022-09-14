@@ -1,13 +1,15 @@
+use timelog;
+
 start transaction;
 
 drop function if exists get_rate;
 
 delimiter ;;
 
-create function get_rate (project_id integer) returns decimal(5,2) deterministic
+create function get_rate (project_id integer) returns integer deterministic
 begin
 
-	declare result decimal(5,2);
+	declare result integer;
     
     select
 		coalesce (prj.billing_rate, clt.billing_rate, (select 

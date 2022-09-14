@@ -62,7 +62,6 @@ export default class ReportGrid extends BaseControl {
 
 		add_row ("header", data);
 		data.forEach (row => add_row ("row", row));
-		add_row ("footer", data);
 		
 		return result;
 
@@ -93,7 +92,6 @@ export default class ReportGrid extends BaseControl {
 			if (is_null (result)) result = [];
 
 			result.push (<HeaderCell key={this.create_key ()} style={{ gridColumn: "1/-1" }}>{key}</HeaderCell>);
-//			result.push (<HeaderCell key={this.create_key ()}><CheckboxCell /></HeaderCell>);
 
 			switch (is_empty (subcategories)) {
 				case true: result.push (this.report_items (dataset [key])); break;
@@ -125,16 +123,23 @@ export default class ReportGrid extends BaseControl {
 
 		const max_cell_count = () => {
 			const count = template => { return is_function (this.props [template]) ? cell_count (this.props [template] ({})) : 1 }
-			return Math.max (count ("header"), count ("row"), count ("footer"));
+			return Math.max (count ("header"), count ("row"));//, count ("footer"));
 		}/* max_cell_count */;
 
 
 		if (is_null (this.props.data)) return null;
 
-		return <div className="report-grid" style={{
-			display: "grid",
-			gridTemplateColumns: `repeat(${max_cell_count ()}, min-content)`,
-		}}>{this.report_branch (this.props.data, this.props.categories)}</div>
+		
+		return <div className="report-grid" 
+			style={{
+				display: "grid",
+				gridTemplateColumns: `repeat(${max_cell_count ()}, min-content)`,
+			}}>
+			
+			{this.report_branch (this.props.data, this.props.categories)}
+			{is_function (this.props.footer) ? this.props.footer () : null}
+
+		</div>
 
 	}// render;
 

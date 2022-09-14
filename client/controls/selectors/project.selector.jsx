@@ -63,13 +63,6 @@ export default class ProjectSelector extends BaseControl {
 	/********/
 
 
-	// client_selected = () => { return nested_value (this.client_selector.current, "client_selected") }
-	// project_selected = () => { return ((this.state.project_id > 0) || (OptionsStorage.single_project () && this.client_selected ())) }
-
-	
-	/********/
-
-
 	render () {
 
 		let single_client = (OptionsStorage.client_limit () == 1);
@@ -117,6 +110,7 @@ export default class ProjectSelector extends BaseControl {
 					onChange={event => this.setState ({ project_id: integer_value (event.target.value) }), event => this.execute (this.props.onProjectChange, event)}>
 
 				</LoadList>
+				
 			</Container>
 
 		</div>
