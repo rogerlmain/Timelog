@@ -287,7 +287,7 @@ export default class LoggingPage extends BaseControl {
 					<Break />
 
 					<label>Billable</label>
-					<div>${this.billable_time (elapsed_time)}</div> 
+					<div>${this.billable_time (elapsed_time).toCurrency ()}</div> 
 
 				</Container>
 
