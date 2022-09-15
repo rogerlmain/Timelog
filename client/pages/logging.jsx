@@ -205,7 +205,7 @@ export default class LoggingPage extends BaseControl {
 
 
 	overtime_notice = () => {
-		return <PopupNotice id="overtime_notice" visible={this.state.editing} style={{ top: "9em" }}>
+		return <PopupNotice id="overtime_notice" visible={this.state.editing}>
 
 			<ExplodingPanel id="overtime_notice_panel">
 
@@ -231,6 +231,7 @@ export default class LoggingPage extends BaseControl {
 
 						Whoa! Are you sure this is right?<br/>
 						You have a single session going for more than a day!<br />
+						<br />
 						Did you forget to log out?<br />	
 
 						<br />
@@ -280,7 +281,12 @@ export default class LoggingPage extends BaseControl {
 				<Break />
 
 				<label>Elapsed</label>
-				<div>{elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)}</div>
+				<div className="right-justified">
+					<div className="two-column-grid">
+						<div>{elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)}</div>
+						<div style={{ position: "relative" }}>{this.overtime_notice ()}</div>
+					</div>
+				</div>
 				
 				<Container visible={OptionsStorage.can_bill () && (this.state.billing_rate > 0)}>
 
@@ -292,8 +298,6 @@ export default class LoggingPage extends BaseControl {
 				</Container>
 
 			</div>
-
-			<div>{this.overtime_notice ()}</div>
 
 		</div>
 
