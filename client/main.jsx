@@ -87,7 +87,7 @@ document.onreadystatechange = () => {
 
 	if (debugging ()) console.log (`Debug test: ${new Date ().format (date_formats.full_datetime)}`);
 
-	createRoot (document.getElementById ("main_page")).render (<div>
+	createRoot (document.getElementById ("main_page")).render (<div id="main_panel" className="horizontally-centered">
 		
 		<Main id="timelog_main_page" />
 

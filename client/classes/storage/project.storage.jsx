@@ -54,12 +54,16 @@ export default class ProjectStorage extends LocalStorage {
 		let store = LocalStorage.get_all (store_name);
 		let data = null;
 
-		Object.keys (store).forEach (key => {
-			let next = store [key];
-			if (next.project_id == project_id) return data = store [key];
-		});
+		if (isset (store)) {
 
-		if (isset (data)) return data;
+			Object.keys (store).forEach (key => {
+				let next = store [key];
+				if (next.project_id == project_id) return data = store [key];
+			});
+
+			if (isset (data)) return data;
+		
+		}// if;
 
 		return new Promise ((resolve, reject) => {
 			ProjectModel.get_project_by_id (project_id).then (data => {

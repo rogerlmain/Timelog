@@ -23,10 +23,37 @@
 			top: 2em;
 		}/* #debug_container */
 
-		div.inset {
+		#program_panel {
 			display: flex;
+		}/* #program_panel */
+
+		#main_page {
+			display: flex; 
+			justify-content: center;
 			padding: 1em;
-		}/* div.inset */
+
+/* border: solid 1px red; */
+
+		}/* #main_page */
+
+		#main_panel {
+			overflow: auto;
+			width: 100%;
+
+/* border: solid 1px green; */
+
+		}/* #main_panel */
+
+
+		#master_panel {
+			display: flex;
+			flex-direction: column;
+			width: max-content;
+			height: 100%;
+
+/* border: solid 1px blue; */
+
+		}/* #master-panel */
 		
 	</style>
 
@@ -52,8 +79,8 @@
 
 <body onclick="click_handler ()" onload="load_handler ()">
 
-	<div id="program_panel" class="full-screen inset">
-		<div id="main_page" class="full-size" style="display: flex; justify-content: center; overflow-y: hidden"></div>
+	<div id="program_panel" class="full-screen">
+		<div id="main_page" class="full-size"></div>
 	</div>
 
 </body>

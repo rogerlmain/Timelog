@@ -307,8 +307,7 @@ export default class LoggingPage extends BaseControl {
 		this.setState ({ 
 			current_entry: { ...this.state.current_entry, end_time: this.end_time () },
 			editing: this.needs_editing (24),
-			initialized: true,
-		});
+		}, () => setTimeout (this.setState ({ initialized: true })));
 	}// componentDidMount;
 
 
@@ -336,38 +335,24 @@ export default class LoggingPage extends BaseControl {
 		}// if;
 
 		return <div id="log_panel">
-{/* 
-			<EyecandyPanel id="log_form_eyecandy" ref={this.log_form_panel} text="Loading..." eyecandyVisible={!this.state.initialized} stretchOnly={true}>
 
-				<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
+			<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
 
-				<Container visible={!logged_in}>
-*/}
-					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
+			<Container visible={!logged_in}>
 
-						clientId={this.client_id ()} projectId={this.project_id ()}
+				<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
 
-						hasHeader={true} 
-						headerSelectable={false} 
+					clientId={this.client_id ()} projectId={this.project_id ()}
 
-						onClientChange={event => this.setState ({ current_entry: {...this.state.current_entry, client_id: event.target.value } })}
-						onProjectChange={event => this.setState ({ current_entry: {...this.state.current_entry, project_id: event.target.value } })}>
+					hasHeader={true} 
+					headerSelectable={false} 
 
-					</ProjectSelector>
-{/* 
-				</Container>
+					onClientChange={event => this.setState ({ current_entry: {...this.state.current_entry, client_id: event.target.value } })}
+					onProjectChange={event => this.setState ({ current_entry: {...this.state.current_entry, project_id: event.target.value } })}>
 
-			</EyecandyPanel>
+				</ProjectSelector>
 
-			<div className="flex-column with-headspace">
-				<div style={{ paddingLeft: "0.75em" }}><label htmlFor="memo" style={{ fontWeight: "bold" }}>Notes</label></div>
-				<div className="textarea-container with-some-headspace">
-					<textarea id="notes" name="notes"
-						placeholder="(optional)" defaultValue={this.notes () ?? blank}
-						onBlur={event => this.setState ({ current_entry: {...this.state.current_entry, notes: event.target.value }})}>
-					</textarea>
-				</div>
-			</div>
+			</Container>
 
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
@@ -380,29 +365,45 @@ export default class LoggingPage extends BaseControl {
 					onEyecandy={this.log_entry}>
 
 					<FadePanel id="login_button" visible={this.project_selected ()} style={{ display: "flex" }}>
-						<div style={log_button_panel}>
 
-							<Container visible={logged_in}>
-								<button className="full-width"
-									onClick={() => this.setState ({ updating: true, action: action_types.cancel })}>
-									Cancel entry
-								</button>
-							</Container>
+						<div className="flex-column">
 
-							<Container visible={(!logged_in) || (elapsed_time > 0)}>
-								<button className="full-width"
-									onClick={() => this.setState ({ updating: true, action: action_types.log })} style={{ flex: 1 }} 
-									disabled={logged_in && this.invalid_entry ()}>
-									{logged_in ? "Log out" : "Log in"}
-								</button>
-							</Container>
+							<div className="flex-column with-headspace">
+								<div style={{ paddingLeft: "0.75em" }}><label htmlFor="memo" style={{ fontWeight: "bold" }}>Notes</label></div>
+								<div className="textarea-container with-some-headspace">
+									<textarea id="notes" name="notes"
+										placeholder="(optional)" defaultValue={this.notes () ?? blank}
+										onBlur={event => this.setState ({ current_entry: {...this.state.current_entry, notes: event.target.value }})}>
+									</textarea>
+								</div>
+							</div>
+
+							<div style={log_button_panel} className="with-some-headspace">
+									
+								<Container visible={logged_in}>
+									<button className="full-width"
+										onClick={() => this.setState ({ updating: true, action: action_types.cancel })}>
+										Cancel entry
+									</button>
+								</Container>
+
+								<Container visible={(!logged_in) || (elapsed_time > 0)}>
+									<button className="full-width"
+										onClick={() => this.setState ({ updating: true, action: action_types.log })} style={{ flex: 1 }} 
+										disabled={logged_in && this.invalid_entry ()}>
+										{logged_in ? "Log out" : "Log in"}
+									</button>
+								</Container>
+
+							</div>
 
 						</div>
+
 					</FadePanel>
 
 				</EyecandyPanel>
 			</div>
-*/}
+ 
 		</div>
 		
 	}// render;

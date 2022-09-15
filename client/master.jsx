@@ -141,8 +141,6 @@ export default class MasterPanel extends BaseControl {
 	viewer_style = {
 		width: "90rem", 
 		height: "100%", 
-		overflowY: "auto",
-		overflowX: "hidden",
 	}// viewer_style;
 
 
@@ -422,7 +420,7 @@ export default class MasterPanel extends BaseControl {
 
 
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
-			<div className="vertically-spaced-out main-page">
+			<div id="master_panel" className="vertically-spaced-out">
 
 				<div className="page-header">
 
@@ -451,7 +449,7 @@ export default class MasterPanel extends BaseControl {
 
 				</div>
 
-				<div className="full-height horizontally-centered with-headspace" style={{ overflow: "hidden" }}>
+				<div style={{ flexGrow: 1 }} className="with-headspace ">
 					<div style={this.viewer_style} className="horizontally-centered">
 						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true} vAlign="flex-start">{this.contents ()}</ExplodingPanel>
 					</div>

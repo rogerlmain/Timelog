@@ -115,16 +115,6 @@ br.double	{ line-height: 2em }
 br.triple	{ line-height: 3em }
 
 
-/**** Body ****/
-
-
-body {
-	/* overflow: hidden; */
-	padding: 1em;
-	/* overflow-y: scroll; */
-}/* body */
-
-
 /**** Buttons ****/
 
 
