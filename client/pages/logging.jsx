@@ -305,6 +305,7 @@ export default class LoggingPage extends BaseControl {
 
 	componentDidMount () {
 		this.setState ({ 
+			current_entry: { ...this.state.current_entry, end_time: this.end_time () },
 			editing: this.needs_editing (24),
 			initialized: true,
 		});
@@ -312,12 +313,8 @@ export default class LoggingPage extends BaseControl {
 
 
 	componentDidUpdate () {
-
 		let needs_editing = this.needs_editing (24);
-
 		if (this.state.editable != needs_editing) this.setState ({ editable: needs_editing });
-		this.setState ({ current_entry: { ...this.state.current_entry, end_time: this.end_time () }});
-		
 	}// componentDidUpdate;
 
 
@@ -339,12 +336,13 @@ export default class LoggingPage extends BaseControl {
 		}// if;
 
 		return <div id="log_panel">
-
+{/* 
 			<EyecandyPanel id="log_form_eyecandy" ref={this.log_form_panel} text="Loading..." eyecandyVisible={!this.state.initialized} stretchOnly={true}>
 
 				<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
 
 				<Container visible={!logged_in}>
+*/}
 					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
 
 						clientId={this.client_id ()} projectId={this.project_id ()}
@@ -356,6 +354,7 @@ export default class LoggingPage extends BaseControl {
 						onProjectChange={event => this.setState ({ current_entry: {...this.state.current_entry, project_id: event.target.value } })}>
 
 					</ProjectSelector>
+{/* 
 				</Container>
 
 			</EyecandyPanel>
@@ -403,7 +402,7 @@ export default class LoggingPage extends BaseControl {
 
 				</EyecandyPanel>
 			</div>
-
+*/}
 		</div>
 		
 	}// render;

@@ -83,25 +83,28 @@ export default class LoadList extends BaseControl {
 	select_list = () => {
 
 		let header = null_value (this.props.listHeader);
+		let new_button = isset (this.props.newButtonPage);
 
 		if (is_null (this.state.data)) return null;
 
-		if (isset (this.props.newButtonPage)) return <button onClick={() => { 
-			this.context.master_page.setState ({ page: this.props.newButtonPage })
-		}}>New</button>
-		
-		return <SelectList id={this.props.id} data={this.state.data} value={this.props.selectedItem} disabled={this.props.disabled}
+		return <div className={new_button ? "two-column-grid" : null} style={new_button ? { columnGap: "0.25em" } : null}>
 
-			style={this.props.style}
+			<SelectList id={this.props.id} data={this.state.data} value={this.props.selectedItem} disabled={this.props.disabled}
 
-			hasHeader={isset (header)} headerText={header} 
-			headerSelectable={this.props.headerSelectable}
-			
-			idField={this.props.dataIdField} textField={this.props.dataTextField}
+				style={this.props.style}
 
-			onChange={event => this.execute (this.props.onChange, event)}>
+				hasHeader={isset (header)} headerText={header} 
+				headerSelectable={this.props.headerSelectable}
+				
+				idField={this.props.dataIdField} textField={this.props.dataTextField}
 
-		</SelectList>
+				onChange={event => this.execute (this.props.onChange, event)}>
+
+			</SelectList>
+
+			{new_button && <button onClick={() => this.context.master_page.set_page (this.props.newButtonPage)}>New</button>}
+
+		</div>
 		
 	}// select_list;
 

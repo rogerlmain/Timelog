@@ -103,7 +103,7 @@ export default class ProjectSelector extends BaseControl {
 					headerSelectable={this.props.headerSelectable}
 
 					dataIdField="project_id" dataTextField="name" data={this.state.project_data} selectedItem={this.state.project_id}
-					newButtonPage={(this.props.newButton && isset (this.state.cliend_id)) ? page_names.projects : null} 
+					newButtonPage={this.props.newButton ? page_names.projects : null} 
 					
 					disabled={not_set (this.state.client_id) && (!single_client)}
 
