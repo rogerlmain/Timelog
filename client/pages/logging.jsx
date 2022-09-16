@@ -24,6 +24,7 @@ import { Break } from "client/controls/html/components";
 import { MasterContext } from "client/classes/types/contexts";
 
 import "resources/styles/pages/logging.css";
+import { resize_direction } from "client/controls/panels/resize.panel";
 
 
 const action_types = {
@@ -45,6 +46,7 @@ export default class LoggingPage extends BaseControl {
 
 
 	selector = React.createRef ();
+	notice_panel = React.createRef ();
 
 
 	state = {
@@ -61,9 +63,6 @@ export default class LoggingPage extends BaseControl {
 		updating: false
 
 	}/* state */;
-
-
-	log_form_panel = React.createRef ();
 
 
 	static contextType = MasterContext;
@@ -206,15 +205,13 @@ export default class LoggingPage extends BaseControl {
 
 	overtime_notice = () => {
 		return <PopupNotice id="overtime_notice" visible={this.state.editing}>
-
-			<ExplodingPanel id="overtime_notice_panel">
+			<ExplodingPanel id="overtime_notice_panel" ref={this.notice_panel}>
 
 				<Container id="calendar_clock" visible={this.state.fixing}>
 
 					<CalendarClock id="log_calendar_clock"
 						start={this.state.current_entry.start_time} end={this.state.current_entry.end_time}
 						onChange={data => {
-							this.log_form_panel.current.forceResize ();
 							this.state.current_entry [`${data.boundary}_time`] = data.date;
 							this.forceUpdate ();
 						}}>
@@ -238,7 +235,7 @@ export default class LoggingPage extends BaseControl {
 
 						<div className="button-panel">
 							<button onClick={() => this.setState ({ editing: false })}>Yep, that's right</button>
-							<button onClick={() => this.setState ({ fixing: true })}>Oops. Fix it.</button>
+							<button onClick={() => this.notice_panel.current.animate (() => this.setState ({ fixing: true }))}>Oops. Fix it.</button>
 						</div>
 
 					</div>
@@ -383,7 +380,7 @@ export default class LoggingPage extends BaseControl {
 							</div>
 
 							<div style={log_button_panel} className="with-some-headspace">
-									
+
 								<Container visible={logged_in}>
 									<button className="full-width"
 										onClick={() => this.setState ({ updating: true, action: action_types.cancel })}>

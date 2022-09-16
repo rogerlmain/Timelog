@@ -140,14 +140,6 @@ export default class ResizePanel extends BaseControl {
 	/********/
 
 
-	shouldComponentUpdate (new_props, new_state) {
-
-//		if (new_props.children != this.props.children) this.outer_control.current.freeze ();
-		return true;
-
-	}// shouldComponentUpdate;
-
-
 	componentDidUpdate = () => { if (this.state.animating) this.update_size () };
 
 
@@ -170,7 +162,7 @@ export default class ResizePanel extends BaseControl {
 			margin: "none",
 			padding: "none",
 			display: "inline-block",
-			position: "relative",
+			//position: "relative",
 		}// inner_style;
 		
 		let speed = this.animation_speed ();

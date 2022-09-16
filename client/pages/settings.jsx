@@ -171,7 +171,7 @@ export default class SettingsPage extends BaseControl {
 
 
 	granularity_option = () => { 
-		return <OptionToggle id="granularity" title="Granularity" values={["1 Hr", "15 Mins", "1 Min", "Truetime"]} value={OptionsStorage.granularity ()}
+		return <OptionToggle id="granularity" title="Granularity" values={["30 Mins", "15 Mins", "1 Min", "Truetime"]} value={OptionsStorage.granularity ()}
 			option={option_types.granularity} parent={this} 
 			onPaymentConfirmed={selected_option => {
 				this.set_option (option_types.granularity, selected_option).then (() => this.setState ({

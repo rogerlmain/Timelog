@@ -23,7 +23,7 @@ export default class ResizePanelTest extends BaseControl {
 
 	state = { 
 
-contents: null,
+		contents: null,	
 
 		index: 1,
 
@@ -90,7 +90,7 @@ contents: null,
 
 
 	animate (new_index) {
-		this.setState ({ index: new_index }, this.resize_panel.current.animate);
+		this.setState ({ index: new_index }, () => this.resize_panel.current.animate ());
 	}// animate;
 
 
@@ -100,7 +100,7 @@ contents: null,
 			<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
 				<div style={{ border: "solid 1px red", display: "inline-block" }}>
-					<ResizePanel id="test" parent={this} ref={this.resize_panel} stretchOnly={false} alignment={horizontal_alignment.center} animating={this.state.animating}>
+					<ResizePanel id="test" parent={this} ref={this.resize_panel} stretchOnly={false} alignment={horizontal_alignment.center}>
 						{this.get_page (this.state.index)}
 					</ResizePanel>
 				</div>
@@ -113,13 +113,12 @@ contents: null,
 			<button onClick={() => this.animate (1)}>Teeny contents</button>
 			<button onClick={() => this.animate (2)}>Medium contents</button>
 			<button onClick={() => this.animate (3)}>Large contents</button>
+
+			<br />
+			
 			<button onClick={() => this.animate (4)}>With textarea</button>
 			<button onClick={() => this.animate (5)}>Long one</button>
 			<button onClick={() => this.animate (6)}>Image included</button>
-
-			<br /><br />
-
-			<button onClick={() => this.setState ({ animating: true })}>Resize</button>
 
 		</div>
 	}// render;
