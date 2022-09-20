@@ -252,7 +252,7 @@ export default class MasterPanel extends BaseControl {
 	select_company = (company_id, callback = null) => {
 		CompanyStorage.set_active_company (company_id);
 		this.setState ({ company_id: company_id}, callback);
-	}// select_company;
+	}/* select_company */;
 
 
 	get_page = (page) => {
@@ -266,7 +266,7 @@ export default class MasterPanel extends BaseControl {
 			case page_names.account		: return <AccountPage parent={this.props.parent} />;
 			case page_names.settings	: return <SettingsPage />;
 		}// switch;
-	}// get_page;
+	}/* get_page */;
 
 
 	signout_button () {
@@ -276,11 +276,7 @@ export default class MasterPanel extends BaseControl {
 				localStorage.clear ();
 				this.setState ({ company_id: null });
 				this.button_panel.current.animate ();
-
-
 				this.user_data_panel.current.animate ();
-
-
 				this.main_panel.current.animate (this.contents ());
 			}}>
 				

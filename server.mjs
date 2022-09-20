@@ -348,7 +348,7 @@ app.post ("/signin", () => {
 
 		let companies = await (new CompaniesModel ().get_companies_by_account (account.account_id));
 		let settings = await (new SettingsModel ().get_settings (account.account_id));
-		let logging = (await (new LoggingModel ().latest_log_entry (account.account_id)));
+		let logging = await (new LoggingModel ().latest_log_entry (account.account_id));
 
 		if (companies.length > 0) {
 			for (let company of companies) {

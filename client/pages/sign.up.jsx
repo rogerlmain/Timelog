@@ -15,7 +15,7 @@ import PasswordForm from "client/forms/password.form";
 
 import AccountsModel from "client/classes/models/accounts.model";
 
-import { account_types, globals } from "client/classes/types/constants";
+import { account_types, blank, globals } from "client/classes/types/constants";
 import { get_keys, isset, is_null, nested_value, notify, not_empty, pause } from "client/classes/common";
 
 import user_image from "resources/images/guest.user.svg";
@@ -95,6 +95,9 @@ export default class SignupPage extends BaseControl {
 
 
 	render () {
+
+		let signed_in = this.signed_in ();
+
 		return <div id={this.props.id} className={`${this.signed_out () ? "shadow-box" : null} horizontally-centered`} style={{ alignSelf: "center" }}>
 
 			<PasswordForm visible={this.state.changing_password} />
@@ -110,7 +113,7 @@ export default class SignupPage extends BaseControl {
 			</ExplodingPanel>
 
 
-			<Container visible={this.signed_in ()}>
+			<Container visible={signed_in}>
 				<ImageUploader id="avatar" 
 					onUpload={image => this.setState ({ avatar: image.thumbnail })}
 					defaultImage={AccountStorage.avatar () ?? user_image} style={image_uploader_style}>
@@ -120,7 +123,7 @@ export default class SignupPage extends BaseControl {
 
 			<form id="account_form" ref={this.account_form} encType="multipart/form-data">
 
-				<div className="two-piece-form">
+				<div className={`two-piece-form ${signed_in ? "with-lotsa-headspace" : blank}`}>
 
 					<input id="account_id" name="account_id" type="hidden" defaultValue={AccountStorage.account_id ()} />
 
@@ -176,9 +179,9 @@ defaultValue="stranger" />
 			</form>
 
 			<div className="full-width with-headspace">
-				<div className={`${this.signed_in () ? "right-justified" : "horizontally-spaced-out"}`} style={{ columnGap: "0.5em" }}>
+				<div className={`${signed_in ? "right-justified" : "horizontally-spaced-out"}`} style={{ columnGap: "0.5em" }}>
 
-					<Container visible={this.signed_in ()}>
+					<Container visible={signed_in}>
 						<button onClick={() => this.setState ({ changing_password: true })}>Change password</button>
 					</Container>	
 
@@ -193,7 +196,7 @@ defaultValue="stranger" />
 
 					<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible} stretchOnly={false}
 
-						text={this.signed_in () ? "Saving your information" : "Creating your account"}
+						text={signed_in ? "Saving your information" : "Creating your account"}
 						onEyecandy = {this.save_account}>
 
 						<button onClick={() => { 
