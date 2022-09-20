@@ -48,7 +48,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.0.8";
+const version = "1.0.1.1";
 
 
 const user_image_style = {
@@ -175,7 +175,12 @@ export default class MasterPanel extends BaseControl {
 	set_page = page => this.main_panel.current.animate (() => this.setState ({ active_page: page }));
 
 
-	sign_in = () => this.setState ({ signing_up: false }, () => this.main_panel.current.animate (this.contents ()));
+	sign_in = () => {
+		this.main_panel.current.animate (() => this.setState ({ active_page: page_names.home }));
+		this.user_data_panel.current.animate (() => this.setState ({ company_id: CompanyStorage.active_company_id () }));
+	}// sign_in;
+
+
 	sign_up = () => this.setState ({ signing_up: true }, () => this.main_panel.current.animate (this.contents ()));
 
 
@@ -275,9 +280,6 @@ export default class MasterPanel extends BaseControl {
 			onClick={() => {
 				localStorage.clear ();
 				this.setState ({ company_id: null });
-				this.button_panel.current.animate ();
-				this.user_data_panel.current.animate ();
-				this.main_panel.current.animate (this.contents ());
 			}}>
 				
 			Sign out
@@ -321,30 +323,6 @@ export default class MasterPanel extends BaseControl {
 
 		}).catch (error => reject (error));
 	})// update_company_list;
-
-
-	/********/
-
-
-	shouldComponentUpdate (new_props, new_state) { if (this.state.company_id != new_state.company_id) this.new_company = true; return true; }
-
-
-	componentDidUpdate () {
-		if (this.signed_in () && this.new_company) {
-			this.get_buttons ().then (result => this.button_panel.current.animate (() => this.setState ({ buttons: result })));
-			setTimeout (() => this.user_data_panel.current.animate (() => this.setState ({ user_data: this.user_data () })));
-			this.new_company = false;
-		}// if;
-	}// componentDidMount;
-
-
-	componentDidMount () {
-		if (!(debugging ())) this.update_clock ();
-		this.componentDidUpdate ();
-	}// componentDidMount;
-	
-	
-	/********/
 
 
 	user_data = () => {
@@ -392,7 +370,7 @@ export default class MasterPanel extends BaseControl {
 			</Container>
 	
 			<Container visible={!signed_in}>
-				<div className="right-aligned-text with-some-headspace">Welcome!</div>
+				<div className="right-aligned-text with-some-headspace">Welcome stranger!</div>
 			</Container>
 	
 		</div>
@@ -401,8 +379,26 @@ export default class MasterPanel extends BaseControl {
 	
 	
 	/********/
-	
 
+
+	shouldComponentUpdate (new_props, new_state) { if (this.state.company_id != new_state.company_id) this.new_company = true; return true; }
+
+
+	componentDidUpdate () {
+		if (this.signed_in () && this.new_company) {
+			this.get_buttons ().then (result => this.button_panel.current.animate (() => this.setState ({ buttons: result })));
+			this.new_company = false;
+		}// if;
+	}// componentDidMount;
+
+
+	componentDidMount () {
+		if (!(debugging ())) this.update_clock ();
+//		this.user_data_panel.current.animate (() => this.setState ({ user_data: this.user_data () }));
+		this.componentDidUpdate ();
+	}// componentDidMount;
+	
+	
 	render () {
 
 		let signed_in = this.signed_in ();
@@ -434,7 +430,7 @@ export default class MasterPanel extends BaseControl {
 						</div>
 
 						<ExplodingPanel id="user_data_panel" ref={this.user_data_panel} hAlign={horizontal_alignment.right}>
-							{this.state.user_data}
+							{this.user_data ()}
 						</ExplodingPanel>
 
 					</div>

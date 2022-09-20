@@ -78,11 +78,7 @@ export default class SigninPage extends BaseControl {
 					let ids = get_keys (companies);
 
 					if (isset (ids) && (ids.length == 1)) CompanyStorage.set_active_company (ids [0]);
-					
-					this.context.master_page.setState ({ company_id: CompanyStorage.active_company_id () });
-					this.context.master_page.set_page (page_names.home);
-
-					return globals.main.forceUpdate ();
+					this.context.master_page.sign_in ();
 
 				}// if;
 

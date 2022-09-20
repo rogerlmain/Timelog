@@ -322,7 +322,7 @@ div.button-column {
 /**** Debugging ****/
 
 
-.borderline, .borderline > *, .outlined, .outlined *, .outline * {
+.borderlined, .borderline, .borderline > *, .outlined, .outlined *, .outline * {
 	border: solid 1px red;
 }/* border styles */
 
