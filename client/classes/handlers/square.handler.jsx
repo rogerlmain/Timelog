@@ -1,10 +1,10 @@
 import * as constants from "client/classes/types/constants";
-import * as common from "client/classes/common";
 
 import FormHandler from "client/classes/handlers/form.handler";
 
 import AccountStorage from "client/classes/storage/account.storage";
 
+import { isset, is_null } from "client/classes/common";
 import { v4 as uuid } from "uuid";
 
 
@@ -21,7 +21,7 @@ const square_transactions = {
 export default class SquareHandler {
 
 
-	card = null;
+	form = null;
 
 
 	/********/
@@ -32,7 +32,7 @@ export default class SquareHandler {
 		let square_data = new FormData ();
 
 		data.idempotency_key = localStorage.getItem (transaction_id_field);
-		if (common.is_null (square_data.idempotency_key)) {
+		if (is_null (square_data.idempotency_key)) {
 			data.idempotency_key = uuid ();
 			localStorage.setItem (transaction_id_field, data.idempotency_key);
 		}// if;
@@ -57,28 +57,29 @@ export default class SquareHandler {
 
 	async create_card_form (container) {
 		return new Promise ((resolve, reject) => {
+
+			const attach_form = form => {
+				this.form = form;
+				form.attach (container).then (resolve ());
+			}/* attach_form */
+
 			Square.payments (constants.application_id, constants.location_id).card ({ style: {
 				"input": { fontSize: "10pt" },
 				".input-container": { borderColor: "black", borderRadius: "1em" }
-			}}).then (card => {
-				this.card = card;
-				card.attach (container).then (resolve (card));
-			}).catch (reject);
+			}}).then (form => attach_form (form)).catch (reject);
+
 		});
 	}// create_card_form;
 
 
 	async create_token () {
 
-		let token_data = await this.card.tokenize ();
+		let token_data = await this.form.tokenize ();
 			
 		if (token_data.status !== "OK") {
 			this.setState ({ processing: false });
 			return null;
 		}// if;
-
-		let x = token_data;
-		return x;
 
 		return token_data;
 
@@ -108,7 +109,7 @@ export default class SquareHandler {
 			  amount: data.amount,
 			  currency: "USD" // for the moment - may change
 			}/* amount_money */,
-			source_id: common.isset (data.source_id) ? data.source_id : (await this.create_token ()).token,
+			source_id: isset (data.source_id) ? data.source_id : (await this.create_token ()).token,
 			customer_id: data.customer_id,
 			note: data.note,
 		}/* parameters */;

@@ -56,10 +56,12 @@ class Database {
 		return new Promise ((resolve, reject) => {
 			if (global.isset (parameters) && !Array.isArray (parameters)) parameters = Object.values (parameters);			
 			let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
+
 			this.connection.query (command, this.normalized (parameters), async (error, results) => {
 				if (isset (error)) return reject (error);
 				resolve (results [0]);
 			});
+
 		});
 	}// data_query;
 

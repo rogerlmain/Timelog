@@ -86,7 +86,7 @@ export default class ResizePanel extends BaseControl {
 		let outer_size = this.outer_control.current.offset_size ();
 
 		image_list.forEach (image => { if (!image.complete) ready = false });
-		if (!ready || (inner_size.width == 0) || (inner_size.height == 0)) return setTimeout (this.update_size.bind (this));
+		if (!ready) return setTimeout (this.update_size.bind (this));
 
 		update = {
 			width: (this.horizontal () && (this.props.stretchOnly ? (inner_size.width > outer_size.width) : (inner_size.width != outer_size.width))),

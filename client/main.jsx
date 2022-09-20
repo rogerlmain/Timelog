@@ -28,6 +28,7 @@ import DateInputTest from "client/tests/controls/inputs/date.input";
 
 import ActivityLog from "client/classes/activity.log";
 import ReportsPage from "client/pages/reports";
+import DeluxeAccountForm from "./forms/deluxe.account.form";
 
 
 //Special Guest Import
@@ -98,7 +99,10 @@ document.onreadystatechange = () => {
 		{/* <LoadListTest /> */}
 		{/* <ClientSelectorTest /> */}
 		{/* <DateInputTest /> */}
+
 		{/* <ReportsPage /> */}
+
+		{/* <DeluxeAccountForm option={1} optionPrice={199} hasCredit={true} /> */}
 
 	</div>);
 

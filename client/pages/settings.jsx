@@ -115,7 +115,10 @@ export default class SettingsPage extends BaseControl {
 
 		const form_value = (field) => { return isset (this.state.cc_form) ? this.state.cc_form [field] : null };
 
-		return <DeluxeAccountPopup visible={isset (this.state.cc_form)} option={form_value ("option")} value={form_value ("value")}
+		let option = form_value ("option");
+		let value = form_value ("value");
+
+		return <DeluxeAccountPopup visible={isset (this.state.cc_form)} option={option} value={value}
 			onCancel={() => this.execute (this.state.cc_form.onCancel).then (() => this.setState ({ cc_form: null }))} 
 			onSubmit={() => this.execute (nested_value (this.state.cc_form, "onSubmit")).then (() => this.setState ({ cc_form: null }))}>
 		</DeluxeAccountPopup>

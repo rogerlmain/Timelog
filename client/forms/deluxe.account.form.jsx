@@ -1,6 +1,3 @@
-import * as constants from "client/classes/types/constants";
-import * as common from "client/classes/common";
-
 import React from "react";
 
 import AccountStorage from "client/classes/storage/account.storage";
@@ -8,6 +5,9 @@ import CompanyStorage from "client/classes/storage/company.storage";
 
 import CustomerHandler from "client/classes/handlers/customer.handler";
 import SquareHandler from "client/classes/handlers/square.handler";
+
+import CompanyCardModel from "client/classes/models/company.cards.model";
+import PricingModel from "client/classes/models/pricing.model";
 
 import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
@@ -22,7 +22,8 @@ import CreditCardSubform from "client/forms/subforms/credit.card.subform";
 import { MasterContext } from "client/classes/types/contexts";
 import { dynamic_input_classname } from "client/controls/inputs/dynamic.input";
 
-import { isset, is_number, nested_value } from "client/classes/common";
+import { account_types, credit_card_masks, credit_card_names, credit_card_types } from "client/classes/types/constants";
+import { debugging, get_key, isset, is_empty, is_function, is_number, nested_value, not_empty, not_set } from "client/classes/common";
 import { option_types } from "client/classes/types/options";
 
 import "resources/styles/forms/deluxe.account.form.css";
@@ -49,12 +50,16 @@ export default class DeluxeAccountForm extends BaseControl {
 	package_list = React.createRef ();
 	credit_card_list = React.createRef ();
 
+	credit_card_panel = React.createRef ();
+
 
 	state = {
 
 		active_card: null,
-		square_handler: null,
 		package_price: 9999,	// TODO: Read from database
+
+		has_credit: false,
+		credit_cards: null,
 
 		square_handler: null,
 		square_card: null,
@@ -63,8 +68,10 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		processing: false,
 
-		new_card: false,
+		new_card: true,
 		keep_card: true,
+
+		price: null,
 
 	}/* state */;
 
@@ -78,33 +85,24 @@ export default class DeluxeAccountForm extends BaseControl {
 		onCancel: null,
 
 		option: null,
-		optionPrice: null,
-		creditCards: null,
-
-		hasCredit: false,
-		visible: false
+		value: null,
 
 	}/* defaultProps */;
 
 
 	constructor (props) {
 		super (props);
-		this.state = {
-			...this.state,
-			visible: props.visible,
-			square_handler: new SquareHandler (),
-		};
+		this.state.square_handler = new SquareHandler ();
 	}// constructor;
-
-
+			
+			
 	/********/
-
+			
 
 	get_form_data () {
 
 		let form_data = new FormData (this.deluxe_account_form.current).toObject ();
-
-		let address = common.nested_value (this.address_form.current, "state");
+		let address = this.address_form.current?.state;
 
 		if (isset (address)) {
 			form_data.district_name = address.districts.extract (address.district_id).long_name;
@@ -116,15 +114,12 @@ export default class DeluxeAccountForm extends BaseControl {
 	}// get_form_data;
 
 
-	/********/
-
-
 	create_payment = async (data) => {
 
-		let option_name = isset (this.props.option) ? common.get_key (option_types, this.props.option).titled () : null;
+		let option_name = isset (this.props.option) ? get_key (option_types, this.props.option).titled () : null;
 
 		return this.state.square_handler.create_payment ({
-			amount: this.state.selected_item.equals (purchase_options.item) ? this.props.optionPrice : JSON.parse (this.package_list.current.value).price,
+			amount: this.state.selected_item.equals (purchase_options.item) ? this.state.price : JSON.parse (this.package_list.current.value).price,
 			customer_id: data.customer_id,
 			source_id: data.card_id ?? data.token,
 			note: `${AccountStorage.full_name ()}: ${option_name} (${this.props.option})`
@@ -152,8 +147,8 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	get_card_id = async (data) => {
 
-		let card_id = common.nested_value (this.credit_card_list.current, "list", "current", "selectedValue");
-		let new_card = (!this.props.hasCredit) || this.state.new_card;
+		let card_id = this.credit_card_list.current?.list?.current?.selectedValue;
+		let new_card = (!this.state.has_credit) || this.state.new_card;
 
 		if ((isset (card_id) && !new_card)) return card_id;
 		
@@ -186,10 +181,10 @@ export default class DeluxeAccountForm extends BaseControl {
 		let is_valid = true;
 		let items = Array.from (this.deluxe_account_form.current.elements);
 
-		if (common.not_set (items)) return;
+		if (not_set (items)) return;
 		
 		for (let element of items.reverse ()) {
-			if (common.is_function (element.validate) && !element.validate (event)) {
+			if (is_function (element.validate) && !element.validate (event)) {
 				element.reportValidity ();
 				is_valid = false;
 			}// if;
@@ -201,12 +196,6 @@ export default class DeluxeAccountForm extends BaseControl {
 
 
 	/*********/
-
-
-	shouldComponentUpdate (new_props) {
-		if (new_props.visible != this.props.visible) this.setState ({ visible: new_props.visible });
-		return true;
-	}// shouldComponentUpdate;
 
 
 	componentDidMount () {
@@ -222,20 +211,30 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		}// for;
 
-		this.setState ({ new_card: !this.props.hasCredit });
-
+		if (isset (this.context.company_id)) CompanyCardModel.get_cards (this.context.company_id).then (result => this.setState ({ 
+			credit_cards : result,
+			has_credit: not_empty (result),
+		}));
+					
 	}// componentDidMount;
+
+
+	componentDidUpdate () { 		
+		if (isset (this.props.option) && isset (this.props.value)) PricingModel.load_price (this.props.option, this.props.value).then (result => {
+			this.setState ({ price: is_empty (result) ? "Market Price" : result [0].price });
+		});
+	}// componentDidUpdate;
 
 
 	render () {
 
 		let company_id = this.context_item ("company_id");
 		
-		let new_customer = common.not_set (company_id);
+		let new_customer = not_set (company_id);
 
 		return <form ref={this.deluxe_account_form} id="deluxe_account_form" onSubmit={event => event.preventDefault ()}>
 
-			<label className="header">{this.props.hasCredit ? greetings.existing_customer : greetings.new_customer}</label>
+			<label className="header">{this.state.has_credit ? greetings.existing_customer : greetings.new_customer}</label>
 
 			<br className="half" />
 			
@@ -249,51 +248,51 @@ export default class DeluxeAccountForm extends BaseControl {
 
 					<Container>
 
-						<Container visible={this.props.hasCredit}>
+						<Container visible={this.state.has_credit}>
 
-							<SelectList ref={this.credit_card_list} data={this.props.creditCards} idField="square_id" className="full-width" header={true}
+							<SelectList ref={this.credit_card_list} data={this.state.credit_cards} idField="square_id" className="full-width" header={true}
 								textField={item => { 
 
 									let expiration = `${item.expiration % 100}/${Math.floor (item.expiration / 100)}`;
-									let is_amex = constants.credit_card_types.amex.matches (item.card_type);
+									let is_amex = credit_card_types.amex.matches (item.card_type);
 
-									let card_mask = constants.credit_card_masks [is_amex ? constants.credit_card_types.amex : constants.credit_card_types.other];
+									let card_mask = credit_card_masks [is_amex ? credit_card_types.amex : credit_card_types.other];
 									let card_number = card_mask.substring (0, card_mask.length - item.last_few.toString ().length) + item.last_few.toString ();
 
-									return `${card_number} (${constants.credit_card_names [item.card_type]} - ${expiration})`;
+									return `${card_number} (${credit_card_names [item.card_type]} - ${expiration})`;
 
 								}}>
 							</SelectList>
 
-							<br />
-
 							<div className="right-justified" style={{ marginTop: "1em" }}>
 								<div className="one-piece-form">
 									<label htmlFor="new_card_checkbox">Use a different card</label>
-									<input type="checkbox" id="new_card_checkbox" onClick={event => this.setState ({ new_card: event.target.checked })} />
+									<input type="checkbox" id="new_card_checkbox" value={this.state.new_card} 
+										onClick={event => this.credit_card_panel.current.animate (() => this.setState ({ new_card: event.target.checked }))}>
+									</input>
 								</div>
 							</div>
 
-							<br />
-
 						</Container>
 
-						<ExplodingPanel id="credit_card_form_panel">
-							<Container id="credit_card_panel" visible={this.state.new_card}>
-								<CreditCardSubform parent={this} />
+						<br />
+
+						<ExplodingPanel id="credit_card_panel" ref={this.credit_card_panel}>
+							<Container visible={this.state.new_card}>
+								<CreditCardSubform parent={this} handler={this.state.square_handler} />
 							</Container>
 						</ExplodingPanel>
 
-						<div className="horizontally-center full-width">
+						<div className="horizontally-center full-width with-headspace">
 							<div className="three-column-grid pricing-table vertically-centered">
 
-								<Container id="item_options" visible={isset (this.props.optionPrice)}>
+								<Container id="item_options" visible={isset (this.state.price)}>
 									<input type="radio" id="item_price" name="price_option" value={purchase_options.item} 
 										checked={this.state.selected_item == purchase_options.item} 
 										onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
 									</input>
 									<label htmlFor="item_price">Just this item</label>
-									<div>${is_number (this.props.optionPrice) ? this.props.optionPrice.toCurrency () : this.props.optionPrice}</div>
+									<div>${is_number (this.state.price) ? this.state.price.toCurrency () : this.state.price}</div>
 								</Container>
 
 								<Container id="package_options">
@@ -310,10 +309,10 @@ export default class DeluxeAccountForm extends BaseControl {
 											selected_item: purchase_options.package
 										})}>
 
-										<option value={`{ "id": ${constants.account_types.freelance}, "price": 9999 }`}>Freelance package</option>
-										<option value={`{ "id": ${constants.account_types.company}, "price": 69999 }`}>Company package</option>
-										<option value={`{ "id": ${constants.account_types.corporate}, "price": 179999 }`}>Corporate package</option>
-										<option value={`{ "id": ${constants.account_types.enterprise}, "price": 359999 }`}>Enterprise package</option>
+										<option value={`{ "id": ${account_types.freelance}, "price": 9999 }`}>Freelance package</option>
+										<option value={`{ "id": ${account_types.company}, "price": 69999 }`}>Company package</option>
+										<option value={`{ "id": ${account_types.corporate}, "price": 179999 }`}>Corporate package</option>
+										<option value={`{ "id": ${account_types.enterprise}, "price": 359999 }`}>Enterprise package</option>
 
 									</select>
 
@@ -340,8 +339,9 @@ export default class DeluxeAccountForm extends BaseControl {
 						</EyecandyPanel>
 					</div>
 
-<br />
-<button onClick={() => this.setState ({ processing: false })}>Reset</button>
+					<Container visible={debugging ()}>
+						<br /><button onClick={() => this.setState ({ processing: false })}>Reset</button>
+					</Container>
 
 				</div>
 

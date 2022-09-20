@@ -24,7 +24,7 @@ export default class InvitationModel extends Database {
 
 
 	get_invitation_by_id = invite_id => { return this.data_query ("get_invitation_by_id", [invite_id]) }
-	get_invitations_by_email = invitee_email => { this.execute_query ("get_invitations_by_email", [invitee_email]) }
+	get_invitations_by_email = invitee_email => {} //this.execute_query ("get_invitations_by_email", [invitee_email]) }
 
 	decline_invitation = (account_id, invite_id) => this.set_invitation ({ invite_id: invite_id, invitee_account_id: account_id });
 

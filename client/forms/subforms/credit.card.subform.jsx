@@ -3,10 +3,11 @@ import * as constants from "client/classes/types/constants";
 import React from "react";
 
 import AccountStorage from "client/classes/storage/account.storage";
-import SquareHandler from "client/classes/handlers/square.handler";
 
 import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import "resources/styles/pages/forms.css";
 
@@ -25,8 +26,14 @@ export default class CreditCardSubform extends BaseControl {
 
 	state = { 
 		cc_name: constants.blank,
-		parent: null
-	}/* state */
+		form_loaded: false,
+	}// state;
+
+
+	static defaultProps = { 
+		handler: null,
+		onLoad: null,
+	}// defaultProps;
 
 
 	/********/
@@ -51,13 +58,11 @@ export default class CreditCardSubform extends BaseControl {
 	/********/
 
 
-	componentDidMount () {
-		this.props.parent.state.square_handler.create_card_form ("#square_form").then (card => this.props.parent.setState ({ square_card: card }));
-	}// componentDidMount;
+	componentDidMount () { this.props.handler.create_card_form ("#square_form").then (this.execute (this.props.onLoad)) }
 
 
 	render () {
-		return <Container>
+		return <div>
 
 			<div className="horizontally-spaced-out">
 				<img src={"resources/images/logos/square.png"} className="square-logo" />
@@ -100,18 +105,18 @@ defaultValue="Rex Strange">
 
 			</div>
 
-			<div><br /></div>
+			<br />
 
-			<div id="square_form" />
+			<div id="square_form" style={{ width: "356px", height: "120px" }} />
 
-			<div className="right-justified-column keep-card-checkbox">
+			<div className="right-justified-column">
 				<div className="two-column-grid">
 					<label htmlFor="reuse_card" style={{ margin: 0, marginRight: "0.25em" }}>Keep my card on file</label>
 					<div className="vertically-centered"><input type="checkbox" id="keep_card" name="keep_card" defaultChecked={true} /></div>
 				</div>
 			</div>
 
-		</Container>
+		</div>
 	}// render;
 
 }// CreditCardSubform;
