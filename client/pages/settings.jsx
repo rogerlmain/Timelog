@@ -1,5 +1,3 @@
-import * as constants from "client/classes/types/constants";
-
 import React from "react";
 
 import EmailModel from "client/classes/models/email.model";
@@ -26,8 +24,8 @@ import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
 import OptionToggle from "pages/gadgets/toggles/option.toggle";
 
-import { account_types, blank, date_rounding } from "client/classes/types/constants";
-import { option_type, deadbeat_options, option_types } from "client/classes/types/options";
+import { account_types, blank, date_rounding, vertical_alignment } from "client/classes/types/constants";
+import { deadbeat_options, option_types } from "client/classes/types/options";
 import { debugging, get_key, get_keys, isset, is_null, nested_value, not_set } from "client/classes/common";
 
 import { resize_direction } from "client/controls/panels/resize.panel";
@@ -52,6 +50,7 @@ const notification_delay = 2000;
 export default class SettingsPage extends BaseControl {
 
 
+	settings_panel = React.createRef ();
 	invite_form = React.createRef ();
 
 
@@ -403,20 +402,18 @@ export default class SettingsPage extends BaseControl {
 				<div className="button-column">
 		
 					<SelectButton id="account_options_button" className="sticky-button" 
-						selected={this.state.current_panel == options_panels.account_options} 
 
-						beforeClick={() => this.setState ({ current_panel: null })}
-						onClick={() => this.setState ({ current_panel: options_panels.account_options })}>
+						selected={this.state.current_panel == options_panels.account_options} 
+						onClick={() => this.settings_panel.current.animate (() => this.setState ({ current_panel: options_panels.account_options }))}>
 							
 						Account Options
 						
 					</SelectButton>
 
 					<SelectButton id="user_settings_button" className="sticky-button" 
-						selected={this.state.current_panel == options_panels.user_settings} 
 
-						beforeClick={() => this.setState ({ current_panel: null })}
-						onClick={() => this.setState ({current_panel: options_panels.user_settings })}>
+						selected={this.state.current_panel == options_panels.user_settings} 
+						onClick={() => this.settings_panel.current.animate (() => this.setState ({current_panel: options_panels.user_settings }))}>
 							
 						User Settings
 						
@@ -424,7 +421,7 @@ export default class SettingsPage extends BaseControl {
 
 				</div>					
 					
-				<ExplodingPanel id="settings_exploding_panel" className="full-width" stretchOnly={true}>
+				<ExplodingPanel id="settings_exploding_panel" className="full-width" ref={this.settings_panel} stretchOnly={true} vAlign={vertical_alignment.top}>
 
 					{this.user_settings_panel ()}
 					{this.account_options_panel ()}
