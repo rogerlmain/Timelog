@@ -117,13 +117,19 @@ export default class MasterPanel extends BaseControl {
 
 
 	state = {
+
 		active_page: page_names.home,
-		signing_up: false,
-		eyecandy_visible: false,
-		eyecandy_callback: null,
-		refresh: false,
+
+		buttons: null,
 		user: null,
 		user_data: null,
+		eyecandy_callback: null,
+
+		signing_up: false,
+		eyecandy_visible: false,
+
+		refresh: false,
+
 	}// state;
 
 
@@ -381,20 +387,22 @@ export default class MasterPanel extends BaseControl {
 	/********/
 
 
-	shouldComponentUpdate (new_props, new_state) { if (this.state.company_id != new_state.company_id) this.new_company = true; return true; }
+	shouldComponentUpdate (new_props, new_state) { 
+		if (this.state.company_id != new_state.company_id) this.new_company = true; 
+		return true; 
+	}// shouldComponentUpdate;
 
 
 	componentDidUpdate () {
-		if (this.signed_in () && this.new_company) {
-			this.get_buttons ().then (result => this.button_panel.current.animate (() => this.setState ({ buttons: result })));
+		if (this.signed_in () && (this.new_company || is_null (this.state.buttons))) {
 			this.new_company = false;
+			setTimeout (() => this.button_panel.current.animate (() => this.get_buttons ().then (result => this.setState ({ buttons: result }))));
 		}// if;
 	}// componentDidMount;
 
 
 	componentDidMount () {
 		if (!(debugging ())) this.update_clock ();
-//		this.user_data_panel.current.animate (() => this.setState ({ user_data: this.user_data () }));
 		this.componentDidUpdate ();
 	}// componentDidMount;
 	
@@ -435,9 +443,9 @@ export default class MasterPanel extends BaseControl {
 
 					</div>
 
-					{signed_in && <div className="home_button_panel">
-						<ExplodingPanel id="main_button_panel" ref={this.button_panel}><div className="with-headspace">{this.state.buttons}</div></ExplodingPanel>
-					</div>}
+					<div className="home_button_panel with-headspace">
+						<ExplodingPanel id="main_button_panel" ref={this.button_panel}>{this.state.buttons}</ExplodingPanel>
+					</div>
 
 				</div>
 
