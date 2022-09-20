@@ -19,7 +19,7 @@ import ActivityLog from "client/classes/activity.log";
 
 import { isset, is_empty, nested_value } from "client/classes/common";
 import { team_permissions } from "client/classes/storage/permissions.storage";
-import { date_formats } from "client/classes/types/constants";
+import { date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 
 import "resources/styles/pages/team.css";
 
@@ -33,6 +33,10 @@ const team_panels = {
 export default class TeamsPage extends BaseControl {
 
 
+	team_member_panel = React.createRef ();
+	edit_team_panel = React.createRef ();
+
+
 	state = {
 		team			: null,
 		selected_account: null,
@@ -44,10 +48,10 @@ export default class TeamsPage extends BaseControl {
 	/********/
 
 
-	get_permissions = event => PermissionsModel.get_permissions (event.target.value).then (value => this.setState ({
+	get_permissions = event => PermissionsModel.get_permissions (event.target.value).then (value => this.team_member_panel.current.animate (() => this.setState ({
 		permissions: nested_value (value, 0, "permissions"),
 		selected_account: event.target.value,
-	}));
+	})));
 
 
 	team_permissions_panel = () => {
@@ -130,27 +134,25 @@ export default class TeamsPage extends BaseControl {
 			</SelectList>
 
 			<div className="with-headspace">
-				<ExplodingPanel id="team_panel">
+				<ExplodingPanel id="team_member_panel" ref={this.team_member_panel}>
 					<Container id="team_container" visible={isset (this.state.selected_account)}>
 						<div className="two-column-table">
 
 							<div className="button-column">
 					
-								<SelectButton id="team_permissions_button" className="sticky-button" 
-									selected={this.state.current_panel == team_panels.permissions}
+								<SelectButton id="team_permissions_button" className="sticky-button"
 
-									beforeClick={() => this.setState ({ current_panel: null })}
-									onClick={() => this.setState ({ current_panel: team_panels.permissions })}>
+									selected={this.state.current_panel == team_panels.permissions}
+									onClick={() => this.edit_team_panel.current.animate (() => this.setState ({ current_panel: team_panels.permissions }))}>
 										
 									Permissions
 									
 								</SelectButton>
 
 								<SelectButton id="team_assignations_button" className="sticky-button" 
-									selected={this.state.current_panel == team_panels.assignations}
 
-									beforeClick={() => this.setState ({ current_panel: null })}
-									onClick={() => this.setState ({current_panel: team_panels.assignations })}>
+									selected={this.state.current_panel == team_panels.assignations}
+									onClick={() => this.edit_team_panel.current.animate (() => this.setState ({ current_panel: team_panels.assignations }))}>
 										
 									Assignations
 									
@@ -158,7 +160,7 @@ export default class TeamsPage extends BaseControl {
 
 							</div>					
 								
-							<ExplodingPanel id="team_edit_panel">
+							<ExplodingPanel id="team_edit_panel" ref={this.edit_team_panel} stretchOnly={true} hAlign={horizontal_alignment.left} vAlign={vertical_alignment.top}>
 								<Container id="team_edit_container">{(() => {
 									switch (this.state.current_panel) {
 										case team_panels.permissions: return this.team_permissions_panel ();
