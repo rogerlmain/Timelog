@@ -100,7 +100,7 @@ export default class SignupPage extends BaseControl {
 
 		return <div id={this.props.id} className={`${this.signed_out () ? "shadow-box" : null} horizontally-centered`} style={{ alignSelf: "center" }}>
 
-			<PasswordForm visible={this.state.changing_password} />
+			<PasswordForm visible={this.state.changing_password} onChange={() => this.setState ({ changing_password: false })} />
 
 
 			{/* ADD THE OPTION TO PAY BY CREDIT CARD FOR A PRESET ACCOUNT */}

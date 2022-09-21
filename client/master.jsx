@@ -37,6 +37,9 @@ import { MasterContext } from "client/classes/types/contexts";
 import logo from "resources/images/bundy.png";
 import user_image from "resources/images/guest.user.svg";
 
+import rings_of_being from "resources/images/logos/solipsology.png";
+import rexs_head from "resources/images/logos/rexthestrange.png";
+
 import "resources/styles/home.page.css";
 
 
@@ -48,7 +51,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.1.1";
+const version = "1.0.2.0";
 
 
 const user_image_style = {
@@ -66,6 +69,13 @@ const page_rule_style = {
 	borderTop: "solid 1px var(--border-color)",
 	backgroundImage: "linear-gradient(var(--rule-color), var(--background-color))"
 }// page_rule_style;
+
+
+const logo_image = {
+	width: "auto",
+	height: "48px",
+	margin: "1em",
+}// logo_image;
 
 
 /********/
@@ -456,8 +466,17 @@ export default class MasterPanel extends BaseControl {
 				</div>
 
 				<div className="page-footer">
-					<div>&copy; Copyright 2022 - Roger Main Programming Company (RMPC) - All rights reserved</div>
-					<div>Version {version}</div>
+					<div className="horizontally-spaced-out">
+						<a href="https://solipsology.org" target="solipsology"><img src={rings_of_being} style={logo_image} /></a>
+						<div className="flex-column">
+							<div>&copy; Copyright 2022 - Roger L. Main</div>
+							<div>(DBA: The Roger Main Programming Company)</div>
+							<div>All rights reserved</div>
+							<br />
+							<div>Version {version}</div>
+						</div>
+						<a href="https://journal.rexthestrange.com" target="journal"><img src={rexs_head} style={logo_image} /></a>
+					</div>
 				</div>
 
 			</div>
