@@ -39,7 +39,8 @@ const ranges = {
 }// ranges;
 
 
-const session_maximum = 8;
+export const maximum_hours = 8; // for US with 40 hour work week - TODO make adustable for govt or foreign
+export const maximum_session = 4; // for US - equals half of daily maximum - TODO make adustable for govt or foreign
 
 
 export default class LoggingPage extends BaseControl {

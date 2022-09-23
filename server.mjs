@@ -201,6 +201,7 @@ app.post ("/logging", () => {
 		let logging_data = new LoggingModel ();
 
 		switch (fields.action) {
+			case "active": logging_data.get_active_logging_by_company (fields.company_id); break;
 			case "logging": logging_data.save_log_entry (fields); break;
 			case "billing": logging_data.save_billing (fields); break;
 		}// switch;

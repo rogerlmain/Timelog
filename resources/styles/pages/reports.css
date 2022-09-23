@@ -81,3 +81,66 @@ div.report-grid div.footer > div, div.report-grid div.footer-total > div {
 div.report-grid div.footer-total > div { background-color: var(--report-footer-total-color) }
 
 
+/********/
+
+
+div.teamster-report {
+	display: grid;
+	grid-template-columns: repeat(5, max-content);
+}/* div.teamster-report */
+
+
+div.teamster-report div.report-row { display: contents }
+
+
+div.teamster-report div.report-title { display: contents }
+
+
+div.teamster-report div.report-title > div { 
+	background-color: var(--report-subheader-color);
+	font-weight: bold;
+}/* div.teamster-report div.report-title > div */
+
+
+div.teamster-report div.report-row > div, div.teamster-report div.report-title > div {
+	border-bottom: solid 1px var(--border-color);
+	border-left: solid 1px var(--border-color);
+	padding: 0.125em 0.5em;
+	max-width: 200px;
+	overflow: hidden;
+}/* div.teamster-report div.report-row > div, div.teamster-report div.report-title > div */
+
+
+div.teamster-report div.report-title > div {
+	border-top: solid 1px var(--border-color);
+}/* div.teamster-report div.report-title */
+
+
+div.teamster-report div.report-title > div:nth-last-child(2), div.teamster-report div.report-row > div:nth-last-child(2) {
+	border-right: solid 1px var(--border-color);
+}/* div.teamster-report div.report-title > div:last-child, div.teamster-report div.report-row > div:last-child */
+
+
+/********/
+
+
+div.timebar {
+
+	border: solid 1px var(--border-color);
+	border-radius: 999px;
+
+	width: 10em;
+	height: 100%;
+	
+	position: relative;
+	overflow: hidden;
+
+}/* div.timebar */
+
+
+div.timebar div { 
+	height: 100%;
+	text-align: center;
+	font-size: 9pt;
+	font-weight: bold;
+}/* div.timebar div */

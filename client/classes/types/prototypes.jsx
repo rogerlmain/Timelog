@@ -113,16 +113,36 @@ Array.prototype.extract = function (value, name = "id") {
 
 /**** Date Helper Functions ****/
 
-Date.coefficient = {}
 
+Date.coefficient = {}
 Date.coefficient.minute = 60;
 Date.coefficient.quarter = Date.coefficient.minute * 15;
 Date.coefficient.hour = Date.coefficient.quarter * 4;
 Date.coefficient.day = Date.coefficient.hour * 24;
 
 
+Date.milliseconds = {
+	minute: Date.coefficient.minute * 1000,
+	quarter: Date.coefficient.quarter * 1000,
+	hour: Date.coefficient.hour * 1000,
+	day: Date.coefficient.day * 1000,
+}// millseconds;
+
+
 Date.is_date = (candidate) => { return (candidate instanceof Date) }
 Date.not_date = (candidate) => { return !this.is_date (candidate) }
+
+
+// Date.timespan: returns an object containing the date and time parts of an elapsed duration (in milliseconds)
+Date.timespan = elapsed_time => { 
+	return {
+		days: Math.floor (elapsed_time / (Date.milliseconds.day)),
+		hours: Math.floor ((elapsed_time % Date.milliseconds.day) / (Date.milliseconds.hour)),
+		mins: Math.floor ((elapsed_time % Date.milliseconds.hour) / (Date.milliseconds.minute)),
+		secs: Math.floor ((elapsed_time % Date.milliseconds.minute) / 1000),
+		msec: Math.floor (elapsed_time % 1000),
+	};
+}// timespan;
 
 
 // Date.elapsed: returns a time period in minutes in the format: dd:hh:mm (may need to adjust for other formats)
@@ -218,6 +238,10 @@ Date.prototype.add = function (part, amount) {
 	this.setTime (this.getTime () + (Date.increments [part] * amount));
 	return this;
 }// add;
+
+
+// returns the difference between now and the stored date in milliseconds
+Date.prototype.elapsed = function () { return (new Date ().getTime () - this.getTime ()) }
 
 
 Date.prototype.round_hours = function (direction) {

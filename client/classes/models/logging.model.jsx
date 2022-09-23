@@ -2,12 +2,21 @@ import Database from "client/classes/database";
 
 import { blank, date_formats } from "client/classes/types/constants";
 import { isset } from "client/classes/common";
+import CompanyStorage from "../storage/company.storage";
 
 
 const table = "logging";
 
 
 export default class LoggingModel {
+
+
+	static fetch_active_logs () {
+		let parameters = new FormData ();
+		parameters.set ("action", "active");
+		parameters.set ("company_id", CompanyStorage.active_company_id ());
+		return Database.fetch_data (table, parameters);
+	}// fetch_active_logs;
 
 
 	static fetch_latest_entry () {

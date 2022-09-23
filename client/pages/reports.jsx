@@ -1,6 +1,8 @@
 import React from "react";
 
 import ReportsModel		from "client/classes/models/reports.model";
+import LoggingModel from "client/classes/models/logging.model";
+
 import OptionStorage	from "client/classes/storage/options.storage";
 
 import BaseControl		from "client/controls/abstract/base.control";
@@ -11,11 +13,14 @@ import ProjectSelector	from "client/controls/selectors/project.selector";
 
 import FadePanel		from "client/controls/panels/fade.panel";
 import ExplodingPanel 	from "client/controls/panels/exploding.panel";
+import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import Container	from "client/controls/container";
 
-import { blank, date_formats, horizontal_alignment } from "client/classes/types/constants";
-import { debugging, get_keys, isset, is_null, is_object, not_set, warning } from "client/classes/common";
+import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
+import { debugging, get_keys, isset, is_array, is_blank, is_null, is_object, json_string, not_set, warning } from "client/classes/common";
+
+import { maximum_hours, maximum_session } from "client/pages/logging";
 
 import { BillingCheckbox } from "client/controls/abstract/input.control";
 
@@ -64,6 +69,9 @@ export default class ReportsPage extends BaseControl {
 		start_date: new Date (),
 		end_date: new Date (),
 
+		teamters: null,
+		teamster_report_loading: false,
+
 	}// state;
 
 
@@ -74,6 +82,34 @@ export default class ReportsPage extends BaseControl {
 		super (props);
 		if (debugging ()) console.log (`Creating reports page (${this.props.id})`);
 	}// constructor;
+
+
+	/********/
+
+
+	project_report_panel = () => <Container id="project_report_panel" visible={this.state.current_panel == reports_panels.project_report}>
+		<div className="horizontally-centered">
+			<div style={{ display: "inline-block" }}>{this.show_project_options ()}</div>
+			<br />
+			<div>{this.show_results ()}</div>
+		</div>
+	</Container>
+
+
+	teamster_report_panel = () => <Container id="teamster_report_panel" visible={this.state.current_panel == reports_panels.teamster_report}>
+		<EyecandyPanel id="teamster_panel" text="Loading..." 
+
+			eyecandyVisible={this.state.teamster_report_loading}
+
+			onEyecandy={() => LoggingModel.fetch_active_logs ().then (result => this.setState ({ 
+				teamster_report_loading: false,
+				teamsters: result,
+			}))}>
+			
+			{this.teamster_report ()}
+
+		</EyecandyPanel>
+	</Container>
 
 
 	/********/
@@ -199,9 +235,6 @@ export default class ReportsPage extends BaseControl {
 		return <Container>{entries}</Container>
 
 	}// list_entries;
-
-
-	/********/
 
 
 	format_data = data => {
@@ -443,26 +476,66 @@ export default class ReportsPage extends BaseControl {
 	}// show_totals;
 
 
-	project_report_panel = () => <Container id="project_report_panel" visible={this.state.current_panel == reports_panels.project_report}>
-		<div className="horizontally-centered">
-			<div style={{ display: "inline-block" }}>{this.show_project_options ()}</div>
-			<br />
-			<div>{this.show_results ()}</div>
+	timebar (time) {
+
+		const minutes_per_hour = 1440;
+		const seconds_per_minute = 60;
+
+		let timestamp = new Date (time);
+		let elapsed_time = Date.timespan (timestamp.elapsed ());
+
+		let total_minutes = (elapsed_time.days * 24 * minutes_per_hour) + (elapsed_time.hours * minutes_per_hour) + elapsed_time.mins;
+		let time_width = ((total_minutes > (maximum_hours * seconds_per_minute)) ? minutes_per_hour : total_minutes);
+
+		let overtime = total_minutes > (maximum_hours * minutes_per_hour);
+
+		let time_color = (overtime ? "#F00" : ((time_width > (maximum_session * seconds_per_minute)) ? "#880" : "#080"));
+
+		return <div className="timebar">
+			<div className="fully-centered" style={{ 
+				width: `${Math.round (time_width / (maximum_hours * minutes_per_hour)) * 100}%`, 
+				backgroundColor: time_color,
+			}}>{overtime ? "OVERTIME" : blank}</div>
 		</div>
-	</Container>;
+
+	}// timebar;
 
 
-	teamster_report_panel = () => <Container id="teamster_report_panel" visible={this.state.current_panel == reports_panels.teamster_report}>
-		<div className="horizontally-centered">
-			<div>
-				Teamster options:<br />
-				<br />
-				Select teamster <select></select><br />
-			</div>
-			<br />
-			<div>Results include a breakdown by client and/or project</div>
-		</div>
-	</Container>
+	teamster_report () {
+
+		let result = null;
+
+		if (is_null (this.state.teamsters)) return null;
+		if (is_blank (this.state.teamsters)) return <div>No one is logged in to anything.</div>
+
+		if (is_null (result)) result = [];
+
+		result.push (<div key={0} className="report-title">
+			<div key={1}>Name</div>
+			<div key={2}>Client</div>
+			<div key={3}>Notes</div>
+			<div key={4}>Start Time</div>
+			<div style={{ border: "none", backgroundColor: "var(--background-color)" }} />
+		</div>);
+
+		for (let teamster of this.state.teamsters) {
+
+			const teamster_name = `${teamster.first_name}, ${teamster.last_name}` + (isset (teamster.friendly_name) && (teamster.friendly_name != teamster.first_name) ? ` (${teamster.friendly_name})` : blank);
+			const start_time = new Date (teamster.start_time).format (date_formats.us_datetime);
+
+			result.push (<div className="report-row" key={teamster.log_id}>
+				<div key={1} title={teamster_name}>{teamster_name}</div>
+				<div key={2} title={teamster.client_name}>{teamster.client_name}</div>
+				<div key={3} title={teamster.notes}>{teamster.notes}</div>
+				<div key={4} title={start_time}>{start_time}</div>
+				<div key={5} style={{ border: "none" }}>{this.timebar (teamster.start_time)}</div>
+			</div>);
+
+		}// for;
+
+		return <div key="splah" className="teamster-report">{result}</div>
+
+	}// teamster_report;
 
 
 	/********/
@@ -473,19 +546,16 @@ export default class ReportsPage extends BaseControl {
 
 			<div className="button-column">
 	
-				<SelectButton id="project_report_button" className="sticky-button" 
-
-					selected={this.state.current_panel == reports_panels.project_report} 
-					onClick={() => this.reports_panel.current.animate (() => this.setState ({current_panel: reports_panels.project_report }))}>
+				<SelectButton id="project_report_button" className="sticky-button" selected={this.state.current_panel == reports_panels.project_report} 
+					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.project_report }))}>
 						
 					Projects
 					
 				</SelectButton>
 
-				<SelectButton id="teamster_button" className="sticky-button" 
+				<SelectButton id="teamster_button" className="sticky-button" selected={this.state.current_panel == reports_panels.teamster_report} 
 
-					selected={this.state.current_panel == reports_panels.teamster_report} 
-					onClick={() => this.reports_panel.current.animate (() => this.setState ({current_panel: reports_panels.teamster_report }))}>
+					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.teamster_report}))}>
 						
 					Teamsters
 					
@@ -493,9 +563,16 @@ export default class ReportsPage extends BaseControl {
 
 			</div>					
 				
-			<ExplodingPanel id="reports_reports_panel" ref={this.reports_panel} stretchOnly={true} hAlign={horizontal_alignment.left}>
+			<ExplodingPanel id="reports_panel" ref={this.reports_panel} stretchOnly={true} hAlign={horizontal_alignment.left} vAlign={vertical_alignment.top}
+
+				afterChanging={() => { 
+					if (this.state.current_panel != reports_panels.teamster_report) return;
+					this.setState ({ teamster_report_loading: true });
+				}}>
+
 				{this.project_report_panel ()}
 				{this.teamster_report_panel ()}
+
 			</ExplodingPanel>
 			
 		</div>
