@@ -145,7 +145,9 @@ export default class LoggingPage extends BaseControl {
 	log_entry = () => {
 
 		let entry = this.state.current_entry;
-		let timestamp = isset (entry) ? ((this.state.action == action_types.cancel) ? entry.start_time : entry.end_time) : this.rounded (new Date (), ranges.start);
+		let timestamp = (this.state.action == action_types.cancel) ? entry.start_time : (entry.end_time ?? new Date ());
+
+		if (not_set (timestamp)) return;
 
 		LoggingModel.log (this.client_id (), this.project_id (), this.notes (), timestamp).then (entry => {
 
@@ -168,6 +170,7 @@ export default class LoggingPage extends BaseControl {
 			});
 
 		});
+		
 	}// log_entry;
 
 
@@ -306,10 +309,7 @@ export default class LoggingPage extends BaseControl {
 
 
 	componentDidMount () {
-		this.setState ({ 
-			current_entry: { ...this.state.current_entry, end_time: this.end_time () },
-			editing: this.needs_editing (24),
-		}, () => setTimeout (this.setState ({ initialized: true })));
+		this.setState ({ editing: this.needs_editing (24) }, () => setTimeout (this.setState ({ initialized: true })));
 	}// componentDidMount;
 
 
