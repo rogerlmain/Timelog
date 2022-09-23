@@ -64,6 +64,7 @@ export const date_formats = {
 	database_date			: "yyyy-MM-dd",
 	database_timestamp		: "yyyy-MM-dd HH:mm",
 	detailed_datetime		: "w, MMMM ad yyyy, H:mm:ss ap",
+	short_detailed_datetime	: "w, MMMM ad yyyy, H:mm ap",
 	us_datetime				: "MM-dd-yyyy H:mm ap",
 	report_datetime			: "w d, H:mm ap",
 }// date_formats;
