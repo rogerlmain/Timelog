@@ -2,7 +2,7 @@ import { getNamespace } from "continuation-local-storage";
 import { createConnection } from "mysql";
 
 
-const local_testing = true;
+const local_testing = false;
 
 
 const local_database = {
@@ -18,7 +18,7 @@ const interserver_database = {
 	user: "remote",
 	password: "stranger",
 	database: "timelog"
-}/* local_database */
+}/* interserver_database */
 
 
 class Database {

@@ -35,7 +35,7 @@ export default class HomePage extends BaseControl {
 	/********/
 
 
-	respond = (invite, response) => {
+	respond_to_invitation = (invite, response) => {
 		InvitationModel.respond (response, invite.invite_id).then (() => {
 
 			if (response == invite_responses.accepted) {
@@ -48,7 +48,7 @@ export default class HomePage extends BaseControl {
 			this.update_invitations (() => alert (`Invitation ${response}`));
 
 		});
-	}// respond;
+	}// respond_to_invitation;
 
 
 	update_invitations = (callback) => InvitationModel.fetch_all ().then (data => this.setState ({ invitations: (not_array (data) || data.empty ()) ? null : data }, callback));
@@ -70,8 +70,8 @@ export default class HomePage extends BaseControl {
 				</div>
 
 				<div key={`button_${invite.company_id}`} className="button-bar">
-					<button className="minibutton" onClick={() => this.respond (invite, invite_responses.declined)}>Decline</button>
-					<button className="minibutton" onClick={() => this.respond (invite, invite_responses.accepted)}>Accept</button>
+					<button className="minibutton" onClick={() => this.respond_to_invitation (invite, invite_responses.declined)}>Decline</button>
+					<button className="minibutton" onClick={() => this.respond_to_invitation (invite, invite_responses.accepted)}>Accept</button>
 				</div>
 
 			</Container>);

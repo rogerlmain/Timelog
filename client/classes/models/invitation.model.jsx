@@ -5,6 +5,8 @@ import LocalStorage from "client/classes/local.storage";
 
 import AccountStorage from "client/classes/storage/account.storage";
 
+import { not_set } from "client/classes/common";
+
 
 const table = "invitations";
 
@@ -12,15 +14,18 @@ const table = "invitations";
 export default class InvitationModel extends DataModel {
 
 
-	static fetch_all () { 
+	static response = null;
 
-		let result = Database.fetch_data (table, {
+
+	static fetch_all (force = false) {
+		
+		if (not_set (this.response) || force) this.response = Database.fetch_data (table, {
 			action: "all",
 			email_address: AccountStorage.email_address (),
 		});
 
-		return result;
-		
+		return this.response;
+
 	}// fetch_all;
 
 

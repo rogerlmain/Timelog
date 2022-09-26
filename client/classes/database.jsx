@@ -7,7 +7,7 @@ import { isset, not_null } from "client/classes/common";
 export default class Database {
 
 
-	static async fetch_data (name, form_data, callback = null) {
+	static async fetch_data (name, form_data) {
 
 		let fetch_parameters = null;
 		let account_id = AccountStorage.account_id ();
@@ -25,14 +25,13 @@ export default class Database {
 			body: form_data
 		}// fetch_parameters;
 
-		return new Promise (async (resolve, reject) => await fetch (`/${name}`, fetch_parameters).then (async response => {
-			let text = await response.text ();
+		return new Promise ((resolve, reject) => fetch (`/${name}`, fetch_parameters).then (response => response.text ()).then (text => {
 			try {
-				return JSON.parse (text);
-			} catch { 
-				return { response: text }
+				return resolve (JSON.parse (text));
+			} catch (message) { 
+				reject ({ error: message });
 			}// try;
-		}).then (result => resolve (result)).catch (reject));
+		}));
 
 	}// fetch_data;
 

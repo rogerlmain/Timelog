@@ -51,7 +51,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.2.2";
+const version = "1.0.2.3";
 
 
 const user_image_style = {
@@ -412,7 +412,7 @@ export default class MasterPanel extends BaseControl {
 
 
 	componentDidMount () {
-		if (!(debugging ())) this.update_clock ();
+//		if (!(debugging ())) this.update_clock ();
 		this.componentDidUpdate ();
 	}// componentDidMount;
 	
