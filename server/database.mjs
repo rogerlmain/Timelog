@@ -2,7 +2,7 @@ import { getNamespace } from "continuation-local-storage";
 import { createConnection } from "mysql";
 
 
-const local_testing = false;
+const local_testing = true;
 
 
 const local_database = {
@@ -83,7 +83,9 @@ class Database {
 		} catch (except) {
 			console.log (except);
 		}// try;
+
 	}// constructor;
+
 
 }// Databases;
 

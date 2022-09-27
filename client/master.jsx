@@ -29,7 +29,7 @@ import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/company.model";
 import OptionsModel from "client/classes/models/options.model";
 
-import { date_formats, globals, horizontal_alignment } from "client/classes/types/constants";
+import { date_formats, horizontal_alignment } from "client/classes/types/constants";
 import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, nested_value, not_set, numeric_value } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
@@ -51,7 +51,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.2.3";
+const version = "1.0.2.4";
 
 
 const user_image_style = {
@@ -197,14 +197,14 @@ export default class MasterPanel extends BaseControl {
 	}// sign_in;
 
 
-	sign_up = () => this.setState ({ signing_up: true }, () => this.main_panel.current.animate (this.contents ()));
+	sign_up = () => this.setState ({ signing_up: true }, () => this.main_panel.current.animate (this.main_contents ()));
 
 
-	contents = () => {
+	main_contents = () => {
 		if (this.signed_in ()) return this.get_page (this.state.active_page);
 		if (this.state.signing_up || isset (localStorage.getItem ("invitation"))) return <SignupPage parent={this} />
 		return <SigninPage parent={this} />
-	}/* contents */;
+	}/* main_contents */;
 
 
 	buttons_disabled () {
@@ -294,8 +294,16 @@ export default class MasterPanel extends BaseControl {
 		return <SelectButton key="signout_button" 
 
 			onClick={() => {
+
 				localStorage.clear ();
-				this.setState ({ company_id: null });
+
+				this.button_panel.current.animate (() => this.setState ({ buttons: null }));
+				this.user_data_panel.current.animate (() => this.setState ({ company_id: null }));
+
+				this.set_page (this.main_contents ());
+
+//				this.setState ();
+
 			}}>
 				
 			Sign out
@@ -461,7 +469,7 @@ export default class MasterPanel extends BaseControl {
 
 				<div style={{ flexGrow: 1 }} className="with-headspace ">
 					<div style={this.viewer_style} className="horizontally-centered">
-						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true} vAlign="flex-start">{this.contents ()}</ExplodingPanel>
+						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true} vAlign="flex-start">{this.main_contents ()}</ExplodingPanel>
 					</div>
 				</div>
 
