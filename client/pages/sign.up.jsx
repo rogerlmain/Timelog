@@ -27,15 +27,21 @@ const image_uploader_style = {
 }// image_uploader_style;
 
 
+const account_creation_error = <div className="with-lotsa-legroom">
+	There was a problem creating your account.<br />
+	Please try again, later. If the problem persists, email us at:<br />
+	<br />
+	support(at)rogerlmain.com
+</div>
+
+
 export default class SignupPage extends BaseControl {
-
-
-	static defaultProps = { id: "signup_page" }
 
 
 	account_form = React.createRef ();
 	password_field = React.createRef ();
 	confirm_password_field = React.createRef ();
+	error_panel = React.createRef ();
 
 	account = null;
 
@@ -50,11 +56,37 @@ export default class SignupPage extends BaseControl {
 		button_visible: true,
 
 		error_message: null,
+
+		onChange: null,
 		
 	}// componentDidUpdate;
 
 
 	/********/
+
+
+	static defaultProps = { id: "signup_page" }
+
+
+	/********/
+
+
+	show_error = error_text => this.error_panel.current.animate (() => this.setState ({ 
+		error_message: error_text,
+		eyecandy_visible: false,
+	}));
+
+
+	process_application = () => {
+
+		if (this.signed_out () && (this.password_field.current.value != this.confirm_password_field.current.value)) return this.show_error ("Password and confirmation do not match.");
+		if (!this.account_form.current.validate ()) return this.show_error ("Please complete the highlighted fields");
+
+		if (isset (this.state.error_message)) this.error_panel.current.animate (() => this.setState ({ eyecandy_visible: true }));
+
+		this.setState ({ eyecandy_visible: true });
+
+	}// process_application;
 
 
 	save_account = () => {
@@ -65,13 +97,11 @@ export default class SignupPage extends BaseControl {
 		
 		AccountsModel.save_account (form_data).then (data => {
 
-			let account_id = nested_value (data, "account_id");
-			
+			if (is_null (data?.account_id) || (isset (data?.errno))) return this.show_error (account_creation_error);
 			if (this.signed_in ()) this.setState ({ eyecandy_visible: false });
-			if (is_null (account_id)) throw "Cannot create account.";
 
 			AccountStorage.set_all ({
-				account_id		: account_id,
+				account_id		: data.account_id,
 				first_name		: form_data.get ("first_name"),
 				last_name		: form_data.get ("last_name"),
 				friendly_name	: form_data.get ("friendly_name"),
@@ -82,10 +112,7 @@ export default class SignupPage extends BaseControl {
 
 			return globals.main.forceUpdate ();
 		
-		}).catch (error => this.setState ({ 
-			error_message: error,
-			eyecandy_visible: true 
-		}));
+		}).catch (error => this.show_error (error));
 		
 	}// save_account;
 
@@ -96,8 +123,9 @@ export default class SignupPage extends BaseControl {
 	render () {
 
 		let signed_in = this.signed_in ();
+		let signed_out = this.signed_out ();
 
-		return <div id={this.props.id} className={`${this.signed_out () ? "shadow-box" : null} horizontally-centered`} style={{ alignSelf: "center" }}>
+		return <div id={this.props.id} className={`${signed_out ? "shadow-box" : null} horizontally-centered`} style={{ alignSelf: "center" }}>
 
 			<PasswordForm visible={this.state.changing_password} onChange={() => this.setState ({ changing_password: false })} />
 
@@ -105,7 +133,7 @@ export default class SignupPage extends BaseControl {
 			{/* ADD THE OPTION TO PAY BY CREDIT CARD FOR A PRESET ACCOUNT */}
 
 
-			<ExplodingPanel id="signup_error">
+			<ExplodingPanel id="signup_error" ref={this.error_panel} afterChanging={this.state.onChange}>
 				<Container id="signup_error_container" visible={not_empty (this.state.error_message)}>
 					<div id="signup_error_message" style={{ marginBottom: "1em" }}>{this.state.error_message}</div>
 				</Container>
@@ -127,16 +155,19 @@ export default class SignupPage extends BaseControl {
 					<input id="account_id" name="account_id" type="hidden" defaultValue={AccountStorage.account_id ()} />
 
 					<label htmlFor="first_name">First name</label>
-					<input type="text" id="first_name" name="first_name" required={true} defaultValue={AccountStorage.first_name ()} />
+					<input type="text" id="first_name" name="first_name" required={true} 
+						defaultValue={(debugging () && signed_out) ? "Hugh" : AccountStorage.first_name ()}>
+					</input>
 
 					<label htmlFor="last_name">Last name</label>
-					<input type="text" id="last_name" name="last_name" required={true} defaultValue={AccountStorage.last_name ()} />
+					<input type="text" id="last_name" name="last_name" required={true} 
+						defaultValue={(debugging () && signed_out) ? "Priest" : AccountStorage.last_name ()}>
+					</input>
 
 					<label htmlFor="friendly_name">Friendly name<div style={{ fontSize: "8pt" }}>(optional)</div></label>
 					<input type="text" id="friendly_name" name="friendly_name" defaultValue={AccountStorage.friendly_name ()} />
 
 					<label htmlFor="account_type">Account Type</label>
-
 					<select id="account_type" name="account_type" disabled={true}
 					
 						// defaultValue={account_types.deadbeat}
@@ -157,7 +188,7 @@ defaultValue={account_types.freelance} // Change after the free promotion
 
 					</select>
 
-					<Container visible={this.signed_out ()}>
+					<Container visible={signed_out}>
 
 						<label htmlFor="password">Password</label>
 						<input type="password" id="password" ref={this.password_field} name="password" required={true} defaultValue={debugging () ? "stranger" : null} />
@@ -168,7 +199,9 @@ defaultValue={account_types.freelance} // Change after the free promotion
 					</Container>
 
 					<label htmlFor="email_address">Email address</label>
-					<input type="text" name="email_address" style={{ gridColumn: "span 3", width: "100%" }} required={true} />
+					<input type="text" name="email_address" required={true} style={{ gridColumn: "span 3", width: "100%" }} 
+						defaultValue={(debugging () && signed_out) ? "hugh.priest@solipsology.org" : AccountStorage.email_address ()}>
+					</input>
 
 				</div>
 
@@ -181,7 +214,7 @@ defaultValue={account_types.freelance} // Change after the free promotion
 						<button onClick={() => this.setState ({ changing_password: true })}>Change password</button>
 					</Container>	
 
-					<Container visible={this.signed_out ()}>
+					<Container visible={signed_out}>
 						<FadePanel visible={!this.state.eyecandy_visible}>
 							<div className="aside">
 								<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
@@ -195,17 +228,7 @@ defaultValue={account_types.freelance} // Change after the free promotion
 						text={signed_in ? "Saving your information" : "Creating your account"}
 						onEyecandy = {this.save_account}>
 
-						<button onClick={() => { 
-
-							if (this.signed_out () && (this.password_field.current.value != this.confirm_password_field.current.value)) return this.setState ({ error_message: "Password and confirmation do not match." });
-							if (!this.account_form.current.validate ()) return this.setState ({ error_message: "Please complete the highlighted fields" });
-							
-							this.setState ({ 
-								error_message: null,
-								eyecandy_visible: true 
-							});
-
-						}}>{this.signed_out () ? "Sign up" : "Save changes"}</button>
+						<button onClick={() => this.process_application ()}>{signed_out ? "Sign up" : "Save changes"}</button>
 
 					</EyecandyPanel>
 					

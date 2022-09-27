@@ -53,6 +53,10 @@ div.ghost-box { display: contents }
 .with-some-headspace {margin-top: 0.35em }
 .with-lotsa-headspace {margin-top: 1.5em }
 
+.with-legroom { margin-bottom: 1em }
+.with-some-legroom {margin-bottom: 0.35em }
+.with-lotsa-legroom {margin-bottom: 1.5em }
+
 
 /**** Flex alignments ****/
 
