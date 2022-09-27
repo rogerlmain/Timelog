@@ -16,10 +16,9 @@ import PasswordForm from "client/forms/password.form";
 import AccountsModel from "client/classes/models/accounts.model";
 
 import { account_types, blank, globals } from "client/classes/types/constants";
-import { get_keys, isset, is_null, nested_value, notify, not_empty, pause } from "client/classes/common";
+import { get_keys, isset, is_null, nested_value, not_empty } from "client/classes/common";
 
 import user_image from "resources/images/guest.user.svg";
-import { resize_direction } from "client/controls/panels/resize.panel";
 
 
 const image_uploader_style = { 
@@ -138,9 +137,10 @@ export default class SignupPage extends BaseControl {
 
 					<label htmlFor="account_type">Account Type</label>
 
-					<select id="account_type" name="account_type" 
+					<select id="account_type" name="account_type" disabled={true}
 					
-defaultValue={account_types.deadbeat}
+						// defaultValue={account_types.deadbeat}
+defaultValue={account_types.freelance} // Change after the free promotion
 
 						onChange={(event) => {
 							let account_type = parseInt (event.target.value);
