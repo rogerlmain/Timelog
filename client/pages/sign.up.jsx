@@ -16,7 +16,7 @@ import PasswordForm from "client/forms/password.form";
 import AccountsModel from "client/classes/models/accounts.model";
 
 import { account_types, blank, globals } from "client/classes/types/constants";
-import { get_keys, isset, is_null, nested_value, not_empty } from "client/classes/common";
+import { debugging, get_keys, isset, is_null, nested_value, not_empty } from "client/classes/common";
 
 import user_image from "resources/images/guest.user.svg";
 
@@ -160,19 +160,15 @@ defaultValue={account_types.freelance} // Change after the free promotion
 					<Container visible={this.signed_out ()}>
 
 						<label htmlFor="password">Password</label>
-						<input type="password" id="password" ref={this.password_field} name="password" required={true} 
-						
-defaultValue="stranger" />
+						<input type="password" id="password" ref={this.password_field} name="password" required={true} defaultValue={debugging () ? "stranger" : null} />
 
 						<label htmlFor="confirm_password">Confirm</label>
-						<input type="password" id="confirm_password" ref={this.confirm_password_field} name="confirm_password" required={true} 
-						
-defaultValue="stranger" />
+						<input type="password" id="confirm_password" ref={this.confirm_password_field} name="confirm_password" required={true} defaultValue={debugging () ? "stranger" : null} />
 
 					</Container>
 
 					<label htmlFor="email_address">Email address</label>
-					<input type="text" name="email_address" style={{ gridColumn: "span 3", width: "100%" }} defaultValue={AccountStorage.email_address ()} />
+					<input type="text" name="email_address" style={{ gridColumn: "span 3", width: "100%" }} required={true} />
 
 				</div>
 
