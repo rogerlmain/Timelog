@@ -58,7 +58,7 @@ class Database {
 			let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
 
 			this.connection.query (command, this.normalized (parameters), async (error, results) => {
-				if (isset (error)) return reject (error);
+				if (isset (error)) return this.send_result_data (error);
 				resolve (results [0]);
 			});
 
