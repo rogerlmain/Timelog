@@ -6,13 +6,10 @@ import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import Container from "client/controls/container";
-
 import { get_keys, isset } from "client/classes/common";
 
-import { empty, empty_cell, globals, horizontal_alignment } from "client/classes/types/constants";
+import { horizontal_alignment } from "client/classes/types/constants";
 import { MasterContext } from "client/classes/types/contexts";
-import { page_names } from "client/master";
 
 
 const bad_credentials = <div id="bad_credentials" className="login-error">
@@ -28,15 +25,19 @@ export default class SigninPage extends BaseControl {
 	error_panel = React.createRef ();
 
 	
-	error_message = error => <div id="signin_error_message">{error}</div>
-	signin_button = () => <button onClick={() => this.setState ({ eyecandy_visible: true })}>Sign in</button>;
+	state = {
 
-
-	state = { 
 		password_visible: false,
 		eyecandy_visible: false,
-		button_visible: true
+
+		button_visible: true,
+
+		error_message: null,
+
 	}// state;
+
+
+	/********/
 
 
 	static contextType= MasterContext;
@@ -46,6 +47,18 @@ export default class SigninPage extends BaseControl {
 		id		: "signin_page",
 		parent	: null,
 	}// defaultProps;
+
+
+	/********/
+
+
+	error_message = error => <div id="signin_error_message">{error}</div>
+
+	
+	signin_button = () => <button onClick={() => this.error_panel.current.animate (() => this.setState ({ 
+		eyecandy_visible: true,
+		error_message: null,
+	}))}>Sign in</button>;
 
 
 	sign_in = async eyecandy_panel => {
@@ -61,9 +74,12 @@ export default class SigninPage extends BaseControl {
 			}).then (response => response.json ()).then (info => {
 
 				if (isset (info?.error)) {
-					eyecandy_panel.contents = this.signin_button ();
-					this.error_panel.current.animate (this.error_message (bad_credentials));
+
+					this.setState ({ eyecandy_visible: false });
+					this.error_panel.current.animate (() => this.setState ({ error_message: this.error_message (bad_credentials) }));
+					
 					return resolve ();
+
 				}// if;
 
 				if (isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
@@ -97,7 +113,7 @@ export default class SigninPage extends BaseControl {
 	render () {
 		return <div id={this.props.id} className="shadow-box" style={{ alignSelf: "center" }}>
 
-			<ExplodingPanel id="signin_error" ref={this.error_panel} />
+			<ExplodingPanel id="signin_error" ref={this.error_panel}>{this.state.error_message}</ExplodingPanel>
 
 			<form id="signin_form" encType="multipart/form-data">
 				<div className="one-piece-form form-table">
@@ -105,21 +121,20 @@ export default class SigninPage extends BaseControl {
 					<label htmlFor="email">Email</label>
 					<input id="email" name="email" type="text"
 
-//defaultValue="betty@riverdale.edu"
-//defaultValue="rex@rogerlmain.com"
-//defaultValue="joe@bloggs.com"
-//defaultValue="dmitry@kgb.gov.ru"
-//defaultValue="rex@rexthestrange.com"
-//defaultValue="tastetestdude@gmail.com"
+						//defaultValue="betty@riverdale.edu"
+						//defaultValue="rex@rogerlmain.com"
+						//defaultValue="joe@bloggs.com"
+						//defaultValue="dmitry@kgb.gov.ru"
+						//defaultValue="rex@rexthestrange.com"
+						//defaultValue="tastetestdude@gmail.com"
 
 					/>
-
 
 					<label htmlFor="password">Password</label>
 					<div style={{display: 'flex', flexDirection: 'row'}}>
 						<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue="stranger" style={{ width: "100%" }} />
 						<img className="link-control" src={"resources/images/eyeball." + (this.state.password_visible ? "off" : "on") + ".svg"}
-							onClick={() => { this.setState ({ password_visible: !this.state.password_visible }); }}>
+							onClick={() => { this.setState ({ password_visible: !this.state.password_visible })}}>
 						</img>
 					</div>
 

@@ -51,7 +51,8 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.2.4";
+const version = "1.0.2.5";
+const database = "local"; // live is the other option
 
 
 const user_image_style = {
@@ -197,7 +198,7 @@ export default class MasterPanel extends BaseControl {
 	}// sign_in;
 
 
-	sign_up = () => this.setState ({ signing_up: true }, () => this.main_panel.current.animate (this.main_contents ()));
+	sign_up = () => this.main_panel.current.animate (() => this.setState ({ signing_up: true }));
 
 
 	main_contents = () => {
@@ -481,7 +482,7 @@ export default class MasterPanel extends BaseControl {
 							<div>(DBA: The Roger Main Programming Company)</div>
 							<div>All rights reserved</div>
 							<br />
-							<div>Version {version}</div>
+							<div>Version {version} ({database})</div>
 						</div>
 						<a href="https://journal.rexthestrange.com" target="journal"><img src={rexs_head} style={logo_image} /></a>
 					</div>
