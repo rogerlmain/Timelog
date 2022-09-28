@@ -171,7 +171,7 @@ export default class SignupPage extends BaseControl {
 					<select id="account_type" name="account_type" disabled={true}
 					
 						// defaultValue={account_types.deadbeat}
-defaultValue={account_types.freelance} // Change after the free promotion
+defaultValue={account_types.freelance} // Temporary - for the Beta Promotion
 
 						onChange={(event) => {
 							let account_type = parseInt (event.target.value);
@@ -187,6 +187,9 @@ defaultValue={account_types.freelance} // Change after the free promotion
 						)} )}
 
 					</select>
+
+{/* Temporary - for the Beta Promotion */}
+<input type="hidden" name="account_type" value={account_types.freelance} />
 
 					<Container visible={signed_out}>
 
