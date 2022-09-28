@@ -194,10 +194,13 @@ export default class MasterPanel extends BaseControl {
 
 	sign_in = () => {
 
-		this.main_panel.current.animate (() => this.setState ({ signing_up: false }));
+		this.main_panel.current.animate (() => this.setState ({ 
+			signing_up: false,
+			active_page: page_names.home
+		}));
 
-		// this.main_panel.current.animate (() => this.setState ({ active_page: page_names.home }));
-		// this.user_data_panel.current.animate (() => this.setState ({ company_id: CompanyStorage.active_company_id () }));
+		this.user_data_panel.current.animate (() => this.setState ({ company_id: CompanyStorage.active_company_id () }));
+		
 	}// sign_in;
 
 

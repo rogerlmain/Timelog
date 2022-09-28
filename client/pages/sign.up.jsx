@@ -110,7 +110,7 @@ export default class SignupPage extends BaseControl {
 				avatar			: form_data.get ("avatar"),
 			});
 
-			return globals.main.forceUpdate ();
+			return this.props.parent.sign_in ();
 		
 		}).catch (error => this.show_error (error));
 		
