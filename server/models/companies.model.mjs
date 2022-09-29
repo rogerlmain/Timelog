@@ -16,6 +16,7 @@ export default class CompaniesModel extends Database {
 		let parameters = {
 			company_id: global.integer_value (data.company_id),
 			company_name: data.name,
+			company_description: data.description,
 			address_id: global.integer_value (data.address_id),
 			primary_contact_id: data.primary_contact_id,
 			secondary_contact_id: data.secondary_contact_id,

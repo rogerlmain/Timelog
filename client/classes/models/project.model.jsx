@@ -7,7 +7,10 @@ const table = "projects";
 export default class ProjectModel {
 
 
-	static save_project (data) { return Database.save_data (table, data) }
+	static save_project (data) { 
+		data.set ("action", "save");
+		return Database.save_data (table, data);
+	}// save_project;
 
 
 	static async get_projects_by_client (client_id) {

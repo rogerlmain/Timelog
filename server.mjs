@@ -154,7 +154,7 @@ app.post ("/company_accounts", () => {
 	app.process (fields => {
 		let company_accounts_data = new CompanyAccountsModel ();
 		switch (fields.action) {
-			case "save": company_accounts_data.set_company_account (fields.account_id, fields.company_id); break;
+			case "save": company_accounts_data.save_company_account (fields.account_id, fields.company_id); break;
 		}// switch;
 	});
 });
@@ -276,16 +276,14 @@ app.post ("/pricing", () => {
 });
 
 
-app.post ("/projects", () => {
-	app.process (fields => {
-		let project_data = new ProjectsModel ();
-		switch (fields.action) {
-			case "list": project_data.get_projects_by_client (fields.client_id); break;
-			case "details": project_data.get_project_by_id (fields.project_id); break;
-			case "save": project_data.save_project (fields); break;
-		}// switch;
-	});
-});
+app.post ("/projects", () => app.process (fields => {
+	let project_data = new ProjectsModel ();
+	switch (fields.action) {
+		case "list": project_data.get_projects_by_client (fields.client_id); break;
+		case "details": project_data.get_project_by_id (fields.project_id); break;
+		case "save": project_data.save_project (fields); break;
+	}// switch;
+}));
 
 
 app.post ("/reports", () => {

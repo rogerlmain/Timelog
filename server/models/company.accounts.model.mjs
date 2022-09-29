@@ -4,7 +4,7 @@ import Database from "../database.mjs";
 export default class CompanyAccountsModel extends Database {
 
 
-	set_company_account = (account_id, company_id, permissions = null) => {
+	save_company_account = (account_id, company_id, permissions = null) => {
 
 		let parameters = {
 			account_id: global.integer_value (account_id),
@@ -12,9 +12,9 @@ export default class CompanyAccountsModel extends Database {
 			permissions: global.integer_value (permissions),
 		}// parameters;
 
-		this.execute_query ("set_company_account", parameters);
+		this.execute_query ("save_company_account", parameters);
 
-	}// set_company_account;
+	}// save_company_account;
 
 
 

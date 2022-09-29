@@ -202,6 +202,11 @@ export const permissions = {
 }// permissions;
 
 
+export const data_errors ={
+	duplicate: "ER_DUP_ENTRY",
+}// data_errors;
+
+
 /**** Default Settings and Options ****/
 
 

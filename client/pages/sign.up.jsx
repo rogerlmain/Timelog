@@ -2,6 +2,24 @@ import React from "react";
 
 import AccountStorage from "client/classes/storage/account.storage";
 
+import CompanyStorage, { 
+	default_name as default_company_name, 
+	default_description as default_company_description 
+} from "client/classes/storage/company.storage";
+
+import ClientStorage, { 
+	default_name as default_client_name, 
+	default_description as default_client_description 
+} from "client/classes/storage/client.storage";
+
+import ProjectStorage, { 
+	default_name as default_project_name, 
+	default_description as default_project_description 
+} from "client/classes/storage/project.storage";
+
+
+import CompanyAccountsModel from "client/classes/models/company.accounts.model";
+
 import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 
@@ -13,10 +31,9 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import PasswordForm from "client/forms/password.form";
 
-import AccountsModel from "client/classes/models/accounts.model";
-
-import { account_types, blank, globals } from "client/classes/types/constants";
-import { debugging, get_keys, isset, is_null, nested_value, not_empty } from "client/classes/common";
+import { account_types, blank, data_errors } from "client/classes/types/constants";
+import { debugging, get_keys, isset, jsonify, not_empty } from "client/classes/common";
+import { codify } from "client/forms/project.form";
 
 import user_image from "resources/images/guest.user.svg";
 
@@ -27,15 +44,32 @@ const image_uploader_style = {
 }// image_uploader_style;
 
 
-const account_creation_error = <div className="with-lotsa-legroom">
-	There was a problem creating your account.<br />
-	Please try again, later. If the problem persists, email us at:<br />
-	<br />
-	support(at)rogerlmain.com
-</div>
-
-
 export default class SignupPage extends BaseControl {
+
+
+	account_creation_error = <div className="with-lotsa-legroom">
+		There was a problem creating your account.<br />
+		Please try again, later. If the problem persists, email us at:<br />
+		<br />
+		support(at)rogerlmain.com
+	</div>
+
+
+	company_creation_error = <div className="with-lotsa-legroom">
+		Your account was created, however, there was a problem.<br />
+		Try <a onClick={this.props.parent.sign_in}>logging in</a> but if you have issues please email us at:<br />
+		<br />
+		support(at)rogerlmain.com
+	</div>
+
+
+	duplicate_email_error = <div className="with-lotsa-legroom">
+		There was a problem creating your account. That<br />
+		email address is already registered. <a onClick={this.props.parent.sign_in}>Click here</a> to sign in
+
+		{/* Add option to reset password, here. */}
+
+	</div>
 
 
 	account_form = React.createRef ();
@@ -44,6 +78,7 @@ export default class SignupPage extends BaseControl {
 	error_panel = React.createRef ();
 
 	account = null;
+
 
 	state = {
 
@@ -77,6 +112,25 @@ export default class SignupPage extends BaseControl {
 	}));
 
 
+	report_error = error => {
+
+		localStorage.clear ();
+
+		if (error?.code?.equals (data_errors.duplicate)) {
+
+			let message = error.sqlMessage;
+			let fieldname = message.substring (message.indexOf (".", message.indexOf ("key")) + 1, message.indexOf ("_UNIQUE"));
+
+			if (fieldname.matches ("email_address")) return this.show_error (this.duplicate_email_error);
+
+		}// if;
+			
+		this.show_error (error);
+		if (debugging (false)) console.log (`Error: ${jsonify (error)}`);
+
+	}// report_error;
+
+
 	process_application = () => {
 
 		if (this.signed_out () && (this.password_field.current.value != this.confirm_password_field.current.value)) return this.show_error ("Password and confirmation do not match.");
@@ -89,31 +143,57 @@ export default class SignupPage extends BaseControl {
 	}// process_application;
 
 
+
 	save_account = () => {
 
+		const sign_in = () => {
+			if (company_account_saved) return this.props.parent.sign_in ();
+			setTimeout (sign_in);
+		}/* sign_in */
+
 		let form_data = new FormData (document.getElementById ("account_form"));
+		let company_account_saved = false;
 
 		if (isset (this.state.avatar)) form_data.append ("avatar", this.state.avatar);
-		
-		AccountsModel.save_account (form_data).then (data => {
 
-			if (is_null (data?.account_id) || (isset (data?.errno))) return this.show_error (account_creation_error);
-			if (this.signed_in ()) this.setState ({ eyecandy_visible: false });
+		AccountStorage.save_account (form_data).then (account => {
+			CompanyStorage.save_company (FormData.fromObject ({
+				name: default_company_name,
+				description: default_company_description,
+				primary_contact_id: account.account_id,
+			})).then (company => {
 
-			AccountStorage.set_all ({
-				account_id		: data.account_id,
-				first_name		: form_data.get ("first_name"),
-				last_name		: form_data.get ("last_name"),
-				friendly_name	: form_data.get ("friendly_name"),
-				email_address	: form_data.get ("email_address"),
-				account_type	: form_data.get ("account_type"),
-				avatar			: form_data.get ("avatar"),
-			});
+				CompanyAccountsModel.save_company_account (FormData.fromObject ({
+					account_id: account.account_id,
+					company_id: company.company_id,
+				})).then (() => { company_account_saved = true }).catch (error => this.report_error (this.company_creation_error));
 
-			return this.props.parent.sign_in ();
-		
-		}).catch (error => this.show_error (error));
-		
+				ClientStorage.save_client (FormData.fromObject ({ 
+					client_name: default_client_name,
+					client_description: default_client_description,
+					company_id: company.company_id,
+				})).then (client => {
+
+					ProjectStorage.save_project (FormData.fromObject ({
+
+						client_id: client.client_id,
+						project_name: default_project_name,
+						project_code: codify (default_project_name),
+						project_description: default_project_description,
+
+					}))
+
+					.then (sign_in).catch (error => this.report_error (this.company_creation_error));
+				
+				}).catch (error => {
+
+					this.report_error (jsonify (error));
+
+				}) //this.company_creation_error));
+
+			}).catch (error => this.report_error (this.company_creation_error));
+		}).catch (error => this.report_error (this.account_creation_error));
+
 	}// save_account;
 
 

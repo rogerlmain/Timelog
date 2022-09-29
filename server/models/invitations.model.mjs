@@ -34,7 +34,7 @@ export default class InvitationModel extends Database {
 
 			if (global.not_set (invite) || global.not_set (invite [0])) return;
 
-			this.set_invitation ({ invite_id: invite_id, invitee_account_id: account_id }).then (() => new CompanyAccountsModel (this.request, this.response).set_company_account (account_id, invite [0].company_id));
+			this.set_invitation ({ invite_id: invite_id, invitee_account_id: account_id }).then (() => new CompanyAccountsModel (this.request, this.response).save_company_account (account_id, invite [0].company_id));
 
 		});
 

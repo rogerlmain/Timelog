@@ -9,7 +9,7 @@ create procedure save_client (
     company_id int,
 	client_name varchar (64), 
     client_description varchar (255),
-	billing_rate numeric (5,2),
+	billing_rate integer,
     deleted boolean
 ) begin
 

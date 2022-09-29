@@ -13,6 +13,10 @@ import { isset, not_null, not_empty, is_promise } from "client/classes/common";
 const store_name = constants.stores.projects;
 
 
+export const default_name = "Default project";
+export const default_description = `${default_name} description`;
+
+
 export default class ProjectStorage extends LocalStorage {
 
 

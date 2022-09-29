@@ -85,10 +85,9 @@ export default class ClientForm extends FormControl {
 
 		let form_data = new FormData (this.client_form.current);
 
-		form_data.append ("action", "save");
 		form_data.append ("company_id", this.context.company_id);
 
-		this.setState ({ status: "Saving..." }, () => ClientStorage.save_client (this.context.company_id, form_data).then (data => {
+		this.setState ({ status: "Saving..." }, () => ClientStorage.save_client (form_data).then (data => {
 			this.props.parent.setState ({ 
 				client_data: data,
 				selected_client: data.client_id,

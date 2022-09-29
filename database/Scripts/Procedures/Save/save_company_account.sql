@@ -1,11 +1,10 @@
 start transaction;
 
 drop procedure if exists save_company_account;
-drop procedure if exists set_company_account;
 
 delimiter ??
 
-create procedure set_company_account (
+create procedure save_company_account (
 	account_id	integer,
 	company_id	integer,
     permissions	bigint
@@ -32,7 +31,7 @@ create procedure set_company_account (
             now()
 		);
             
-        select last_insert_id ();
+        select last_insert_id () as company_account_id;
         
     else
 

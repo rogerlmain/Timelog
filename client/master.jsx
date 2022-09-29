@@ -26,7 +26,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import SelectList from "client/controls/lists/select.list";
 
 import AccountsModel from "client/classes/models/accounts.model";
-import CompanyModel from "client/classes/models/company.model";
+import CompanyModel from "client/classes/models/companies.model";
 import OptionsModel from "client/classes/models/options.model";
 
 import { date_formats, horizontal_alignment } from "client/classes/types/constants";

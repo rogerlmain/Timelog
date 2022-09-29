@@ -1,7 +1,7 @@
 import ActivityLog from "client/classes/activity.log";
 import AccountStorage from "client/classes/storage/account.storage";
 
-import { isset, not_null } from "client/classes/common";
+import { isset, not_null, not_set } from "client/classes/common";
 
 
 export default class Database {
@@ -14,7 +14,7 @@ export default class Database {
 
 		if (!(form_data instanceof FormData)) {
 			if (!(form_data instanceof Object )) throw "Database.fetch_data form_data requires an object or a FormData element";
-			form_data = new FormData ().appendAll (form_data);
+			form_data = FormData.fromObject (form_data);
 		}// if;
 
 		if ((!form_data.has ("account_id")) && not_null (account_id)) form_data.set ("account_id", account_id);
@@ -27,6 +27,7 @@ export default class Database {
 
 		return new Promise ((resolve, reject) => fetch (`/${name}`, fetch_parameters).then (response => response.text ()).then (text => {
 			try {
+
 				return resolve (JSON.parse (text));
 			} catch (message) { 
 				reject ({ error: message });
@@ -47,13 +48,21 @@ export default class Database {
 
 	static save_data (name, data) {
 		return new Promise ((resolve, reject) => {
-			Database.fetch_row (name, data).then (response => {
-				if (isset (response)) return resolve (response);
-				throw "save_data: no result returned";
-			}).catch (error => {
-				ActivityLog.log_error (error);	
+
+			const log_error = error => {
+				ActivityLog.log_error (error);
 				reject (error);
-			});
+			}// log_error;
+
+			Database.fetch_row (name, data).then (response => {
+
+				if (not_set (response)) throw "save_data: no result returned";
+				if (isset (response.errno)) throw (response);
+				
+				resolve (response);
+				
+			}).catch (log_error);
+
 		});
 	}// save_data;
 

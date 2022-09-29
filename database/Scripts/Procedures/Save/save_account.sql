@@ -47,7 +47,7 @@ create procedure save_account (
             acc.last_updated = coalesce (now(), acc.last_updated)
 		where
 			acc.id = account_id;
-    
+
 		select account_id;
 
 	end if;

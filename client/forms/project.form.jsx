@@ -23,6 +23,13 @@ import "resources/styles/forms.css"
 const max_code_length = 5;
 
 
+export function codify (string) {
+	let codewords = string.toUpperCase ().replace (/[AEIOU]/g, blank).trim ().split (space);
+	codewords.forEach (word => codewords [codewords.indexOf (word)] = word.substr (0, Math.ceil (max_code_length / codewords.length)));
+	return codewords.join (blank).substr (0, 5);
+}// codify;
+
+
 export default class ProjectForm extends FormControl {
 
 
@@ -80,11 +87,11 @@ export default class ProjectForm extends FormControl {
 	}// delete;
  
 
-	update_code = event => {	
-		let codewords = event.target.value.toUpperCase ().replace (/[AEIOU]/g, blank).trim ().split (space);
-		codewords.forEach (word => codewords [codewords.indexOf (word)] = word.substr (0, Math.ceil (max_code_length / codewords.length)));
-		this.setState ({ code: codewords.join (blank).substr (0, 5) });
-	}// update_code;
+	// update_code = event => {	
+	// 	let codewords = event.target.value.toUpperCase ().replace (/[AEIOU]/g, blank).trim ().split (space);
+	// 	codewords.forEach (word => codewords [codewords.indexOf (word)] = word.substr (0, Math.ceil (max_code_length / codewords.length)));
+	// 	this.setState ({ code: codewords.join (blank).substr (0, 5) });
+	// }// update_code;
 
 
 	save_project = () => {
@@ -133,7 +140,7 @@ export default class ProjectForm extends FormControl {
 					<div style={{ display: "grid", gridTemplateColumns: "1fr min-content" }}>
 
 						<input type="text" id="project_name" name="project_name" defaultValue={this.project_data ("name") || blank} required={true}
-							onChange={this.update_code}
+							onChange={event => this.setState (this.setState ({ code: codify (event.target.value) }))}
 							onBlur={this.save_project}>
 						</input>
 

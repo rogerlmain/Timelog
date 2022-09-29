@@ -15,9 +15,6 @@ export default class ClientModel {
 	}// delete_client;
 
 
-	static save_client (data) { return Database.save_data (table, data) }
-
-
 	static fetch_by_company (company_id) {
 		let parameters = new FormData ();
 		parameters.set ("action", "list_by_company");
@@ -34,4 +31,10 @@ export default class ClientModel {
 	}// fetch_by_id;
 
 	
+	static save_client (data) {
+		data.set ("action", "save");
+		return Database.save_data (table, data);
+	}// save_client;
+
+
 }// ClientModel;
