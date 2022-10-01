@@ -34,9 +34,9 @@ export default class AccountStorage extends LocalStorage {
 	static avatar = () => { return AccountStorage.get (credential_fields.avatar) }
 
 
-	static save_account = data => new Promise ((resolve, reject) => AccountsModel.save_account (data).then (response => {
+	static save_account = form_data => new Promise ((resolve, reject) => AccountsModel.save_account (form_data).then (response => {
 
-		let account = { ...data.toObject (), account_id: response.account_id };
+		let account = { ...form_data.toObject (), account_id: response.account_id };
 
 		if (not_set (response?.account_id)) return reject (response);
 

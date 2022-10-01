@@ -1,6 +1,7 @@
 import React from "react";
 
 import AccountStorage from "client/classes/storage/account.storage";
+import PermissionsStorage from "client/classes/storage/permissions.storage";
 
 import CompanyStorage, { 
 	default_name as default_company_name, 
@@ -17,7 +18,6 @@ import ProjectStorage, {
 	default_description as default_project_description 
 } from "client/classes/storage/project.storage";
 
-
 import CompanyAccountsModel from "client/classes/models/company.accounts.model";
 
 import BaseControl from "client/controls/abstract/base.control";
@@ -31,11 +31,12 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import PasswordForm from "client/forms/password.form";
 
-import { account_types, blank, data_errors } from "client/classes/types/constants";
+import { account_types, account_type_names, blank, data_errors } from "client/classes/types/constants";
 import { debugging, get_keys, isset, jsonify, not_empty } from "client/classes/common";
 import { codify } from "client/forms/project.form";
 
 import user_image from "resources/images/guest.user.svg";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 
 const image_uploader_style = { 
@@ -163,33 +164,25 @@ export default class SignupPage extends BaseControl {
 				primary_contact_id: account.account_id,
 			})).then (company => {
 
+				CompanyStorage.set_active_company (company.company_id);
+
 				CompanyAccountsModel.save_company_account (FormData.fromObject ({
 					account_id: account.account_id,
 					company_id: company.company_id,
-				})).then (() => { company_account_saved = true }).catch (error => this.report_error (this.company_creation_error));
+				})).then (() => { company_account_saved = true });
 
 				ClientStorage.save_client (FormData.fromObject ({ 
 					client_name: default_client_name,
 					client_description: default_client_description,
 					company_id: company.company_id,
 				})).then (client => {
-
 					ProjectStorage.save_project (FormData.fromObject ({
-
 						client_id: client.client_id,
 						project_name: default_project_name,
 						project_code: codify (default_project_name),
 						project_description: default_project_description,
-
-					}))
-
-					.then (sign_in).catch (error => this.report_error (this.company_creation_error));
-				
-				}).catch (error => {
-
-					this.report_error (jsonify (error));
-
-				}) //this.company_creation_error));
+					})).then (() => OptionsStorage.set_options (parseInt (account.account_type)).then (sign_in));
+				});
 
 			}).catch (error => this.report_error (this.company_creation_error));
 		}).catch (error => this.report_error (this.account_creation_error));
@@ -248,10 +241,7 @@ export default class SignupPage extends BaseControl {
 					<input type="text" id="friendly_name" name="friendly_name" defaultValue={AccountStorage.friendly_name ()} />
 
 					<label htmlFor="account_type">Account Type</label>
-					<select id="account_type" name="account_type" disabled={true}
-					
-						// defaultValue={account_types.deadbeat}
-defaultValue={account_types.freelance} // Temporary - for the Beta Promotion
+					<select id="account_type" name="account_type" defaultValue={account_types.deadbeat}
 
 						onChange={(event) => {
 							let account_type = parseInt (event.target.value);
@@ -263,13 +253,13 @@ defaultValue={account_types.freelance} // Temporary - for the Beta Promotion
 						}}>
 
 						{get_keys (account_types).map (key => { return (
-							<option key={key} value={account_types [key]} style={{ textTransform: "capitalize" }}>{key.titled ()}</option>
+							<option key={key} value={account_types [key]}>{account_type_names [key]}</option>
 						)} )}
 
 					</select>
 
 {/* Temporary - for the Beta Promotion */}
-<input type="hidden" name="account_type" value={account_types.freelance} />
+{/* <input type="hidden" name="account_type" value={account_types.freelance} /> */}
 
 					<Container visible={signed_out}>
 

@@ -135,6 +135,15 @@ export const account_types = {
 }// account_types;
 
 
+export const account_type_names = {
+	deadbeat	: "Demonstration",
+	freelance	: "Freelance",
+	company		: "Company",
+	corporate	: "Corporate",
+	enterprise	: "Enterprise",
+}// account_types;
+
+
 export const admin_types = {
 	corporate: 1,
 	programmer: 2

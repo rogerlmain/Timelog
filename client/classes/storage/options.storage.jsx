@@ -3,9 +3,9 @@ import CompanyStorage from "client/classes/storage/company.storage";
 
 import OptionsModel from "client/classes/models/options.model";
 
-import { date_rounding, granularity_types } from "client/classes/types/constants";
+import { account_types, date_rounding, granularity_types } from "client/classes/types/constants";
 import { isset, not_set } from "client/classes/common";
-import { deadbeat_options, option_types } from "client/classes/types/options";
+import { company_options, corporate_options, deadbeat_options, enterprise_options, freelance_options, option_types } from "client/classes/types/options";
 
 
 const store_name = "options";
@@ -50,6 +50,7 @@ export default class OptionsStorage extends LocalStorage {
 
 	static get_all () { return super.get_all (store_name) }
 	static get_options () { return super.get (store_name, CompanyStorage.active_company_id ()) }
+
 	static set_by_company_id (company_id, value) { this.set_store (store_name, {...super.get_all (), [company_id]: value }) }
 
 
@@ -61,7 +62,33 @@ export default class OptionsStorage extends LocalStorage {
 			}).catch (reject);
 		});
 	}// save_option;
+
+
+	static save_options = options => {
 	
+		let count = Object.keys (options).length;
+
+		return new Promise (resolve => {
+			Object.keys (options).forEach (option => {
+				OptionsStorage.save_option (option_types [option], options [option]).then (() => { if (--count == 0) resolve () });
+			});
+		});
+	
+	}/* save_options */;
+
+
+	static set_options (account_type) {
+		return new Promise (resolve => {
+			switch (account_type) {
+				case account_types.deadbeat	 : resolve (OptionsStorage.save_options (deadbeat_options)); break;
+				case account_types.freelance : resolve (OptionsStorage.save_options (freelance_options)); break;
+				case account_types.company	 : resolve (OptionsStorage.save_options (company_options)); break;
+				case account_types.corporate : resolve (OptionsStorage.save_options (corporate_options)); break;
+				case account_types.enterprise: resolve (OptionsStorage.save_options (enterprise_options)); break;
+			}// switch;
+		});
+	}/* set_permissions */;
+
 
 	/********/
 

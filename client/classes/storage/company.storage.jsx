@@ -80,11 +80,13 @@ export default class CompanyStorage extends LocalStorage {
 		if (not_set (response?.company_id)) return reject (response);
 
 		let company = { ...data.toObject (), company_id: response.company_id }
+		let company_id = company.company_id;
 
 		delete company.action;
+		delete company.company_id;
 		
-		this.#set_all (company);
-		resolve (company);
+		this.#set_all ({[company_id]: company});
+		resolve ({ ...company, company_id: company_id });
 
 	}));
 	
