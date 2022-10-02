@@ -27,7 +27,6 @@ export default class Database {
 
 		return new Promise ((resolve, reject) => fetch (`/${name}`, fetch_parameters).then (response => response.text ()).then (text => {
 			try {
-
 				return resolve (JSON.parse (text));
 			} catch (message) { 
 				reject ({ error: message });
@@ -44,6 +43,10 @@ export default class Database {
 			}).catch (reject);
 		});
 	}// fetch_row;
+
+
+	// For semantic clarification - fetch_row saves but doesn't sound like it
+	static save_row = Database.fetch_row; 
 
 
 	static save_data (name, data) {

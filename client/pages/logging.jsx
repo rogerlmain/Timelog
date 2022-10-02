@@ -145,7 +145,7 @@ export default class LoggingPage extends BaseControl {
 	log_entry = () => {
 
 		let entry = this.state.current_entry;
-		let timestamp = (this.state.action == action_types.cancel) ? entry.start_time : (entry.end_time ?? new Date ());
+		let timestamp = this.rounded ((this.state.action == action_types.cancel) ? entry.start_time : (entry.end_time ?? new Date ()));
 
 		if (not_set (timestamp)) return;
 

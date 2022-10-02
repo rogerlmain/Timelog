@@ -46,7 +46,7 @@ export default class LoggingModel {
 		parameters.set ("billed", false);
 		parameters.set ("time_stamp", timestamp.format (date_formats.database_timestamp));
 
-		return Database.fetch_row (table, parameters);
+		return Database.save_row (table, parameters);
 
 	}// log;
 
