@@ -111,7 +111,7 @@ export default class SigninPage extends BaseControl {
 
 
 	render () {
-		return <div id={this.props.id} className="shadow-box" style={{ alignSelf: "center" }}>
+		return <div id={this.props.id} className="shadow-box">
 
 			<ExplodingPanel id="signin_error" ref={this.error_panel}>{this.state.error_message}</ExplodingPanel>
 

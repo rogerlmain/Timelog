@@ -198,7 +198,7 @@ export default class SignupPage extends BaseControl {
 		let signed_in = this.signed_in ();
 		let signed_out = this.signed_out ();
 
-		return <div id={this.props.id} className={`${signed_out ? "shadow-box" : null} horizontally-centered`} style={{ alignSelf: "center" }}>
+		return <div id={this.props.id} className={`${signed_out ? "shadow-box" : null} horizontally-centered`}>
 
 			<PasswordForm visible={this.state.changing_password} onChange={() => this.setState ({ changing_password: false })} />
 
@@ -288,7 +288,7 @@ export default class SignupPage extends BaseControl {
 					</Container>	
 
 					<Container visible={signed_out}>
-						<FadePanel visible={!this.state.eyecandy_visible}>
+						<FadePanel id="signin_link_panel" visible={!this.state.eyecandy_visible}>
 							<div className="aside">
 								<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
 								<a onClick={this.props.parent.sign_in}>Sign in</a>

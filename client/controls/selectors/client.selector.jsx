@@ -8,19 +8,22 @@ import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 
-import { debugging, integer_value, is_null, is_promise } from "client/classes/common";
+import { compare, debugging, integer_value, isset } from "client/classes/common";
 import { page_names } from "client/master";
-import { horizontal_alignment } from "client/classes/types/constants";
+import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
+import { MasterContext } from "client/classes/types/contexts";
 
 
 export default class ClientSelector extends BaseControl {
-
+	
 
 	state = { 
-		client_id: null,
-		client_count: null,
 		client_data: null,
+		selected_client_id: null,
 	}// state;
+
+
+	static contextType = MasterContext;
 
 
 	static defaultProps = { 
@@ -44,7 +47,7 @@ export default class ClientSelector extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		this.state.client_data = ClientStorage.get_by_company (CompanyStorage.active_company_id ());
+		this.get_client_data ();
 		if (debugging (false)) console.log (`${props.id} object created`);
 	}// constructor;
 
@@ -52,24 +55,23 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	client_selected = () => ((this.state.client_id > 0) || OptionsStorage.single_client ());
+	client_selected = () => ((this.state.selected_client_id > 0) || OptionsStorage.single_client ());
+
+
+	get_client_data = () => ClientStorage.get_by_company (CompanyStorage.active_company_id ()).then (data => {
+		this.setState ({ 
+			client_data: data,
+			selected_client_id: ((data.length > 1) ? null : data [0].client_id),
+		}, () => this.execute (this.props.onChange, this.state.selected_client_id));
+	});
 
 
 	/*********/
 
 
-	shouldComponentUpdate (new_props, new_state) {
-
-		if (is_null (new_state.client_count)) return !!this.setState ({ client_count: OptionsStorage.client_limit () });
-
-		if (is_null (new_state.client_data)) {
-			let data = ClientStorage.get_by_company (CompanyStorage.active_company_id ());
-			if (is_promise (data)) return !data.then (clients => this.setState ({ client_data: clients }));
-			return !!this.setState ({ client_data: data });
-		}// if;
-
+	shouldComponentUpdate (new_props, new_state, new_context) {
+		if (!compare (new_state.client_data, this.state.client_data)) this.get_client_data ();
 		return true;
-
 	}// shouldComponentUpdate;
 
 
@@ -78,23 +80,25 @@ export default class ClientSelector extends BaseControl {
 
 	render () {
 
-		if (this.state.client_count == 1) return <div className="one-piece-form">
-			<div>Client</div>
-			<div>{this.state.client_data [0].client_name}</div>
-		</div>
+		let single_client = (isset (this.state.client_data) && (this.state.client_data.length == 1));
 
-		return <Container id="client_selector_container">
+		return <Container>
 
-			<label htmlFor={`${this.props.id}_load_list`}>Client</label>
+			<label htmlFor={`${this.props.id}_load_list`}>Client<Container visible={single_client}>:</Container></label>
 
-			<LoadList id={`${this.props.id}_load_list`} label="Client" hAlign={horizontal_alignment.left}
-
+			<LoadList id={`${this.props.id}_load_list`} label="Client" 
+			
 				listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
 
 				dataIdField="client_id" dataTextField="name" data={this.state.client_data} selectedItem={this.props.selectedClient}
 				newButtonPage={this.props.newButton ? page_names.clients : null}
 
-				onChange={event => this.setState ({ client_id: integer_value (event.target.value) }, () => this.execute (this.props.onChange, event))}>
+				hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
+
+				onChange={event => {
+					let client_id = integer_value (event.target.value);
+					this.setState ({ selected_client_id: client_id }, () => this.execute (this.props.onChange, client_id))
+				}}>
 
 			</LoadList>
 

@@ -18,7 +18,7 @@ export default class ProjectModel {
 		let parameters = new FormData ();
 
 		parameters.set ("action", "list");
-		parameters.set ("client_id", client_id.toString ());
+		parameters.set ("client_id", client_id);
 
 		return await Database.fetch_data ("projects", parameters);
 

@@ -24,6 +24,7 @@ import EyecandyPanelTest from "client/tests/controls/panels/eyecandy.panel";
 
 import LoadListTest from "client/tests/controls/lists/load.list";
 import ClientSelectorTest from "client/tests/controls/selectors/client.selector";
+import ProjectSelectorTest from "client/tests/controls/selectors/project.selector";
 import DateInputTest from "client/tests/controls/inputs/date.input";
 
 import ActivityLog from "client/classes/activity.log";
@@ -92,6 +93,9 @@ document.onreadystatechange = () => {
 		
 		<Main id="timelog_main_page" />
 
+
+		{/* Tests */}
+
 		{/* <FadePanelTest /> */}
 		{/* <ResizePanelTest /> */}
 		{/* <ExplodingPanelTest /> */}
@@ -99,6 +103,9 @@ document.onreadystatechange = () => {
 		{/* <LoadListTest /> */}
 		{/* <ClientSelectorTest /> */}
 		{/* <DateInputTest /> */}
+
+		{/* <ClientSelectorTest /> */}
+		{/* <ProjectSelectorTest /> */}
 
 		{/* <ReportsPage /> */}
 

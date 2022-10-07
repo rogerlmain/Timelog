@@ -61,11 +61,11 @@ div.ghost-box { display: contents }
 /**** Flex alignments ****/
 
 
-.horizontally-aligned {
+.horizontally-aligned, .fully-aligned {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-}/* .horizontally-aligned */
+}/* .horizontally-aligned, .fully-aligned */
 
 
 .horizontally-centered {
@@ -75,11 +75,11 @@ div.ghost-box { display: contents }
 }/* .horizontally-centered */
 
 
-.vertically-aligned {
+.vertically-aligned, .fully-aligned {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-}/* .vertically-centered */
+}/* .vertically-centered, .fully-aligned */
 
 
 .vertically-centered {
@@ -402,10 +402,12 @@ div.outlined label, .outline {
 
 
 .shadow-box {
+	display: inline-block;
 	border: solid 1px black;
 	box-shadow: 2px 2px 10px #333;
 	padding: 2em;
 	margin: 2em;
+	align-self: "center";
 }/* .shadow-box */
 
 
@@ -468,7 +470,7 @@ div.two-column-newspaper > div:not(:last-child) { padding-right: 1em }
 /**** Forms ****/
 
 
-div[class*="-piece-form"] {
+div[class*="-piece-form"], div[class*="-piece-grid"] {
 	display: grid;
 	align-items: center;
 	justify-content: stretch;
@@ -477,13 +479,13 @@ div[class*="-piece-form"] {
 }/* div[class*="-piece-form"] */
 
 
-div.one-piece-form		{ grid-template-columns: min-content 1fr }
-div.two-piece-form		{ grid-template-columns: repeat(4, min-content) }
-div.three-piece-form	{ grid-template-columns: repeat(3, min-content 1fr) }
+div[class*="one-piece-"]	{ grid-template-columns: min-content 1fr }
+div[class*="two-piece-"]	{ grid-template-columns: repeat(4, min-content) }
+div[class*="three-piece-"]	{ grid-template-columns: repeat(3, min-content 1fr) }
 
+div[class*="one-piece-"] label:nth-child(odd) { text-align: right }
 
-div.one-piece-form label:nth-child(odd) { text-align: right }
-div.one-piece-form label:nth-child(even) { border: "solid 1px red" }
+div.one-piece-grid { display: inline-grid }
 
 
 div.form-table label {

@@ -6,7 +6,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import SelectList from "client/controls/lists/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import { debugging, isset, is_null, is_promise, null_value } from "client/classes/common";
+import { debugging, isset, is_null, not_set, null_value } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
@@ -21,10 +21,7 @@ export default class LoadList extends BaseControl {
 	eyecandy_panel = React.createRef ();
 
 
-	state = {
-		data: undefined, // cannot initialize to null because parent may want null.
-		eyecandy_visible: false,
-	}// state;
+	state = { eyecandy_visible: false }
 
 
 	/*********/
@@ -70,8 +67,8 @@ export default class LoadList extends BaseControl {
 		
 		if (this.props.id.equals (load_list_id)) console.warn ("Your LoadList really should have a unique ID");
 
-		this.state.data = this.props.data;
-		
+		this.state.eyecandy_visible = is_null (this.props.data);
+
 		if (debugging ()) console.log (`${props.id} list created`);
 
 	}// constructor;
@@ -85,12 +82,20 @@ export default class LoadList extends BaseControl {
 		let header = null_value (this.props.listHeader);
 		let new_button = isset (this.props.newButtonPage);
 
-		if (is_null (this.state.data)) return null;
+		let form_style = {
+			columnGap: (new_button && isset (this.props.data)) ? "0.25em" : null,
+			gridTemplateColumns: "1fr min-content",
+		}// form_style;
 
-		return <div className={new_button ? "two-column-grid" : null} style={new_button ? { columnGap: "0.25em" } : null}>
+		if (is_null (this.props.data)) return null;
+		if (this.props.hAlign == horizontal_alignment.stretch) form_style.width = "100%";
+		if (this.props.vAlign == vertical_alignment.stretch) form_style.height = "100%";
 
-			<SelectList id={this.props.id} data={this.state.data} value={this.props.selectedItem} disabled={this.props.disabled}
+		return <div className={new_button ? "two-column-grid" : null} style={form_style}>
 
+			{(this.props.data.length == 1) ? <div className="vertically-aligned">{this.props.data [0].name}</div> : <SelectList id={this.props.id} 
+			
+				data={this.props.data} value={this.props.selectedItem} disabled={this.props.disabled}
 				style={this.props.style}
 
 				hasHeader={isset (header)} headerText={header} 
@@ -100,7 +105,7 @@ export default class LoadList extends BaseControl {
 
 				onChange={event => this.execute (this.props.onChange, event)}>
 
-			</SelectList>
+			</SelectList>}
 
 			{new_button && <button onClick={() => this.context.master_page.set_page (this.props.newButtonPage)}>New</button>}
 
@@ -110,23 +115,6 @@ export default class LoadList extends BaseControl {
 
 
 	/*********/
-
-
-	shouldComponentUpdate (new_props) {
-
-		if (is_promise (new_props.data)) {
-			if ((new_props.data.pending) && (!this.state.eyecandy_visible)) return !setTimeout (() => this.setState ({ eyecandy_visible: true }));
-			return true;
-		}// if;
-		
-		if (isset (new_props.data) && (new_props.data != this.props.data)) return !!this.eyecandy_panel.current?.exploding_panel?.current?.animate (() => this.setState ({ 
-			data: new_props.data,
-			eyecandy_visible: false,
-		}));
-
-		return true;
-
-	}// shouldComponentUpdate;
 
 
 	componentDidMount = this.forceRefresh;
@@ -139,14 +127,9 @@ export default class LoadList extends BaseControl {
 		return <EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} ref={this.eyecandy_panel} text="Loading..." 
 		
 			hAlign={this.props.hAlign} vAlign={this.props.vAlign} stretchOnly={true}
-			eyecandyVisible={this.state.eyecandy_visible} 
+			eyecandyVisible={not_set (this.props.data)}>
 
-			onEyecandy={() => this.props.data.then (data => this.setState ({ 
-				data: data,
-				eyecandy_visible: false,
-			}))}>
-
-			{is_promise (this.state.data) ? null : this.select_list ()}
+			{this.select_list ()}
 
 		</EyecandyPanel>
 

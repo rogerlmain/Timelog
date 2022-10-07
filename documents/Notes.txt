@@ -1,0 +1,28 @@
+Settings, options and permissions:
+---------------------------------
+
+Settings:
+
+	Free to change
+	Per user
+	Based on personal preference
+
+	Current available settings:
+
+		Animation speed
+
+Options:
+	Costs to upgrade
+	Per company
+
+	Current available options:
+	
+		
+	
+
+Permissions:
+	Free to change
+	Per user
+	Based on company permissions
+
+	

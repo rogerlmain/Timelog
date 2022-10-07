@@ -336,7 +336,7 @@ export default class LoggingPage extends BaseControl {
 			gridTemplateColumns: "repeat(2, 1fr)",
 		}// if;
 
-		return <div id="log_panel">
+		return <div id="log_panel" className="horizontally-centered">
 
 			<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
 
@@ -349,7 +349,7 @@ export default class LoggingPage extends BaseControl {
 					hasHeader={true} 
 					headerSelectable={false} 
 
-					onClientChange={event => this.setState ({ current_entry: {...this.state.current_entry, client_id: event.target.value } })}
+					onClientChange={client_id => this.setState ({ current_entry: {...this.state.current_entry, client_id: client_id } })}
 					onProjectChange={event => this.setState ({ current_entry: {...this.state.current_entry, project_id: event.target.value } })}>
 
 				</ProjectSelector>

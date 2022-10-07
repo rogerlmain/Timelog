@@ -118,6 +118,7 @@ export function not_empty (value) { return !is_empty (value) }
 export function not_function (value) { return !is_function (value) }
 export function not_set (value, ...nullables) { return (!isset (value)) || Array.from (nullables).includes (value) }
 export function not_null (value) { return !is_null (value) }
+export function not_number (value) { return !is_number (value) }
 export function not_object (value, include_arrays = false) { return !is_object (value, include_arrays) }
 export function not_string (value) { return !is_string (value) }
 export function not_undefined (value) { return !is_undefined (value) }
@@ -129,10 +130,10 @@ export function null_or_undefined (value) { return (is_null (value) || (value ==
 export function zero_value (value) { return null_or_undefined (value) ? 0 : value }
 
 
-export function matching_objects (first_object, second_object) {
+export function compare (first_object, second_object) {
 	if (not_set (first_object)) return not_set (second_object);
 	return (JSON.stringify (first_object).equals (JSON.stringify (second_object)));
-}// matching_objects;
+}// compare;
 
 
 export function numeric_value (value) { 
@@ -263,6 +264,51 @@ export let not_blank = not_empty;
 
 
 /**** Operating Theatre ****/
+
+
+
+export function raw_style (control) {
+
+	let result = null;
+
+	Object.keys (control?.style).forEach (key => {
+
+		let value = control.style [key];
+
+		if (not_set (value, blank)) return;
+		if (is_null (result)) result = {};
+
+		result [key] = control.style [key];
+
+	});
+
+	return result;
+
+}// raw_style;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

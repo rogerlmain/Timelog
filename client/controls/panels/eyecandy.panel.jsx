@@ -43,6 +43,12 @@ export default class EyecandyPanel extends BaseControl {
 	}// defaultProps;
 
 
+	constructor (props) {
+		super (props);
+		this.state.eyecandy_visible = props.eyecandyVisible;
+	}// constructor;
+
+
 	/********/
 
 
@@ -52,8 +58,20 @@ export default class EyecandyPanel extends BaseControl {
 	</div>
 
 
-	contents = () => <div id={`${this.props.id}_container`} style={{ display: (this.state.eyecandy_visible ? "none" : "inline-flex") }}>{this.props.children}</div>
+	contents = () => {
+		
+		let container_style = { display: (this.state.eyecandy_visible ? "none" : "inline-flex") }
 
+		if (this.props.stretchOnly) container_style = {
+			...container_style,
+			width: "100%",
+			height: "100%",
+		}// if;
+
+		return <div id={`${this.props.id}_container`} style={container_style}>{this.props.children}</div>
+
+	}/* contents */;
+	
 
 	eyecandy_style = () => { return {
 		display: "inline-flex",

@@ -7,7 +7,7 @@ import OptionsStorage from "client/classes/storage/options.storage";
 
 import ProjectModel from "client/classes/models/project.model";
 
-import { isset, not_null, not_empty, is_promise } from "client/classes/common";
+import { isset, not_null, not_empty, is_promise, not_number } from "client/classes/common";
 
 
 const store_name = constants.stores.projects;
@@ -85,19 +85,19 @@ export default class ProjectStorage extends LocalStorage {
 
 
 	static get_by_client (client_id) {
-
-		let store = LocalStorage.get_all (store_name);
-		let result = store?.[client_id];
-
-		if (isset (result)) return result;
-
 		return new Promise ((resolve, reject) => {
+
+			let result = LocalStorage.get_all (store_name)?.[client_id];
+
+			if (isset (result)) return resolve (result);
+			if (not_number (client_id)) return resolve (null);
+
 			ProjectModel.get_projects_by_client (client_id).then (data => {
 				this.#set_project (client_id, data);
 				resolve (data);
 			}).catch (reject);
-		});
 
+		});
 	}// get_by_client;
 
 

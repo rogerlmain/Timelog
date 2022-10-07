@@ -89,8 +89,8 @@ export default class ProjectsPage extends BaseControl {
 					selectedClient={this.state.selected_client}
 					selectedProject={this.state.selected_project}
 
-					onClientChange={(event) => this.setState ({
-						selected_client: numeric_value (event.target.value),
+					onClientChange={client_id => this.setState ({
+						selected_client: numeric_value (client_id),
 						selected_project: null,
 						updating: true,
 					})}

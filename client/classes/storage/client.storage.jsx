@@ -62,19 +62,18 @@ puke ();
 
 
 	static get_by_company = (company_id) => { 
-
-		let store = LocalStorage.get_all (store_name);
-		let result = nested_value (store, company_id);
-
-		if (isset (result)) return result;
-
 		return new Promise ((resolve, reject) => {
+
+			let store = LocalStorage.get_all (store_name);
+	
+			if (isset (store?.[company_id])) return resolve (store [company_id]);
+	
 			ClientModel.fetch_by_company (company_id).then (data => {
 				if (not_empty (data)) ClientStorage.#set ({ ...LocalStorage.get_all (store_name), [company_id]: data });
 				resolve (data);
 			}).catch (reject);
+
 		});
-		
 	}/* get_by_company */;
 
 

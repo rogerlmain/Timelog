@@ -32,6 +32,12 @@ export default class FadePanel extends BaseControl {
 	}// defaultProps;
 
 
+	constructor (props) {
+		super (props);
+		if (not_set (this.props.id)) throw "Fade panel requires an ID";
+	}// constructor;
+
+
 	transition_start = event => {
 
 		if (event.propertyName != "opacity") return;

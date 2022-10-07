@@ -11,10 +11,11 @@ import ClientSelector from "client/controls/selectors/client.selector";
 
 import Container from "client/controls/container";
 
-import { isset, integer_value, nested_value, not_set, debugging } from "client/classes/common";
+import { isset, integer_value, not_set, debugging, compare } from "client/classes/common";
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
+import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 
 
 export default class ProjectSelector extends BaseControl {
@@ -24,8 +25,9 @@ export default class ProjectSelector extends BaseControl {
 
 
 	state = { 
-		client_id: null,
-		project_id: null,
+		project_data: null,
+		selected_client_id: null,
+		selected_project_id: null,
 	}// state;
 
 
@@ -52,8 +54,8 @@ export default class ProjectSelector extends BaseControl {
 
 		super (props);
 
-		this.state.client_id = this.props.clientId;
-		this.state.project_id = this.props.projectId;
+		this.state.selected_client_id = this.props.clientId;
+		this.state.selected_project_id = this.props.projectId;
 
 		if (debugging (false)) console.log (`${props.id} object created`);
 
@@ -65,8 +67,7 @@ export default class ProjectSelector extends BaseControl {
 
 	render () {
 
-		let single_client = (OptionsStorage.client_limit () == 1);
-		let multiple_projects = (OptionsStorage.project_limit () > 1);
+		let single_project = (OptionsStorage.project_limit () == 1);
 
 		return <div id={this.props.id} className="one-piece-form">
 
@@ -75,43 +76,34 @@ export default class ProjectSelector extends BaseControl {
 				hasHeader={this.props.hasHeader} 
 				headerSelectable={false} 
 				headerText="Select a client" 
+				selectedClient={this.state.selected_client_id}
 
-				selectedClient={this.state.client_id}
-
-				onChange={event => {
-
-					let client_id = integer_value (event.target.value);
-
-					this.setState ({ 
-						client_id: client_id,
-						project_data: ProjectStorage.get_by_client (client_id),
-					}, () => this.execute (this.props.onClientChange, event))
-					
+				onChange={client_id => {
+					this.setState ({ selected_client_id: client_id }, () => this.execute (this.props.onClientChange, client_id));
+					ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: data }));
 				}}>
 
 			</ClientSelector>
+
+			<FadePanel id={`${this.props.id}_project_selector_label_fade_panel`} visible={isset (this.state.selected_client_id)}>
+				<label htmlFor={`${this.props.id}_load_list`}>Project<Container visible={single_project}>:</Container></label>
+			</FadePanel>
 			
-			<Container visible={multiple_projects}>
-
-				<FadePanel visible={isset (this.state.client_id)}>
-					<label htmlFor={`${this.props.id}_load_list`}>Project</label>
-				</FadePanel>
-
-				<LoadList id={this.props.id} label="Project"
+			<FadePanel id={`${this.props.id}_project_selector_fade_panel`} visible={isset (this.state.selected_client_id)}>
+				<LoadList id={this.props.id} label="Project" 
 
 					listHeader={this.props.headerSelectable ? "New project" : "Select a project"}
 					headerSelectable={this.props.headerSelectable}
 
-					dataIdField="project_id" dataTextField="name" data={this.state.project_data} selectedItem={this.state.project_id}
+					dataIdField="project_id" dataTextField="name" data={this.state.project_data} selectedItem={this.state.selected_project_id}
 					newButtonPage={this.props.newButton ? page_names.projects : null} 
 					
-					disabled={not_set (this.state.client_id) && (!single_client)}
+					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
 					onChange={event => this.setState ({ project_id: integer_value (event.target.value) }), event => this.execute (this.props.onProjectChange, event)}>
 
 				</LoadList>
-				
-			</Container>
+			</FadePanel>
 
 		</div>
 	}// render;

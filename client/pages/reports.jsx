@@ -336,7 +336,7 @@ export default class ReportsPage extends BaseControl {
 				<div className="two-column-table">
 
 					<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
-						onClientChange={event => this.setState ({ client_id: event.target.value })}
+						onClientChange={client_id => this.setState ({ client_id: client_id })}
 						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
 					</ProjectSelector>
 

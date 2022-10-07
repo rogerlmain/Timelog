@@ -67,7 +67,11 @@ export default class ResizePanel extends BaseControl {
 
 	end_update () {
 
-		if (this.props.stretchOnly) this.outer_control.current.semifreeze ();
+		if (this.props.stretchOnly) {
+			this.outer_control.current.semifreeze ();
+			this.inner_control.current.style.width = `100%`;
+			this.inner_control.current.style.height = `100%`;
+		}// if;
 
 		this.outer_control.current.thaw ();
 		this.setState ({ animating: false }, () => this.execute (this.props.afterResizing));

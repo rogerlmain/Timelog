@@ -90,27 +90,25 @@ export default class SelectList extends BaseControl {
 
 		let selectedValue = this.state.selected_value ?? this.props.value ?? header_value;
 
-        return (
-            <select id={this.props.id} name={this.props.id} ref={this.list} value={selectedValue} disabled={this.props.disabled}
+        return <select id={this.props.id} name={this.props.id} ref={this.list} value={selectedValue} disabled={this.props.disabled}
 			
-				className={this.props.className} style={this.props.style}
+			className={this.props.className} style={this.props.style}
 
- 				onChange={(event) => {
-					let value = parseInt (event.target.value);
-					this.setState ({ selected_value: value }, () => this.execute (this.props.onChange, event));
-					return true;
-				}}>
+			onChange={(event) => {
+				let value = parseInt (event.target.value);
+				this.setState ({ selected_value: value }, () => this.execute (this.props.onChange, event));
+				return true;
+			}}>
 
 
-				{this.header_visible () &&
-				
-					<option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.headerText}</option>}
+			{this.header_visible () &&
+			
+				<option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.headerText}</option>}
 
-				{this.props.children}
-				{this.select_options (this.props.data, this.props.textField, this.props.idField)}
+			{this.props.children}
+			{this.select_options (this.props.data, this.props.textField, this.props.idField)}
 
-            </select>
-        );
+		</select>
 
     }// render;
 	

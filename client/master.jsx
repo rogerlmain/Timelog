@@ -29,7 +29,7 @@ import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/companies.model";
 import OptionsModel from "client/classes/models/options.model";
 
-import { date_formats, horizontal_alignment } from "client/classes/types/constants";
+import { account_type_names, blank, date_formats, horizontal_alignment } from "client/classes/types/constants";
 import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, nested_value, not_set, numeric_value } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
@@ -52,7 +52,7 @@ import "resources/styles/home.page.css";
 
 
 const version = "1.0.2.9";
-const database = "local"; // live is the other option
+const database = "live"; // live is the other option
 
 
 const user_image_style = {
@@ -436,13 +436,12 @@ export default class MasterPanel extends BaseControl {
 
 		let signed_in = this.signed_in ();
 		let icd = location.urlParameter ("icd");
-	
+
 		if (isset (icd)) {
 			localStorage.setItem ("invitation", icd);
 			window.location.href = window.location.origin;
 			return null;
 		}// if;
-
 
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
 			<div id="master_panel" className="vertically-spaced-out">
@@ -474,9 +473,11 @@ export default class MasterPanel extends BaseControl {
 
 				</div>
 
-				<div style={{ flexGrow: 1 }} className="with-headspace ">
+				<div style={{ flexGrow: 1 }} className="with-headspace">
 					<div style={this.viewer_style} className="horizontally-centered">
-						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true} vAlign="flex-start">{this.main_contents ()}</ExplodingPanel>
+						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true}>
+							<div className="fully-aligned">{this.main_contents ()}</div>
+						</ExplodingPanel>
 					</div>
 				</div>
 
@@ -488,7 +489,7 @@ export default class MasterPanel extends BaseControl {
 							<div>(DBA: The Roger Main Programming Company)</div>
 							<div>All rights reserved</div>
 							<br />
-							<div>Version {version} ({database})</div>
+							<div>Version {version} {debugging () ? `(${database})` : blank}</div>
 						</div>
 						<a href="https://journal.rexthestrange.com" target="journal"><img src={rexs_head} style={logo_image} /></a>
 					</div>

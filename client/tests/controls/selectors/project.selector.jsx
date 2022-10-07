@@ -7,13 +7,14 @@ import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 import ClientStorage from "client/classes/storage/client.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
-import ClientSelector from "client/controls/selectors/client.selector";
+import ProjectSelector from "client/controls/selectors/project.selector";
 
 import { numeric_value } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
+import ProjectStorage from "client/classes/storage/project.storage";
 
 
-export default class ClientSelectorTest extends BaseControl {
+export default class ProjectSelectorTest extends BaseControl {
 
 
 	state = { client_data: null }
@@ -24,7 +25,8 @@ export default class ClientSelectorTest extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		this.state.company_id = 268;
+		this.state.company_id = 478; //268;
+		CompanyStorage.set_active_company (this.state.company_id);
 	}// constructor;
 
 
@@ -41,10 +43,10 @@ export default class ClientSelectorTest extends BaseControl {
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
 
 			<div className="one-piece-form">
-				<ClientSelector id="client_selector" ref={this.client_selector} parent={this}
+				<ProjectSelector id="client_selector" ref={this.client_selector} parent={this}
 					headerText="New client"
 					selectedClient={this.state.selected_client}>
-				</ClientSelector>
+				</ProjectSelector>
 			</div>
 
 			<br /><br />
@@ -58,6 +60,6 @@ export default class ClientSelectorTest extends BaseControl {
 	}// render;
 
 
-}// LoadListTest;
+}// ProjectSelectorTest;
 
 

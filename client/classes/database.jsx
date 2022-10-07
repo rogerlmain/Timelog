@@ -27,11 +27,16 @@ export default class Database {
 
 		return new Promise ((resolve, reject) => fetch (`/${name}`, fetch_parameters).then (response => response.text ()).then (text => {
 			try {
-				return resolve (JSON.parse (text));
+
+				/* Keep commented code - used for testing database lag */
+				return setTimeout (() => 
+					resolve (JSON.parse (text))
+				, 3000);
+
 			} catch (message) { 
 				reject ({ error: message });
 			}// try;
-		}));
+		}).catch (error => reject (error)));
 
 	}// fetch_data;
 

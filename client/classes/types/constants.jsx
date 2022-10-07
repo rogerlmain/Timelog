@@ -43,14 +43,16 @@ export const vertical_alignment = {
 	top: "flex-start",
 	middle: "center",
 	center: "center",
-	bottom: "flex-end"
+	bottom: "flex-end",
+	stretch: "stretch",
 }// vertical_alignment;
 
 
 export const horizontal_alignment = {
 	left: "flex-start",
 	center: "center",
-	right: "flex-end"
+	right: "flex-end",
+	stretch: "stretch",
 }// horizontal_alignment;
 
 
