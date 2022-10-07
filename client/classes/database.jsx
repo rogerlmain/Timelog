@@ -29,9 +29,9 @@ export default class Database {
 			try {
 
 				/* Keep commented code - used for testing database lag */
-				return setTimeout (() => 
+				// return setTimeout (() => 
 					resolve (JSON.parse (text))
-				, 3000);
+				// , 3000);
 
 			} catch (message) { 
 				reject ({ error: message });
