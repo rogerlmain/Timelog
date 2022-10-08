@@ -11,11 +11,11 @@ import ClientSelector from "client/controls/selectors/client.selector";
 
 import Container from "client/controls/container";
 
-import { isset, integer_value, not_set, debugging, compare } from "client/classes/common";
+import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
+import { isset, integer_value, debugging } from "client/classes/common";
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
-import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 
 
 export default class ProjectSelector extends BaseControl {
@@ -62,7 +62,7 @@ export default class ProjectSelector extends BaseControl {
 	}// constructor;
 
 
-	/********/
+	/*********/
 
 
 	render () {
@@ -80,7 +80,10 @@ export default class ProjectSelector extends BaseControl {
 
 				onChange={client_id => {
 					this.setState ({ selected_client_id: client_id }, () => this.execute (this.props.onClientChange, client_id));
-					ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: data }));
+					ProjectStorage.get_by_client (client_id).then (data => this.setState ({
+						selected_project_id: data [0].project_id,
+						project_data: data,
+					}, () => this.execute (this.props.onProjectChange, data [0].project_id)));
 				}}>
 
 			</ClientSelector>
@@ -100,7 +103,10 @@ export default class ProjectSelector extends BaseControl {
 					
 					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
-					onChange={event => this.setState ({ project_id: integer_value (event.target.value) }), event => this.execute (this.props.onProjectChange, event)}>
+					onChange={event => {
+						let project_id = integer_value (event.target.value);
+						this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
+					}}>
 
 				</LoadList>
 			</FadePanel>

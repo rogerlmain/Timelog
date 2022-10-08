@@ -60,7 +60,7 @@ export default class ProjectsPage extends BaseControl {
 
 	shouldComponentUpdate (new_props, new_state) {
 
-		let client_selected = nested_value (this.project_selector.current, "client_selected");
+		let client_selected = this.project_selector.current?.client_selected;
 
 		if (new_state.form_visible != client_selected) {
 			this.setState ({ form_visible: client_selected });

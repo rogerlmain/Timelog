@@ -55,9 +55,6 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	client_selected = () => ((this.state.selected_client_id > 0) || OptionsStorage.single_client ());
-
-
 	get_client_data = () => ClientStorage.get_by_company (CompanyStorage.active_company_id ()).then (data => {
 		this.setState ({ 
 			client_data: data,
@@ -73,9 +70,6 @@ export default class ClientSelector extends BaseControl {
 		if (!compare (new_state.client_data, this.state.client_data)) this.get_client_data ();
 		return true;
 	}// shouldComponentUpdate;
-
-
-	componentDidMount = this.forceRefresh;
 
 
 	render () {

@@ -92,10 +92,10 @@ export default class LoggingPage extends BaseControl {
 	/********/
 
 
-	company_id = () => 	{ return null_value (nested_value (this.state.current_entry, "company_id")) }
-	client_id = () => 	{ return null_value (nested_value (this.state.current_entry, "client_id")) }
-	project_id = () => 	{ return null_value (nested_value (this.state.current_entry, "project_id")) }
-	notes = () => 		{ return null_value (nested_value (this.state.current_entry, "notes")) }
+	company_id = () => 	{ return null_value (this.state.current_entry?.company_id) }
+	client_id = () => 	{ return null_value (this.state.current_entry?.client_id) }
+	project_id = () => 	{ return null_value (this.state.current_entry?.project_id) }
+	notes = () => 		{ return null_value (this.state.current_entry?.notes) }
 
 	logged_in = () => { return isset (this.state.current_entry) && isset (this.state.current_entry.start_time) }
 	logged_out = () => { return !this.logged_in () }
@@ -350,7 +350,7 @@ export default class LoggingPage extends BaseControl {
 					headerSelectable={false} 
 
 					onClientChange={client_id => this.setState ({ current_entry: {...this.state.current_entry, client_id: client_id } })}
-					onProjectChange={event => this.setState ({ current_entry: {...this.state.current_entry, project_id: event.target.value } })}>
+					onProjectChange={project_id => this.setState ({ current_entry: {...this.state.current_entry, project_id: project_id } })}>
 
 				</ProjectSelector>
 

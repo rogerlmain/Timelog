@@ -29,8 +29,8 @@ import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/companies.model";
 import OptionsModel from "client/classes/models/options.model";
 
-import { account_type_names, blank, date_formats, horizontal_alignment } from "client/classes/types/constants";
-import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, nested_value, not_set, numeric_value } from "client/classes/common";
+import { blank, date_formats, horizontal_alignment } from "client/classes/types/constants";
+import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, live, nested_value, not_set, numeric_value } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
 
@@ -51,8 +51,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.2.9";
-const database = "live"; // live is the other option
+const version = "1.0.3.10";
 
 
 const user_image_style = {
@@ -321,10 +320,18 @@ export default class MasterPanel extends BaseControl {
 
 	update_clock = () => {
 
+		let truetime = OptionsStorage.truetime ();
+
 		let current_time = new Date ();
 		let target_time = new Date (current_time);
 
-		target_time.setSeconds (target_time.getSeconds () + 1);
+		if (truetime) {
+			target_time.setSeconds (target_time.getSeconds () + 1);
+		} else {
+			target_time.setMinutes (target_time.getMinutes () + 1);
+			target_time.setSeconds (0);
+		}// if;
+
 		target_time.setMilliseconds (0);
 
 		this.setState ({ current_time: current_time.format (OptionsStorage.truetime () ? date_formats.detailed_datetime : date_formats.short_detailed_datetime) });
@@ -427,7 +434,7 @@ export default class MasterPanel extends BaseControl {
 
 
 	componentDidMount () {
-//		if (!(debugging ())) this.update_clock ();
+		if (live ()) this.update_clock ();
 		this.componentDidUpdate ();
 	}// componentDidMount;
 	
@@ -489,7 +496,7 @@ export default class MasterPanel extends BaseControl {
 							<div>(DBA: The Roger Main Programming Company)</div>
 							<div>All rights reserved</div>
 							<br />
-							<div>Version {version} {debugging () ? `(${database})` : blank}</div>
+							<div>Version {version} {debugging () ? "(test)" : blank}</div>
 						</div>
 						<a href="https://journal.rexthestrange.com" target="journal"><img src={rexs_head} style={logo_image} /></a>
 					</div>
