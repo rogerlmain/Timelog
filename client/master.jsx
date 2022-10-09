@@ -29,7 +29,7 @@ import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/companies.model";
 import OptionsModel from "client/classes/models/options.model";
 
-import { blank, date_formats, horizontal_alignment } from "client/classes/types/constants";
+import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, live, nested_value, not_set, numeric_value } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
@@ -482,7 +482,7 @@ export default class MasterPanel extends BaseControl {
 
 				<div style={{ flexGrow: 1 }} className="with-headspace">
 					<div style={this.viewer_style} className="horizontally-centered">
-						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true}>
+						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true} vAlign={vertical_alignment.top}>
 							<div className="fully-aligned">{this.main_contents ()}</div>
 						</ExplodingPanel>
 					</div>

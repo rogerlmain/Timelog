@@ -157,16 +157,17 @@ export default class ResizePanel extends BaseControl {
 
 		const outer_style = { 
 			display: "flex",
+			position: "relative",
 			justifyContent: this.props.hAlign,
 			alignItems: this.props.vAlign,
 			fontSize: 0,
 		}// outer_style;
 
 		const inner_style = {
+			display: "inline-block",
+			position: "relative",
 			margin: "none",
 			padding: "none",
-			display: "inline-block",
-			//position: "relative",
 		}// inner_style;
 		
 		let speed = this.animation_speed ();

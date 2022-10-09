@@ -58,17 +58,17 @@ export default class ProjectsPage extends BaseControl {
 	/********/
 
 
-	shouldComponentUpdate (new_props, new_state) {
+	// shouldComponentUpdate (new_props, new_state) {
 
-		let client_selected = this.project_selector.current?.client_selected;
+	// 	let client_selected = this.project_selector.current?.client_selected;
 
-		if (new_state.form_visible != client_selected) {
-			this.setState ({ form_visible: client_selected });
-			return false;
-		}// if;
+	// 	if (new_state.form_visible != client_selected) {
+	// 		this.setState ({ form_visible: client_selected });
+	// 		return false;
+	// 	}// if;
 
-		return true;
-	}// shouldComponentUpdate;
+	// 	return true;
+	// }// shouldComponentUpdate;
 
 
 	render () {
