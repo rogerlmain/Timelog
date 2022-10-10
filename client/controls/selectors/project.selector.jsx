@@ -12,7 +12,7 @@ import ClientSelector from "client/controls/selectors/client.selector";
 import Container from "client/controls/container";
 
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
-import { isset, integer_value, debugging } from "client/classes/common";
+import { isset, integer_value, debugging, not_set } from "client/classes/common";
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
@@ -79,11 +79,15 @@ export default class ProjectSelector extends BaseControl {
 				selectedClient={this.state.selected_client_id}
 
 				onChange={client_id => {
-					this.setState ({ selected_client_id: client_id }, () => this.execute (this.props.onClientChange, client_id));
-					if (isset (client_id)) ProjectStorage.get_by_client (client_id).then (data => this.setState ({
-						selected_project_id: data [0].project_id,
-						project_data: data,
-					}, () => this.execute (this.props.onProjectChange, data [0].project_id)));
+
+					if ((this.state.selected_client_id == client_id) || not_set (client_id)) return;
+
+					this.setState ({ selected_client_id: client_id }, () => ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: data }, () => {
+						let project_id = (data.length == 1) ? data [0].project_id : null;
+						if ((this.state.selected_project_id == project_id) || not_set (project_id)) return;
+						this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
+					})));
+
 				}}>
 
 			</ClientSelector>

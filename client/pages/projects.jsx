@@ -12,7 +12,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import ProjectForm from "client/forms/project.form";
 
-import { numeric_value, not_null, not_set, get_values, nested_value } from "client/classes/common";
+import { not_set, get_values, isset } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 import "resources/styles/pages/projects.css";
@@ -58,19 +58,6 @@ export default class ProjectsPage extends BaseControl {
 	/********/
 
 
-	// shouldComponentUpdate (new_props, new_state) {
-
-	// 	let client_selected = this.project_selector.current?.client_selected;
-
-	// 	if (new_state.form_visible != client_selected) {
-	// 		this.setState ({ form_visible: client_selected });
-	// 		return false;
-	// 	}// if;
-
-	// 	return true;
-	// }// shouldComponentUpdate;
-
-
 	render () {
 
 		let limit = OptionsStorage.project_limit ();
@@ -90,14 +77,13 @@ export default class ProjectsPage extends BaseControl {
 					selectedProject={this.state.selected_project}
 
 					onClientChange={client_id => this.setState ({
-						selected_client: numeric_value (client_id),
+						selected_client: client_id,
 						selected_project: null,
-						updating: true,
 					})}
 
-					onProjectChange={(event) => this.setState ({ 
-						selected_project: numeric_value (event.target.value),
-						updating: true,
+					onProjectChange={project_id => this.setState ({ 
+						selected_project: project_id,
+						updating: isset (project_id),
 					})}>
 
 				</ProjectSelector>
@@ -105,20 +91,12 @@ export default class ProjectsPage extends BaseControl {
 
 			<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." 
 
-				onEyecandy={async () => {
+				onEyecandy={() => ProjectStorage.get_by_id (this.state.selected_project).then (data => this.setState ({ 
+					project_data: data,
+					updating: false,
+				}))}>
 
-					let data = null;
-
-					if (this.state.selected_project > 0) data = await ProjectStorage.get_by_id (this.state.selected_project);
-					
-					this.setState ({ 
-						project_data: data,
-						updating: false,
-					});
-				
-				}}>
-
-				<Container visible={this.state.form_visible}>
+				<Container visible={isset (this.state.selected_project)}>
 					<ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
 						onSave={() => this.project_selector.current.setState ({ projects_loading: true })}>
 					</ProjectForm>
