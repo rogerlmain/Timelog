@@ -23,14 +23,12 @@ export default class ProjectStorage extends LocalStorage {
 
 
 	static #get = () => LocalStorage.get_all (store_name);
-
-
 	static #set = values => { LocalStorage.set_store (store_name, values) };
 
 
 	static #set_project_by_id = (client_id, project_id, data) => {
 
-		let projects = LocalStorage.get_all (store_name);
+		let projects = this.#get (store_name);
 		let company_id = CompanyStorage.active_company_id ();
 
 		if (not_set (projects)) projects = {};

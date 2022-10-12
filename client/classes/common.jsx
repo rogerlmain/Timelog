@@ -12,7 +12,7 @@ const detab = (text) => {
 
 
 export const debugging = (active = true) => (active && window.location.hostname.equals ("localhost"));
-export const live = () => !debugging ();
+export const live = (live = true) => !debugging (live);
 
 
 export function boolean_value (value) { return (is_string (value) && (value.equals ("true") || value.equals ("on"))) }

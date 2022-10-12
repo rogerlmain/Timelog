@@ -4,7 +4,7 @@ import LocalStorage from "client/classes/local.storage";
 import ClientModel from "client/classes/models/client.model";
 
 import { stores } from "client/classes/types/constants";
-import { isset, not_set, not_empty, nested_value, nulled } from "client/classes/common";
+import { isset, not_set, not_empty, nested_value, nulled, live } from "client/classes/common";
 
 
 const store_name = stores.clients;
@@ -17,24 +17,38 @@ export const default_description = `${default_name} description`;
 export default class ClientStorage extends LocalStorage {
 
 
+	static #get = () => LocalStorage.get_all (store_name);
 	static #set = values => { LocalStorage.set_store (store_name, values) }
 
 
-	static #set_all = (company_id, client) => {
+	static #set_client_by_id = (client_id, data) => {
 
-		let values = LocalStorage.get_all (store_name);
-		let items = nested_value (values, company_id);
-		let value = isset (items) ? items.find (item => item.client_id == client.client_id) : null;
+		let clients = this.#get ();
+		let company_id = CompanyStorage.active_company_id ();
 
-		if (not_set (values)) values = {};
-		if (not_set (values [company_id])) values [company_id] = [];
+		if (not_set (clients)) clients = {};
+		if (not_set (clients [company_id])) clients [company_id] = {};
 
-		if (isset (value)) values [company_id].remove (value);
-		values [company_id].push (client); 
+		clients [company_id][client_id] = data;
 
-		ClientStorage.#set (values);
+		ClientStorage.#set (clients);
 
-	}/* set_client */;
+	}/* #set_client_by_id */;
+
+
+	static #set_client = client => {
+
+		let client_id = client.client_id;
+
+		if (live ()) {
+			delete client.company_id;
+			delete client.client_id;
+		}// if;
+
+		ClientStorage.#set_client_by_id (client_id, client);
+		return client;
+
+	}/* #set_client */;
 
 
 	/********/
@@ -42,7 +56,7 @@ export default class ClientStorage extends LocalStorage {
 
 	static remove_client (client_id) {
 
-		let values = LocalStorage.get_all (store_name);
+		let values = this.#get ();
 
 alert ("fix this!");
 puke ();
@@ -55,8 +69,8 @@ puke ();
 	}// remove_client;
 
 
-	static save_client = (client_data) => new Promise ((resolve, reject) => ClientModel.save_client (client_data).then (data => {
-		ClientStorage.#set_all (client_data.get ("company_id"), data);
+	static save_client = client_data => new Promise ((resolve, reject) => ClientModel.save_client (client_data).then (data => {
+		ClientStorage.#set_client (data);
 		resolve (data);
 	}).catch (reject));
 
@@ -64,12 +78,12 @@ puke ();
 	static get_by_company = (company_id) => { 
 		return new Promise ((resolve, reject) => {
 
-			let store = LocalStorage.get_all (store_name);
+			let store = this.#get ();
 	
 			if (isset (store?.[company_id])) return resolve (store [company_id]);
 	
-			ClientModel.fetch_by_company (company_id).then (data => {
-				if (not_empty (data)) ClientStorage.#set ({ ...LocalStorage.get_all (store_name), [company_id]: data });
+			ClientModel.get_by_company (company_id).then (data => {
+				data.forEach (item => this.#set_client (item));
 				resolve (data);
 			}).catch (reject);
 
@@ -87,8 +101,8 @@ puke ();
 				if (isset (client)) return resolve (client);
 			}// for;
 
-			ClientModel.fetch_by_id (client_id).then (client => {
-				ClientStorage.#set_all (CompanyStorage.active_company_id (), client);
+			ClientModel.get_by_id (client_id).then (client => {
+				ClientStorage.#set_client (client);
 				resolve (client);
 			}).catch (reject);
 
@@ -105,7 +119,7 @@ puke ();
 
 		if (isset (new_rate)) {
 			client.default_rate = new_rate;
-			ClientStorage.#set_all (CompanyStorage.active_company_id (), client);
+			ClientStorage.#set (CompanyStorage.active_company_id (), client);
 			return;
 		}// if;
 
