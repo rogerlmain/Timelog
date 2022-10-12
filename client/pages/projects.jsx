@@ -12,6 +12,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import ProjectForm from "client/forms/project.form";
 
+import { vertical_alignment } from "client/classes/types/constants";
 import { not_set, get_values, isset } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
@@ -79,24 +80,25 @@ export default class ProjectsPage extends BaseControl {
 					onClientChange={client_id => this.setState ({
 						selected_client: client_id,
 						selected_project: null,
+						updating: true,
 					})}
 
 					onProjectChange={project_id => this.setState ({ 
 						selected_project: project_id,
-						updating: isset (project_id),
+						updating: true,
 					})}>
 
 				</ProjectSelector>
 			</div>	
 
-			<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." 
+			<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." vAlign={vertical_alignment.center}
 
 				onEyecandy={() => ProjectStorage.get_by_id (this.state.selected_project).then (data => this.setState ({ 
 					project_data: data,
 					updating: false,
 				}))}>
 
-				<Container visible={isset (this.state.selected_project)}>
+				<Container visible={isset (this.state.selected_client)}>
 					<ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
 						onSave={() => this.project_selector.current.setState ({ projects_loading: true })}>
 					</ProjectForm>

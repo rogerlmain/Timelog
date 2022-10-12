@@ -1,5 +1,3 @@
-import * as constants from "client/classes/types/constants";
-
 import LocalStorage from "client/classes/local.storage";
 import ClientStorage from "client/classes/storage/client.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
@@ -7,10 +5,11 @@ import OptionsStorage from "client/classes/storage/options.storage";
 
 import ProjectModel from "client/classes/models/project.model";
 
-import { isset, not_null, not_empty, is_promise, not_number } from "client/classes/common";
+import { stores } from "client/classes/types/constants";
+import { isset, not_null, not_empty, is_promise, not_number, not_set, live } from "client/classes/common";
 
 
-const store_name = constants.stores.projects;
+const store_name = stores.projects;
 
 
 export const default_name = "Default project";
@@ -23,79 +22,93 @@ export default class ProjectStorage extends LocalStorage {
 	/**** Private Methods ****/
 
 
+	static #get = () => LocalStorage.get_all (store_name);
+
+
 	static #set = values => { LocalStorage.set_store (store_name, values) };
-	static #set_project = (client_id, data) => ((not_empty (data)) && ProjectStorage.#set ({ ...LocalStorage.get_all (store_name), [client_id]: Array.arrayify (data) }));
+
+
+	static #set_project_by_id = (client_id, project_id, data) => {
+
+		let projects = LocalStorage.get_all (store_name);
+		let company_id = CompanyStorage.active_company_id ();
+
+		if (not_set (projects)) projects = {};
+		if (not_set (projects [company_id])) projects [company_id] = {};
+		if (not_set (projects [company_id][client_id])) projects [company_id][client_id] = {};
+
+		projects [company_id][client_id][project_id] = data;
+
+		ProjectStorage.#set (projects);
+
+	}/* #set_project_by_id */;
+
+
+	static #set_project = project => {
+
+		let client_id = project.client_id;
+		let project_id = project.project_id;
+
+		if (live ()) {
+			delete project.company_id;
+			delete project.client_id;
+			delete project.project_id;
+		}// if;
+
+		ProjectStorage.#set_project_by_id (client_id, project_id, project);
+		return project;
+
+	}/* #set_project */;
 
 
 	/**** Public Methods *****/
 
 
-	static save_project = form_data => {
-		return new Promise ((resolve, reject) => {
-			ProjectModel.save_project (form_data).then (data => {
-				this.#set_project (data);
-				resolve (data);
-			}).catch (reject);
-		});
-	}/* save_project */;
-
-/*
-	static remove_project (project_id) {
-
-		let values = LocalStorage.get_all (store_name);
-
-		if (isset (values)) {
-			let value = values.find (candidate => candidate.project_id == project_id);
-			return LocalStorage.set_store (store_name, values.remove (value));
-		}// if;
-
-	}// remove_project;
-*/
+	static save_project = form_data => new Promise ((resolve, reject) => ProjectModel.save_project (form_data).then (data => {
+		ProjectStorage.#set_project (data);
+		resolve (data);
+	}).catch (reject));
 
 
 	static get_by_id (project_id) {
 		return new Promise ((resolve, reject) => {
 
-			let store = LocalStorage.get_all (store_name);
-			let data = null;
+			let store = this.#get ();
+			let project_data = null;
 
-			if (isset (store)) {
+			if (not_set (project_id)) return resolve (null);
 
-				Object.keys (store).forEach (key => {
-					let next = store [key];
-					if (next.project_id == project_id) return data = store [key];
-				});
+			if (isset (store)) Object.keys (store).forEach (company_id => Object.keys (store [company_id]).forEach (client_id => {
+				if (isset (store [company_id][client_id][project_id])) project_data = store [company_id][client_id][project_id];
+			}));
 
-				if (isset (data)) resolve (data);
-			
-			}// if;
-
-			ProjectModel.get_project_by_id (project_id).then (data => {
-				this.#set_project (data.client_id, data);
-				resolve (data);
-			}).catch (reject);
+			if (isset (project_data)) return resolve (project_data);
+				
+			ProjectModel.get_project_by_id (project_id).then (data => resolve (this.#set_project (data))).catch (reject);
 
 		});
 	}/* get_by_id */;
 
 
-	static get_company_projects () {
-		let store = LocalStorage.get_all (store_name);
-		return (isset (store) ? store [CompanyStorage.active_company_id ()] : null);
-	}// get_company_projects;
-
-
 	static get_by_client (client_id) {
 		return new Promise ((resolve, reject) => {
 
-			let result = LocalStorage.get_all (store_name)?.[client_id];
+			let result = this.#get ()?.[CompanyStorage.active_company_id ()]?.[client_id];
 
 			if (isset (result)) return resolve (result);
 			if (not_number (client_id)) return resolve (null);
 
 			ProjectModel.get_projects_by_client (client_id).then (data => {
-				this.#set_project (client_id, data);
-				resolve (data);
+
+				let project_count = data.length;
+				
+				if (project_count == 0) return resolve (data); // return an empty array - it's how to distinguish unread from no value
+
+				data.forEach (project => {
+					ProjectStorage.#set_project (project);
+					if (--project_count == 0) ProjectStorage.get_by_client (client_id).then (data => resolve (data));
+				});
+
 			}).catch (reject);
 
 		});

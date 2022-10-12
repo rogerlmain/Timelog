@@ -128,8 +128,6 @@ export function nulled (value) { return (null_or_undefined (value)) ? null : val
 export function null_value (value) { return ((value === 0) || (value === blank) || not_set (value)) ? null : value }
 export function null_or_undefined (value) { return (is_null (value) || (value == undefined)) }
 
-export function zero_value (value) { return null_or_undefined (value) ? 0 : value }
-
 
 export function compare (first_object, second_object) {
 	if (not_set (first_object)) return not_set (second_object);

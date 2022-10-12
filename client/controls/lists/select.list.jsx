@@ -3,7 +3,7 @@ import * as common from "client/classes/common";
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control"
 
-import { get_values, zero_value } from "client/classes/common";
+import { get_values } from "client/classes/common";
 
 
 const header_value = -1;
@@ -31,7 +31,7 @@ export default class SelectList extends BaseControl {
 
 		disabled: false,
 
-		value: null,
+		selectedValue: null,
 
 		onChange: null
 
@@ -60,9 +60,9 @@ export default class SelectList extends BaseControl {
 		let result = option_list.map (item => {
 
 			let text_field = common.is_function (this.props.textField) ? this.props.textField (item) : item [this.props.textField];
-			let key = is_array ? item [this.props.idField] : common.get_key (this.props.data, item);
+			let value = is_array ? item [this.props.idField] : common.get_key (this.props.data, item);
 
-			return <option value={key} key={key}>{text_field}</option>
+			return <option value={value} key={value}>{text_field}</option>
 
 		});
 		return result;
@@ -73,33 +73,25 @@ export default class SelectList extends BaseControl {
 
 
 	componentDidMount () {
-		this.setState ({ selected_value: zero_value (this.props.value) });
+		this.setState ({ selected_value: (this.props.selectedValue ?? 0) });
 	}// componentDidUpdate;
 
 
 	shouldComponentUpdate (new_props) {
-		if (this.props.value != new_props.value) {
-			this.setState ({ selected_value: zero_value (new_props.value) });
-			return false;
-		}// if;
+		if (new_props.selectedValue != this.props.selectedValue) return !!this.setState ({ selected_value: (new_props.selectedValue ?? 0) });
 		return true;
 	}// shouldComponentUpdate;
 
 
     render () {
 
-		let selectedValue = this.state.selected_value ?? this.props.value ?? header_value;
+		let selected_value = this.state.selected_value ?? this.props.selectedValue ?? header_value;
 
-        return <select id={this.props.id} name={this.props.id} ref={this.list} value={selectedValue} disabled={this.props.disabled}
+        return <select id={this.props.id} name={this.props.id} ref={this.list} value={selected_value} disabled={this.props.disabled}
 			
 			className={this.props.className} style={this.props.style}
 
-			onChange={(event) => {
-				let value = parseInt (event.target.value);
-				this.setState ({ selected_value: value }, () => this.execute (this.props.onChange, event));
-				return true;
-			}}>
-
+			onChange={event => this.setState ({ selected_value: parseInt (event.target.value) }, () => this.execute (this.props.onChange, event))}>
 
 			{this.header_visible () &&
 			

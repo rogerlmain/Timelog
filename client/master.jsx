@@ -383,7 +383,7 @@ export default class MasterPanel extends BaseControl {
 						<div className="right-aligned-text">
 	
 							<Container visible={CompanyStorage.company_count () > 1}>
-								<SelectList value={CompanyStorage.active_company_id ()} data={companies}
+								<SelectList selectedValue={CompanyStorage.active_company_id ()} data={companies}
 									textField="company_name" hasHeader={true}
 									onChange={event => this.select_company (event.target.value)}>
 								</SelectList>

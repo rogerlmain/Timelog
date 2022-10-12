@@ -34,10 +34,9 @@ export default class ProjectSelector extends BaseControl {
 	static defaultProps = {
 
 		id: null,
-		selectedProject: null,
 
-		clientId: null,
-		projectId: null,
+		selectedClient: null,
+		selectedProject: null,
 
 		onClientChange: null,
 		onProjectChange: null,
@@ -54,8 +53,8 @@ export default class ProjectSelector extends BaseControl {
 
 		super (props);
 
-		this.state.selected_client_id = this.props.clientId;
-		this.state.selected_project_id = this.props.projectId;
+		this.state.selected_client_id = this.props.selectedClient;
+		this.state.selected_project_id = this.props.selectedProject;
 
 		if (debugging (false)) console.log (`${props.id} object created`);
 
@@ -82,11 +81,23 @@ export default class ProjectSelector extends BaseControl {
 
 					if ((this.state.selected_client_id == client_id) || not_set (client_id)) return;
 
-					this.setState ({ selected_client_id: client_id }, () => ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: data }, () => {
-						let project_id = (data.length == 1) ? data [0].project_id : null;
-						if ((this.state.selected_project_id == project_id) || not_set (project_id)) return;
-						this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
-					})));
+					this.setState ({ 
+						selected_client_id: client_id,
+						selected_project_id: null,
+					 }, () => {
+
+						ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: data }, () => {
+
+							let project_id = (isset (data) && (Object.keys (data).length == 1)) ? data [0].project_id : null;
+
+							if (isset (project_id)) this.setState ({ selected_project_id: project_id });
+							this.execute (this.props.onProjectChange, project_id);
+
+						}));
+
+						this.execute (this.props.onClientChange, client_id);
+					
+					});
 
 				}}>
 
@@ -100,11 +111,9 @@ export default class ProjectSelector extends BaseControl {
 				<LoadList id={this.props.id} label="Project" 
 
 					listHeader={this.props.headerSelectable ? "New project" : "Select a project"}
-					headerSelectable={this.props.headerSelectable}
-
-					dataIdField="project_id" dataTextField="name" data={this.state.project_data} selectedItem={this.state.selected_project_id}
+					headerSelectable={this.props.headerSelectable}selectedItem={this.state.selected_project_id}
+					dataIdField="project_id" dataTextField="name" data={this.state.project_data} 
 					newButtonPage={this.props.newButton ? page_names.projects : null} 
-					
 					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
 					onChange={event => {

@@ -163,14 +163,14 @@ this.setState ({
 					<Container visible={common.isset (this.state.active_districts)}>
 						<SelectList id="district" data={this.state.active_districts} idField="id" textField="long_name" 
 							style={{ width: "100%" }} required={true} hasHeader={true}
-							value={this.state.district_id} onChange={event => this.setState ({ district_id: event.target.value })}>
+							selectedValue={this.state.district_id} onChange={event => this.setState ({ district_id: event.target.value })}>
 						</SelectList>
 					</Container>
 
 					<label htmlFor="country">Country</label>
 					<SelectList id="country" data={this.state.countries} idField="id" textField="long_name" 
 						style={{ width: "100%" }} required={true}
-						value={this.state.country_id} onChange={event => this.setState ({ 
+						selectedValue={this.state.country_id} onChange={event => this.setState ({ 
 							country_id: event.target.value,
 							district_id: null
 						})}>

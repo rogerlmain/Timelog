@@ -37,23 +37,20 @@ export default class LocalStorage {
 
 
 	static get_store (store) { 
-
 		// Decrypt result (remember to encrypt the store name to retrieve the encrypted result)
-		
-		return localStorage.getItem (store) }
+		return localStorage.getItem (store) 
+	}// get_store;
+
+
+	static remove_store = (store) => localStorage.removeItem (store);
 
 
 	static set_store (store, values) {
-
 		// Encrypt store and values
-
 		localStorage.setItem (store, (is_array (values) || is_object (values)) ? JSON.stringify (LocalStorage.stripped (values)) : values);
 	}// set_store;
 
 	
-	static remove_store = (store) => localStorage.removeItem (store);
-
-
 	static set_item (store, name, value) {
 		let values = this.get_all (store);
 		if (common.is_null (values)) values = {};
