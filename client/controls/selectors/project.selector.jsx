@@ -64,6 +64,16 @@ export default class ProjectSelector extends BaseControl {
 	/*********/
 
 
+	shouldComponentUpdate (new_props) {
+
+		if (this.props.selectedClient != new_props.selectedClient) return !!this.setState ({ selected_client_id: new_props.selectedClient });
+		if (this.props.selectedProject != new_props.selectedProject) return !!this.setState ({ selected_project_id: new_props.selectedProject });
+
+		return true;
+
+	}// shouldComponentUpdate;
+
+
 	render () {
 
 		let single_project = (OptionsStorage.project_limit () == 1);

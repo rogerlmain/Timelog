@@ -109,9 +109,9 @@ export default class ProjectForm extends FormControl {
 
 			this.props.parent.setState ({ 
 				project_data: data,
-				selected_project: data.id,
+				selected_project: data.project_id,
 			}, () => {
-				this.execute (this.props.onSave).then (() => this.setState ({ status: null }));
+				this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
 			});
 
 		}));

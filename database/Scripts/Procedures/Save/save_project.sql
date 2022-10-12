@@ -1,3 +1,5 @@
+use timelog;
+
 start transaction;
 
 drop procedure if exists save_project;
@@ -10,7 +12,7 @@ create procedure save_project (
 	project_name varchar (50),
 	project_code varchar (5),
     project_description text,
-	billing_rate decimal (5, 2),
+	billing_rate integer,
     deleted boolean
 ) begin
 

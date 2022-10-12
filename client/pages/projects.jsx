@@ -100,7 +100,9 @@ export default class ProjectsPage extends BaseControl {
 
 				<Container visible={isset (this.state.selected_client)}>
 					<ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
-						onSave={() => this.project_selector.current.setState ({ projects_loading: true })}>
+						onSave={project => ProjectStorage.get_by_client (this.state.selected_client).then (data => {
+							this.project_selector.current.setState ({ project_data: data }, () => this.setState ({ selected_project: project.project_id }));
+						})}>
 					</ProjectForm>
 				</Container>
 				
