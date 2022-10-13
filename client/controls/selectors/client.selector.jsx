@@ -1,17 +1,15 @@
 import React from "react";
 
-import OptionsStorage from "client/classes/storage/options.storage";
 import ClientStorage from "client/classes/storage/client.storage";
-import CompanyStorage from "client/classes/storage/company.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 
-import { compare, debugging, integer_value, isset } from "client/classes/common";
-import { page_names } from "client/master";
+import { debugging, integer_value, isset } from "client/classes/common";
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 import { MasterContext } from "client/classes/types/contexts";
+import { page_names } from "client/master";
 
 
 export default class ClientSelector extends BaseControl {
@@ -47,7 +45,7 @@ export default class ClientSelector extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		this.get_client_data ();
+		this.state.selected_client_id = this.props.selectedClient;
 		if (debugging (false)) console.log (`${props.id} object created`);
 	}// constructor;
 
@@ -55,10 +53,10 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	get_client_data = () => ClientStorage.get_by_company (CompanyStorage.active_company_id ()).then (data => {
+	get_client_data = () => ClientStorage.get_by_company (this.context.company_id).then (data => {
 		this.setState ({ 
 			client_data: data,
-			selected_client_id: ((data.length > 1) ? null : data [0].client_id),
+			selected_client_id: (Object.keys (data)?.length == 1) ? data [0].client_id : null,
 		}, () => this.execute (this.props.onChange, this.state.selected_client_id));
 	});
 
@@ -66,8 +64,16 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
+	componentDidMount = this.get_client_data;
+
+
 	shouldComponentUpdate (new_props, new_state, new_context) {
-		if (!compare (new_state.client_data, this.state.client_data)) this.get_client_data ();
+
+		if (new_context.company_id != this.context.company_id) this.get_client_data ();
+
+		if (this.props.selectedClient != new_props.selectedClient) return !!this.setState ({ selected_client_id: new_props.selectedClient });
+
+
 		return true;
 	}// shouldComponentUpdate;
 
@@ -83,8 +89,9 @@ export default class ClientSelector extends BaseControl {
 			<LoadList id={`${this.props.id}_load_list`} label="Client" 
 			
 				listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
+				headerSelectable={this.props.headerSelectable} selectedItem={this.props.selectedClient}
 
-				dataIdField="client_id" dataTextField="name" data={this.state.client_data} selectedItem={this.props.selectedClient}
+				dataIdField="client_id" dataTextField="name" data={this.state.client_data} 
 				newButtonPage={this.props.newButton ? page_names.clients : null}
 
 				hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}

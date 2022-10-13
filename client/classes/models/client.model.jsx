@@ -15,20 +15,20 @@ export default class ClientModel {
 	}// delete_client;
 
 
-	static fetch_by_company (company_id) {
+	static get_by_company (company_id) {
 		let parameters = new FormData ();
 		parameters.set ("action", "list_by_company");
 		parameters.set ("company_id", company_id);
 		return Database.fetch_data (table, parameters);
-	}// fetch_by_client;
+	}// get_by_client;
 
 
-	static fetch_by_id (client_id) {
+	static get_by_id (client_id) {
 		let parameters = new FormData ();
 		parameters.set ("client_id", client_id.toString ());
 		parameters.set ("action", "details");
 		return Database.fetch_row (table, parameters);
-	}// fetch_by_id;
+	}// get_by_id;
 
 	
 	static save_client (data) {

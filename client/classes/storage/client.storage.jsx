@@ -4,7 +4,7 @@ import LocalStorage from "client/classes/local.storage";
 import ClientModel from "client/classes/models/client.model";
 
 import { stores } from "client/classes/types/constants";
-import { isset, not_set, not_empty, nested_value, nulled, live } from "client/classes/common";
+import { isset, not_set, nested_value, nulled, live } from "client/classes/common";
 
 
 const store_name = stores.clients;
@@ -94,7 +94,9 @@ puke ();
 	static get_by_id = client_id => {
 		return new Promise ((resolve, reject) => {
 
-			let store = LocalStorage.get_all (store_name);
+			let store = this.#get ();
+
+			if (not_set (client_id)) return resolve (null);
 
 			if (isset (store)) for (let company_id of Object.keys (store)) {
 				let client = nested_value (store, company_id, "find", item => { return item.client_id == client_id });

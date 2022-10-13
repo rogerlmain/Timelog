@@ -1,18 +1,18 @@
 import React from "react";
 
-import OptionsStorage from "client/classes/storage/options.storage";
 import ClientStorage from "client/classes/storage/client.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
+
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import ClientSelector from "client/controls/selectors/client.selector";
-
 import ClientForm from "client/forms/client.form";
 
 import { MasterContext } from "client/classes/types/contexts";
-
-import { is_null, get_values, not_set, numeric_value } from "client/classes/common";
+import { is_null, get_values, not_set } from "client/classes/common";
 
 
 export const client_limit_options = {
@@ -63,8 +63,8 @@ export default class ClientsPage extends BaseControl {
 
 					selectedClient={this.state.selected_client}
 
-					onChange={(event) => this.setState ({ 
-						selected_client: numeric_value (event.target.value),
+					onChange={client_id => this.setState ({ 
+						selected_client: client_id,
 						updating: true
 					})}>
 
@@ -74,16 +74,19 @@ export default class ClientsPage extends BaseControl {
 
 			<EyecandyPanel id="edit_client_panel" text="Loading..." ref={this.eyecandy_panel} eyecandyVisible={this.state.updating} 
 			
-				onEyecandy={() => {
-					if (this.state.selected_client > 0) ClientStorage.get_by_id (this.state.selected_client).then (data => this.setState ({ 
-						client_data: data,
-						updating: false,
-					}));
-				}}>
+				onEyecandy={() => ClientStorage.get_by_id (this.state.selected_client).then (data => this.setState ({ 
+					client_data: data,
+					updating: false,
+				}))}>
 
 				<ClientForm formData={this.state.client_data} parent={this} 
+
 					disabled={(!can_create) && (is_null (this.state.client_data))}
-					onSave={() => this.client_selector.current.setState ({ clients_loading: true })}>
+
+					onSave={client => ClientStorage.get_by_company (CompanyStorage.active_company_id ()).then (data => {
+						this.client_selector.current.setState ({ client_data: data }, () => this.setState ({ selected_client: client.client_id }));
+					})}>
+
 				</ClientForm>
 
 			</EyecandyPanel>

@@ -10,6 +10,10 @@ export const toggled = {
 /********/
 
 
+export const client_limit_value = [0, 1, 5, 10, 50, -1]; // 1 indexed - 0 is a placeholder
+export const project_limit_value = [0, 1, 5, 10, 50, -1]; // 1 indexed - 0 is a placeholder
+
+
 export const option_types = {
 	granularity		: 1,
 	start_rounding	: 2,

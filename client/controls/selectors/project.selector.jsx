@@ -121,9 +121,11 @@ export default class ProjectSelector extends BaseControl {
 				<LoadList id={this.props.id} label="Project" 
 
 					listHeader={this.props.headerSelectable ? "New project" : "Select a project"}
-					headerSelectable={this.props.headerSelectable}selectedItem={this.state.selected_project_id}
+					headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_project_id}
+
 					dataIdField="project_id" dataTextField="name" data={this.state.project_data} 
 					newButtonPage={this.props.newButton ? page_names.projects : null} 
+					
 					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
 					onChange={event => {
