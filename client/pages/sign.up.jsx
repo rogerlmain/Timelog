@@ -91,6 +91,8 @@ export default class SignupPage extends BaseControl {
 		eyecandy_visible: false,
 		button_visible: true,
 
+		existing_account: true,
+
 		error_message: null,
 
 		onChange: null,
@@ -103,6 +105,12 @@ export default class SignupPage extends BaseControl {
 
 	static defaultProps = { id: "signup_page" }
 	static contextType = MasterContext;
+
+
+	constructor (props) {
+		super (props);
+		this.state.existing_account = AccountStorage.signed_in ();
+	}// constructor;
 
 
 	/********/
@@ -160,7 +168,7 @@ export default class SignupPage extends BaseControl {
 
 		AccountStorage.save_account (form_data).then (account => {
 
-			if (this.signed_in ()) return this.setState ({ eyecandy_visible: false }, () => this.context.master_page.setState ({ avatar: this.state.avatar }));
+			if (this.state.existing_account) return this.setState ({ eyecandy_visible: false }, () => this.context.master_page.setState ({ avatar: this.state.avatar }));
 
 			CompanyStorage.save_company (FormData.fromObject ({
 				name: default_company_name,
@@ -234,7 +242,7 @@ export default class SignupPage extends BaseControl {
 
 					<label htmlFor="first_name">First name</label>
 					<input type="text" id="first_name" name="first_name" required={true} 
-						defaultValue={(debugging () && signed_out) ? "Hugh" : AccountStorage.first_name ()}>
+						defaultValue={(debugging () && signed_out) ? "High" : AccountStorage.first_name ()}>
 					</input>
 
 					<label htmlFor="last_name">Last name</label>
@@ -278,7 +286,7 @@ export default class SignupPage extends BaseControl {
 
 					<label htmlFor="email_address">Email address</label>
 					<input type="text" name="email_address" required={true} style={{ gridColumn: "span 3", width: "100%" }} 
-						defaultValue={(debugging () && signed_out) ? "hugh.priest@solipsology.org" : AccountStorage.email_address ()}>
+						defaultValue={(debugging () && signed_out) ? "high.priest@solipsology.org" : AccountStorage.email_address ()}>
 					</input>
 
 				</div>

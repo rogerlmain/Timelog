@@ -11,6 +11,8 @@ import { nested_value, not_set } from "client/classes/common";
 const default_width		= "10vw";
 const default_height	= "10vw";
 
+const border_width	= 2;
+
 
 export default class ThumbnailImage extends BaseControl {
 
@@ -21,7 +23,7 @@ export default class ThumbnailImage extends BaseControl {
 
 	image_border_style = {
 		borderRadius: "999px",
-		border: "solid 2px var(--border-color)",
+		border: `solid ${border_width}px var(--border-color)`,
 		cursor: "pointer",
 		overflow: "hidden",
 		boxSizing: "content-box",
@@ -29,8 +31,14 @@ export default class ThumbnailImage extends BaseControl {
 	
 	
 	state = { 
-		image: this.props.src, 
-		image_style: { transition: `opacity ${SettingsStorage.animation_speed ()}ms ease-in-out` }
+
+		image: this.props.src,
+
+		image_style: { 
+			transition: `opacity ${SettingsStorage.animation_speed ()}ms ease-in-out`,
+			position: "relative",
+		}// image_style;
+
 	}// state;
 
 
@@ -72,8 +80,8 @@ export default class ThumbnailImage extends BaseControl {
 		if (not_set (image) || not_set (border)) return null;
 
 		this.set_style ({			
-			top: portrait ? `${Math.round ((border.offsetHeight - (image.offsetHeight * (border.offsetWidth / image.offsetWidth))) / 2)}px` : null,
-			left: portrait ? null : `${Math.round ((border.offsetWidth - (image.offsetWidth * (border.offsetHeight / image.offsetHeight))) / 2)}px`,
+			top: portrait ? `${Math.round ((border.offsetHeight - (image.offsetHeight * (border.offsetWidth / image.offsetWidth))) / 2) - border_width}px` : `-${border_width}px`,
+			left: portrait ? `-${border_width}px` : `${Math.round ((border.offsetWidth - (image.offsetWidth * (border.offsetHeight / image.offsetHeight))) / 2) - border_width}px`,
 		}, () => setTimeout (() => {
 			this.image_control.current.style.opacity = 1;
 			setTimeout (() => this.execute (this.props.onChange, { thumbnail: this.image_control.current.toDataURL () }), SettingsStorage.animation_speed ());
@@ -107,7 +115,7 @@ export default class ThumbnailImage extends BaseControl {
 
 		return <Container>
 			<div ref={this.image_border} style={{ ...this.image_border_style, ...image_size }}>
-				<img ref={this.image_control} src={this.state.image} style={{ ...this.state.image_style, position: "relative" }} 
+				<img ref={this.image_control} src={this.state.image} style={this.state.image_style} 
 					onClick={this.props.onClick}
 					onLoad={event => this.update_dimensions ()}>
 				</img>
