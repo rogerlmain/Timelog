@@ -51,7 +51,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.5.0";
+const version = "1.0.5.2";
 
 
 const user_image_style = {
@@ -182,8 +182,9 @@ export default class MasterPanel extends BaseControl {
 		let active_company = CompanyStorage.active_company_id ();
 
 		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
+		this.state.avatar = AccountStorage.avatar ();
 
-		console.log ("creating master page");
+		if (debugging (false)) console.log ("creating master page");
 
 	}// constructor;
 

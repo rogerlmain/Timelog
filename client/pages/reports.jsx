@@ -337,7 +337,7 @@ export default class ReportsPage extends BaseControl {
 
 					<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
 						onClientChange={client_id => this.setState ({ client_id: client_id })}
-						onProjectChange={event => this.setState ({ project_id: event.target.value })}>
+						onProjectChange={project_id => this.setState ({ project_id: project_id })}>
 					</ProjectSelector>
 
 					<div className="vertically-centered">
