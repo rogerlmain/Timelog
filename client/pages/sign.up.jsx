@@ -1,7 +1,6 @@
 import React from "react";
 
 import AccountStorage from "client/classes/storage/account.storage";
-import PermissionsStorage from "client/classes/storage/permissions.storage";
 
 import CompanyStorage, { 
 	default_name as default_company_name, 
@@ -31,6 +30,7 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import PasswordForm from "client/forms/password.form";
 
+import { MasterContext } from "client/classes/types/contexts";
 import { account_types, account_type_names, blank, data_errors } from "client/classes/types/constants";
 import { debugging, get_keys, isset, jsonify, not_empty } from "client/classes/common";
 import { codify } from "client/forms/project.form";
@@ -102,6 +102,7 @@ export default class SignupPage extends BaseControl {
 
 
 	static defaultProps = { id: "signup_page" }
+	static contextType = MasterContext;
 
 
 	/********/
@@ -137,7 +138,7 @@ export default class SignupPage extends BaseControl {
 		if (this.signed_out () && (this.password_field.current.value != this.confirm_password_field.current.value)) return this.show_error ("Password and confirmation do not match.");
 		if (!this.account_form.current.validate ()) return this.show_error ("Please complete the highlighted fields");
 
-		if (isset (this.state.error_message)) this.error_panel.current.animate (() => this.setState ({ eyecandy_visible: true }));
+		if (isset (this.state.error_message)) return this.error_panel.current.animate (() => this.setState ({ eyecandy_visible: true }));
 
 		this.setState ({ eyecandy_visible: true });
 
@@ -158,6 +159,9 @@ export default class SignupPage extends BaseControl {
 		if (isset (this.state.avatar)) form_data.append ("avatar", this.state.avatar);
 
 		AccountStorage.save_account (form_data).then (account => {
+
+			if (this.signed_in ()) return this.setState ({ eyecandy_visible: false }, () => this.context.master_page.setState ({ avatar: this.state.avatar }));
+
 			CompanyStorage.save_company (FormData.fromObject ({
 				name: default_company_name,
 				description: default_company_description,
@@ -185,6 +189,7 @@ export default class SignupPage extends BaseControl {
 				});
 
 			}).catch (error => this.report_error (this.company_creation_error));
+
 		}).catch (error => this.report_error (this.account_creation_error));
 
 	}// save_account;
@@ -283,25 +288,22 @@ export default class SignupPage extends BaseControl {
 			<div className="full-width with-headspace">
 				<div className={`${signed_in ? "right-justified" : "horizontally-spaced-out"}`} style={{ columnGap: "0.5em" }}>
 
-					<Container visible={signed_in}>
-						<button onClick={() => this.setState ({ changing_password: true })}>Change password</button>
-					</Container>	
-
-					<Container visible={signed_out}>
-						<FadePanel id="signin_link_panel" visible={!this.state.eyecandy_visible}>
-							<div className="aside">
-								<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
-								<a onClick={this.props.parent.sign_in}>Sign in</a>
-							</div>
-						</FadePanel>
-					</Container>
+					{signed_out && <FadePanel id="signin_link_panel" visible={!this.state.eyecandy_visible}>
+						<div className="aside">
+							<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
+							<a onClick={this.props.parent.sign_in}>Sign in</a>
+						</div>
+					</FadePanel>}
 
 					<EyecandyPanel id="signup_panel" eyecandyVisible={this.state.eyecandy_visible} stretchOnly={false}
 
 						text={signed_in ? "Saving your information" : "Creating your account"}
 						onEyecandy = {this.save_account}>
-
-						<button onClick={() => this.process_application ()}>{signed_out ? "Sign up" : "Save changes"}</button>
+						
+						<div className="button-panel">
+							{signed_in && <button onClick={() => this.setState ({ changing_password: true })}>Change password</button>}
+							<button onClick={() => this.process_application ()}>{signed_out ? "Sign up" : "Save changes"}</button>
+						</div>
 
 					</EyecandyPanel>
 					

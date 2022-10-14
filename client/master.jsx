@@ -119,6 +119,7 @@ export const page_names = {
 export default class MasterPanel extends BaseControl {
 
 
+	avatar = React.createRef ();
 	button_panel = React.createRef ();
 	main_panel = React.createRef ();
 	user_data_panel = React.createRef ();
@@ -131,9 +132,11 @@ export default class MasterPanel extends BaseControl {
 		active_page: page_names.home,
 
 		buttons: null,
+		eyecandy_callback: null,
+
 		user: null,
 		user_data: null,
-		eyecandy_callback: null,
+		avatar: null,
 
 		signing_up: false,
 		eyecandy_visible: false,
@@ -198,7 +201,10 @@ export default class MasterPanel extends BaseControl {
 			active_page: page_names.home
 		}));
 
-		this.user_data_panel.current.animate (() => this.setState ({ company_id: CompanyStorage.active_company_id () }));
+		this.user_data_panel.current.animate (() => this.setState ({ 
+			avatar: AccountStorage.avatar (),
+			company_id: CompanyStorage.active_company_id (),
+		}));
 		
 	}// sign_in;
 
@@ -372,44 +378,36 @@ export default class MasterPanel extends BaseControl {
 	
 			<div style={{ fontStyle: "italic" }} >{this.state.current_time}</div>
 	
-			<Container visible={signed_in}>
+			{signed_in ? <div className="two-column-table with-headspace">
 	
-				<div className="two-column-table with-headspace">
-	
-					<div className="vertically-centered">
-	
-						<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
+				<div className="vertically-centered">
+
+					<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
+					
+					<div className="right-aligned-text">
+
+						<Container visible={CompanyStorage.company_count () > 1}>
+							<SelectList selectedValue={CompanyStorage.active_company_id ()} data={companies}
+								textField="company_name" hasHeader={true}
+								onChange={event => this.select_company (event.target.value)}>
+							</SelectList>
+						</Container>
+
+						<Container visible={CompanyStorage.company_count () == 1}>
+							<div>{nested_value (CompanyStorage.active_company (), "company_name")}</div>
+						</Container>
+
+						<Container visible={is_empty (companies)}>
+							<div>Guest Account</div>
+						</Container>
 						
-						<div className="right-aligned-text">
-	
-							<Container visible={CompanyStorage.company_count () > 1}>
-								<SelectList selectedValue={CompanyStorage.active_company_id ()} data={companies}
-									textField="company_name" hasHeader={true}
-									onChange={event => this.select_company (event.target.value)}>
-								</SelectList>
-							</Container>
-	
-							<Container visible={CompanyStorage.company_count () == 1}>
-								<div>{nested_value (CompanyStorage.active_company (), "company_name")}</div>
-							</Container>
-	
-							<Container visible={is_empty (companies)}>
-								<div>Guest Account</div>
-							</Container>
-							
-						</div>
-	
 					</div>
-	
-					<ThumbnailImage src={AccountStorage.avatar () ?? user_image} style={user_image_style} onClick={() => this.set_page (page_names.account)} />
-						
+
 				</div>
-	
-			</Container>
-	
-			<Container visible={!signed_in}>
-				<div className="right-aligned-text with-some-headspace">Welcome stranger!</div>
-			</Container>
+
+				<ThumbnailImage ref={this.avatar} src={this.state.avatar ?? user_image} style={user_image_style} onClick={() => this.set_page (page_names.account)} />
+					
+			</div> : <div className="right-aligned-text with-some-headspace">Welcome stranger!</div>}
 	
 		</div>
 	
