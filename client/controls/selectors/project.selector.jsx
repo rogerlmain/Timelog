@@ -98,7 +98,7 @@ export default class ProjectSelector extends BaseControl {
 
 						ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: data }, () => {
 
-							let project_id = (isset (data) && (Object.keys (data).length == 1)) ? data [0].project_id : null;
+							let project_id = (isset (data) && (Object.keys (data).length == 1)) ? data [Object.keys (data) [0]].project_id : null;
 
 							if (isset (project_id)) this.setState ({ selected_project_id: project_id });
 							this.execute (this.props.onProjectChange, project_id);
