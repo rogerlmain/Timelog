@@ -28,11 +28,7 @@ export default class CompanyStorage extends LocalStorage {
 	static paid_account () { return isset (this.square_id ()) }
 
 	static set_active_company (value) { super.set_item (store_name, "active_company", value) }
-
-
-	static active_company () { 
-		return nested_value (this.company_list (), this.active_company_id ());
-	}// active_company;
+	static active_company = () => this.company_list ()?.[this.active_company_id ()]
 
 
 	static add_companies (companies) {
@@ -72,7 +68,7 @@ export default class CompanyStorage extends LocalStorage {
 	}// company_list;
 
 	
-	static company_name = () => { return nested_value (this.active_company (), "company_name") }
+	static company_name = () => this.active_company ()?.company_name;
 
 
 	static save_company = data => new Promise ((resolve, reject) => CompaniesModel.save_company (data).then (response => {

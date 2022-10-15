@@ -1,7 +1,7 @@
 import React from "react";
 
 import AccountStorage from "client/classes/storage/account.storage";
-import CompanyStorage from "client/classes/storage/company.storage";
+import CompanyStorage, { default_name } from "client/classes/storage/company.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 import PermissionsStorage from "client/classes/storage/permissions.storage";
 
@@ -370,9 +370,26 @@ export default class MasterPanel extends BaseControl {
 	})// update_company_list;
 
 
-	user_data = () => {
+	company_name = () => {
 
 		let companies = CompanyStorage.company_list ();
+		let company_count = CompanyStorage.company_count ();
+		let company_name = CompanyStorage.company_name ();
+
+		if (is_empty (companies)) return <div>Guest Account</div>
+
+		if (company_count > 1) return <SelectList selectedValue={CompanyStorage.active_company_id ()} data={companies}
+			textField="company_name" hasHeader={true}
+			onChange={event => this.select_company (event.target.value)}>
+		</SelectList>
+		
+		return (!company_name?.equals (default_name)) ? <div>{company_name}</div> : null;
+
+	}// company_name;
+
+
+	user_data = () => {
+
 		let signed_in = this.signed_in ();
 	
 		return <div style={{ marginLeft: "2em" }} className="right-justified-column">
@@ -382,28 +399,8 @@ export default class MasterPanel extends BaseControl {
 			{signed_in ? <div className="two-column-table with-headspace">
 	
 				<div className="vertically-centered">
-
 					<div className="right-aligned-text">Hello {AccountStorage.full_name ()}!</div>
-					
-					<div className="right-aligned-text">
-
-						<Container visible={CompanyStorage.company_count () > 1}>
-							<SelectList selectedValue={CompanyStorage.active_company_id ()} data={companies}
-								textField="company_name" hasHeader={true}
-								onChange={event => this.select_company (event.target.value)}>
-							</SelectList>
-						</Container>
-
-						<Container visible={CompanyStorage.company_count () == 1}>
-							<div>{nested_value (CompanyStorage.active_company (), "company_name")}</div>
-						</Container>
-
-						<Container visible={is_empty (companies)}>
-							<div>Guest Account</div>
-						</Container>
-						
-					</div>
-
+					<div className="right-aligned-text">{this.company_name ()}</div>
 				</div>
 
 				<ThumbnailImage ref={this.avatar} src={this.state.avatar ?? user_image} style={user_image_style} onClick={() => this.set_page (page_names.account)} />
