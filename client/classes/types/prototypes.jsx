@@ -1,4 +1,4 @@
-import { blank, space, date_formats, date_rounding, directions, empty } from "client/classes/types/constants";
+import { blank, space, date_formats, date_rounding, directions, empty, currency_symbol } from "client/classes/types/constants";
 import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value, jsonify } from "client/classes/common";
 
 
@@ -111,7 +111,7 @@ Array.prototype.extract = function (value, name = "id") {
 }// extract;
 
 
-/**** Date Helper Functions ****/
+/**** Date Helper Objects ****/
 
 
 Date.coefficient = {}
@@ -127,6 +127,35 @@ Date.milliseconds = {
 	hour: Date.coefficient.hour * 1000,
 	day: Date.coefficient.day * 1000,
 }// millseconds;
+
+
+Date.meridians = {
+	am: "am",
+	pm: "pm"
+}// meridians;
+
+
+Date.parts = {
+	years			: "years",
+	months			: "months",
+	days			: "days",
+	hours			: "hours",
+	minutes			: "minutes",
+	seconds			: "seconds",
+	milliseconds	: "milliseconds",
+	meridians		: "meridian",
+}/* parts */;
+
+
+Date.increments 				= {}
+Date.increments.milliseconds 	= 1;
+Date.increments.seconds			= Date.increments.milliseconds * 1000,
+Date.increments.minutes			= Date.increments.seconds * 60,
+Date.increments.hours			= Date.increments.minutes * 60,
+Date.increments.days			= Date.increments.hours * 24,
+
+
+/**** Date Helper Functions ****/
 
 
 Date.is_date = (candidate) => { return (candidate instanceof Date) }
@@ -170,31 +199,6 @@ Date.validated = (date) => {
 
 
 /**** Date Prototype Functions ****/
-
-Date.meridians = {
-	am: "am",
-	pm: "pm"
-}// meridians;
-
-
-Date.parts = {
-	years			: "years",
-	months			: "months",
-	days			: "days",
-	hours			: "hours",
-	minutes			: "minutes",
-	seconds			: "seconds",
-	milliseconds	: "milliseconds",
-	meridians		: "meridian",
-}/* parts */;
-
-
-Date.increments 				= {}
-Date.increments.milliseconds 	= 1;
-Date.increments.seconds			= Date.increments.milliseconds * 1000,
-Date.increments.minutes			= Date.increments.seconds * 60,
-Date.increments.hours			= Date.increments.minutes * 60,
-Date.increments.days			= Date.increments.hours * 24,
 
 
 Date.prototype.get_date = function () { return new Date (this.format (date_formats.database_date)) } // removes time component
@@ -716,10 +720,10 @@ Location.prototype.urlParameter = function (parameter) { return nested_value (th
 Number.prototype.padded = function (length) { return this.toString ().padded (length, "0", directions.left) }
 
 
-Number.prototype.toCurrency = function () {
+Number.prototype.toCurrency = function (symbol = currency_symbol.dollars) {
 	let dollars = parseInt (this / 100).toLocaleString ("en-US");  // TODO : Modify to allow international customers
 	let cents = this % 100;
-	return `${dollars}.${cents.padded (2)}`;
+	return `${symbol}${dollars}.${cents.padded (2)}`;
 }// toCurrency;
 
 

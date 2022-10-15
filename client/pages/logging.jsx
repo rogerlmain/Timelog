@@ -17,7 +17,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging.model";
 
-import { blank, date_formats, date_rounding, granularity_types, space } from "client/classes/types/constants";
+import { blank, currency_symbol, date_formats, date_rounding, granularity_types, space } from "client/classes/types/constants";
 import { isset, is_empty, nested_value, not_set, multiline_text, null_value, debugging } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
@@ -105,10 +105,10 @@ export default class LoggingPage extends BaseControl {
 
 	billable_time = elapsed_time => {
 
-		let hours = Math.floor (elapsed_time / Date.coefficient.hour);
-		let minutes = elapsed_time % Date.coefficient.hour;
+		let bill = Math.round ((this.state.billing_rate ?? 0) * (elapsed_time / Date.coefficient.hour));
 
-		return (hours * this.state.billing_rate) + (this.state.billing_rate / 60 * minutes);
+		if (bill == 0) return "Not billable";
+		return `${bill.toCurrency (currency_symbol.dollars)}`;
 
 	}/* billable_time */;
 
@@ -290,12 +290,8 @@ export default class LoggingPage extends BaseControl {
 				</div>
 				
 				<Container visible={OptionsStorage.can_bill () && (this.state.billing_rate > 0)}>
-
-					<Break />
-
 					<label>Billable</label>
-					<div>${this.billable_time (elapsed_time).toCurrency ()}</div> 
-
+					<div>{this.billable_time (elapsed_time)}</div> 
 				</Container>
 
 			</div>

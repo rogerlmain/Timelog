@@ -28,9 +28,6 @@ import "resources/styles/forms.css";
 import "resources/styles/pages/reports.css";
 
 
-const currency_symbol = "$"; // Add other symbols for foreign markets, as needed.
-
-
 const granularity = {
 	daily	: 1,
 	monthly	: 2,
@@ -302,8 +299,8 @@ export default class ReportsPage extends BaseControl {
 						<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
 
 						<Container visible={OptionStorage.can_bill ()}>{/*  && (data.rate > 0)}> */}
-							<div className="right-aligned-text">{currency_symbol}{data.rate?.toCurrency ()}</div>
-							<div className="right-aligned-text">{currency_symbol}{data.total_due?.toCurrency ()}</div>
+							<div className="right-aligned-text">{data.rate?.toCurrency ()}</div>
+							<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
 							<BillingCheckbox id={data.log_id} onClick={event => {
 								if (event.target.checked === false) return warning (`
 									This entry has been marked as billed!
@@ -455,18 +452,18 @@ export default class ReportsPage extends BaseControl {
 
 				<div style={{ textAlign: "left", gridColumn: "1 / 4" }}>Paid</div>
 				<div style={{ gridColumn: "4", gridRow: "auto / span 2" }} className="vertically-centered">{Date.elapsed (total_time)}</div>
-				<div style={{ gridColumn: "5 / 7" }}>{currency_symbol}{(total_earned - total_due).toCurrency ()}</div>
+				<div style={{ gridColumn: "5 / 7" }}>{(total_earned - total_due).toCurrency ()}</div>
 				<div />
 
 				<div style={{ textAlign: "left", gridColumn: "1 / 4" }}>Outstanding</div>
-				<div style={{ gridColumn: "5 / 7" }}>{currency_symbol}{total_due.toCurrency ()}</div>
+				<div style={{ gridColumn: "5 / 7" }}>{total_due.toCurrency ()}</div>
 				<div />
 
 			</div>
 
 			<div className="footer-total">
 				<div style={{ textAlign: "left", gridColumn: "1 / 5" }}>Total</div>
-				<div style={{ gridColumn: "5 / 7" }}>{currency_symbol}{total_earned.toCurrency ()}</div>
+				<div style={{ gridColumn: "5 / 7" }}>{total_earned.toCurrency ()}</div>
 				<div />
 			</div>
 

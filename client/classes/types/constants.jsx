@@ -59,6 +59,25 @@ export const horizontal_alignment = {
 /**** Dates ****/
 
 
+export const currency_symbol = {
+	dollars	: "$",
+	pounds	: "£",
+	euro	: "€",
+	yen		: "¥",
+}// currency_symbol;
+
+
+export const currencies = {
+	dollars	: 1,
+	pounds	: 2,
+	euro	: 3,
+	yen		: 4,
+}// currencies;
+
+
+/**** Dates ****/
+
+
 export const date_formats = {
 	full_date				: "w, MMMM d, yyyy",
 	full_datetime			: "w, MMMM d, yyyy - H:mm ap",

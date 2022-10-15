@@ -292,7 +292,7 @@ export default class DeluxeAccountForm extends BaseControl {
 										onChange={event => { this.setState ({ selected_item: event.target.value}) }}>
 									</input>
 									<label htmlFor="item_price">Just this item</label>
-									<div>${is_number (this.state.price) ? this.state.price.toCurrency () : this.state.price}</div>
+									<div>{is_number (this.state.price) ? this.state.price.toCurrency () : this.state.price}</div>
 								</Container>
 
 								<Container id="package_options">
@@ -316,7 +316,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 									</select>
 
-									<div>{isset (this.state.package_price) ? "$" : null}{isset (this.state.package_price) ? this.state.package_price.toCurrency () : null}</div>
+									<div>{isset (this.state.package_price) ? this.state.package_price.toCurrency () : null}</div>
 
 								</Container>
 
