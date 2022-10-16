@@ -4,8 +4,6 @@ import * as constants from "client/classes/types/constants";
 import React from "react";
 
 import FormControl from "client/controls/form.control";
-import Container from "client/controls/container";
-import CurrencyInput from "client/controls/inputs/currency.input";
 import FadePanel from "client/controls/panels/fade.panel";
 
 import ClientStorage from "client/classes/storage/client.storage";
@@ -84,8 +82,10 @@ export default class ClientForm extends FormControl {
 		if (!this.validate (this.client_form)) return;
 
 		let form_data = new FormData (this.client_form.current);
+		let rate = form_data.get ("billing_rate");
 
-		form_data.append ("company_id", this.context.company_id);
+		form_data.set ("company_id", this.context.company_id);
+		form_data.set ("billing_rate", rate.toCurrency ());
 
 		this.setState ({ status: "Saving..." }, () => ClientStorage.save_client (form_data).then (data => {
 			this.props.parent.setState ({ 
@@ -116,7 +116,7 @@ export default class ClientForm extends FormControl {
 				<div className={billing_option ? "billing-option-form" : "one-piece-form"}>
 
 					<label htmlFor="client_name">Client Name</label>
-					<input type="text" id="client_name" name="client_name" 
+					<input type="expando" id="client_name" name="client_name"
 						defaultValue={this.client_data ("name") ?? constants.blank} 
 						required={true} disabled={this.props.disabled}
 						onBlur={this.save_client.bind (this)}>
@@ -125,7 +125,7 @@ export default class ClientForm extends FormControl {
 					<RateSubform clientId={client_id} onChange={this.save_client} />
 
 					<label htmlFor="client_description">Description</label>
-					<textarea id="client_description" name="client_description" 
+					<textarea id="client_description" name="client_description"
 						style={{ gridColumn: (billing_option ? "2 / -1" : null) }}
 						defaultValue={this.client_data ("description")}  
 						placeholder="(optional)" disabled={this.props.disabled}

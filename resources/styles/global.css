@@ -7,7 +7,9 @@
 	--background-color: #FFFFFF;
 
 	--border-color: black;
-	--highlight-color: #FFF2CC;
+	
+	--highlight-color: #F5FFF9;
+	--highlight-border: solid 2px #004D43;
 
 	--anchor-color: #0000AA;
 	--anchor-highlight-color: #0000F0;

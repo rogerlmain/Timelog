@@ -1,5 +1,5 @@
 import { blank, space, date_formats, date_rounding, directions, empty, currency_symbol } from "client/classes/types/constants";
-import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value, jsonify } from "client/classes/common";
+import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value } from "client/classes/common";
 
 
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -723,7 +723,7 @@ Number.prototype.padded = function (length) { return this.toString ().padded (le
 Number.prototype.toCurrency = function (symbol = currency_symbol.dollars) {
 	let dollars = parseInt (this / 100).toLocaleString ("en-US");  // TODO : Modify to allow international customers
 	let cents = this % 100;
-	return `${symbol}${dollars}.${cents.padded (2)}`;
+	return `${symbol ?? blank}${dollars}.${cents.padded (2)}`;
 }// toCurrency;
 
 
@@ -765,6 +765,11 @@ String.prototype.padded = function (length, character, direction = null) {
 	}// while;
 	return result.toString ();
 }// padded;
+
+
+String.prototype.toCurrency = function () {
+	return parseInt ((this.splice (this.indexOf ("."), this.indexOf (".") + 1)) * 100);
+}// toCurrency;
 
 
 String.prototype.equals = function (comparison, case_sensitive = false) {

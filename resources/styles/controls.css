@@ -1,6 +1,10 @@
 input.number-input { caret-color: transparent }
 
-input.number-input:focus { background-color: var(--highlight-color) }
+
+input:focus, select:focus, textarea:focus {
+	border: var(--highlight-border);
+	background-color: var(--highlight-color);
+}/* input:focus, select:focus, textarea:focus */
 
 
 /********/
@@ -20,6 +24,12 @@ div.currency-input > div {
 	z-index: 1;
 	align-items: center;
 }/* div.currency-input > div */
+
+
+div.currency-input input[type=text] { 
+	text-align: right;
+	caret-color: transparent;
+}/* div.currency-input input[type=text] */
 
 
 /********/

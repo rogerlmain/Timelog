@@ -9,7 +9,6 @@ import CurrencyInput from "client/controls/inputs/currency.input";
 
 import Container from "client/controls/container";
 
-import { blank } from "client/classes/types/constants";
 import { numeric_value, nested_value } from "client/classes/common";
 import { page_names } from "client/master";
 
@@ -55,7 +54,6 @@ export default class RateSubform extends BaseControl {
 	render () {
 
 		let company_rate = OptionsStorage.default_rate ();
-		let project_rate = (this.state.current_rate ?? blank);
 
 		let company_rate_selected = (company_rate == this.state.current_rate);
 		let client_rate_selected = (this.state.client_rate == this.state.current_rate);
@@ -67,10 +65,9 @@ export default class RateSubform extends BaseControl {
 			<label htmlFor="billing_rate">Rate</label>
 			<div className="one-piece-form">
 
-
 				<div className="left-aligned">
 					<CurrencyInput key={input_key} id="billing_rate" className="rate-field" maxLength={3}
-						defaultValue={project_rate} disabled={this.props.disabled} onBlur={this.props.onChange} 
+						defaultValue={(this.state.current_rate ?? 0)} disabled={this.props.disabled} onBlur={this.props.onChange} 
 						onInput={event => this.setState ({ current_rate: numeric_value (event.target.value) })}>
 					</CurrencyInput>
 				</div>
@@ -79,8 +76,7 @@ export default class RateSubform extends BaseControl {
 
 					<input key={company_rate_selected} type="checkbox" id="company_default" name="company_default" title="Use the company default"
 						defaultChecked={company_rate_selected}
-						onChange={event => 
-						this.setState ({ current_rate: company_rate })}>
+						onChange={() => this.setState ({ current_rate: company_rate })}>
 					</input>
 
 					<Container visible={(nested_value (this.context, "master_page", "state", "page") == page_names.projects) && (company_rate != this.state.client_rate)}>

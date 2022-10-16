@@ -1,7 +1,7 @@
 import React from "react";
 import BaseControl from "../abstract/base.control";
 
-import { not_set, numeric_value } from "client/classes/common";
+import { isset, not_set } from "client/classes/common";
 
 import "resources/styles/controls.css";
 
@@ -27,30 +27,68 @@ export default class CurrencyInput extends BaseControl {
 	}// constructor;
 
 
+	/********/
+
+
+	currency_input = React.createRef ();
+	state = { current_value: 0 }
+
+
+	/********/
+
+
+	text_length = () => (this.state.current_value.toCurrency (null).length + 1);
+
+
 	process_keystroke = event => {
-		if (event.key == ".") return event.preventDefault ();
-		if ((event.key.length == 1) && (event.target.value.length == this.props.maxLength)) return event.preventDefault ();
+
+		const keycode = event.which ?? event.keyCode;
+
+		let new_value = null;
+
+		if (["backspace", "delete"].includes (event.key.toLowerCase ())) new_value = Math.floor (this.state.current_value / 10);
+		if (isFinite (event.key)) new_value = (this.state.current_value * 10) + parseInt (event.key);
+
+		if ((keycode > 32) || (keycode == 8)) event.preventDefault ();
+		if (isset (this.props.maxLength) && (new_value.length > this.props.maxLength)) return !!event.preventDefault ();
+
+		this.setState ({ current_value: new_value }, () => { event.target.size = Math.max (this.currency_input.current.size, this.text_length ()) });
+
 	}// process_keystroke;
+
+	
+	/********/
+
+
+	shouldComponentUpdate (new_props) {
+		if (new_props.defaultValue != this.props.defaultValue) return !!this.setState ({ current_value: new_props.defaultValue });
+		return true;
+	}// shouldComponentUpdate;
+
+
+	componentDidMount () { 
+		this.setState ({ current_value: this.props.defaultValue }, () => this.currency_input.current.size = this.text_length ());
+	}// componentDidMount;
 
 
 	render = () => {
 
 		let properties = {...this.props};
+		let input_handler = isset (this.props.onInput) ? (event => this.execute (this.props.onInput)) : null;
 
-		delete properties.id;
+		if (isset (properties.onKeyDown)) throw "Cannot set onKeyDown property for CurrencyInput.";
+
 		delete properties.min;
 		delete properties.name;
 		delete properties.step;
 		delete properties.type;
 		delete properties.defaultValue;
-		delete properties.onInput;
 
 		return <div className="currency-input">
 			<div>$</div>
-			<input type="number" id={this.props.id} name={this.props.id}
-				min={0} step={1} defaultValue={this.props.defaultValue}
-				onInput={event => this.execute (this.props.onInput, event)}
-				onKeyDown={this.process_keystroke} {...properties}>
+			<input type="text" name={this.props.id} ref={this.currency_input}
+				value={this.state.current_value.toCurrency (null)} min={0} step={1} 
+				onInput={input_handler} onKeyDown={this.process_keystroke} {...properties}>
 			</input>
 		</div>
 	}// render;

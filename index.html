@@ -55,7 +55,6 @@
 
 	<script type="text/javascript">
 
-		load_handler = () => document.querySelectorAll ("[onload]:not(body)").forEach (item => item.onload ());
 		click_handler = () => {}//window.dispatchAll ("onDesktopClick");
 
 	</script>
@@ -64,7 +63,7 @@
 </head>
 
 
-<body onclick="click_handler ()" onload="load_handler ()">
+<body onclick="click_handler ()">
 
 	<div id="program_panel" class="full-screen">
 		<div id="main_page" class="full-size"></div>

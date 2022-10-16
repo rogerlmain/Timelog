@@ -1,5 +1,6 @@
 import "regenerator-runtime/runtime.js";
 import "classes/types/prototypes";
+import "classes/types/extensions";
 
 import "resources/styles/main.css";
 import "resources/styles/forms.css";
@@ -8,6 +9,8 @@ import React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
 import MasterPanel from "client/master";
+
+import ActivityLog from "client/classes/activity.log";
 
 import { createRoot } from "react-dom/client";
 
@@ -27,13 +30,8 @@ import ClientSelectorTest from "client/tests/controls/selectors/client.selector"
 import ProjectSelectorTest from "client/tests/controls/selectors/project.selector";
 import DateInputTest from "client/tests/controls/inputs/date.input";
 
-import ActivityLog from "client/classes/activity.log";
 import ReportsPage from "client/pages/reports";
 import DeluxeAccountForm from "./forms/deluxe.account.form";
-
-
-//Special Guest Import
-//no guest imports
 
 
 class Main extends BaseControl {

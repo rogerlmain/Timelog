@@ -3,7 +3,6 @@ import React from "react";
 import ProjectStorage from "client/classes/storage/project.storage";
 
 import FormControl from "client/controls/form.control";
-import Container from "client/controls/container";
 
 import AlphaCapitalInput from "client/controls/inputs/alpha.capital.input";
 import FadePanel from "client/controls/panels/fade.panel";
@@ -139,7 +138,7 @@ export default class ProjectForm extends FormControl {
 					<label htmlFor="project_name">Project Name</label>
 					<div style={{ display: "grid", gridTemplateColumns: "1fr min-content" }}>
 
-						<input type="text" id="project_name" name="project_name" defaultValue={this.project_data ("name") || blank} required={true}
+						<input type="expando" id="project_name" name="project_name" defaultValue={this.project_data ("name") || blank} required={true}
 							onChange={event => this.setState (this.setState ({ code: codify (event.target.value) }))}
 							onBlur={this.save_project}>
 						</input>
