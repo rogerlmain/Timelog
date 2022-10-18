@@ -1,5 +1,6 @@
 import React from "react";
 
+import OptionsStorage from "client/classes/storage/options.storage";
 import AccountStorage from "client/classes/storage/account.storage";
 
 import CompanyStorage, { 
@@ -36,7 +37,6 @@ import { debugging, get_keys, isset, jsonify, not_empty } from "client/classes/c
 import { codify } from "client/forms/project.form";
 
 import user_image from "resources/images/guest.user.svg";
-import OptionsStorage from "client/classes/storage/options.storage";
 
 
 const image_uploader_style = { 
@@ -206,15 +206,15 @@ export default class SignupPage extends BaseControl {
 	/********/
 
 
+	componentDidMount = () => this.context.main_page.setState ({ popup_contents: <PasswordForm /> });
+
+
 	render () {
 
 		let signed_in = this.signed_in ();
 		let signed_out = this.signed_out ();
 
 		return <div id={this.props.id} className={`${signed_out ? "shadow-box" : null} horizontally-centered`}>
-
-			<PasswordForm visible={this.state.changing_password} onChange={() => this.setState ({ changing_password: false })} />
-
 
 			{/* ADD THE OPTION TO PAY BY CREDIT CARD FOR A PRESET ACCOUNT */}
 
@@ -309,7 +309,7 @@ export default class SignupPage extends BaseControl {
 						onEyecandy = {this.save_account}>
 						
 						<div className="button-panel">
-							{signed_in && <button onClick={() => this.setState ({ changing_password: true })}>Change password</button>}
+							{signed_in && <button onClick={() => this.context.main_page.setState ({ popup_visible: true })}>Change password</button>}
 							<button onClick={() => this.process_application ()}>{signed_out ? "Sign up" : "Save changes"}</button>
 						</div>
 
@@ -319,6 +319,7 @@ export default class SignupPage extends BaseControl {
 			</div>
 
 		</div>
+
 	}// render;
 
 

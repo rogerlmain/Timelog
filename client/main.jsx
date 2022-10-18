@@ -12,10 +12,14 @@ import MasterPanel from "client/master";
 
 import ActivityLog from "client/classes/activity.log";
 
+import PopupWindow from "client/pages/gadgets/popup.window";
+
 import { createRoot } from "react-dom/client";
 
 import { tracing, globals, date_formats } from "client/classes/types/constants";
-import { debugging } from "client/classes/common";
+import { debugging, isset } from "client/classes/common";
+
+import { MainContext } from "client/classes/types/contexts";
 
 
 // Guest Imports
@@ -37,7 +41,12 @@ import DeluxeAccountForm from "./forms/deluxe.account.form";
 class Main extends BaseControl {
 
 	state = { 
+
 		current_time: null,
+		popup_contents: null,
+
+		popup_visible: false,
+
 	}/* state */;
 
 
@@ -63,7 +72,14 @@ class Main extends BaseControl {
 	/********/
 
 
-    render () { return <MasterPanel id="master_panel" parent={this} /> }
+    render () { 
+		return <MainContext.Provider value={{ main_page: this }}>
+			<div className="page-centered">
+				{isset (this.state.popup_contents) && <PopupWindow id="popup_panel" visible={this.state.popup_visible}>{this.state.popup_contents}</PopupWindow>}
+				<MasterPanel id="master_panel" parent={this} />
+			</div>
+		</MainContext.Provider>
+	}// render;
 
 }// Main;
 

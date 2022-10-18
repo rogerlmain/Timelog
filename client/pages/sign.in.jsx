@@ -12,7 +12,7 @@ import { horizontal_alignment } from "client/classes/types/constants";
 import { MasterContext } from "client/classes/types/contexts";
 
 
-const bad_credentials = <div id="bad_credentials" className="login-error">
+const bad_credentials = <div id="bad_credentials" className="form-error">
 	That doesn't sound right.<br />
 	Check your email and password and try again.
 </div>

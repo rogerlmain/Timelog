@@ -1,7 +1,9 @@
 import Database from "client/classes/database";
 import DataModel from "client/classes/models/data.model";
 
-import * as common from "client/classes/common";
+import AccountStorage from "client/classes/storage/account.storage";
+
+import { is_null } from "client/classes/common";
 
 
 const table = "accounts";
@@ -19,7 +21,7 @@ export default class AccountsModel extends DataModel {
 
 
 	static fetch_by_project (project_id, callback = null) {
-		if (common.is_null (project_id)) return null;
+		if (is_null (project_id)) return null;
 		let parameters = new FormData ();
 		parameters.set ("action", "project");
 		parameters.set ("project_id", project_id.toString ());
@@ -39,6 +41,15 @@ export default class AccountsModel extends DataModel {
 		form_data.append ("action", "save");
 		return Database.save_data (table, form_data);
 	}// save_account;
+
+
+	static save_password (form_data) {
+		let data = new FormData ();
+		data.append ("action", "save");
+		data.append ("account_id", AccountStorage.account_id ());
+		data.append ("password", form_data.get ("password"));
+		return Database.save_data (table, data);
+	}// save_password;
 
 
 }// AccountsModel;

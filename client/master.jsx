@@ -5,7 +5,6 @@ import CompanyStorage, { default_name } from "client/classes/storage/company.sto
 import OptionsStorage from "client/classes/storage/options.storage";
 import PermissionsStorage from "client/classes/storage/permissions.storage";
 
-import Container from "client/controls/container";
 import ThumbnailImage from "client/controls/thumbnail.image";
 
 import SelectButton from "client/controls/buttons/select.button";
@@ -30,9 +29,9 @@ import CompanyModel from "client/classes/models/companies.model";
 import OptionsModel from "client/classes/models/options.model";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
-import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, live, nested_value, not_set, numeric_value } from "client/classes/common";
+import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, live, not_set, numeric_value } from "client/classes/common";
 
-import { MasterContext } from "client/classes/types/contexts";
+import { MainContext, MasterContext } from "client/classes/types/contexts";
 
 import logo from "resources/images/bundy.png";
 import user_image from "resources/images/guest.user.svg";
@@ -51,7 +50,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.6.6";
+const version = "1.0.6.7";
 
 
 const user_image_style = {
@@ -163,7 +162,7 @@ export default class MasterPanel extends BaseControl {
 	}// viewer_style;
 
 
-	static contextType = MasterContext;
+	static contextType = MainContext;
 
 
 	static defaultProps = { 
@@ -446,8 +445,17 @@ export default class MasterPanel extends BaseControl {
 			return null;
 		}// if;
 
-		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
+		return <MasterContext.Provider value={{ 
+
+				company_id: numeric_value (this.state.company_id), 
+				master_page: this,
+				main_page: this.context.main_page,
+
+			}}>
+
 			<div id="master_panel" className="vertically-spaced-out">
+
+
 
 				<div className="page-header">
 
