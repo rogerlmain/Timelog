@@ -54,11 +54,15 @@ export default class ClientSelector extends BaseControl {
 
 
 	get_client_data = () => ClientStorage.get_by_company (this.context.company_id).then (data => {
+
+		let keys = Object.keys (data);
+
 		this.setState ({ 
 			client_data: data,
-			selected_client_id: (Object.keys (data)?.length == 1) ? data [0].client_id : null,
+			selected_client_id: (keys.length == 1) ? data [keys [0]].client_id : null,
 		}, () => this.execute (this.props.onChange, this.state.selected_client_id));
-	});
+
+	})/* get_client_data */;
 
 
 	/*********/
@@ -68,19 +72,15 @@ export default class ClientSelector extends BaseControl {
 
 
 	shouldComponentUpdate (new_props, new_state, new_context) {
-
 		if (new_context.company_id != this.context.company_id) this.get_client_data ();
-
 		if (this.props.selectedClient != new_props.selectedClient) return !!this.setState ({ selected_client_id: new_props.selectedClient });
-
-
 		return true;
 	}// shouldComponentUpdate;
 
 
 	render () {
 
-		let single_client = (isset (this.state.client_data) && (this.state.client_data.length == 1));
+		let single_client = (isset (this.state.client_data) && (Object.keys (this.state.client_data).length == 1));
 
 		return <Container>
 

@@ -50,7 +50,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.6.7";
+const version = "1.0.6.8";
 
 
 const user_image_style = {
@@ -78,18 +78,6 @@ const logo_image = {
 
 
 /********/
-
-
-const client_permissions = () => new Promise ((resolve, reject) => {
-	if (OptionsStorage.client_limit () <= 1) resolve (false);
-	PermissionsStorage.client_permission ().then (permission => resolve (permission)).catch (reject);
-})// client_permissions;
-
-
-const project_permissions = () => new Promise ((resolve, reject) => {
-	if (OptionsStorage.project_limit () <= 1) resolve (false);
-	PermissionsStorage.project_permission ().then (permission => resolve (permission)).catch (reject);
-})// project_permissions;
 
 
 const team_permissions = () => new Promise ((resolve, reject) => {
@@ -147,8 +135,8 @@ export default class MasterPanel extends BaseControl {
 
 	master_pages = { 
 		[page_names.home]		: { name: "Home", permission: true }, 
-		[page_names.clients]	: { name: "Clients", permission: client_permissions },
-		[page_names.projects]	: { name: "Projects", permission: project_permissions }, 
+		[page_names.clients]	: { name: "Clients", permission: true },
+		[page_names.projects]	: { name: "Projects", permission: true },
 		[page_names.logging]	: { name: "Logging", permission: true }, 
 		[page_names.reports]	: { name: "Reports", permission: true },
 		[page_names.team]		: { name: "Team", permission: team_permissions },

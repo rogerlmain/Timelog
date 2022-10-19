@@ -61,9 +61,10 @@ export default class ProjectsPage extends BaseControl {
 
 	render () {
 
-		let limit = OptionsStorage.project_limit ();
-		let option_value = get_values (project_limit_options) [limit - 1];
-		let can_create = ((limit > 1) && (not_set (this.state.project_list) || (this.state.project_list.length < option_value) || (option_value == 0)));
+		let project_limit = OptionsStorage.project_limit ();
+
+		let option_value = get_values (project_limit_options) [project_limit - 1];
+		let can_create = ((project_limit > 1) && (not_set (this.state.project_list) || (this.state.project_list.length < option_value) || (option_value == 0)));
 
 		return <div id={this.props.id} className="top-centered row-spaced">
 
@@ -89,7 +90,7 @@ export default class ProjectsPage extends BaseControl {
 					})}>
 
 				</ProjectSelector>
-			</div>	
+			</div>
 
 			<EyecandyPanel id="project_panel" eyecandyVisible={this.state.updating} text="Loading..." vAlign={vertical_alignment.center}
 

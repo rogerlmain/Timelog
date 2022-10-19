@@ -93,7 +93,7 @@ export default class LoadList extends BaseControl {
 
 		return <div className={new_button ? "two-column-grid" : null} style={form_style}>
 
-			{(this.props.data.length == 1) ? <div className="vertically-aligned">{this.props.data [0].name}</div> : <SelectList id={this.props.id} 
+			{(Object.keys (this.props.data).length == 1) ? <div className="vertically-aligned">{this.props.data [Object.keys (this.props.data) [0]].name}</div> : <SelectList id={this.props.id} 
 			
 				data={this.props.data} selectedValue={this.props.selectedItem} disabled={this.props.disabled}
 				style={this.props.style}

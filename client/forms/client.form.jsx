@@ -85,7 +85,7 @@ export default class ClientForm extends FormControl {
 		let rate = form_data.get ("billing_rate");
 
 		form_data.set ("company_id", this.context.company_id);
-		form_data.set ("billing_rate", rate.toCurrency ());
+		form_data.set ("billing_rate", rate ?? 0);
 
 		this.setState ({ status: "Saving..." }, () => ClientStorage.save_client (form_data).then (data => {
 			this.props.parent.setState ({ 
