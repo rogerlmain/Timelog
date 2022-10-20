@@ -8,10 +8,13 @@ export default class FormControl extends BaseControl {
 	static defaultProps = { formData: null }
 
 	validate (form) {
+
 		for (let field of form.current) {
 			if (field.required && is_empty (field.value)) return false;
-		};
+		}// for;
+
 		return true;
+
 	}// validate;
 
 }// BaseControl;

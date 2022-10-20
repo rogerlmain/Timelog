@@ -75,45 +75,76 @@ export default class ProjectForm extends FormControl {
 		form_data.append ("deleted", "true");
 		form_data.append ("project_id", this.project_data ("project_id"));
 
-		this.setState ({ status: `Deleting ${this.project_data ("name")}...` });
-
-		// this.setState ({ status: `Deleting ${this.project_data ("name")}...` }, () => Database.save_data ("projects", form_data).then (data => {
-		// 	this.execute (this.props.onDelete, data).then (() => this.setState ({ status: null }));
-		// }));
+		this.setState ({ status: `Deleting ${this.project_data ("name")}...` }, () => Database.save_data ("projects", form_data).then (data => {
+			this.execute (this.props.onDelete, data).then (() => this.setState ({ status: null }));
+		}));
 
 		return false;
 
 	}// delete;
  
 
-	// update_code = event => {	
-	// 	let codewords = event.target.value.toUpperCase ().replace (/[AEIOU]/g, blank).trim ().split (space);
-	// 	codewords.forEach (word => codewords [codewords.indexOf (word)] = word.substr (0, Math.ceil (max_code_length / codewords.length)));
-	// 	this.setState ({ code: codewords.join (blank).substr (0, 5) });
-	// }// update_code;
+	validate = form => { 
+
+		return new Promise ((resolve, reject) => {
+
+			let project_field = document.getElementById ("project_name");
+			let project_name = project_field.value;
+
+			super.validate (form);
+
+			ProjectStorage.get_by_client (this.props.clientId).then (data => {
+
+				Object.keys (data).forEach (key => {
+					if (data [key]?.name.equals (project_name)) {
+
+						with (project_field) {
+							setCustomValidity (`There is already a project called ${project_name}.\nProject name must be unique.`);
+							reportValidity ();
+							classList.add ("invalid");
+						}// with;
+
+						return resolve (false);
+
+					}// if;
+				});
+
+				project_field.classList.remove ("invalid");
+				resolve (true);
+
+			}).catch (reject);
+
+		});
+
+	}// validate;
 
 
 	save_project = () => {
 
 		if (this.state.saved) return;
-		if (!this.validate (this.project_form)) return;
 
-		let form_data = new FormData (this.project_form.current);
+		this.validate (this.project_form).then (valid => {
 
-		form_data.append ("action", "save");
-		form_data.append ("client_id", this.props.clientId);
-		form_data.append ("company_id", this.context.company_id);
+			if (!valid) return;
 
-		this.setState ({ status: "Saving..." }, () => ProjectStorage.save_project (form_data).then (data => {
+			let form_data = new FormData (this.project_form.current);
 
-			this.props.parent.setState ({ 
-				project_data: data,
-				selected_project: data.project_id,
-			}, () => {
-				this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
-			});
+			form_data.append ("action", "save");
+			form_data.append ("client_id", this.props.clientId);
+			form_data.append ("company_id", this.context.company_id);
 
-		}));
+			this.setState ({ status: "Saving..." }, () => ProjectStorage.save_project (form_data).then (data => {
+
+				this.props.parent.setState ({ 
+					project_data: data,
+					selected_project: data.project_id,
+				}, () => {
+					this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
+				});
+
+			}));
+
+		});
 		
 	}/* save_project */;
 
@@ -139,7 +170,10 @@ export default class ProjectForm extends FormControl {
 					<div style={{ display: "grid", gridTemplateColumns: "1fr min-content" }}>
 
 						<input type="expando" id="project_name" name="project_name" defaultValue={this.project_data ("name") || blank} required={true}
-							onChange={event => this.setState (this.setState ({ code: codify (event.target.value) }))}
+							onChange={event => {
+								
+								this.setState (this.setState ({ code: codify (event.target.value) }));
+							}}
 							onBlur={this.save_project}>
 						</input>
 
@@ -177,24 +211,6 @@ export default class ProjectForm extends FormControl {
 
 				</div>
 
-{/* 				// Reinstate for teams - phase 2
-				<TeamSelectorGadget ref={this.references.team_selector} record_id={this.return_value (this.get_data ("project_id"))}
-
-					onLoad={() => { 
-						
-						// globals.projects_page.refresh ();
-						globals.projects_page.forceUpdate ();
-						// globals.projects_page.setState ({ eyecandy_visible: false }, () => {
-						// 	alert ("state updated...");
-						// });
-					
-					}}
-
-					parent={this} group={TeamGroup.project}>
-
-				</TeamSelectorGadget>
-
-*/}
 			</form>
 
 			<div className="horizontally-spaced-out vertically-centered" style={{ marginTop: "1em" }}>
