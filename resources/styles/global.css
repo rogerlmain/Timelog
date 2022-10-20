@@ -201,7 +201,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 
 input.invalid, select.invalid {
 	border: solid 1px var(--error-color);
-	background-color: var(--error-highlight);
+	background-color: var(--error-highlight) !important;
 }/* input.invalid, select.invalid */
 
 

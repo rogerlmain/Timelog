@@ -1,6 +1,3 @@
-import * as common from "client/classes/common";
-import * as constants from "client/classes/types/constants";
-
 import React from "react";
 
 import FormControl from "client/controls/form.control";
@@ -13,6 +10,8 @@ import ClientModel from "client/classes/models/client.model";
 
 import RateSubform from "client/forms/subforms/rate.subform";
 
+import { blank } from "client/classes/types/constants";
+import { isset } from "client/classes/common";
 import { SmallProgressMeter } from "client/controls/progress.meter";
 import { MasterContext } from "client/classes/types/contexts";
 
@@ -21,6 +20,17 @@ import "resources/styles/forms.css";
 
 
 export default class ClientForm extends FormControl {
+
+
+	client_form = React.createRef ();
+
+	state = { 
+		status: null,
+		handler: null,
+	}/* state */
+
+
+	/********/
 
 
 	static contextType = MasterContext;
@@ -40,13 +50,10 @@ export default class ClientForm extends FormControl {
 	}// defaultProps;
 
 
-	client_form = React.createRef ();
+	/********/
 
 
-	state = { status: null }
-
-
-	client_data = (field) => { return common.isset (this.props.formData) ? this.props.formData [field] : null }
+	client_data = (field) => { return isset (this.props.formData) ? this.props.formData [field] : null }
 
 
 	delete_client = event => {
@@ -77,7 +84,9 @@ export default class ClientForm extends FormControl {
 	}/* delete */;
  
 
-	save_client = () => {
+	save_client = event => {
+
+		event.preventDefault ();
 
 		if (!this.validate (this.client_form)) return;
 
@@ -87,14 +96,13 @@ export default class ClientForm extends FormControl {
 		form_data.set ("company_id", this.context.company_id);
 		form_data.set ("billing_rate", rate ?? 0);
 
-		this.setState ({ status: "Saving..." }, () => ClientStorage.save_client (form_data).then (data => {
-			this.props.parent.setState ({ 
+		this.setState ({ 
+			status: "Saving",
+			handler: () => ClientStorage.save_client (form_data).then (data => this.props.parent.setState ({ 
 				client_data: data,
 				selected_client: data.client_id,
-			}, () => {
-				this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
-			});
-		}));
+			}, () => this.execute (this.props.onSave, data).then (() => this.setState ({ handler: null }))))
+		}, this.setState ({ status: "Saving..." }));
 
 	}// save_client;
 
@@ -111,43 +119,46 @@ export default class ClientForm extends FormControl {
 
 			<form id="client_form" ref={this.client_form}>
 
-				<input type="hidden" id="client_id" name="client_id" value={client_id || constants.blank} />
+				<input type="hidden" id="client_id" name="client_id" value={client_id || blank} />
 
 				<div className={billing_option ? "billing-option-form" : "one-piece-form"}>
 
 					<label htmlFor="client_name">Client Name</label>
 					<input type="expando" id="client_name" name="client_name"
-						defaultValue={this.client_data ("name") ?? constants.blank} 
-						required={true} disabled={this.props.disabled}
-						onBlur={this.save_client.bind (this)}>
+						defaultValue={this.client_data ("name") ?? blank} 
+						required={true} disabled={this.props.disabled}>
 					</input>
 
-					<RateSubform clientId={client_id} onChange={this.save_client} />
+					<RateSubform clientId={client_id} />
 
 					<label htmlFor="client_description">Description</label>
 					<textarea id="client_description" name="client_description"
-						style={{ gridColumn: (billing_option ? "2 / -1" : null) }}
+						style={{ gridColumn: (billing_option ? "2/-1" : null) }}
 						defaultValue={this.client_data ("description")}  
-						placeholder="(optional)" disabled={this.props.disabled}
-						onBlur={this.save_client.bind (this)}>
+						placeholder="(optional)" disabled={this.props.disabled}>
 					</textarea>
+
+					<div style={{ gridColumn: "2/-1" }}>
+						<div className="horizontally-spaced-out vertically-centered with-headspace">
+
+							<SmallProgressMeter id="client_progress_meter" visible={isset (this.state.handler)} 
+								handler={this.state.handler}>
+								{this.state.status}
+							</SmallProgressMeter>
+
+							<div className="button-panel">
+								<FadePanel id="delete_button_panel" visible={isset (client_id)}>
+									{isset (client_id) && <button className="double-column" onClick={this.delete_client}>Delete</button>}
+								</FadePanel>
+								<button onClick={this.save_client}>Save</button>
+							</div>
+
+						</div>
+					</div>
 
 				</div>
 				
 			</form>
-
-			<div className="horizontally-spaced-out vertically-centered" style={{ marginTop: "1em" }}>
-
-				<SmallProgressMeter id="client_progress_meter" visible={common.isset (this.state.status)} 
-					alignment={constants.horizontal_alignment.right}>
-					{this.state.status}
-				</SmallProgressMeter>
-
-				<FadePanel id="delete_button_panel" visible={common.isset (client_id)}>
-					<button className="double-column" onClick={this.delete_client}>Delete</button>
-				</FadePanel>
-
-			</div>
 
 		</div>
 		

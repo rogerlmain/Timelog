@@ -9,8 +9,8 @@ import FadePanel from "client/controls/panels/fade.panel";
 
 import RateSubform from "client/forms/subforms/rate.subform";
 
-import { blank, space, horizontal_alignment } from "client/classes/types/constants";
-import { nested_value, isset  } from "client/classes/common";
+import { blank, space } from "client/classes/types/constants";
+import { nested_value, isset, not_empty  } from "client/classes/common";
 
 import { SmallProgressMeter } from "client/controls/progress.meter";
 import { MasterContext } from "client/classes/types/contexts";
@@ -90,27 +90,28 @@ export default class ProjectForm extends FormControl {
 
 			let project_field = document.getElementById ("project_name");
 			let project_name = project_field.value;
+			let valid = true;
 
 			super.validate (form);
 
+			if (not_empty (document.getElementById ("project_id").value)) return resolve (true);
+
 			ProjectStorage.get_by_client (this.props.clientId).then (data => {
 
-				Object.keys (data).forEach (key => {
+				Object.keys (data).every (key => {
 					if (data [key]?.name.equals (project_name)) {
 
-						with (project_field) {
-							setCustomValidity (`There is already a project called ${project_name}.\nProject name must be unique.`);
-							reportValidity ();
-							classList.add ("invalid");
-						}// with;
+						project_field.setCustomValidity (`There is already a project called ${project_name}.\nProject name must be unique.`);
+						project_field.reportValidity ();
+						project_field.classList.add ("invalid");
 
-						return resolve (false);
+						return valid = false;
 
 					}// if;
 				});
 
-				project_field.classList.remove ("invalid");
-				resolve (true);
+				if (valid) project_field.classList.remove ("invalid");
+				resolve (valid);
 
 			}).catch (reject);
 
@@ -119,7 +120,9 @@ export default class ProjectForm extends FormControl {
 	}// validate;
 
 
-	save_project = () => {
+	save_project = event => {
+
+		event.preventDefault ();
 
 		if (this.state.saved) return;
 
@@ -133,16 +136,15 @@ export default class ProjectForm extends FormControl {
 			form_data.append ("client_id", this.props.clientId);
 			form_data.append ("company_id", this.context.company_id);
 
-			this.setState ({ status: "Saving..." }, () => ProjectStorage.save_project (form_data).then (data => {
-
-				this.props.parent.setState ({ 
-					project_data: data,
-					selected_project: data.project_id,
-				}, () => {
-					this.execute (this.props.onSave, data).then (() => this.setState ({ status: null }));
-				});
-
-			}));
+			this.setState ({ 
+				status: "Saving...", 
+				handler: () => ProjectStorage.save_project (form_data).then (data => {
+					this.props.parent.setState ({ 
+						project_data: data,
+						selected_project: data.project_id,
+					}, () => this.execute (this.props.onSave, data).then (() => this.setState ({ status: null })));
+				})
+			});
 
 		});
 		
@@ -173,8 +175,7 @@ export default class ProjectForm extends FormControl {
 							onChange={event => {
 								
 								this.setState (this.setState ({ code: codify (event.target.value) }));
-							}}
-							onBlur={this.save_project}>
+							}}>
 						</input>
 
 						<div style={{ marginLeft: "0.5em" }}>
@@ -189,8 +190,7 @@ export default class ProjectForm extends FormControl {
 											textAlign: "center",
 											width: `${max_code_length}em`,
 										}}
-										value={this.state.code} 
-										onBlur={this.save_project}>
+										value={this.state.code}>
 									</AlphaCapitalInput>
 
 									<RateSubform clientId={this.props.clientId} projectId={project_id} onChange={this.save_project} />
@@ -205,27 +205,30 @@ export default class ProjectForm extends FormControl {
 
 					<label htmlFor="project_description">Description</label>
 					<textarea id="project_description" name="project_description" placeholder="(optional)"
-						defaultValue={this.project_data ("description")} 
-						onBlur={this.save_project} style={{ minWidth: "32.25em" }}>
+						defaultValue={this.project_data ("description")} style={{ minWidth: "32.25em" }}>
 					</textarea>
+
+					<div style={{ gridColumn: "2/-1" }}>
+						<div className="horizontally-spaced-out vertically-centered with-headspace">
+
+							<SmallProgressMeter id="project_progress_meter" visible={isset (this.state.handler)} 
+								handler={this.state.handler}>
+								{this.state.status}
+							</SmallProgressMeter>
+
+							<div className="button-panel">
+								<FadePanel id="delete_button_panel" visible={isset (project_id)}>
+									{isset (project_id) && <button onClick={this.delete_project}>Delete</button>}
+								</FadePanel>
+								<button onClick={this.save_project}>Save</button>
+							</div>
+
+						</div>
+					</div>
 
 				</div>
 
 			</form>
-
-			<div className="horizontally-spaced-out vertically-centered" style={{ marginTop: "1em" }}>
-
-				<SmallProgressMeter id="project_progress_meter" visible={isset (this.state.status)} 
-					alignment={horizontal_alignment.right}>
-					{this.state.status}
-				</SmallProgressMeter>
-
-				<FadePanel id="delete_button_panel" visible={isset (project_id)}>
-					<button className="right-aligned" onClick={this.delete_project}>Delete</button>
-				</FadePanel>
-
-			</div>
-
 		</div>
 
 	}// render;
