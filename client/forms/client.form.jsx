@@ -11,12 +11,13 @@ import ClientModel from "client/classes/models/client.model";
 import RateSubform from "client/forms/subforms/rate.subform";
 
 import { blank } from "client/classes/types/constants";
-import { isset } from "client/classes/common";
+import { isset, not_empty } from "client/classes/common";
 import { SmallProgressMeter } from "client/controls/progress.meter";
 import { MasterContext } from "client/classes/types/contexts";
 
 
 import "resources/styles/forms.css";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 
 export default class ClientForm extends FormControl {
@@ -82,27 +83,66 @@ export default class ClientForm extends FormControl {
 		return false;
 
 	}/* delete */;
+
+
+	validate = form => new Promise ((resolve, reject) => {
+
+		let client_field = document.getElementById ("client_name");
+		let client_name = client_field.value;
+		let valid = true;
+
+		if (not_empty (document.getElementById ("client_id").value)) return resolve (true);
+		if (!super.validate (form)) return resolve (false);
+
+		ClientStorage.get_by_company (CompanyStorage.active_company_id ()).then (data => {
+
+			Object.keys (data).every (key => {
+				
+				if (data [key]?.name.equals (client_name)) {
+
+					client_field.setCustomValidity (`There is already a client called ${client_name} for ${CompanyStorage.company_name ()}.\nClient names must be unique.`);
+					client_field.reportValidity ();
+					client_field.classList.add ("invalid");
+
+					return valid = false;
+
+				}// if;
+
+				return true;
+
+			});
+
+			if (valid) client_field.classList.remove ("invalid");
+			resolve (valid);
+
+		}).catch (reject);
+
+	})/* validate */;
  
 
 	save_client = event => {
 
 		event.preventDefault ();
 
-		if (!this.validate (this.client_form)) return;
+		this.validate (this.client_form).then (valid => {
 
-		let form_data = new FormData (this.client_form.current);
-		let rate = form_data.get ("billing_rate");
+			if (!valid) return;
 
-		form_data.set ("company_id", this.context.company_id);
-		form_data.set ("billing_rate", rate ?? 0);
+			let form_data = new FormData (this.client_form.current);
+			let rate = form_data.get ("billing_rate");
 
-		this.setState ({ 
-			status: "Saving",
-			handler: () => ClientStorage.save_client (form_data).then (data => this.props.parent.setState ({ 
-				client_data: data,
-				selected_client: data.client_id,
-			}, () => this.execute (this.props.onSave, data).then (() => this.setState ({ handler: null }))))
-		}, this.setState ({ status: "Saving..." }));
+			form_data.set ("company_id", this.context.company_id);
+			form_data.set ("billing_rate", rate ?? 0);
+
+			this.setState ({ 
+				status: "Saving",
+				handler: () => ClientStorage.save_client (form_data).then (data => this.props.parent.setState ({ 
+					client_data: data,
+					selected_client: data.client_id,
+				}, () => this.execute (this.props.onSave, data).then (() => this.setState ({ handler: null }))))
+			}, this.setState ({ status: "Saving..." }));
+
+		});
 
 	}// save_client;
 

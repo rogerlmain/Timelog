@@ -84,40 +84,39 @@ export default class ProjectForm extends FormControl {
 	}// delete;
  
 
-	validate = form => { 
+	validate = form => new Promise ((resolve, reject) => {
 
-		return new Promise ((resolve, reject) => {
+		let project_field = document.getElementById ("project_name");
+		let project_name = project_field.value;
+		let valid = true;
 
-			let project_field = document.getElementById ("project_name");
-			let project_name = project_field.value;
-			let valid = true;
+		if (not_empty (document.getElementById ("project_id").value)) return resolve (true);
+		if (!super.validate (form)) return resolve (false);
 
-			super.validate (form);
+		ProjectStorage.get_by_client (this.props.clientId).then (data => {
 
-			if (not_empty (document.getElementById ("project_id").value)) return resolve (true);
+			Object.keys (data).every (key => {
+				
+				if (data [key]?.name.equals (project_name)) {
 
-			ProjectStorage.get_by_client (this.props.clientId).then (data => {
+					project_field.setCustomValidity (`There is already a project called ${project_name} for this client.\nProject names must be unique.`);
+					project_field.reportValidity ();
+					project_field.classList.add ("invalid");
 
-				Object.keys (data).every (key => {
-					if (data [key]?.name.equals (project_name)) {
+					return valid = false;
 
-						project_field.setCustomValidity (`There is already a project called ${project_name}.\nProject name must be unique.`);
-						project_field.reportValidity ();
-						project_field.classList.add ("invalid");
+				}// if;
 
-						return valid = false;
+				return true;
 
-					}// if;
-				});
+			});
 
-				if (valid) project_field.classList.remove ("invalid");
-				resolve (valid);
+			if (valid) project_field.classList.remove ("invalid");
+			resolve (valid);
 
-			}).catch (reject);
+		}).catch (reject);
 
-		});
-
-	}// validate;
+	})/* validate */;
 
 
 	save_project = event => {
