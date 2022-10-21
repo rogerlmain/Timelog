@@ -268,21 +268,27 @@ app.get ("/packages", () => {
 
 app.post ("/pricing", () => {
 	app.process (fields => {
+
 		let project_data = new PricingModel ();
+
 		switch (fields.action) {
 			case "get": project_data.get_pricing_by_option (fields.option, fields.value); break;
 		}// switch;
+		
 	});
 });
 
 
 app.post ("/projects", () => app.process (fields => {
+
 	let project_data = new ProjectsModel ();
+
 	switch (fields.action) {
 		case "list": project_data.get_projects_by_client (fields.client_id); break;
 		case "details": project_data.get_project_by_id (fields.project_id); break;
 		case "save": project_data.save_project (fields); break;
 	}// switch;
+
 }));
 
 

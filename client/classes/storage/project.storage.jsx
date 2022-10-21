@@ -26,9 +26,34 @@ export default class ProjectStorage extends LocalStorage {
 	static #set = values => { LocalStorage.set_store (store_name, values) };
 
 
-	static #set_project_by_id = (client_id, project_id, data) => {
+	static #delete = project_id => {
 
-		let projects = this.#get (store_name);
+		let projects = this.#get ();
+		let found = false;
+
+		for (let company_id of Object.keys (projects)) {
+
+			for (let client_id of Object.keys (projects [company_id])) {
+				if (isset (projects [company_id][client_id][project_id])) {
+					delete projects [company_id][client_id][project_id];
+					found = true;
+					break;
+				}// if;
+			}// for;
+
+			if (found) {
+				this.#set (projects);
+				break;
+			}// if;
+
+		}// for;
+
+	}// #delete;
+
+
+	static #set_by_id = (client_id, project_id, data) => {
+
+		let projects = this.#get ();
 		let company_id = CompanyStorage.active_company_id ();
 
 		if (not_set (projects)) projects = {};
@@ -39,7 +64,7 @@ export default class ProjectStorage extends LocalStorage {
 
 		ProjectStorage.#set (projects);
 
-	}/* #set_project_by_id */;
+	}/* #set_by_id */;
 
 
 	static #set_project = project => {
@@ -53,15 +78,31 @@ export default class ProjectStorage extends LocalStorage {
 			delete project.project_id;
 		}// if;
 
-		ProjectStorage.#set_project_by_id (client_id, project_id, project);
+		ProjectStorage.#set_by_id (client_id, project_id, project);
 		return project;
 
 	}/* #set_project */;
 
 
 	/**** Public Methods *****/
+ 
 
+	static delete_project = project_id => {
 
+		let data = new FormData ().appendAll ({
+			action: "save",
+			deleted: true,
+			project_id, project_id,
+		});
+
+		return new Promise ((resolve, reject) => ProjectModel.save_project (data).then (result => {
+			ProjectStorage.#delete (project_id);
+			resolve (true);
+		}).catch (reject));
+
+	}/* delete_project */
+
+	
 	static save_project = form_data => new Promise ((resolve, reject) => ProjectModel.save_project (form_data).then (data => {
 		ProjectStorage.#set_project (data);
 		resolve (data);

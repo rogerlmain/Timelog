@@ -22,6 +22,7 @@ create procedure get_project_by_id (project_id integer) begin
 	on
 		clt.id = prj.client_id
 	where
-		prj.id = project_id;
+		(prj.id = project_id) and
+        (not prj.deleted);
 
 end??

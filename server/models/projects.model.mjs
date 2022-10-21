@@ -14,7 +14,7 @@ export default class ProjectsModel extends Database {
 			project_code: data.project_code,
 			description: data.project_description,
 			billing_rate: data.billing_rate,
-			deleted: false
+			deleted: (data.deleted == "true"),
 		}// parameters;
 
 		this.execute_query (procedure, parameters);

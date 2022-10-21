@@ -46,6 +46,7 @@ create procedure save_project (
 			`code` 			= coalesce (project_code, projects.code),
 			`description` 	= coalesce (project_description, projects.description), 
 			`billing_rate` 	= coalesce (billing_rate, projects.billing_rate), 
+            `deleted`		= coalesce (deleted, projects.deleted),
 			last_updated 	= current_timestamp()
 		where
 			id = project_id;

@@ -15,7 +15,6 @@ import { nested_value, isset, not_empty  } from "client/classes/common";
 import { SmallProgressMeter } from "client/controls/progress.meter";
 import { MasterContext } from "client/classes/types/contexts";
 
-
 import "resources/styles/forms.css"
 
 
@@ -65,18 +64,14 @@ export default class ProjectForm extends FormControl {
 
 	delete_project = event => {
 
+		let name = this.project_data ("name");
+
 		event.preventDefault ();
 
-		if (!confirm (`Delete ${this.project_data ("name")}.\nAre you sure?`)) return false;
+		if (!confirm (`Delete ${name}.\nAre you sure?`)) return false;
 
-		let form_data = new FormData (this.project_form.current);
-
-		form_data.append ("action", "save");
-		form_data.append ("deleted", "true");
-		form_data.append ("project_id", this.project_data ("project_id"));
-
-		this.setState ({ status: `Deleting ${this.project_data ("name")}...` }, () => Database.save_data ("projects", form_data).then (data => {
-			this.execute (this.props.onDelete, data).then (() => this.setState ({ status: null }));
+		this.setState ({ status: `Deleting ${name}...` }, () => ProjectStorage.delete_project (this.project_data ("project_id")).then (success => {
+			this.setState ({ status: null }, () => { if (success) this.execute (this.props.onDelete) });
 		}));
 
 		return false;
@@ -210,7 +205,7 @@ export default class ProjectForm extends FormControl {
 					<div style={{ gridColumn: "2/-1" }}>
 						<div className="horizontally-spaced-out vertically-centered with-headspace">
 
-							<SmallProgressMeter id="project_progress_meter" visible={isset (this.state.handler)} 
+							<SmallProgressMeter id="project_progress_meter" visible={isset (this.state.handler) || isset (this.state.status)} 
 								handler={this.state.handler}>
 								{this.state.status}
 							</SmallProgressMeter>

@@ -59,6 +59,25 @@ export default class ProjectsPage extends BaseControl {
 	/********/
 
 
+	update_projects = project_id => ProjectStorage.get_by_client (this.state.selected_client).then (data => {
+
+		this.setState ({ 
+			project_data: isset (project_id) ? ProjectStorage.get_by_id (project_id) : null,
+			selected_project: project_id,
+			updating: true,
+		});
+
+		this.project_selector.current.setState ({ 
+			project_data: data,
+			selected_project: project_id,
+		});
+
+	})/* update_projects */;
+
+
+	/********/
+
+
 	render () {
 
 		let project_limit = OptionsStorage.project_limit ();
@@ -101,9 +120,8 @@ export default class ProjectsPage extends BaseControl {
 
 				<Container visible={isset (this.state.selected_client)}>
 					<ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
-						onSave={project => ProjectStorage.get_by_client (this.state.selected_client).then (data => {
-							this.project_selector.current.setState ({ project_data: data }, () => this.setState ({ selected_project: project.project_id }));
-						})}>
+						onSave={project => this.update_projects (project.project_id)}
+						onDelete={() => this.update_projects (null)}>
 					</ProjectForm>
 				</Container>
 				
