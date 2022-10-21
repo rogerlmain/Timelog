@@ -5,9 +5,11 @@
 	--default-color: black;
 
 	--background-color: #FFFFFF;
-
 	--border-color: black;
-	
+
+	--header-background-color: #DBFFEA;
+	--footer-background-color: #E5FFF0;
+
 	--highlight-color: #F5FFF9;
 	--highlight-border: solid 2px #004D43;
 
@@ -149,7 +151,7 @@ button {
 
 button:hover {
 	color: white;
-	background-color: black;
+	background-color: #025022;
 }/* button:hover */
 
 

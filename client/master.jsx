@@ -50,7 +50,7 @@ import "resources/styles/home.page.css";
  // Increment feature at partial #10 or on feature completion
 
 
-const version = "1.0.7.0";
+const version = "1.0.7.1";
 
 
 const user_image_style = {
@@ -72,7 +72,7 @@ const page_rule_style = {
 
 const logo_image = {
 	width: "auto",
-	height: "48px",
+	height: "54px",
 	margin: "1em",
 }// logo_image;
 
@@ -441,9 +441,7 @@ export default class MasterPanel extends BaseControl {
 
 			}}>
 
-			<div id="master_panel" className="vertically-spaced-out">
-
-
+			<div id="master_panel" className="page-centered">{/*  borderline" style={{ border: "solid 1px blue" }}> */}
 
 				<div className="page-header">
 
@@ -480,10 +478,10 @@ export default class MasterPanel extends BaseControl {
 					</div>
 				</div>
 
-				<div className="page-footer">
+				<div className="full-width page-footer horizontally-centered">
 					<div className="horizontally-spaced-out">
 						<a href="https://solipsology.org" target="solipsology"><img src={rings_of_being} style={logo_image} /></a>
-						<div className="flex-column">
+						<div className="flex-column horizontally-centered">
 							<div>&copy; Copyright 2022 - Roger L. Main</div>
 							<div>(DBA: The Roger Main Programming Company)</div>
 							<div>All rights reserved</div>
