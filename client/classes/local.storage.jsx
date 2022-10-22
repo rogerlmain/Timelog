@@ -23,7 +23,7 @@ export default class LocalStorage {
 	static get_all (key) { 
 		let items = localStorage.getItem (key);
 		try {
-			return JSON.parse (items);
+			return JSON.parse (items) ?? null;
 		} catch (except) {
 			return null;
 		}// try;

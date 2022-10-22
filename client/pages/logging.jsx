@@ -56,7 +56,6 @@ export default class LoggingPage extends BaseControl {
 
 		action: null,
 
-		project_selected: false,
 		editable: false,
 		editing: false,
 		fixing: false,
@@ -321,6 +320,7 @@ export default class LoggingPage extends BaseControl {
 
 		let logged_in = this.logged_in ();
 		let elapsed_time = logged_in ? this.elapsed_time () : null;
+		let project_selected = this.project_selected ();
 
 		let log_button_panel = {
 			columnGap: "0.25em",
@@ -362,9 +362,9 @@ export default class LoggingPage extends BaseControl {
 
 					onEyecandy={this.log_entry}>
 
-					<FadePanel id="login_button" visible={this.project_selected ()} style={{ display: "flex" }}>
+					<FadePanel id="login_button" visible={project_selected} style={{ display: "flex" }}>
 
-						<div className="flex-column">
+						{project_selected && <div className="flex-column">
 
 							<div className="flex-column with-headspace">
 								<div style={{ paddingLeft: "0.75em" }}><label htmlFor="memo" style={{ fontWeight: "bold" }}>Notes</label></div>
@@ -395,7 +395,7 @@ export default class LoggingPage extends BaseControl {
 
 							</div>
 
-						</div>
+						</div>}
 
 					</FadePanel>
 
