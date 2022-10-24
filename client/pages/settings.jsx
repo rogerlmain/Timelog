@@ -36,6 +36,7 @@ import { MasterContext } from "client/classes/types/contexts";
 import { Break } from "client/controls/html/components";
 
 import "resources/styles/pages.css";
+import { project_limit_options } from "./projects";
 
 
 const options_panels = {
@@ -237,7 +238,7 @@ export default class SettingsPage extends BaseControl {
 				onPaymentConfirmed={selected_option => this.process_option ("client_limit", selected_option)}>
 			</OptionToggle>
 
-			<OptionToggle id="project_limit" title="Number of projects" values={["1", "5", "10", "50", "Unlimited"]} value={OptionsStorage.project_limit ()}
+			<OptionToggle id="project_limit" title="Number of projects" values={get_keys (project_limit_options)} value={OptionsStorage.project_limit ()}
 				option={option_types.project_limit} parent={this} 
 				onPaymentConfirmed={selected_option => this.process_option ("project_limit", selected_option)}>
 			</OptionToggle>

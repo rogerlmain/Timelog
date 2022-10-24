@@ -5,7 +5,7 @@ import OptionsModel from "client/classes/models/options.model";
 
 import { account_types, date_rounding, granularity_types } from "client/classes/types/constants";
 import { isset, not_set } from "client/classes/common";
-import { client_limit_value, company_options, corporate_options, deadbeat_options, enterprise_options, freelance_options, option_types } from "client/classes/types/options";
+import { company_options, corporate_options, deadbeat_options, enterprise_options, freelance_options, option_types } from "client/classes/types/options";
 
 
 const store_name = "options";
@@ -116,7 +116,7 @@ export default class OptionsStorage extends LocalStorage {
 	static single_client () { return OptionsStorage.client_limit () == 1 }
 	static single_project () { return OptionsStorage.project_limit () == 1}
 
-	static client_limit () { return client_limit_value [OptionsStorage.#get (option_types.client_limit) ?? 1] }
+	static client_limit () { return OptionsStorage.#get (option_types.client_limit) ?? 1 }
 	static project_limit () { return OptionsStorage.#get (option_types.project_limit) ?? 1 }
 
 	static billing_option () { return OptionsStorage.#get (option_types.billing_option) ?? 1 }

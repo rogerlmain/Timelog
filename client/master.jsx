@@ -46,11 +46,10 @@ import "resources/styles/home.page.css";
 
 
  // version.feature.partial.bugfix
- // Increment version at feature #10
- // Increment feature at partial #10 or on feature completion
+ // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.7.5";
+const version = "1.0.7.6";
 
 
 const user_image_style = {

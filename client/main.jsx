@@ -1,6 +1,5 @@
 import "regenerator-runtime/runtime.js";
 import "classes/types/prototypes";
-import "classes/types/extensions";
 
 import "resources/styles/main.css";
 import "resources/styles/forms.css";
