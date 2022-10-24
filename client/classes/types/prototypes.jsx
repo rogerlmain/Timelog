@@ -774,12 +774,6 @@ Number.prototype.toCurrency = function (symbol = currency_symbol.dollars) {
 }// toCurrency;
 
 
-Number.prototype.fromCurrency = function () { 
-	let result = this.match ([0-9]);
-	return result;
-}
-
-
 /********/
 
 
@@ -806,6 +800,11 @@ String.prototype.extractNumber = function () {
 	}// for;
 	return result;
 }// extractNumber;
+
+
+String.prototype.fromCurrency = function () { 
+	return parseInt (this.match (/[0-9]/g).join (blank));
+}// fromCurrency;
 
 
 String.prototype.padded = function (length, character, direction = null) {
