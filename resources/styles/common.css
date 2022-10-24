@@ -261,6 +261,9 @@ div.button-column {
 }/* div.button-column */
 
 
+div.scroll-panel { overflow: auto }
+
+
 /********/
 
 

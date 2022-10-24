@@ -49,7 +49,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.7.6";
+const version = "1.0.8.0";
 
 
 const user_image_style = {
@@ -141,12 +141,6 @@ export default class MasterPanel extends BaseControl {
 		[page_names.team]		: { name: "Team", permission: team_permissions },
 		[page_names.settings]	: { name: "Settings", permission: true }
 	}// master_pages;
-
-
-	viewer_style = {
-		width: "90rem", 
-		height: "100%", 
-	}// viewer_style;
 
 
 	static contextType = MainContext;
@@ -423,7 +417,6 @@ export default class MasterPanel extends BaseControl {
 	
 	render () {
 
-		let signed_in = this.signed_in ();
 		let icd = location.urlParameter ("icd");
 
 		if (isset (icd)) {
@@ -433,14 +426,12 @@ export default class MasterPanel extends BaseControl {
 		}// if;
 
 		return <MasterContext.Provider value={{ 
-
 				company_id: numeric_value (this.state.company_id), 
 				master_page: this,
 				main_page: this.context.main_page,
-
 			}}>
 
-			<div id="master_panel" className="page-centered">{/*  borderline" style={{ border: "solid 1px blue" }}> */}
+			<div id="master_panel" className="full-screen" >
 
 				<div className="page-header">
 
@@ -469,26 +460,30 @@ export default class MasterPanel extends BaseControl {
 
 				</div>
 
-				<div style={{ flexGrow: 1 }} className="with-headspace">
-					<div style={this.viewer_style} className="horizontally-centered">
-						<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={true} vAlign={vertical_alignment.top}>
-							<div className="fully-aligned">{this.main_contents ()}</div>
-						</ExplodingPanel>
-					</div>
-				</div>
+				<div className="page-contents scroll-panel">
 
-				<div className="full-width page-footer horizontally-centered">
-					<div className="horizontally-spaced-out">
-						<a href="https://solipsology.org" target="solipsology"><img src={rings_of_being} style={logo_image} /></a>
-						<div className="flex-column horizontally-centered">
-							<div>&copy; Copyright 2022 - Roger L. Main</div>
-							<div>(DBA: The Roger Main Programming Company)</div>
-							<div>All rights reserved</div>
-							<br />
-							<div>Version {version} {debugging () ? "(test)" : blank}</div>
+					<div style={{ flexGrow: 1 }} className="with-headspace">
+						<div style={{ height: "100%" }} className="horizontally-centered">
+							<ExplodingPanel id="main_panel" ref={this.main_panel} stretchOnly={false} vAlign={vertical_alignment.top}>
+								<div className="fully-aligned">{this.main_contents ()}</div>
+							</ExplodingPanel>
 						</div>
-						<a href="https://journal.rexthestrange.com" target="journal"><img src={rexs_head} style={logo_image} /></a>
 					</div>
+
+					<div className="full-width page-footer horizontally-centered">
+						<div className="horizontally-spaced-out">
+							<a href="https://solipsology.org" target="solipsology"><img src={rings_of_being} style={logo_image} /></a>
+							<div className="flex-column horizontally-centered">
+								<div>&copy; Copyright 2022 - Roger L. Main</div>
+								<div>(DBA: The Roger Main Programming Company)</div>
+								<div>All rights reserved</div>
+								<br />
+								<div>Version {version} {debugging () ? "(test)" : blank}</div>
+							</div>
+							<a href="https://journal.rexthestrange.com" target="journal"><img src={rexs_head} style={logo_image} /></a>
+						</div>
+					</div>
+
 				</div>
 
 			</div>

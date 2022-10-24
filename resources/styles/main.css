@@ -1,10 +1,17 @@
 div.page-header { 
+	display: fixed;
 	margin-bottom: 1em;
 	padding: 1em 1em 0.5em;
 	background-color: var(--header-background-color);
 	border-bottom: solid 1px var(--border-color);
 	width: 100%;
 }/* div.page-header */
+
+
+div.page-contents {
+	display: grid;
+	grid-template-rows: 1fr min-content;
+}/*div.page-contents */
 
 
 div.page-footer {
