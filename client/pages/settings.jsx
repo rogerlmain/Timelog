@@ -269,7 +269,7 @@ export default class SettingsPage extends BaseControl {
 
 								<label htmlFor="default_rate">Default rate</label>
 
-								<CurrencyInput id="billing_rate" className="rate-field" maxLength={3}
+								<CurrencyInput id="billing_rate" className="rate-field" maxLength={5}
 									defaultValue={OptionsStorage.default_rate () ?? 0}
 									onBlur={event => OptionsStorage.default_rate (event.target.value)}>
 								</CurrencyInput>
