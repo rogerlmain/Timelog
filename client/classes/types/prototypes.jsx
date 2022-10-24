@@ -676,6 +676,53 @@ HTMLImageElement.prototype.toDataURL = function () {
 	return canvas.toDataURL ("image/png");
  
 }// toDataURL;
+
+
+/**** HTMLInputElement ****/
+
+
+HTMLInputElement.prototype.textWidth = function () {
+
+	let model = document.createElement ("div");
+	let result = null;
+
+	model.style.border = "none";
+	model.style.boxSizing = "content-box";
+	model.style.overflow = "hidden";
+	model.style.padding = 0;
+	model.style.width = 0;
+	model.style.height = 0;
+	
+	model.innerHTML = this.value;
+	document.body.append (model);
+	result = model.scrollWidth;
+	model.remove ();
+
+	return result;
+
+}// textWidth;
+
+
+HTMLInputElement.prototype.canvasWidth = function () {
+
+	let padding_width = 0;
+	let element_style = getComputedStyle (this);
+
+	["padding-left", "padding-right"].forEach (style => padding_width += parseInt (element_style.getPropertyValue (style)));
+	return (this.scrollWidth - padding_width);
+
+}// canvasWidth;
+
+
+HTMLInputElement.prototype.outsideWidth = function () {
+
+	let result = 0;
+	let element_style = getComputedStyle (this);
+
+	["border-left-width", "border-right-width", "padding-left", "padding-right"].forEach (style => result += parseInt (element_style.getPropertyValue (style)));
+	return result;
+
+}// outside_width;
  
  
 /**** HTMLSelectElement ****/
@@ -725,6 +772,12 @@ Number.prototype.toCurrency = function (symbol = currency_symbol.dollars) {
 	let cents = this % 100;
 	return `${symbol ?? blank}${dollars}.${cents.padded (2)}`;
 }// toCurrency;
+
+
+Number.prototype.fromCurrency = function () { 
+	let result = this.match ([0-9]);
+	return result;
+}
 
 
 /********/

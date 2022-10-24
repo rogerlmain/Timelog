@@ -1,15 +1,25 @@
 import React from "react";
 import BaseControl from "../abstract/base.control";
 
+import ExpandingInput from "client/controls/inputs/expanding.input";
+
 import { isset, not_set } from "client/classes/common";
 
 import "resources/styles/controls.css";
+
+
+const input_style = { 
+	cursor: "pointer",
+	textAlign: "right",
+	caretColor: "transparent",
+}/* input_style */
 
 
 export default class CurrencyInput extends BaseControl {
 
 
 	static defaultProps = { 
+
 		id: null,
 		className: null,
 		defaultValue: null,
@@ -17,7 +27,8 @@ export default class CurrencyInput extends BaseControl {
 		onBlur: null,
 		onChange: null,
 
-		maxLength: -1,
+		maxLength: null,
+
 	}// default_props;
 
 
@@ -37,9 +48,6 @@ export default class CurrencyInput extends BaseControl {
 	/********/
 
 
-	text_length = () => (this.state.current_value.toCurrency (null).length + 1);
-
-
 	process_keystroke = event => {
 
 		const keycode = event.which ?? event.keyCode;
@@ -47,12 +55,15 @@ export default class CurrencyInput extends BaseControl {
 		let new_value = null;
 
 		if (["backspace", "delete"].includes (event.key.toLowerCase ())) new_value = Math.floor (this.state.current_value / 10);
-		if (isFinite (event.key)) new_value = (this.state.current_value * 10) + parseInt (event.key);
 
-		if ((keycode > 32) || (keycode == 8)) event.preventDefault ();
-		if (isset (this.props.maxLength) && (new_value.length > this.props.maxLength)) return !!event.preventDefault ();
+		switch (isFinite (event.key)) {
+			case true: new_value = (this.state.current_value * 10) + parseInt (event.key); break;
+			default: if ((keycode > 32) || (keycode == 8)) event.preventDefault ();
+		}// switch;
 
-		this.setState ({ current_value: new_value }, () => { event.target.size = Math.max (this.currency_input.current.size, this.text_length ()) });
+		if (isset (this.props.maxLength) && (new_value.toString ().length > this.props.maxLength)) return !!event.preventDefault ();
+
+		this.setState ({ current_value: new_value });
 
 	}// process_keystroke;
 
@@ -66,31 +77,21 @@ export default class CurrencyInput extends BaseControl {
 	}// shouldComponentUpdate;
 
 
-	componentDidMount () { 
-		this.setState ({ current_value: this.props.defaultValue }, () => this.currency_input.current.size = this.text_length ());
-	}// componentDidMount;
-
-
 	render = () => {
 
 		let properties = {...this.props};
-		let input_handler = isset (this.props.onInput) ? (event => this.execute (this.props.onInput)) : null;
 
-		if (isset (properties.onKeyDown)) throw "Cannot set onKeyDown property for CurrencyInput.";
-
-		delete properties.min;
 		delete properties.name;
-		delete properties.step;
 		delete properties.type;
 		delete properties.defaultValue;
 
 		return <div className="currency-input">
-			<div>$</div>
-			<input type="text" name={this.props.id} ref={this.currency_input}
-				value={this.state.current_value.toCurrency (null)} min={0} step={1} 
-				onInput={input_handler} onKeyDown={this.process_keystroke} {...properties}>
-			</input>
+			<ExpandingInput {...properties} name={this.props.id} ref={this.currency_input} readOnly={true} stretchOnly={true}
+				value={this.state.current_value.toCurrency ()} onKeyDown={this.process_keystroke} style={input_style}
+				onBlur={event => this.execute (this.props.onBlur, {...event, value: this.state.current_value })}>
+			</ExpandingInput>
 		</div>
+
 	}// render;
 
 }// CurrencyInput;

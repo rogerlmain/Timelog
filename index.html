@@ -47,12 +47,19 @@
 
 		#square_form input { font-size: 10pt !important }
 
+
+		#test_panel { 
+			width: 0; height: 0;
+			overflow: hidden;		
+		}/* test_panel */
+
+
 	</style>
 
 
 	<script type="text/javascript">
 
-		click_handler = () => {}//window.dispatchAll ("onDesktopClick");
+		click_handler = () => window.dispatchAll ("onDesktopClick");
 
 	</script>
 
@@ -61,11 +68,9 @@
 
 
 <body onclick="click_handler ()">
-
 	<div id="program_panel" class="full-screen">
 		<div id="main_page" class="full-size"></div>
 	</div>
-
 </body>
 
 

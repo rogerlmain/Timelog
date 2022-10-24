@@ -1,0 +1,31 @@
+<!doctype html>
+
+<html lang="en">
+
+
+<script>
+
+	doit = () => {
+	
+		document.body.append (new Date ().toLocaleString ());
+		document.body.append (document.createElement ("<br />"));
+
+	}
+
+</script>
+
+
+<body id="the_body">
+	<button onClick="doit (event)">Doit</button>
+</body>
+
+
+<script>
+
+	var observer = new MutationObserver (function (mutations) { alert ("Mutating") });
+	observer.observe (document.body, { childList: true });//, subtree: true, attributes: true, characterData: true });
+
+</script>
+
+
+</html>

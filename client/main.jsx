@@ -33,6 +33,8 @@ import LoadListTest from "client/tests/controls/lists/load.list";
 import ClientSelectorTest from "client/tests/controls/selectors/client.selector";
 import ProjectSelectorTest from "client/tests/controls/selectors/project.selector";
 import DateInputTest from "client/tests/controls/inputs/date.input";
+import CurrencyInputTest from "client/tests/controls/inputs/currency.input";
+import ExpandingInputTest from "client/tests/controls/inputs/expanding.input";
 
 import ReportsPage from "client/pages/reports";
 import DeluxeAccountForm from "./forms/deluxe.account.form";
@@ -76,7 +78,32 @@ class Main extends BaseControl {
 		return <MainContext.Provider value={{ main_page: this }}>
 			<div className="page-centered">
 				{isset (this.state.popup_contents) && <PopupWindow id="popup_panel" visible={this.state.popup_visible}>{this.state.popup_contents}</PopupWindow>}
+
 				<MasterPanel id="master_panel" parent={this} />
+
+
+				{/* Tests */}
+
+				{/* <FadePanelTest /> */}
+				{/* <ResizePanelTest /> */}
+				{/* <ExplodingPanelTest /> */}
+				{/* <EyecandyPanelTest /> */}
+				{/* <LoadListTest /> */}
+				{/* <ClientSelectorTest /> */}
+
+				{/* <ExpandingInputTest /> */}
+				{/* <CurrencyInputTest /> */}
+				{/* <DateInputTest /> */}
+
+				{/* <ClientSelectorTest /> */}
+				{/* <ProjectSelectorTest /> */}
+
+				{/* <ReportsPage /> */}
+
+				{/* <DeluxeAccountForm option={1} optionPrice={199} hasCredit={true} /> */}
+
+
+
 			</div>
 		</MainContext.Provider>
 	}// render;
@@ -101,30 +128,9 @@ class QuickTest extends BaseControl {
 
 document.onreadystatechange = () => {
 
+	let main_panel = <div id="main_panel" className="horizontally-centered"><Main id="timelog_main_page" /></div>
+
 	if (debugging ()) console.log (`Debug test: ${new Date ().format (date_formats.full_datetime)}`);
-
-	createRoot (document.getElementById ("main_page")).render (<div id="main_panel" className="horizontally-centered">
-		
-		<Main id="timelog_main_page" />
-
-
-		{/* Tests */}
-
-		{/* <FadePanelTest /> */}
-		{/* <ResizePanelTest /> */}
-		{/* <ExplodingPanelTest /> */}
-		{/* <EyecandyPanelTest /> */}
-		{/* <LoadListTest /> */}
-		{/* <ClientSelectorTest /> */}
-		{/* <DateInputTest /> */}
-
-		{/* <ClientSelectorTest /> */}
-		{/* <ProjectSelectorTest /> */}
-
-		{/* <ReportsPage /> */}
-
-		{/* <DeluxeAccountForm option={1} optionPrice={199} hasCredit={true} /> */}
-
-	</div>);
-
+	createRoot (document.getElementById ("main_page")).render (main_panel);
+	
 }// document.ready;
