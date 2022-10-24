@@ -35,6 +35,7 @@ export default class CurrencyInput extends BaseControl {
 	constructor (props) {
 		super (props);
 		if (not_set (props.id)) throw "CurrencyInput requires an ID";
+		this.state.current_value = this.props.defaultValue;
 	}// constructor;
 
 
@@ -53,17 +54,17 @@ export default class CurrencyInput extends BaseControl {
 		const keycode = event.which ?? event.keyCode;
 
 		let new_value = null;
+		let deleting = ["backspace", "delete"].includes (event.key.toLowerCase ());
 
-		if (["backspace", "delete"].includes (event.key.toLowerCase ())) new_value = Math.floor (this.state.current_value / 10);
+		if (deleting) new_value = Math.floor (this.state.current_value / 10);
 
 		switch (isFinite (event.key)) {
 			case true: new_value = (this.state.current_value * 10) + parseInt (event.key); break;
 			default: if ((keycode > 32) || (keycode == 8)) event.preventDefault ();
 		}// switch;
 
-		if (isset (this.props.maxLength) && (new_value.toString ().length > this.props.maxLength)) return !!event.preventDefault ();
-
-		this.setState ({ current_value: new_value });
+		if ((!deleting) && isset (this.props.maxLength) && (new_value?.toString ().length > this.props.maxLength)) return !!event.preventDefault ();
+		if (isset (new_value)) this.setState ({ current_value: new_value });
 
 	}// process_keystroke;
 
@@ -79,16 +80,19 @@ export default class CurrencyInput extends BaseControl {
 
 	render = () => {
 
-		let properties = {...this.props};
+		let props = {...this.props};
+		let control_id = `${this.props.id}_currency_input`;
 
-		delete properties.name;
-		delete properties.type;
-		delete properties.defaultValue;
+		delete props.id
+		delete props.name;
+		delete props.type;
+		delete props.defaultValue;
 
 		return <div className="currency-input">
-			<ExpandingInput {...properties} name={this.props.id} ref={this.currency_input} readOnly={true} stretchOnly={true}
+			<ExpandingInput {...props} id={control_id} name={control_id} ref={this.currency_input} readOnly={true} stretchOnly={true}
 				value={this.state.current_value.toCurrency ()} onKeyDown={this.process_keystroke} style={input_style}
-				onBlur={event => this.execute (this.props.onBlur, {...event, value: this.state.current_value })}>
+				onBlur={event => this.execute (this.props.onBlur, {...event, value: this.state.current_value })}
+				onChange={value => this.execute (this.props.onChange, value.fromCurrency ())}>
 			</ExpandingInput>
 		</div>
 

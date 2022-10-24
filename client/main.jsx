@@ -35,6 +35,7 @@ import ProjectSelectorTest from "client/tests/controls/selectors/project.selecto
 import DateInputTest from "client/tests/controls/inputs/date.input";
 import CurrencyInputTest from "client/tests/controls/inputs/currency.input";
 import ExpandingInputTest from "client/tests/controls/inputs/expanding.input";
+import RateSubformTest from "client/tests/test.rate.subform";
 
 import ReportsPage from "client/pages/reports";
 import DeluxeAccountForm from "./forms/deluxe.account.form";
@@ -98,7 +99,8 @@ class Main extends BaseControl {
 				{/* <ClientSelectorTest /> */}
 				{/* <ProjectSelectorTest /> */}
 
-				{/* <ReportsPage /> */}
+				{/* <RateSubformTest /> */}
+				{/* <ReportsPageTest /> */}
 
 				{/* <DeluxeAccountForm option={1} optionPrice={199} hasCredit={true} /> */}
 

@@ -83,6 +83,28 @@ export default class SettingsPage extends BaseControl {
 	static defaultProps = { id: "settings_page" }
 
 
+	constructor (props) {
+
+		super (props);
+
+		let options = OptionsStorage.get_options ();
+		let settings = null;
+		
+		const option_value = option => { 
+			if (isset (options) && isset (options [option])) return parseInt (options [option]);
+			return deadbeat_options [get_key (option_types, option)];
+		}/* option_value */;
+
+		for (let key of Object.keys (option_types)) {
+			if (is_null (settings)) settings = {}
+			settings [key] = option_value (option_types [key]);
+		}// for;
+
+		this.state = {...this.state, ...settings};
+			
+	}// constructor;
+
+
 	/********/
 
 
@@ -126,27 +148,6 @@ export default class SettingsPage extends BaseControl {
 
 
 	process_option = (option, value) => this.set_option (option_types [option], value).then (() => this.setState ({ [option]: value }, () => this.context.master_page.forceUpdate ()));
-
-
-	initialize_settings () {
-
-		let options = OptionsStorage.get_options ();
-		
-		let option_value = option => { 
-			if (isset (options) && isset (options [option])) return parseInt (options [option]);
-			return deadbeat_options [get_key (option_types, option)];
-		}/* option_value */;
-
-		let settings = null;
-
-		for (let key of Object.keys (option_types)) {
-			if (is_null (settings)) settings = {}
-			settings [key] = option_value (option_types [key]);
-		}// for;
-
-		this.setState (settings);
-		
-	}// initialize_settings;
 
 
 	invite_contributor = event => {

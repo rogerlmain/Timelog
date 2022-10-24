@@ -40,27 +40,35 @@ export default class ExpandingInput extends BaseControl {
 	/********/
 
 
+	shouldComponentUpdate = new_props => {
+		if (this.props.readOnly && (new_props.value != this.props.value)) this.execute (this.props.onChange, new_props.value);
+		return true;
+	}// shouldComponentUpdate;
+
+
 	componentDidMount = () => this.input.current.style.width = `${this.text_size ()}px`;
 	componentDidUpdate = this.resize;
 
 
 	render () {
 
-		let properties = {...this.props};
+		let props = {...this.props};
 		let value = this.props.value;
+		let control_id = `${this.props.id}_expando`;
 
-		delete properties.stretchOnly;
-		delete properties.type;
-		delete properties.value;
+		delete props.stretchOnly;
+		delete props.id;
+		delete props.type;
+		delete props.value;
 
 		if (!this.props.readOnly) {
-			properties ["onChange"] = this.resize;
-			properties ["defaultValue"] = value;
+			props.onChange = event => this.execute (this.props.onChange, event).then (this.resize);
+			props.defaultValue = value;
 		} else {
-			properties ["value"] = value;
+			props.value = value;
 		}// if;
 
-		return <input ref={this.input} readOnly={this.props.readOnly} onFocus={this.resize} {...properties} />
+		return <input id={control_id} ref={this.input} readOnly={this.props.readOnly} onFocus={this.resize} key={control_id} name={control_id} {...props} />
 
 	}// render;
 

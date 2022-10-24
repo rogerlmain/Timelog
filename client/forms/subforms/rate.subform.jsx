@@ -9,10 +9,11 @@ import CurrencyInput from "client/controls/inputs/currency.input";
 
 import Container from "client/controls/container";
 
-import { numeric_value, nested_value } from "client/classes/common";
-import { page_names } from "client/master";
-
+import { isset } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
+
+
+export const max_rate_length = 5;
 
 
 export const rate_types = {
@@ -41,13 +42,21 @@ export default class RateSubform extends BaseControl {
 	static contextType = MasterContext;
 
 
+	/********/
+
+
+	active_rate = () => this.state.project_rate ?? this.state.client_rate ?? OptionsStorage.default_rate () ?? 0;
+
+
+	/********/
+
+
 	componentDidMount () {
 		ProjectStorage.project_rate (this.props.projectId).then (result => this.setState ({ project_rate: result }, () => {
 			ClientStorage.client_rate (this.props.clientId).then (result => this.setState ({ client_rate: result }, () => {
-				this.setState ({ current_rate: this.state.project_rate ?? this.state.client_rate ?? OptionsStorage.default_rate () ?? 0 });
+				this.setState ({ current_rate: this.active_rate () });
 			}));
 		}));
-		return false;
 	}// componentDidMount;
 
 
@@ -55,40 +64,44 @@ export default class RateSubform extends BaseControl {
 
 		let company_rate = OptionsStorage.default_rate ();
 
+		let control_id = this.props.id ?? "billing_rate";
+		let company_checkbox_id = `${control_id}_company_default`;
+		let client_checkbox_id = `${control_id}_client_default`;
+
 		let company_rate_selected = (company_rate == this.state.current_rate);
 		let client_rate_selected = (this.state.client_rate == this.state.current_rate);
 
-		let input_key = (company_rate_selected | (client_rate_selected << 1 ));
-
-
 		return <Container visible={OptionsStorage.can_bill ()}>
-			<label htmlFor="billing_rate">Rate</label>
+
+			<label htmlFor={control_id}>Rate</label>
+
 			<div className="one-piece-form">
 
 				<div className="left-aligned">
-					<CurrencyInput key={input_key} id="billing_rate" className="rate-field" maxLength={3}
+					<CurrencyInput id={control_id} className="rate-field" maxLength={max_rate_length}
 						defaultValue={(this.state.current_rate ?? 0)} disabled={this.props.disabled} onBlur={this.props.onChange} 
-						onInput={event => this.setState ({ current_rate: numeric_value (event.target.value) })}>
+						onChange={value => this.setState ({current_rate: value})}>
 					</CurrencyInput>
 				</div>
 
 				<div className="vertically-spaced-out">
 
-					<input key={company_rate_selected} type="checkbox" id="company_default" name="company_default" title="Use the company default"
-						defaultChecked={company_rate_selected}
-						onChange={() => this.setState ({ current_rate: company_rate })}>
+					<input key={company_rate_selected} type="checkbox" 
+						id={company_checkbox_id} name={company_checkbox_id} key={company_checkbox_id}
+						title="Use the company default" checked={company_rate_selected}
+						onChange={event => this.setState ({ current_rate: event.target.checked ? company_rate : this.active_rate () })}>
 					</input>
 
-					<Container visible={(nested_value (this.context, "master_page", "state", "page") == page_names.projects) && (company_rate != this.state.client_rate)}>
-						<input key={client_rate_selected} type="checkbox" id="client_default" name="client_default" title="Use this client's default"
-							defaultChecked={client_rate_selected}
-							onChange={() => this.setState ({ current_rate: this.state.client_rate })}>
-						</input>
-					</Container>
+					{isset (this.props.clientId) && <input type="checkbox" 
+						id={client_checkbox_id} name={client_checkbox_id} key={client_checkbox_id}
+						title="Use this client's default" checked={client_rate_selected}
+						onChange={event => this.setState ({ current_rate: event.target.checked ? this.state.client_rate : this.active_rate () })}>
+					</input>}
 
 				</div>
 
 			</div>
+
 		</Container>
 	}// render;
 
