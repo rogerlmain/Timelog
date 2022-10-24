@@ -228,9 +228,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	render () {
 
-		let company_id = this.context_item ("company_id");
-		
-		let new_customer = not_set (company_id);
+		let new_customer = not_set (CompanyStorage.active_company ().address_id);
 
 		return <form ref={this.deluxe_account_form} id="deluxe_account_form" onSubmit={event => event.preventDefault ()}>
 
