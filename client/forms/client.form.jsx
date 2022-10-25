@@ -169,7 +169,7 @@ export default class ClientForm extends FormControl {
 						required={true} disabled={this.props.disabled}>
 					</input>
 
-					<RateSubform clientId={client_id} />
+					<RateSubform />
 
 					<label htmlFor="client_description">Description</label>
 					<textarea id="client_description" name="client_description"

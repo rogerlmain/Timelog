@@ -160,6 +160,8 @@ export default class SettingsPage extends BaseControl {
 		data.append ("company_name", CompanyStorage.company_name ());
 		data.append ("company_id", CompanyStorage.active_company_id ());
 
+		data.delete ("nds-pmd");
+
 		return new Promise ((resolve, reject) => EmailModel.send_invite (data).then (data => resolve (Array.get_element (data, 0))).catch (reject));
 
 	}/* invite_contributor */;
@@ -345,13 +347,16 @@ export default class SettingsPage extends BaseControl {
 							<label htmlFor="invitation">Invite a contributor</label>
 
 							<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
+								
 								<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
 									onChange={event => this.setState ({ invitee: event.target.value })} required={true}
 									defaultValue={debugging () ? "Roger" : null}>
 								</input>
+
 								<input type="email" id="invitee_email" name="invitee_email" placeholder="Email address" required={true}
 									defaultValue={debugging () ? "roger.main@rexthestrange.com" : null}>
 								</input>
+
 								<button onClick={event => {
 									this.setState ({ invite_data: new FormData (this.invite_form.current) });
 									event.preventDefault ();

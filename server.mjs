@@ -173,9 +173,18 @@ app.post ("/company_cards", () => {
 
 app.post ("/email", () => {
 	app.process (async fields => {
+
+		let request = global.request ();
+
+		fields = { ...fields,
+			server_host: request.hostname,
+			server_port: request.socket.localPort,
+		}// fields;
+
 		switch (fields.action) {
 			case "invite": new EmailHandler (fields).send_invitation (); break;
 		}// switch;
+
 	});
 });
 

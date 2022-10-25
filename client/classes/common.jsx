@@ -1,5 +1,6 @@
-import { blank } from "client/classes/types/constants";
 import React from "react";
+
+import { blank } from "client/classes/types/constants";
 
 
 const detab = (text) => { 

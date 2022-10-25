@@ -78,14 +78,11 @@ export default class EmailHandler {
 
 
 	invitation_template = (invitation, type) => {
-
-		let request = global.request ();
-
 		return this.#get_template (templates.invitation, type, {
 			invitee: this.fields.invitee_name,
 			host: this.fields.host_name,
 			company: this.fields.company_name,
-			domain: `${request.hostname}:${request.socket.localPort}`,
+			domain: `${this.fields.server_host}:${this.fields.server_port}`,
 			address: `?icd=${this.create_invite (invitation)}`,
 		});
 	}// text_template;
