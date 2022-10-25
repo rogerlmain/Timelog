@@ -1,9 +1,10 @@
 import React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
+import Container from "client/controls/container";
 
 import { horizontal_alignment } from "client/classes/types/constants";
-import { isset, is_empty, is_function, is_null, is_number, not_function, not_set } from "client/classes/common";
+import { isset, is_empty, is_null, is_number, not_function, not_set } from "client/classes/common";
 
 import "resources/styles/controls/toggle.switch.css";
 
@@ -23,7 +24,6 @@ export default class ToggleSwitch extends BaseControl {
 		drag_position: null,
 		drag_offset: 0,
 		option: null,
-		process_change: false
 	}/* state */;
 
 
@@ -66,16 +66,21 @@ export default class ToggleSwitch extends BaseControl {
 
 
 	stop_dragging = event => {
+
+		let centered = ((this.state.drag_offset % (item_width + 2)) == 0);
+		
 		for (let option of this.option_elements ()) {
 			if (option.getBoundingClientRect ().contains ({ x: event.clientX })) this.setState ({ option: this.selection (option) })
 		}// for;
-		this.setState ({ drag_position: null, drag_offset: 0 });
+
+		this.setState ({ drag_position: null, drag_offset: 0 }, () => { if (centered) this.execute (this.props.onChange, this.selected_value ()) }); 
+
 	}// stop_dragging;
 
 
 	transition_end = event => {
 		if (event.propertyName != "left") return;
-		if (this.state.process_change) this.execute (this.props.onChange, this.selected_value ()).then (() => this.setState ({ process_change: false }));
+		this.execute (this.props.onChange, this.selected_value ());
 	}// transition_end;
 
 
@@ -121,10 +126,7 @@ export default class ToggleSwitch extends BaseControl {
 					return <div id={child.props.id} className="item" key={child.props.children} value={child.props.value} title={child.props.children} 
 						onClick={event => {
 							event.target.value = this.selection (event.target);
-							if (not_function (this.props.onClick) || this.props.onClick (event)) this.setState ({ 
-								process_change: true, 
-								option: event.target.value
-							});
+							if (not_function (this.props.onClick) || this.props.onClick (event)) this.setState ({ option: event.target.value });
 						}}>
 					</div>
 				})}
@@ -146,6 +148,7 @@ export default class ToggleSwitch extends BaseControl {
 			{this.props.textAlignment.equals (horizontal_alignment.right) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
 
 		</div>
-	};
+	}// render;
+
 
 }// ToggleSwitch;
