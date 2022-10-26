@@ -3,9 +3,10 @@ import React from "react";
 import ProjectStorage from "client/classes/storage/project.storage";
 
 import FormControl from "client/controls/form.control";
+import FadePanel from "client/controls/panels/fade.panel";
 
 import AlphaCapitalInput from "client/controls/inputs/alpha.capital.input";
-import FadePanel from "client/controls/panels/fade.panel";
+import ExpandingInput from "client/controls/inputs/expanding.input";
 
 import RateSubform from "client/forms/subforms/rate.subform";
 
@@ -126,9 +127,10 @@ export default class ProjectForm extends FormControl {
 
 			let form_data = new FormData (this.project_form.current);
 
-			form_data.append ("action", "save");
-			form_data.append ("client_id", this.props.clientId);
-			form_data.append ("company_id", this.context.company_id);
+			form_data.set ("action", "save");
+			form_data.set ("client_id", this.props.clientId);
+			form_data.set ("company_id", this.context.company_id);
+			form_data.set ("billing_rate", form_data.get ("billing_rate").fromCurrency () ?? 0);
 
 			this.setState ({ 
 				status: "Saving...", 
@@ -165,12 +167,9 @@ export default class ProjectForm extends FormControl {
 					<label htmlFor="project_name">Project Name</label>
 					<div style={{ display: "grid", gridTemplateColumns: "1fr min-content" }}>
 
-						<input type="expando" id="project_name" name="project_name" defaultValue={this.project_data ("name") || blank} required={true}
-							onChange={event => {
-								
-								this.setState (this.setState ({ code: codify (event.target.value) }));
-							}}>
-						</input>
+						<ExpandingInput id="project_name" value={this.project_data ("name") || blank} required={true} stretchOnly={true} style={{ minWidth: "100%" }}
+							onChange={event => this.setState (this.setState ({ code: codify (event.target.value) }))}>
+						</ExpandingInput>
 
 						<div style={{ marginLeft: "0.5em" }}>
 
@@ -187,7 +186,7 @@ export default class ProjectForm extends FormControl {
 										value={this.state.code}>
 									</AlphaCapitalInput>
 
-									<RateSubform clientId={this.props.clientId} projectId={project_id} onChange={this.save_project} />
+									<RateSubform clientId={this.props.clientId} projectId={project_id} onChange={this.save_project} defaultValue={this.project_data ("billing_rate")} />
 
 								</div>
 

@@ -33,9 +33,14 @@ export default class RateSubform extends BaseControl {
 
 
 	static defaultProps = { 
+
+		defaultValue: null,
+
 		clientId: null,
 		projectId: null,
+
 		onChange: null,
+
 	}// defaultProps;
 
 
@@ -45,7 +50,7 @@ export default class RateSubform extends BaseControl {
 	/********/
 
 
-	active_rate = () => this.state.project_rate ?? this.state.client_rate ?? OptionsStorage.default_rate () ?? 0;
+	active_rate = () => this.props.defaultValue ?? this.state.project_rate ?? this.state.client_rate ?? OptionsStorage.default_rate () ?? 0;
 
 
 	/********/

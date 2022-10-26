@@ -127,10 +127,9 @@ export default class ClientForm extends FormControl {
 			if (!valid) return;
 
 			let form_data = new FormData (this.client_form.current);
-			let rate = form_data.get ("billing_rate");
 
 			form_data.set ("company_id", this.context.company_id);
-			form_data.set ("billing_rate", rate ?? 0);
+			form_data.set ("billing_rate", form_data.get ("billing_rate").fromCurrency () ?? 0);
 
 			this.setState ({ 
 				status: "Saving",
@@ -162,9 +161,9 @@ export default class ClientForm extends FormControl {
 				<div className={billing_option ? "billing-option-form" : "one-piece-form"}>
 
 					<label htmlFor="client_name">Client Name</label>
-					<ExpandingInput id="client_name" name="client_name" value={this.client_data ("name") ?? blank} required={true} stretchOnly={true} />
+					<ExpandingInput id="client_name" value={this.client_data ("name") ?? blank} required={true} stretchOnly={true} style={{ minWidth: "100%" }} />
 
-					<RateSubform />
+					<RateSubform defaultValue={this.client_data ("billing_rate")} />
 
 					<label htmlFor="client_description">Description</label>
 					<textarea id="client_description" name="client_description"

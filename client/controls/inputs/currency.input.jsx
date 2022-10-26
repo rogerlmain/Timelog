@@ -1,5 +1,5 @@
 import React from "react";
-import BaseControl from "../abstract/base.control";
+import BaseControl from "client/controls/abstract/base.control";
 
 import ExpandingInput from "client/controls/inputs/expanding.input";
 
@@ -81,7 +81,6 @@ export default class CurrencyInput extends BaseControl {
 	render = () => {
 
 		let props = {...this.props};
-		let control_id = `${this.props.id}_currency_input`;
 
 		delete props.id
 		delete props.name;
@@ -89,7 +88,8 @@ export default class CurrencyInput extends BaseControl {
 		delete props.defaultValue;
 
 		return <div className="currency-input">
-			<ExpandingInput {...props} id={control_id} name={control_id} ref={this.currency_input} readOnly={true} stretchOnly={true}
+			<ExpandingInput {...props} id={this.props.id} name={this.props.id} key={`${this.props.id}_currency_input`} 
+				ref={this.currency_input}  readOnly={true} stretchOnly={true}
 				value={this.state.current_value.toCurrency ()} onKeyDown={this.process_keystroke} style={input_style}
 				onBlur={event => this.execute (this.props.onBlur, {...event, value: this.state.current_value })}
 				onChange={value => this.execute (this.props.onChange, value.fromCurrency ())}>

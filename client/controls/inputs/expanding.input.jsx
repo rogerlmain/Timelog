@@ -54,7 +54,6 @@ export default class ExpandingInput extends BaseControl {
 
 		let props = {...this.props};
 		let value = this.props.value;
-		let control_id = `${this.props.id}_expando`;
 
 		delete props.stretchOnly;
 		delete props.id;
@@ -68,7 +67,7 @@ export default class ExpandingInput extends BaseControl {
 			props.value = value;
 		}// if;
 
-		return <input id={control_id} ref={this.input} readOnly={this.props.readOnly} onFocus={this.resize} key={control_id} name={control_id} {...props} />
+		return <input {...props} id={this.props.id} name={this.props.id} key={`${this.props.id}_expando`} ref={this.input} onFocus={this.resize} />
 
 	}// render;
 
