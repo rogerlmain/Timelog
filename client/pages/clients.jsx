@@ -6,7 +6,6 @@ import OptionsStorage from "client/classes/storage/options.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
 
-import FadePanel from "client/controls/panels/fade.panel";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import ClientSelector from "client/controls/selectors/client.selector";

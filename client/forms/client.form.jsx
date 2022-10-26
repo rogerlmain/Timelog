@@ -2,7 +2,9 @@ import React from "react";
 
 import FormControl from "client/controls/form.control";
 import FadePanel from "client/controls/panels/fade.panel";
+import ExpandingInput from "client/controls/inputs/expanding.input";
 
+import CompanyStorage from "client/classes/storage/company.storage";
 import ClientStorage from "client/classes/storage/client.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
@@ -15,10 +17,7 @@ import { isset, not_empty } from "client/classes/common";
 import { SmallProgressMeter } from "client/controls/progress.meter";
 import { MasterContext } from "client/classes/types/contexts";
 
-
 import "resources/styles/forms.css";
-import CompanyStorage from "client/classes/storage/company.storage";
-import ExpandingInput from "client/controls/inputs/expanding.input";
 
 
 export default class ClientForm extends FormControl {

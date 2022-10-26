@@ -3,7 +3,6 @@ import React from "react";
 import ProjectStorage from "client/classes/storage/project.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
-import Container from "client/controls/container";
 
 import BaseControl from "client/controls/abstract/base.control";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
@@ -13,7 +12,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import ProjectForm from "client/forms/project.form";
 
 import { vertical_alignment } from "client/classes/types/constants";
-import { not_set, get_values, isset, is_unlimited, get_keys } from "client/classes/common";
+import { isset, is_unlimited, get_keys } from "client/classes/common";
 import { project_slots, unlimited } from "client/classes/types/options";
 
 import { MasterContext } from "client/classes/types/contexts";
