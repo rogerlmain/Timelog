@@ -1,6 +1,7 @@
 import React from "react";
 
 import { blank } from "client/classes/types/constants";
+import { unlimited } from "./types/options";
 
 
 const detab = (text) => { 
@@ -26,6 +27,8 @@ export function get_values (object) { return is_object (object) ? Object.values 
 export function notify () { alert (not_empty (arguments) ? multiline_text (...arguments) : "paused") }
 export function warning (text) { return confirm (detab (text)) } // TEMPORARY - TO BE REPLACED WITH A POPUP WINDOW WHEN THE TIME IS RIGHT
 export function randomized (number) { return ((parseInt (number) * 1000) + (Math.random () * 1000)) }
+
+export function is_unlimited (value) { return (value == unlimited) }
 
 
 /********/

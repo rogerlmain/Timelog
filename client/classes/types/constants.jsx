@@ -162,7 +162,7 @@ export const account_type_names = {
 	company		: "Company",
 	corporate	: "Corporate",
 	enterprise	: "Enterprise",
-}// account_types;
+}// account_type_names;
 
 
 export const admin_types = {

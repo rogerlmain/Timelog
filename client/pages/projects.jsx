@@ -13,7 +13,9 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import ProjectForm from "client/forms/project.form";
 
 import { vertical_alignment } from "client/classes/types/constants";
-import { not_set, get_values, isset } from "client/classes/common";
+import { not_set, get_values, isset, is_unlimited, get_keys } from "client/classes/common";
+import { project_slots, unlimited } from "client/classes/types/options";
+
 import { MasterContext } from "client/classes/types/contexts";
 
 import "resources/styles/pages/projects.css";
@@ -24,7 +26,7 @@ export const project_limit_options = {
 	"5": 5,
 	"10": 10,
 	"50": 50,
-	"Unlimited": 0,
+	"Unlimited": unlimited,
 }// project_limit_options;
 
 
@@ -35,9 +37,6 @@ export default class ProjectsPage extends BaseControl {
 
 
 	state = {
-
-		client_list: null,
-		project_list: null,
 
 		selected_client: null,
 		selected_project: null,
@@ -82,8 +81,10 @@ export default class ProjectsPage extends BaseControl {
 
 		let project_limit = OptionsStorage.project_limit ();
 
-		let option_value = get_values (project_limit_options) [project_limit - 1];
-		let can_create = ((project_limit > 1) && (not_set (this.state.project_list) || (this.state.project_list.length < option_value) || (option_value == 0)));
+		let project_data = this.project_selector.current?.state.project_data;
+		let project_count = get_keys (project_data)?.length ?? 0;
+
+		let can_create = (isset (this.state.selected_client) && (((project_slots [project_limit - 1] - project_count) > 0) || is_unlimited (project_limit)));
 
 		return <div id={this.props.id} className="top-centered row-spaced">
 
@@ -118,12 +119,10 @@ export default class ProjectsPage extends BaseControl {
 					updating: false,
 				}))}>
 
-				<Container visible={isset (this.state.selected_client)}>
-					<ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
-						onSave={project => this.update_projects (project.project_id)}
-						onDelete={() => this.update_projects (null)}>
-					</ProjectForm>
-				</Container>
+				{(isset (this.state.selected_project) || can_create) && <ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
+					onSave={project => this.update_projects (project.project_id)}
+					onDelete={() => this.update_projects (null)}>
+				</ProjectForm>}
 				
 			</EyecandyPanel>
 

@@ -18,6 +18,7 @@ import { MasterContext } from "client/classes/types/contexts";
 
 import "resources/styles/forms.css";
 import CompanyStorage from "client/classes/storage/company.storage";
+import ExpandingInput from "client/controls/inputs/expanding.input";
 
 
 export default class ClientForm extends FormControl {
@@ -38,8 +39,6 @@ export default class ClientForm extends FormControl {
 
 
 	static defaultProps = {
-
-		disabled: false,
 
 		formData: null,
 		parent: null,
@@ -164,18 +163,14 @@ export default class ClientForm extends FormControl {
 				<div className={billing_option ? "billing-option-form" : "one-piece-form"}>
 
 					<label htmlFor="client_name">Client Name</label>
-					<input type="expando" id="client_name" name="client_name"
-						defaultValue={this.client_data ("name") ?? blank} 
-						required={true} disabled={this.props.disabled}>
-					</input>
+					<ExpandingInput id="client_name" name="client_name" value={this.client_data ("name") ?? blank} required={true} stretchOnly={true} />
 
 					<RateSubform />
 
 					<label htmlFor="client_description">Description</label>
 					<textarea id="client_description" name="client_description"
 						style={{ gridColumn: (billing_option ? "2/-1" : null) }}
-						defaultValue={this.client_data ("description")}  
-						placeholder="(optional)" disabled={this.props.disabled}>
+						defaultValue={this.client_data ("description")} placeholder="(optional)">
 					</textarea>
 
 					<div style={{ gridColumn: "2/-1" }}>
