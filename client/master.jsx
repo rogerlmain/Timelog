@@ -49,7 +49,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.8.5";
+const version = "1.0.8.6";
 
 
 const user_image_style = {
