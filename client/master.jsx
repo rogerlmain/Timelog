@@ -33,11 +33,11 @@ import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise,
 
 import { MainContext, MasterContext } from "client/classes/types/contexts";
 
-import logo from "resources/images/bundy.png";
-import user_image from "resources/images/guest.user.svg";
-
 import rings_of_being from "resources/images/logos/solipsology.png";
 import rexs_head from "resources/images/logos/rexthestrange.png";
+
+import logo from "resources/images/bundy.png";
+import user_image from "resources/images/guest.user.svg";
 
 import "resources/styles/home.page.css";
 
@@ -49,7 +49,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.8.4";
+const version = "1.0.8.5";
 
 
 const user_image_style = {
@@ -359,7 +359,7 @@ export default class MasterPanel extends BaseControl {
 		if (is_empty (companies)) return <div>Guest Account</div>
 
 		if (company_count > 1) return <SelectList selectedValue={CompanyStorage.active_company_id ()} data={companies}
-			textField="company_name" hasHeader={true}
+			textField="company_name" header={blank}
 			onChange={event => this.select_company (event.target.value)}>
 		</SelectList>
 		

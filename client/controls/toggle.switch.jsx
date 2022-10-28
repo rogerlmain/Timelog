@@ -1,7 +1,6 @@
 import React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
-import Container from "client/controls/container";
 
 import { horizontal_alignment } from "client/classes/types/constants";
 import { isset, is_empty, is_null, is_number, not_function, not_set } from "client/classes/common";
@@ -61,7 +60,9 @@ export default class ToggleSwitch extends BaseControl {
 	selected_value = () => { 
 		let element = this.option_elements () [this.state.option];
 		let value = element.getAttribute ("value");
+
 		return  isset (value) ? value : this.state.option;
+		
 	}// selected_value;
 
 

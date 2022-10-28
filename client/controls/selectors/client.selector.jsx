@@ -33,7 +33,7 @@ export default class ClientSelector extends BaseControl {
 
 		selectedClient: null,
 
-		hasHeader: true,
+		header: null,
 		headerSelectable: false,
 
 		inline: true,
@@ -57,10 +57,10 @@ export default class ClientSelector extends BaseControl {
 
 		let keys = Object.keys (data);
 
-		this.setState ({ 
+		this.execute (this.props.onLoad, data).then (() => this.setState ({ 
 			client_data: data,
 			selected_client_id: (keys.length == 1) ? data [keys [0]].client_id : null,
-		}, () => this.execute (this.props.onChange, this.state.selected_client_id));
+		}, () => this.execute (this.props.onChange, this.state.selected_client_id)));
 
 	})/* get_client_data */;
 
@@ -88,8 +88,7 @@ export default class ClientSelector extends BaseControl {
 
 			<LoadList id={`${this.props.id}_load_list`} label="Client" 
 			
-				listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
-				headerSelectable={this.props.headerSelectable} selectedItem={this.props.selectedClient}
+				header={this.props.header} headerSelectable={this.props.headerSelectable} selectedItem={this.props.selectedClient}
 
 				dataIdField="client_id" dataTextField="name" data={this.state.client_data} 
 				newButtonPage={this.props.newButton ? page_names.clients : null}
@@ -100,7 +99,7 @@ export default class ClientSelector extends BaseControl {
 					let client_id = integer_value (event.target.value);
 					this.setState ({ selected_client_id: client_id }, () => this.execute (this.props.onChange, client_id))
 				}}>
-
+				
 			</LoadList>
 
 		</Container>

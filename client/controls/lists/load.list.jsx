@@ -6,7 +6,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import SelectList from "client/controls/lists/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import { debugging, isset, is_null, not_set, null_value } from "client/classes/common";
+import { debugging, isset, is_null, not_set } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
@@ -42,7 +42,9 @@ export default class LoadList extends BaseControl {
 		dataIdField: null,
 		dataTextField: null,
 
-		listHeader: null,
+		header: null,
+		headerSelectable: false,
+
 		selectedItem: null,
 
 		hAlign: horizontal_alignment.left,
@@ -50,7 +52,6 @@ export default class LoadList extends BaseControl {
 
 		style: null,
 
-		headerSelectable: false,
 		disabled: false,
 
 		animated: true,
@@ -79,8 +80,8 @@ export default class LoadList extends BaseControl {
 
 	select_list = () => {
 
-		let header = null_value (this.props.listHeader);
 		let new_button = isset (this.props.newButtonPage);
+		let single_option = ((this.props.data?.key_length () == 1) && not_set (this.props.header));
 
 		let form_style = {
 			columnGap: (new_button && isset (this.props.data)) ? "0.25em" : null,
@@ -88,17 +89,18 @@ export default class LoadList extends BaseControl {
 		}// form_style;
 
 		if (is_null (this.props.data)) return null;
+		
 		if (this.props.hAlign == horizontal_alignment.stretch) form_style.width = "100%";
 		if (this.props.vAlign == vertical_alignment.stretch) form_style.height = "100%";
 
 		return <div className={new_button ? "two-column-grid" : null} style={form_style}>
 
-			{(Object.keys (this.props.data).length == 1) ? <div className="vertically-aligned">{this.props.data [Object.keys (this.props.data) [0]].name}</div> : <SelectList id={this.props.id} 
+			{single_option ? <div className="vertically-aligned">{this.props.data [Object.keys (this.props.data) [0]].name}</div> : <SelectList id={this.props.id} 
 			
 				data={this.props.data} selectedValue={this.props.selectedItem} disabled={this.props.disabled}
 				style={this.props.style}
 
-				hasHeader={isset (header)} headerText={header} 
+				header={this.props.header} 
 				headerSelectable={this.props.headerSelectable}
 				
 				idField={this.props.dataIdField} textField={this.props.dataTextField}

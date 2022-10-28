@@ -1,9 +1,7 @@
-import * as common from "client/classes/common";
-
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control"
 
-import { get_values } from "client/classes/common";
+import { isset, is_function, is_null, is_object } from "client/classes/common";
 
 
 const header_value = -1;
@@ -12,7 +10,7 @@ const header_value = -1;
 export default class SelectList extends BaseControl {
 
 
-	state = { selected_value: 0 }
+	state = { selected_value: null }
 
 	list = React.createRef ();
 
@@ -25,9 +23,8 @@ export default class SelectList extends BaseControl {
 		idField: null,
 		textField: null,
 
-		headerText: null,
+		header: null,
 		headerSelectable: false,
-		hasHeader: false,
 
 		disabled: false,
 
@@ -42,25 +39,22 @@ export default class SelectList extends BaseControl {
 
 
 	header_visible () {
-		let result = (
-			(common.isset (this.props.headerText) || (this.props.hasHeader)) && 
-			((this.state.selected_value == 0) || (this.props.headerSelectable))
-		);
+		let result = isset (this.props.header) && ((this.state.selected_value == 0) || (this.props.headerSelectable));
 		return result;
 	}// headser_visible;
 
 
 	select_options () {
 
-		if (common.is_null (this.props.data)) return null;
+		if (is_null (this.props.data)) return null;
 
 		let is_array = Array.isArray (this.props.data);
-		let option_list = is_array ? this.props.data : (common.is_object (this.props.data) ? get_values (this.props.data) : null);
+		let option_list = is_array ? this.props.data : (is_object (this.props.data) ? this.props.data?.get_values () : null);
 
 		let result = option_list.map (item => {
 
-			let text_field = common.is_function (this.props.textField) ? this.props.textField (item) : item [this.props.textField];
-			let value = is_array ? item [this.props.idField] : common.get_key (this.props.data, item);
+			let text_field = is_function (this.props.textField) ? this.props.textField (item) : item [this.props.textField];
+			let value = is_array ? item [this.props.idField] : this.props.data?.get_key (item);
 
 			return <option value={value} key={value}>{text_field}</option>
 
@@ -93,9 +87,7 @@ export default class SelectList extends BaseControl {
 
 			onChange={event => this.setState ({ selected_value: parseInt (event.target.value) }, () => this.execute (this.props.onChange, event))}>
 
-			{this.header_visible () &&
-			
-				<option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.headerText}</option>}
+			{this.header_visible () && <option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.header}</option>}
 
 			{this.props.children}
 			{this.select_options (this.props.data, this.props.textField, this.props.idField)}

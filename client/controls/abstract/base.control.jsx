@@ -1,14 +1,11 @@
-import * as constants from "client/classes/types/constants";
-import * as common from "client/classes/common";
-
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 
 import ActivityLog from "client/classes/activity.log";
 import SettingsStorage from "client/classes/storage/settings.storage";
 
-import { default_settings } from "client/classes/types/constants";
-import { isset, is_null, get_keys, is_array, jsonify } from "client/classes/common";
+import { blank, default_settings, empty } from "client/classes/types/constants";
+import { isset, is_function, is_null, jsonify, not_null, not_set } from "client/classes/common";
 
 
 const random_factor = 1000;
@@ -134,7 +131,7 @@ export default class BaseControl extends React.Component {
 	execute (method, ...parameters) {
 		return new Promise ((resolve, reject) => {
 			try {
-				if (common.is_function (method)) return resolve (method (...parameters));
+				if (is_function (method)) return resolve (method (...parameters));
 				resolve ();
 			} catch (error) { 
 				ActivityLog.log_error (error);
@@ -144,7 +141,7 @@ export default class BaseControl extends React.Component {
 	}// execute;
 
 
-	run (method, ...parameters) { return (common.is_function (method)) ? method (...parameters) : null }
+	run (method, ...parameters) { return (is_function (method)) ? method (...parameters) : null }
 
 
 	get_id (control) {
@@ -157,7 +154,7 @@ export default class BaseControl extends React.Component {
 
 		let properties = null;
 
-		for (let key of get_keys (this.props)) {
+		for (let key of this.props?.get_keys ()) {
 			if (key in this.constructor.defaultProps) continue;
 			if (is_null (properties)) properties = {}
 			properties [key] = this.props [key];
@@ -195,7 +192,7 @@ export default class BaseControl extends React.Component {
 	state_object_field (state, field) {
 		let object = this.state [state];
 		if (is_null (object)) return null;
-		return object [field] ?? constants.empty;
+		return object [field] ?? empty;
 	}// state_object_field;
 
 
@@ -280,7 +277,7 @@ export default class BaseControl extends React.Component {
 
 	show_states (cascade) {
 
-		let append = (object, value) => { return `${is_null (object) ? constants.blank : object}${value}`; }
+		let append = (object, value) => { return `${is_null (object) ? blank : object}${value}`; }
 
 		let control_states = null;
 		let child_states = null;
@@ -288,14 +285,14 @@ export default class BaseControl extends React.Component {
 		let result = null;
 
 		if (isset (this.state)) {
-			get_keys (this.state).forEach (key => {
+			this.state?.get_keys ().forEach (key => {
 				if (is_null (this.state [key])) return;
 				control_states = append (control_states, `\n${key}: ${this.state [key]}`);
 			});
 		}// if;
 
-		if (common.not_null (control_states)) result = append (result, `${this.props.id}: <${this.constructor.name}>\n${control_states}`);
-		if (common.not_null (child_states)) result = append (result, `\n\n${child_states}`);
+		if (not_null (control_states)) result = append (result, `${this.props.id}: <${this.constructor.name}>\n${control_states}`);
+		if (not_null (child_states)) result = append (result, `\n\n${child_states}`);
 
 		return result;
 
@@ -310,10 +307,10 @@ export default class BaseControl extends React.Component {
 		if (is_null (props.id)) throw `${control} requires an ID`;
 		
 		if (parent_only) return true;
-		if (common.not_set (children)) return true;
+		if (not_set (children)) return true;
 
 		if (Array.arrayify (children)) children = [children];
-		children.map (child => { if (isset (child.props) && common.not_set (child.props.id)) throw `${control} (${props.id}) child (${child.type.name}) must have a unique ID` });
+		children.map (child => { if (isset (child.props) && not_set (child.props.id)) throw `${control} (${props.id}) child (${child.type.name}) must have a unique ID` });
 
 	}// validate_ids;
 

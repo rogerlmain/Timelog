@@ -1,8 +1,23 @@
 import { blank, space, date_formats, date_rounding, directions, empty, currency_symbol } from "client/classes/types/constants";
-import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, get_keys, null_or_undefined, is_array, nested_value } from "client/classes/common";
+import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, null_or_undefined, is_array, nested_value } from "client/classes/common";
 
 
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
+/**** Object Prototype Functions ****/
+
+
+Object.defineProperties (Object.prototype, {
+
+	"get_key": { value: function (value) { return this?.get_keys ()?.find (key => this [key] === value) } },
+	"get_keys": { value: function () { return Object.keys (this) }},
+	"get_values": { value: function () { return Object.values (this) }},
+
+	"key_length": { value: function () { return this?.get_keys ()?.length ?? 0 } },
+	"map_keys": { value: function (callback) { return this?.get_keys ()?.map (callback) }},
+
+})/* Object.prototype */;
 
 
 /**** Array Helper Functions ****/
@@ -397,7 +412,7 @@ FormData.fromObject = function (object) {
 
 
 FormData.prototype.appendAll = function (object) { 
-	get_keys (object).forEach (key => this.append (key, object [key]));
+	object?.get_keys ().forEach (key => this.append (key, object [key]));
 	return this; // for chaining;
 }// appendAll;
 

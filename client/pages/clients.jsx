@@ -12,8 +12,8 @@ import ClientSelector from "client/controls/selectors/client.selector";
 import ClientForm from "client/forms/client.form";
 
 import { MasterContext } from "client/classes/types/contexts";
-import { is_unlimited, isset, get_keys } from "client/classes/common";
-import { client_slots, unlimited } from "client/classes/types/options";
+import { is_unlimited, isset } from "client/classes/common";
+import { unlimited } from "client/classes/types/options";
 
 
 export const client_limit_options = {
@@ -34,6 +34,7 @@ export default class ClientsPage extends BaseControl {
 
 	state = {
 		client_data: null,
+		client_list: null,
 		selected_client: null,
 		updating: false
 	}// state;
@@ -66,29 +67,26 @@ export default class ClientsPage extends BaseControl {
 
 	render () {
 
-		let client_limit = OptionsStorage.client_limit ();
-
-		let client_data = this.client_selector.current?.state.client_data;
-		let client_count = get_keys (client_data)?.length ?? 0;
-
-		let can_create = (((client_slots [client_limit - 1] - client_count) > 0) || is_unlimited (client_limit));
+		let can_create = ((OptionsStorage.client_slots (this.state.client_list?.key_length ()) > 0) || is_unlimited (OptionsStorage.client_limit ()));
 
 		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="one-piece-form">
-
 				<ClientSelector id="client_selector" ref={this.client_selector} parent={this}
 				
+					header={can_create ? "New client" : ((this.state.client_list?.key_length () > 1) ? "Select a client" : null)}
 					headerSelectable={can_create}
+
 					selectedClient={this.state.selected_client}
 
 					onChange={client_id => this.setState ({ 
 						selected_client: client_id,
 						updating: true
-					})}>
+					})}
+					
+					onLoad={data => this.setState ({ client_list: data })}>
 
 				</ClientSelector>
-
 			</div>
 
 			<EyecandyPanel id="edit_client_panel" text="Loading..." ref={this.eyecandy_panel} eyecandyVisible={this.state.updating} 

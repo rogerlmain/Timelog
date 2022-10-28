@@ -1,7 +1,7 @@
 import LocalStorage from "client/classes/local.storage"
 import CompaniesModel from "client/classes/models/companies.model";
 
-import { isset, get_values, is_null, nested_value, not_array, not_set } from "client/classes/common";
+import { isset, is_null, nested_value, not_set } from "client/classes/common";
 
 
 const store_name = "companies";
@@ -56,7 +56,7 @@ export default class CompanyStorage extends LocalStorage {
 
 
 	static company_count () {
-		let companies = get_values (this.company_list ());
+		let companies = this.company_list ()?.get_values ();
 		return isset (companies) ? companies.length : 0;
 	}// company_count;
 	

@@ -17,7 +17,7 @@ import AccountsModel from "client/classes/models/accounts.model";
 
 import ActivityLog from "client/classes/activity.log";
 
-import { isset, is_empty, nested_value } from "client/classes/common";
+import { isset, nested_value } from "client/classes/common";
 import { team_permissions } from "client/classes/storage/permissions.storage";
 import { date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 
@@ -129,7 +129,7 @@ export default class TeamsPage extends BaseControl {
 		return <div id={this.props.id} className="horizontally-centered">
 
 			<SelectList data={this.state.team} idField="account_id" textField="full_name" 
-				hasHeader={true} headerText="Select a team member"
+				header="Select a team member"
 				onChange={this.get_permissions}>
 			</SelectList>
 

@@ -25,6 +25,7 @@ export default class ProjectSelector extends BaseControl {
 
 
 	state = { 
+		client_list: null,
 		project_data: null,
 		selected_client_id: null,
 		selected_project_id: null,
@@ -82,9 +83,9 @@ export default class ProjectSelector extends BaseControl {
 
 			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={this.props.newButton}
 
-				hasHeader={this.props.hasHeader} 
+				header={(this.state.client_list?.key_length () > 1) ? "Select a client" : null}
 				headerSelectable={false} 
-				headerText="Select a client" 
+
 				selectedClient={this.state.selected_client_id}
 
 				onChange={client_id => {
@@ -98,7 +99,7 @@ export default class ProjectSelector extends BaseControl {
 
 						ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: data }, () => {
 
-							let project_id = (isset (data) && (Object.keys (data).length == 1)) ? Object.keys (data) [0] : null;
+							let project_id = (not_set (this.props.header) && (data?.key_length () > 0)) ? Object.keys (data) [0] : null;
 
 							if (isset (project_id)) this.setState ({ selected_project_id: project_id });
 							this.execute (this.props.onProjectChange, project_id);
@@ -109,7 +110,9 @@ export default class ProjectSelector extends BaseControl {
 					
 					});
 
-				}}>
+				}}
+				
+				onLoad={data => this.setState ({ client_list: data })}>
 
 			</ClientSelector>
 
@@ -118,10 +121,9 @@ export default class ProjectSelector extends BaseControl {
 			</FadePanel>
 			
 			<FadePanel id={`${this.props.id}_project_selector_fade_panel`} visible={isset (this.state.selected_client_id)}>
-				<LoadList id={this.props.id} label="Project" 
+				<LoadList id={this.props.id} label="Project" style={{ width: "100%" }}
 
-					listHeader={this.props.headerSelectable ? "New project" : "Select a project"}
-					headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_project_id}
+					header={this.props.header} headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_project_id}
 
 					dataIdField="project_id" dataTextField="name" data={this.state.project_data} 
 					newButtonPage={this.props.newButton ? page_names.projects : null} 

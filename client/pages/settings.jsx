@@ -26,7 +26,7 @@ import OptionToggle from "pages/gadgets/toggles/option.toggle";
 
 import { account_types, blank, date_rounding, vertical_alignment } from "client/classes/types/constants";
 import { deadbeat_options, option_types } from "client/classes/types/options";
-import { debugging, get_key, get_keys, isset, is_null, nested_value, not_set } from "client/classes/common";
+import { debugging, isset, is_null, nested_value, not_set } from "client/classes/common";
 
 import { resize_direction } from "client/controls/panels/resize.panel";
 import { client_limit_options } from "pages/clients";
@@ -35,8 +35,9 @@ import { MasterContext } from "client/classes/types/contexts";
 
 import { Break } from "client/controls/html/components";
 
+import { project_limit_options } from "client/pages/projects";
+
 import "resources/styles/pages.css";
-import { project_limit_options } from "./projects";
 
 
 const options_panels = {
@@ -93,7 +94,7 @@ export default class SettingsPage extends BaseControl {
 		
 		const option_value = option => { 
 			if (isset (options) && isset (options [option])) return parseInt (options [option]);
-			return deadbeat_options [get_key (option_types, option)];
+			return deadbeat_options [option_types?.get_key (option)];
 		}/* option_value */;
 
 		for (let key of Object.keys (option_types)) {
@@ -113,7 +114,7 @@ export default class SettingsPage extends BaseControl {
 
 		let options = null;
 
-		get_keys (account_types).map (key => {
+		account_types?.map_keys (key => {
 
 			let next_item = <option key={`${key}_option`} value={account_types [key]}>{key.titled ()}</option>
 			if (is_null (options)) options = new Array ();
@@ -235,12 +236,12 @@ export default class SettingsPage extends BaseControl {
 	limit_options = () => {
 		return <Container>
 
-			<OptionToggle id="client_limit" title="Number of clients" values={get_keys (client_limit_options)} value={OptionsStorage.client_limit ()}
+			<OptionToggle id="client_limit" title="Number of clients" values={client_limit_options?.get_keys ()} value={OptionsStorage.client_limit ()}
 				option={option_types.client_limit} parent={this} 
 				onPaymentConfirmed={selected_option => this.process_option ("client_limit", selected_option)}>
 			</OptionToggle>
 
-			<OptionToggle id="project_limit" title="Number of projects" values={get_keys (project_limit_options)} value={OptionsStorage.project_limit ()}
+			<OptionToggle id="project_limit" title="Number of projects" values={project_limit_options?.get_keys ()} value={OptionsStorage.project_limit ()}
 				option={option_types.project_limit} parent={this} 
 				onPaymentConfirmed={selected_option => this.process_option ("project_limit", selected_option)}>
 			</OptionToggle>
@@ -299,7 +300,7 @@ export default class SettingsPage extends BaseControl {
 
 			<div className="full-row horizontally-aligned" style={{ display: "flex", margin: "1em 0 2em" }}>
 				<div className="one-piece-form">
-					<label htmlFor="package">{get_key (account_types, this.state.account_type).titled ()} account</label>
+					<label htmlFor="package">{account_types?.get_key (this.state.account_type).titled ()} account</label>
 					<ToggleSwitch id="package" onChange={option => this.setState ({ account_type: parseInt (option) })}>{this.account_options ()}</ToggleSwitch>
 				</div>
 			</div>

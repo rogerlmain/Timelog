@@ -1,24 +1,24 @@
 import React from "react";
 
-import ReportsModel		from "client/classes/models/reports.model";
+import ReportsModel from "client/classes/models/reports.model";
 import LoggingModel from "client/classes/models/logging.model";
 
-import OptionStorage	from "client/classes/storage/options.storage";
+import OptionStorage from "client/classes/storage/options.storage";
 
-import BaseControl		from "client/controls/abstract/base.control";
-import SelectButton		from "client/controls/buttons/select.button";
-import DateInput		from "client/controls/inputs/date.input";
-import ReportGrid		from "client/controls/lists/report.grid";
-import ProjectSelector	from "client/controls/selectors/project.selector";
+import BaseControl from "client/controls/abstract/base.control";
+import SelectButton from "client/controls/buttons/select.button";
+import DateInput from "client/controls/inputs/date.input";
+import ReportGrid from "client/controls/lists/report.grid";
+import ProjectSelector from "client/controls/selectors/project.selector";
 
-import FadePanel		from "client/controls/panels/fade.panel";
-import ExplodingPanel 	from "client/controls/panels/exploding.panel";
+import FadePanel from "client/controls/panels/fade.panel";
+import ExplodingPanel  from "client/controls/panels/exploding.panel";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import Container	from "client/controls/container";
+import Container from "client/controls/container";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
-import { debugging, get_keys, isset, is_array, is_blank, is_null, is_object, json_string, not_set, warning } from "client/classes/common";
+import { debugging, isset, is_array, is_blank, is_null, is_object, not_set, warning } from "client/classes/common";
 
 import { maximum_hours, maximum_session } from "client/pages/logging";
 
@@ -205,7 +205,7 @@ export default class ReportsPage extends BaseControl {
 		});
 
 
-		return (get_keys (entry_list).map (year => {
+		return (entry_list.map_keys (year => {
 			let value = entry_list [year];
 			return <Container>
 				<div className="entry" style={{ gridColumn: "1 / 4" }}>{year}</div>

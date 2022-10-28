@@ -1,6 +1,6 @@
 import * as common from "client/classes/common";
 
-import { is_array, is_object, is_empty, get_keys } from "client/classes/common";
+import { is_array, is_object, is_empty } from "client/classes/common";
 
 
 export default class LocalStorage {
@@ -10,7 +10,7 @@ export default class LocalStorage {
 
 		if (is_array (object)) object.forEach (item => object.replace (item, LocalStorage.stripped (item)));
 
-		if (is_object (object)) get_keys (object).forEach (key => { 
+		object?.get_keys ()?.forEach (key => { 
 			if (is_empty (object [key])) delete object [key] 
 			if (is_object (object [key], true)) object [key] = LocalStorage.stripped (object [key]);
 		});

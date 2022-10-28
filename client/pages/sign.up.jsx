@@ -33,7 +33,7 @@ import PasswordForm from "client/forms/password.form";
 
 import { MasterContext } from "client/classes/types/contexts";
 import { account_types, account_type_names, blank, data_errors } from "client/classes/types/constants";
-import { debugging, get_keys, isset, jsonify, not_empty } from "client/classes/common";
+import { debugging, isset, jsonify, not_empty } from "client/classes/common";
 import { codify } from "client/forms/project.form";
 
 import user_image from "resources/images/guest.user.svg";
@@ -265,9 +265,7 @@ export default class SignupPage extends BaseControl {
 							});
 						}}>
 
-						{get_keys (account_types).map (key => { return (
-							<option key={key} value={account_types [key]}>{account_type_names [key]}</option>
-						)} )}
+						{account_types.map_keys (key => <option key={key} value={account_types [key]}>{account_type_names [key]}</option>)}
 
 					</select>
 

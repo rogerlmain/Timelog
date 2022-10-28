@@ -3,7 +3,6 @@ import React from "react";
 import ProjectStorage from "client/classes/storage/project.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
-
 import BaseControl from "client/controls/abstract/base.control";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
@@ -12,8 +11,8 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import ProjectForm from "client/forms/project.form";
 
 import { vertical_alignment } from "client/classes/types/constants";
-import { isset, is_unlimited, get_keys } from "client/classes/common";
-import { project_slots, unlimited } from "client/classes/types/options";
+import { isset, is_unlimited } from "client/classes/common";
+import { unlimited } from "client/classes/types/options";
 
 import { MasterContext } from "client/classes/types/contexts";
 
@@ -78,20 +77,17 @@ export default class ProjectsPage extends BaseControl {
 
 	render () {
 
-		let project_limit = OptionsStorage.project_limit ();
-
 		let project_data = this.project_selector.current?.state.project_data;
-		let project_count = get_keys (project_data)?.length ?? 0;
+		let project_count = project_data?.key_length ();
 
-		let can_create = (isset (this.state.selected_client) && (((project_slots [project_limit - 1] - project_count) > 0) || is_unlimited (project_limit)));
+		let can_create = (isset (this.state.selected_client) && ((OptionsStorage.project_slots (project_count) > 0) || is_unlimited (OptionsStorage.project_limit ())));
 
 		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="project-select-form">
 				<ProjectSelector id="project_selector" ref={this.project_selector} parent={this}
 
-					hasHeader={true}
-
+					header={can_create ? "New project" : ((project_count > 1) ? "Select a project" : null)}
 					headerSelectable={can_create}
 
 					selectedClient={this.state.selected_client}

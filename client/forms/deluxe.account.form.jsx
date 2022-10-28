@@ -23,7 +23,7 @@ import { MasterContext } from "client/classes/types/contexts";
 import { dynamic_input_classname } from "client/controls/inputs/dynamic.input";
 
 import { account_types, credit_card_masks, credit_card_names, credit_card_types } from "client/classes/types/constants";
-import { debugging, get_key, isset, is_empty, is_function, is_number, nested_value, not_empty, not_set } from "client/classes/common";
+import { debugging, isset, is_empty, is_function, is_number, nested_value, not_empty, not_set } from "client/classes/common";
 import { option_types } from "client/classes/types/options";
 
 import "resources/styles/forms/deluxe.account.form.css";
@@ -116,7 +116,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	create_payment = async (data) => {
 
-		let option_name = isset (this.props.option) ? get_key (option_types, this.props.option).titled () : null;
+		let option_name = isset (this.props.option) ? option_types?.get_key (this.props.option).titled () : null;
 
 		return this.state.square_handler.create_payment ({
 			amount: this.state.selected_item.equals (purchase_options.item) ? this.state.price : JSON.parse (this.package_list.current.value).price,
@@ -248,7 +248,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 						<Container visible={this.state.has_credit}>
 
-							<SelectList ref={this.credit_card_list} data={this.state.credit_cards} idField="square_id" className="full-width" header={true}
+							<SelectList ref={this.credit_card_list} data={this.state.credit_cards} idField="square_id" className="full-width" header="New card"
 								textField={item => { 
 
 									let expiration = `${item.expiration % 100}/${Math.floor (item.expiration / 100)}`;

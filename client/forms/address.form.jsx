@@ -1,6 +1,3 @@
-import * as common from "client/classes/common";
-import * as constants from "client/classes/types/constants";
-
 import React from "react";
 
 import AccountStorage from "client/classes/storage/account.storage";
@@ -13,6 +10,9 @@ import BaseControl from "client/controls/abstract/base.control";
 import PhoneNumberInput from "client/controls/inputs/phone.number.input";
 
 import LookupsModel from "client/classes/models/lookups.model";
+
+import { blank } from "client/classes/types/constants";
+import { isset, is_null, not_set } from "client/classes/common";
 
 
 const us_country_code = 236;
@@ -35,13 +35,13 @@ export default class AddressForm extends BaseControl {
 		country_id: us_country_code,
 		district_id: null,
 
-		company_name: constants.blank
+		company_name: blank,
 
 	}/* state */;
 
 
 	get_country () {
-		if (common.isset (this.state.countries)) for (let country of this.state.countries) {
+		if (isset (this.state.countries)) for (let country of this.state.countries) {
 			if (country.id == this.state.country_id) return country;
 		}// if;
 		return null;
@@ -49,7 +49,7 @@ export default class AddressForm extends BaseControl {
 
 
 	get_district () {
-		if (common.isset (this.state.districts)) for (let district of this.state.districts) {
+		if (isset (this.state.districts)) for (let district of this.state.districts) {
 			if (district.id == this.state.district_id) return district;
 		}// if;
 		return null;
@@ -60,10 +60,10 @@ export default class AddressForm extends BaseControl {
 
 		let district = this.get_district ();
 
-		if (common.is_null (this.state.countries) || common.is_null (this.state.country_id)) return default_district_name;
-		if (common.is_null (this.state.district_id)) return this.get_country ().description ?? default_district_name;
+		if (is_null (this.state.countries) || is_null (this.state.country_id)) return default_district_name;
+		if (is_null (this.state.district_id)) return this.get_country ().description ?? default_district_name;
 
-		return (common.isset (district) && common.isset (district.description)) ? district.description : default_district_name;
+		return (isset (district) && isset (district.description)) ? district.description : default_district_name;
 
 	}// district_name;
 
@@ -84,13 +84,13 @@ this.setState ({
 
 
 	shouldComponentUpdate (new_props, new_state) {
-		if  ((common.is_null (this.state.districts) && common.isset (new_state.districts)) || (new_state.country_id != this.state.country_id)) {
+		if  ((is_null (this.state.districts) && isset (new_state.districts)) || (new_state.country_id != this.state.country_id)) {
 
 			let districts = null;
 
 			for (let district of new_state.districts) {
 				if (district.reference_id != new_state.country_id) continue;
-				if (common.is_null (districts)) districts = new Array ();
+				if (is_null (districts)) districts = new Array ();
 				districts.push (district);
 			}// for;
 
@@ -120,7 +120,7 @@ this.setState ({
 							<label htmlFor="use_account_name_for_company" className="mini-title">Just use<br />my name</label>
 							<input id="use_account_name_for_company" name="use_account_name_for_company" ref={this.name_checkbox}
 								type="checkbox" style={{ columnWidth: "min-content" }}
-								onChange={event => this.setState ({ company_name: event.target.checked ? AccountStorage.friendly_name () : constants.blank })}>
+								onChange={event => this.setState ({ company_name: event.target.checked ? AccountStorage.friendly_name () : blank })}>
 							</input>
 						</div>
 
@@ -157,12 +157,12 @@ this.setState ({
 					</div>
 
 					<label htmlFor="district" title="District, state or province">{this.district_name ()}</label>
-					<Container visible={common.not_set (this.state.active_districts)}>
+					<Container visible={not_set (this.state.active_districts)}>
 						<input type="text" id="district" name="district" maxLength={255} />
 					</Container>
-					<Container visible={common.isset (this.state.active_districts)}>
+					<Container visible={isset (this.state.active_districts)}>
 						<SelectList id="district" data={this.state.active_districts} idField="id" textField="long_name" 
-							style={{ width: "100%" }} required={true} hasHeader={true}
+							style={{ width: "100%" }} required={true} header={blank}
 							selectedValue={this.state.district_id} onChange={event => this.setState ({ district_id: event.target.value })}>
 						</SelectList>
 					</Container>
