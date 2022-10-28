@@ -11,8 +11,8 @@ import LoggingStorage from"client/classes/storage/logging.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
 
-import CalendarClock from "client/pages/gadgets/calendar.clock";
-import PopupNotice from "client/pages/gadgets/popup.notice";
+import CalendarClock from "client/gadgets/calendar.clock";
+import PopupNotice from "client/gadgets/popup.notice";
 import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging.model";

@@ -20,9 +20,12 @@ export default class ToggleSwitch extends BaseControl {
 	options = null;
 
 	state = { 
+
 		drag_position: null,
 		drag_offset: 0,
-		option: null,
+
+		selected_value: null,
+
 	}/* state */;
 
 
@@ -52,18 +55,12 @@ export default class ToggleSwitch extends BaseControl {
 
 	selection = element => {
 		let index = this.option_elements ().indexOf (element);
-		if ((this.props.singleStep) && (Math.abs (index - this.state.option) > 1)) index = this.state.option + ((index > this.state.option) ? 1 : -1);
+		if ((this.props.singleStep) && (Math.abs (index - this.state.selected_value) > 1)) index = this.state.selected_value + ((index > this.state.selected_value) ? 1 : -1);
 		return index;
 	}// selection;
 
 
-	selected_value = () => { 
-		let element = this.option_elements () [this.state.option];
-		let value = element.getAttribute ("value");
-
-		return  isset (value) ? value : this.state.option;
-		
-	}// selected_value;
+	selected_value = () => this.option_elements ()?.[this.state.selected_value]?.getAttribute ("value") ?? this.state.selected_value;
 
 
 	stop_dragging = event => {
@@ -71,7 +68,7 @@ export default class ToggleSwitch extends BaseControl {
 		let centered = ((this.state.drag_offset % (item_width + 2)) == 0);
 		
 		for (let option of this.option_elements ()) {
-			if (option.getBoundingClientRect ().contains ({ x: event.clientX })) this.setState ({ option: this.selection (option) })
+			if (option.getBoundingClientRect ().contains ({ x: event.clientX })) this.setState ({ selected_value: this.selection (option) })
 		}// for;
 
 		this.setState ({ drag_position: null, drag_offset: 0 }, () => { if (centered) this.execute (this.props.onChange, this.selected_value ()) }); 
@@ -86,8 +83,8 @@ export default class ToggleSwitch extends BaseControl {
 
 
 	option_index = () => {
-		if (is_number (this.state.option)) return parseInt (this.state.option);
-		let result = this.props.children.find (child => child.props.value == this.state.option);
+		if (is_number (this.state.selected_value)) return parseInt (this.state.selected_value);
+		let result = this.props.children.find (child => child.props.value == this.state.selected_value);
 		return (isset (result)) ? this.props.children.indexOf (result) : 0;
 	}// option_index;
 
@@ -97,13 +94,13 @@ export default class ToggleSwitch extends BaseControl {
 
 	componentDidMount () { 
 		this.switch.current.addEventListener ("transitionend", this.transition_end);
-		this.setState ({ option: this.props.value });
+		this.setState ({ selected_value: this.props.value });
 	}// componentDidMount;
 
 
 	shouldComponentUpdate (new_props) {
 		if (new_props.value != this.props.value) {
-			this.setState ({ option: new_props.value });
+			this.setState ({ selected_value: new_props.value });
 			return false;
 		}// if;
 		return true;
@@ -112,7 +109,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	render () {
 
-		let index = (is_empty (this.props.children) || not_set (this.state.option)) ? 0 : this.option_index ();
+		let index = (is_empty (this.props.children) || not_set (this.state.selected_value)) ? 0 : this.option_index ();
 		let control_style = { left: ((item_width + 2) * index) + this.state.drag_offset }
 
 		if (is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.animation_speed ()}ms ease-in-out`}
@@ -127,7 +124,7 @@ export default class ToggleSwitch extends BaseControl {
 					return <div id={child.props.id} className="item" key={child.props.children} value={child.props.value} title={child.props.children} 
 						onClick={event => {
 							event.target.value = this.selection (event.target);
-							if (not_function (this.props.onClick) || this.props.onClick (event)) this.setState ({ option: event.target.value });
+							if (not_function (this.props.onClick) || this.props.onClick (event)) this.setState ({ selected_value: event.target.value });
 						}}>
 					</div>
 				})}

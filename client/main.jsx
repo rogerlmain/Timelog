@@ -11,7 +11,7 @@ import MasterPanel from "client/master";
 
 import ActivityLog from "client/classes/activity.log";
 
-import PopupWindow from "client/pages/gadgets/popup.window";
+import PopupWindow from "client/gadgets/popup.window";
 
 import { createRoot } from "react-dom/client";
 

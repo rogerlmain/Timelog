@@ -22,7 +22,7 @@ import SelectButton from "client/controls/buttons/select.button";
 
 import DeluxeAccountPopup from "popups/deluxe.account.popup";
 
-import OptionToggle from "pages/gadgets/toggles/option.toggle";
+import OptionToggle from "client/gadgets/toggles/option.toggle";
 
 import { account_types, blank, date_rounding, vertical_alignment } from "client/classes/types/constants";
 import { deadbeat_options, option_types } from "client/classes/types/options";

@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
-import PopupWindow from "pages/gadgets/popup.window";
+import PopupWindow from "client/gadgets/popup.window";
 import DeluxeAccountForm from "forms/deluxe.account.form";
 
 import { MasterContext } from "client/classes/types/contexts";

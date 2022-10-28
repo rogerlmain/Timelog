@@ -421,7 +421,6 @@ FormData.prototype.toJsonString = function () { return JSON.stringify (this.toOb
 FormData.prototype.toObject = function () { return Object.fromEntries (this) }
 
 
-
 /**** HTMLElement Prototype Methods ****/
 
 

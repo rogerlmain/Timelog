@@ -7,7 +7,7 @@ import SelectButton from "client/controls/buttons/select.button";
 import SelectList from "client/controls/lists/select.list";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
 
-import PermissionToggle, { butterfly_alignment } from "client/pages/gadgets/toggles/permission.toggle";
+import PermissionToggle, { butterfly_alignment } from "client/gadgets/toggles/permission.toggle";
 
 import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
