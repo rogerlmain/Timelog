@@ -19,11 +19,11 @@ import SelectList from "client/controls/lists/select.list";
 import AddressForm from "forms/address.form"
 import CreditCardSubform from "client/forms/subforms/credit.card.subform";
 
-import { MasterContext } from "client/classes/types/contexts";
+import { MainContext } from "client/classes/types/contexts";
 import { dynamic_input_classname } from "client/controls/inputs/dynamic.input";
 
 import { account_types, credit_card_masks, credit_card_names, credit_card_types } from "client/classes/types/constants";
-import { debugging, isset, is_empty, is_function, is_number, nested_value, not_empty, not_set } from "client/classes/common";
+import { debugging, isset, is_empty, is_function, is_null, is_number, nested_value, not_empty, not_set } from "client/classes/common";
 import { option_types } from "client/classes/types/options";
 
 import "resources/styles/forms/deluxe.account.form.css";
@@ -76,7 +76,7 @@ export default class DeluxeAccountForm extends BaseControl {
 	}/* state */;
 
 
-	static contextType = MasterContext;
+	static contextType = MainContext;
 
 
 	static defaultProps = {  
@@ -135,7 +135,7 @@ export default class DeluxeAccountForm extends BaseControl {
 		if (isset (customer_id)) return { customer_id: customer_id }; 
 		
 		let square_data = await this.state.square_handler.create_square_account (data);
-		let company_data = CompanyStorage.get (this.context.company_id) ?? await new CustomerHandler ().save_customer ({...data, customer_id: square_data.customer.id });
+		let company_data = CompanyStorage.get (CompanyStorage.active_company ()) ?? await new CustomerHandler ().save_customer ({...data, customer_id: square_data.customer.id });
 
 		return {
 			customer_id: square_data.customer.id,
@@ -166,8 +166,9 @@ export default class DeluxeAccountForm extends BaseControl {
 	submit_payment = async event => {
 
 		let form_data = this.get_form_data ();
+		let company_id = CompanyStorage.active_company_id ();
 
-		if (isset (this.context.company_id)) form_data.company_id = this.context.company_id;
+		if (isset (company_id)) form_data.company_id = company_id;
 		form_data = { ...form_data, ...await this.get_customer_id (form_data) };
 		form_data.card_id = await this.get_card_id (form_data);
 
@@ -200,7 +201,8 @@ export default class DeluxeAccountForm extends BaseControl {
 
 	componentDidMount () {
 
-		let pattern_elements = this.deluxe_account_form.current.querySelectorAll ("[required], [pattern]");
+		let pattern_elements = this.deluxe_account_form.current?.querySelectorAll ("[required], [pattern]");
+		let company_id = CompanyStorage.active_company_id ();
 
 		if (isset (pattern_elements)) for (let element of pattern_elements) {
 
@@ -211,7 +213,7 @@ export default class DeluxeAccountForm extends BaseControl {
 
 		}// for;
 
-		if (isset (this.context.company_id)) CompanyCardModel.get_cards (this.context.company_id).then (result => this.setState ({ 
+		if (isset (company_id)) CompanyCardModel.get_cards (company_id).then (result => this.setState ({ 
 			credit_cards : result,
 			has_credit: not_empty (result),
 		}));
@@ -330,7 +332,7 @@ export default class DeluxeAccountForm extends BaseControl {
 							eyecandyVisible={this.state.processing} onEyecandy={this.submit_payment}>
 							
 							<div className="button-panel">
-								<button onClick={this.props.onCancel}>Cancel</button>
+								<button onClick={() => this.context.hide_popup (this.props.onCancel)}>Cancel</button>
 								<button onClick={event => { if (this.validate (event)) this.setState ({ processing: true }) }}>Submit</button>
 							</div>
 							

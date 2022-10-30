@@ -49,7 +49,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.8.6";
+const version = "1.0.8.7";
 
 
 const user_image_style = {
@@ -419,18 +419,19 @@ export default class MasterPanel extends BaseControl {
 
 		let icd = location.urlParameter ("icd");
 
+		let context_value = {
+			...this.context,
+			company_id: numeric_value (this.state.company_id), 
+			master_page: this,
+		}// context_value;
+
 		if (isset (icd)) {
 			localStorage.setItem ("invitation", icd);
 			window.location.href = window.location.origin;
 			return null;
 		}// if;
 
-		return <MasterContext.Provider value={{ 
-				company_id: numeric_value (this.state.company_id), 
-				master_page: this,
-				main_page: this.context.main_page,
-			}}>
-
+		return <MasterContext.Provider value={context_value}>
 			<div id="master_panel" className="full-screen" >
 
 				<div className="page-header">

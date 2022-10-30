@@ -206,7 +206,7 @@ export default class SignupPage extends BaseControl {
 	/********/
 
 
-	componentDidMount = () => this.context.main_page.setState ({ popup_contents: <PasswordForm /> });
+	componentDidMount = () => this.context.load_popup (<PasswordForm />);
 
 
 	render () {
@@ -307,7 +307,7 @@ export default class SignupPage extends BaseControl {
 						onEyecandy = {this.save_account}>
 						
 						<div className="button-panel">
-							{signed_in && <button onClick={() => this.context.main_page.setState ({ popup_visible: true })}>Change password</button>}
+							{signed_in && <button onClick={() => this.context.show_popup ()}>Change password</button>}
 							<button onClick={() => this.process_application ()}>{signed_out ? "Sign up" : "Save changes"}</button>
 						</div>
 

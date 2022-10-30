@@ -56,14 +56,7 @@ export default class BaseControl extends React.Component {
 
 
 	// Like forceUpdate except calls shouldComponentUpdate
-	forceRefresh = (callback = null) => { 
-		
-//		let children = Array.arrayify (this.props.children);
-
-		this.setState (this.state, callback);
-//		if (children) children.forEach (child => child?.forceRefresh ());
-	
-	}
+	forceRefresh = (callback = null) => this.setState (this.state, callback);
 
 
 	renderState = (new_state, callback) => this.setState (new_state, () => this.forceUpdate (callback));
@@ -197,9 +190,6 @@ export default class BaseControl extends React.Component {
 
 
 	/********/
-
-
-//	id = null;
 
 
 	add_class (value, class_name) {

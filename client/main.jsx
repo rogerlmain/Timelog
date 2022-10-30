@@ -47,8 +47,8 @@ class Main extends BaseControl {
 	state = { 
 
 		current_time: null,
-		popup_contents: null,
 
+		popup_contents: null,
 		popup_visible: false,
 
 	}/* state */;
@@ -77,12 +77,20 @@ class Main extends BaseControl {
 
 
     render () { 
-		return <MainContext.Provider value={{ main_page: this }}>
+
+		let context_value = {
+			load_popup: popup => new Promise (resolve => this.setState ({ popup_contents: popup }, resolve)),
+			show_popup: () => this.setState ({ popup_visible: true }),
+			hide_popup: callback => this.setState ({ popup_visible: false }, callback),
+		}// context_value;
+
+		return <MainContext.Provider value={context_value}>
+
 			<div className="page-centered">
+
 				{isset (this.state.popup_contents) && <PopupWindow id="popup_panel" visible={this.state.popup_visible}>{this.state.popup_contents}</PopupWindow>}
 
 				<MasterPanel id="master_panel" parent={this} />
-
 
 				{/* Tests */}
 
@@ -105,8 +113,6 @@ class Main extends BaseControl {
 				{/* <ReportsPageTest /> */}
 
 				{/* <DeluxeAccountForm option={1} optionPrice={199} hasCredit={true} /> */}
-
-
 
 			</div>
 		</MainContext.Provider>

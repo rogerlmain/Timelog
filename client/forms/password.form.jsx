@@ -98,7 +98,7 @@ export default class PasswordForm extends BaseControl {
 				<EyecandyPanel id="password_button_panel" text="Updating..." eyecandyVisible={this.state.changing_password} onEyecandy={this.change_password}>
 					<div className="button-panel">
 						<button onClick={() => this.setState ({ changing_password: true })}>Update</button>
-						<button onClick={() => this.context.main_page.setState ({ popup_visible: false }, () => this.execute (this.props.onCancel))}>Cancel</button>
+						<button onClick={() => this.context.hide_popup (() => this.execute (this.props.onCancel))}>Cancel</button>
 					</div>
 				</EyecandyPanel>
 			</div>

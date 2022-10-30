@@ -4,37 +4,32 @@ import EmailModel from "client/classes/models/email.model";
 
 import OptionsStorage, { toggled } from "client/classes/storage/options.storage";
 import SettingsStorage from "client/classes/storage/settings.storage";
+import AccountStorage from "client/classes/storage/account.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 import Container from "client/controls/container";
 import Slider from "client/controls/slider";
 import ToggleSwitch from "client/controls/toggle.switch";
 
 import BaseControl from "client/controls/abstract/base.control";
+import SelectButton from "client/controls/buttons/select.button";
+import CurrencyInput from "client/controls/inputs/currency.input";
 
 import ExplodingPanel from "client/controls/panels/exploding.panel";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import AccountStorage from "client/classes/storage/account.storage";
-import CompanyStorage from "client/classes/storage/company.storage";
-
-import CurrencyInput from "client/controls/inputs/currency.input";
-import SelectButton from "client/controls/buttons/select.button";
-
-import DeluxeAccountPopup from "popups/deluxe.account.popup";
-
+import DeluxeAccountForm from "client/forms/deluxe.account.form";
 import OptionToggle from "client/gadgets/toggles/option.toggle";
 
 import { account_types, blank, date_rounding, vertical_alignment } from "client/classes/types/constants";
 import { deadbeat_options, option_types } from "client/classes/types/options";
-import { debugging, isset, is_null, nested_value, not_set } from "client/classes/common";
-
-import { resize_direction } from "client/controls/panels/resize.panel";
-import { client_limit_options } from "pages/clients";
-
+import { debugging, isset, is_null, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
+import { resize_direction } from "client/controls/panels/resize.panel";
 import { Break } from "client/controls/html/components";
 
+import { client_limit_options } from "client/pages/clients";
 import { project_limit_options } from "client/pages/projects";
 
 import "resources/styles/pages.css";
@@ -79,6 +74,16 @@ export default class SettingsPage extends BaseControl {
 		invite_data: null,
 
 	}/* state */;
+
+
+	deluxe_form = <DeluxeAccountForm 
+		option={this.state.cc_form?.["option"]} value={this.state.cc_form?.["value"]}
+		onCancel={() => this.execute (this.state.cc_form?.onCancel).then (() => this.setState ({ cc_form: null }))} 
+		onSubmit={() => this.execute (this.state.cc_form?.onSubmit).then (() => this.setState ({ cc_form: null }))}>
+	</DeluxeAccountForm>
+
+
+	/********/
 
 
 	static contextType = MasterContext;
@@ -134,19 +139,7 @@ export default class SettingsPage extends BaseControl {
 	}// set_option;
 
 
-	deluxe_account_form () {
-
-		const form_value = (field) => { return isset (this.state.cc_form) ? this.state.cc_form [field] : null };
-
-		let option = form_value ("option");
-		let value = form_value ("value");
-
-		return <DeluxeAccountPopup visible={isset (this.state.cc_form)} option={option} value={value}
-			onCancel={() => this.execute (this.state.cc_form.onCancel).then (() => this.setState ({ cc_form: null }))} 
-			onSubmit={() => this.execute (nested_value (this.state.cc_form, "onSubmit")).then (() => this.setState ({ cc_form: null }))}>
-		</DeluxeAccountPopup>
-
-	}// deluxe_account_form;
+	/********/
 
 
 	process_option = (option, value) => this.set_option (option_types [option], value).then (() => this.setState ({ [option]: value }, () => this.context.master_page.forceUpdate ()));
@@ -402,9 +395,14 @@ export default class SettingsPage extends BaseControl {
 	/**** React Routines ****/
 
 
+	shouldComponentUpdate (props, state) {
+		if (isset (state.cc_form) && not_set (this.state.cc_form)) return !!this.context.load_popup (this.deluxe_form).then (this.context.show_popup);
+		return true;
+	}// shouldComponentUpdate;
+
+
 	render () {
 		return <Container>
-
 			<div className="two-column-grid full-width">
 
 				<div className="button-column">
@@ -430,16 +428,11 @@ export default class SettingsPage extends BaseControl {
 				</div>					
 					
 				<ExplodingPanel id="settings_exploding_panel" className="full-width" ref={this.settings_panel} stretchOnly={true} vAlign={vertical_alignment.top}>
-
 					{this.user_settings_panel ()}
 					{this.account_options_panel ()}
-
 				</ExplodingPanel>
 
 			</div>
-
-			{this.deluxe_account_form ()}
-
 		</Container>
 	}// render;
 
