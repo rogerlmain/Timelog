@@ -27,6 +27,7 @@ import FadePanelTest from "client/tests/controls/panels/fade.panel";
 import ResizePanelTest from "client/tests/controls/panels/resize.panel";
 import ExplodingPanelTest from "client/tests/controls/panels/exploding.panel";
 import EyecandyPanelTest from "client/tests/controls/panels/eyecandy.panel";
+import ContentsPanelTest from "client/tests/controls/panels/contents.panel";
 
 import LoadListTest from "client/tests/controls/lists/load.list";
 import ClientSelectorTest from "client/tests/controls/selectors/client.selector";
@@ -98,6 +99,8 @@ class Main extends BaseControl {
 				{/* <ResizePanelTest /> */}
 				{/* <ExplodingPanelTest /> */}
 				{/* <EyecandyPanelTest /> */}
+				{/* \ */}
+
 				{/* <LoadListTest /> */}
 				{/* <ClientSelectorTest /> */}
 

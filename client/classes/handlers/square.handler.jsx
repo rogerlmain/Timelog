@@ -1,9 +1,8 @@
-import * as constants from "client/classes/types/constants";
-
 import FormHandler from "client/classes/handlers/form.handler";
 
 import AccountStorage from "client/classes/storage/account.storage";
 
+import { application_id, location_id } from "client/classes/types/constants";
 import { isset, is_null } from "client/classes/common";
 import { v4 as uuid } from "uuid";
 
@@ -63,7 +62,7 @@ export default class SquareHandler {
 				form.attach (container).then (resolve ());
 			}/* attach_form */
 
-			Square.payments (constants.application_id, constants.location_id).card ({ style: {
+			Square.payments (application_id, location_id).card ({ style: {
 				"input": { fontSize: "10pt" },
 				".input-container": { borderColor: "black", borderRadius: "1em" }
 			}}).then (form => attach_form (form)).catch (reject);

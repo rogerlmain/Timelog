@@ -1,11 +1,7 @@
 import React from "react";
 
-import EmailModel from "client/classes/models/email.model";
-
 import OptionsStorage, { toggled } from "client/classes/storage/options.storage";
 import SettingsStorage from "client/classes/storage/settings.storage";
-import AccountStorage from "client/classes/storage/account.storage";
-import CompanyStorage from "client/classes/storage/company.storage";
 
 import Container from "client/controls/container";
 import Slider from "client/controls/slider";
@@ -16,14 +12,15 @@ import SelectButton from "client/controls/buttons/select.button";
 import CurrencyInput from "client/controls/inputs/currency.input";
 
 import ExplodingPanel from "client/controls/panels/exploding.panel";
-import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import DeluxeAccountForm from "client/forms/deluxe.account.form";
+import InviteForm from "client/forms/invite.form";
+
 import OptionToggle from "client/gadgets/toggles/option.toggle";
 
-import { account_types, blank, date_rounding, vertical_alignment } from "client/classes/types/constants";
+import { account_types, date_rounding, vertical_alignment } from "client/classes/types/constants";
 import { deadbeat_options, option_types } from "client/classes/types/options";
-import { debugging, isset, is_null, not_set } from "client/classes/common";
+import { isset, is_null, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 import { resize_direction } from "client/controls/panels/resize.panel";
@@ -41,14 +38,10 @@ const options_panels = {
 }// options_panels;
 
 
-const notification_delay = 2000;
-
-
 export default class SettingsPage extends BaseControl {
 
 
 	settings_panel = React.createRef ();
-	invite_form = React.createRef ();
 
 
 	state = { 
@@ -69,9 +62,6 @@ export default class SettingsPage extends BaseControl {
 
 		cc_form: null,
 		pricing: null,
-
-		invitee: null,
-		invite_data: null,
 
 	}/* state */;
 
@@ -143,28 +133,6 @@ export default class SettingsPage extends BaseControl {
 
 
 	process_option = (option, value) => this.set_option (option_types [option], value).then (() => this.setState ({ [option]: value }, () => this.context.master_page.forceUpdate ()));
-
-
-	invite_contributor = event => {
-
-		let data = this.state.invite_data;
-
-		data.append ("host_id", AccountStorage.account_id ());
-		data.append ("host_name", AccountStorage.full_name ());
-		data.append ("company_name", CompanyStorage.company_name ());
-		data.append ("company_id", CompanyStorage.active_company_id ());
-
-		data.delete ("nds-pmd");
-
-		return new Promise ((resolve, reject) => EmailModel.send_invite (data).then (data => resolve (Array.get_element (data, 0))).catch (reject));
-
-	}/* invite_contributor */;
-
-
-	invitee_details = () => {
-		if (not_set (this.state.invite_data)) return blank;
-		return `Inviting ${this.state.invite_data.get ("invitee_name")} (${this.state.invite_data.get ("invitee_email")})`;
-	}// invitee_details;
 
 
 	/**** Options ****/
@@ -320,50 +288,7 @@ export default class SettingsPage extends BaseControl {
 
 			<div className="full-row section-header">Contributors</div>
 
-			<EyecandyPanel id="invite_button_panel" text={this.invitee_details ()}
-			
-				onEyecandy={() => this.invite_contributor ().then (invitation => this.setState ({ 
-					invite_data: null,
-					notification: `${invitation.invitee_name} has been invited to join us.`,
-				}, () => setTimeout (() => this.setState ({ notification: null }), notification_delay)))}
-
-				eyecandyVisible={isset (this.state.invite_data)}>
-
-				<Container visible={isset (this.state.notification)}>
-					<div>{this.state.notification}</div>
-				</Container>
-
-				<Container visible={not_set (this.state.notification)}>
-					<form id="invite_form" ref={this.invite_form}>
-
-						<div className="horizontally-aligned with-headspace">
-
-							<label htmlFor="invitation">Invite a contributor</label>
-
-							<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
-								
-								<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
-									onChange={event => this.setState ({ invitee: event.target.value })} required={true}
-									defaultValue={debugging () ? "Roger" : null}>
-								</input>
-
-								<input type="email" id="invitee_email" name="invitee_email" placeholder="Email address" required={true}
-									defaultValue={debugging () ? "roger.main@rexthestrange.com" : null}>
-								</input>
-
-								<button onClick={event => {
-									this.setState ({ invite_data: new FormData (this.invite_form.current) });
-									event.preventDefault ();
-								}}>Invite</button>
-
-							</div>
-
-						</div>
-
-					</form>
-				</Container>
-
-			</EyecandyPanel>
+			<InviteForm />
 
 		</Container>
 

@@ -12,29 +12,35 @@ const table = "accounts";
 export default class AccountsModel extends DataModel {
 
 
-	static fetch_by_company (company_id) {
+	static get_by_company (company_id) {
 		let parameters = new FormData ();
 		parameters.set ("action", "company");
 		parameters.set ("company_id", parseInt (company_id));
 		return Database.fetch_data (table, parameters);
-	}// fetch_by_company;
+	}// get_by_company;
 
 
-	static fetch_by_project (project_id, callback = null) {
+	static get_by_email (email_address) {
+
+		if (is_null (email_address)) return null;
+
+		let parameters = new FormData ();
+
+		parameters.set ("action", "email");
+		parameters.set ("email_address", email_address);
+
+		return Database.fetch_data (table, parameters);
+
+	}// get_by_email;
+
+
+	static get_by_project (project_id, callback = null) {
 		if (is_null (project_id)) return null;
 		let parameters = new FormData ();
 		parameters.set ("action", "project");
 		parameters.set ("project_id", project_id.toString ());
 		Database.fetch_data (table, parameters).then (() => DataModel.data_object (AccountsList, callback));
-	}// fetch_by_project;
-
-
-	static fetch_by_task (task_id, callback) {
-		let parameters = new FormData ();
-		parameters.set ("action", "task");
-		parameters.set ("task_id", task_id.toString ());
-		Database.fetch_data (table, parameters).then (callback);
-	}// fetch_by_task;
+	}// get_by_project;
 
 
 	static save_account (form_data) {

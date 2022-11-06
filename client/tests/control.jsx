@@ -51,7 +51,7 @@ export default class TreeTest extends BaseControl {
 
 
 	componentDidMount () {
-		ReportsModel.fetch_by_project (163).then (data => this.format_data (data));
+		ReportsModel.get_by_project (163).then (data => this.format_data (data));
 	}// componentDidMount;
 
 

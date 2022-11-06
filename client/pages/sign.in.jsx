@@ -142,7 +142,7 @@ export default class SigninPage extends BaseControl {
 			<div className="horizontally-spaced-out with-headspace">
 
 				<div className="aside">
-					<label style={{ marginRight: "0.5em" }}>New to RMPC Timelog?</label>
+					<label style={{ marginRight: "0.5em" }}>New to Bundion?</label>
 					<a onClick={this.props.parent.sign_up}>Sign up</a>
 				</div>
 

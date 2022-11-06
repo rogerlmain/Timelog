@@ -26,6 +26,7 @@ import SelectList from "client/controls/lists/select.list";
 
 import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/companies.model";
+import InvitationsModel from "./classes/models/invitations.model";
 import OptionsModel from "client/classes/models/options.model";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
@@ -49,7 +50,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.8.7";
+const version = "1.0.9.0";
 
 
 const user_image_style = {
@@ -80,7 +81,7 @@ const logo_image = {
 
 
 const team_permissions = () => new Promise ((resolve, reject) => {
-	AccountsModel.fetch_by_company (CompanyStorage.active_company_id ()).then (team => {
+	AccountsModel.get_by_company (CompanyStorage.active_company_id ()).then (team => {
 		if (is_array (team) && (team.length == 1)) return resolve (false);
 		PermissionsStorage.team_permission ().then (permission => resolve (permission)).catch (reject);
 	}).catch (reject);
@@ -164,12 +165,51 @@ export default class MasterPanel extends BaseControl {
 		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
 		this.state.avatar = AccountStorage.avatar ();
 
+		this.get_invitation ().then (result => {
+			if (is_null (result)) return this.setState ({ signing_up: true });
+			AccountsModel.get_by_email (result.invitee_email).then (account => this.setState ({ signing_up: account.empty () }));
+		});
+
 		if (debugging (false)) console.log ("creating master page");
 
 	}// constructor;
 
 
 	/********/
+
+
+	invitation_data = invitation => {
+
+		const next_item = () => {
+
+			let length = parseInt (invitation.substr (0, 2));
+			let response = (length > 0) ? parseInt (invitation.substr (2, length)) : null;
+						
+			invitation = invitation.slice (length + 2);
+
+			return response;
+
+		}/* next_item */;
+
+		return isset (invitation) ? {
+			invite_id: next_item (),
+			company_id: next_item (),
+			host_id: next_item (),
+			invitee_account_id: next_item (),
+			date_created: new Date (next_item () * 1000),
+		} : null;
+
+	}// invitation_data;
+
+
+	get_invitation = () => new Promise ((resolve, reject) => {
+
+		let invitation = this.invitation_data (localStorage.getItem ("invitation"));
+
+		if (not_set (invitation) || not_set (invitation.invite_id)) return resolve (null);
+		InvitationsModel.get_by_id (invitation.invite_id).then (result => resolve (result?.[0])).catch (reject);
+
+	})// get_invitation;
 
 
 	set_page = page => this.main_panel.current.animate (() => this.setState ({ active_page: page }));
@@ -195,7 +235,7 @@ export default class MasterPanel extends BaseControl {
 
 	main_contents = () => {
 		if (this.signed_in ()) return this.get_page (this.state.active_page);
-		if (this.state.signing_up || isset (localStorage.getItem ("invitation"))) return <SignupPage parent={this} />
+		if (this.state.signing_up) return <SignupPage parent={this} />
 		return <SigninPage parent={this} />
 	}/* main_contents */;
 

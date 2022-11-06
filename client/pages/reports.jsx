@@ -37,8 +37,9 @@ const granularity = {
 
 
 const reports_panels = {
-	project_report	: 1,
-	teamster_report	: 2,
+	client_report	: 1,
+	project_report	: 2,
+	teamster_report	: 3,
 }// reports_panels;
 
 
@@ -51,7 +52,7 @@ export default class ReportsPage extends BaseControl {
 
 	state = {
 
-		current_panel: reports_panels.project_report,
+		current_panel: reports_panels.client_report,
 
 		client_id: null,
 		project_id: null,
@@ -374,7 +375,7 @@ export default class ReportsPage extends BaseControl {
 
 			{isset (this.state.project_id) && <FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
 				<div className="button-panel with-headspace">
-					<SelectButton onClick={() => this.results_panel.current.animate (() => ReportsModel.fetch_by_project (this.state.project_id, this.state.use_dates ? {
+					<SelectButton onClick={() => this.results_panel.current.animate (() => ReportsModel.get_by_project (this.state.project_id, this.state.use_dates ? {
 						start_date: this.state.start_date.format (date_formats.database_date), 
 						end_date: this.state.end_date.format (date_formats.database_date),
 					} : null).then (data => this.setState ({ entries: data })))}>Generate</SelectButton>
@@ -543,10 +544,17 @@ export default class ReportsPage extends BaseControl {
 
 			<div className="button-column">
 	
+				<SelectButton id="client_report_button" className="sticky-button" selected={this.state.current_panel == reports_panels.client_report} 
+					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.client_report }))}>
+						
+					Client Report
+					
+				</SelectButton>
+
 				<SelectButton id="project_report_button" className="sticky-button" selected={this.state.current_panel == reports_panels.project_report} 
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.project_report }))}>
 						
-					Projects
+					Project Report
 					
 				</SelectButton>
 
@@ -554,7 +562,7 @@ export default class ReportsPage extends BaseControl {
 
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.teamster_report}))}>
 						
-					Teamsters
+					Teamsters Report
 					
 				</SelectButton>
 

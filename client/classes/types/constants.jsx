@@ -179,14 +179,6 @@ export const directions = {
 }// directions;
 
 
-export const signing_state = {
-	signed_in: "signed_in",
-	signed_out: "signed_out",
-	pending: "pending",
-	failed: "failed"
-}// signing_state;
-
-
 /********/
 
 

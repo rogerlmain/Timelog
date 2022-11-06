@@ -1,12 +1,11 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 
+import { location_id } from "client/classes/types/constants";
 
 
 const application_id = "sandbox-sq0idb-i9_IjjiYVUfBsBoNCFh9LA";
 const access_token = "EAAAENzB7zMQb2M5FW6MpbnIMXfvwLdonwGI9XxqtkwT86LvxuWpW4N_SyI67cjJ";
-
-const location_id = "RMPCInc";
 
 
 export default class SquareTest extends BaseControl {

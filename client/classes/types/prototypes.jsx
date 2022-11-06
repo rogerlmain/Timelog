@@ -788,7 +788,7 @@ Number.prototype.toCurrency = function (symbol = currency_symbol.dollars) {
 }// toCurrency;
 
 
-/********/
+/********
 
 
 Promise.prototype.pending = true;

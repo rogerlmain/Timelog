@@ -13,12 +13,24 @@ global.is_number = value => { return (!isNaN (Number (value)) && not_boolean (va
 global.integer_value = value => { return global.isset (value) ? parseInt (value) : null }
 
 global.not_null = value => { return !global.is_null (value) }
-global.not_set = value => { return !global.isset (value) }
 global.not_empty = value => { return !is_empty (value) }
 global.not_boolean = value => { return !is_boolean (value) }
 global.not_number = value => { return !is_number (value) }
 
 global.null_if = (value, comparison) => { return (value == comparison) ? null : value }
+
+
+global.not_set = value => { 
+
+	if (Array.notArray (value)) value = [value];
+	if (!isset (value.find (item => !isset (item)))) return true;
+
+	return false;
+
+}/* not_set */;
+
+
+/********/
 
 
 const directions = {
@@ -30,6 +42,9 @@ const directions = {
 
 
 /********/
+
+
+Array.notArray = (candidate) => !Array.isArray (candidate);
 
 
 Number.prototype.padded = function (length) { return `${"0".repeat (length - this.toString ().length)}${this.toString ()}` }

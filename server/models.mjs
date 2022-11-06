@@ -14,7 +14,7 @@ class DataModel {
 
 	data_response_handler (error, results, fields) {
 		if (global.is_null (results)) throw "Invalid data response";
-		response.send (results [0]);
+		response ().send (results [0]);
 	}// data_response_handler;
 
 

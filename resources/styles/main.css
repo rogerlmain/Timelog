@@ -28,6 +28,7 @@ div.page-footer div {
 	justify-content: center;
 	font-size: 8pt;
 	max-width: 45%;
+	min-width: 300px;
 	width: 100%;
 }/* div.page-footer div */
 
