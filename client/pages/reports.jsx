@@ -84,11 +84,14 @@ export default class ReportsPage extends BaseControl {
 	/********/
 
 
+	client_report_panel = () => <div>Client report goes here</div>
+
+
 	project_report_panel = () => <Container id="project_report_panel" visible={this.state.current_panel == reports_panels.project_report}>
 		<div className="horizontally-centered">
 			<div style={{ display: "inline-block" }}>{this.show_project_options ()}</div>
 			<br />
-			<div>{this.show_results ()}</div>
+			<div>{this.project_report ()}</div>
 		</div>
 	</Container>
 
@@ -406,7 +409,10 @@ export default class ReportsPage extends BaseControl {
 	}/* expand_dates */;
 
 
-	show_results () {
+	client_report = () => <div>Client report results</div>
+
+
+	project_report () {
 
 		let has_data = isset (this.state.entries);
 
@@ -431,7 +437,7 @@ export default class ReportsPage extends BaseControl {
 			</Container>
 		</ExplodingPanel>
 
-	}// show_results;
+	}// project_report;
 
 
 	show_totals () {
@@ -567,6 +573,7 @@ export default class ReportsPage extends BaseControl {
 					this.setState ({ teamster_report_loading: true });
 				}}>
 
+				{this.client_report_panel ()}
 				{this.project_report_panel ()}
 				{this.teamster_report_panel ()}
 
