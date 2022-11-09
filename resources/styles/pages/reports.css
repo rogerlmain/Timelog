@@ -86,7 +86,7 @@ div.report-grid div.footer-total > div { background-color: var(--report-footer-t
 
 div.teamster-report {
 	display: grid;
-	grid-template-columns: repeat(5, max-content);
+	grid-template-columns: repeat(6, max-content);
 }/* div.teamster-report */
 
 
@@ -119,6 +119,13 @@ div.teamster-report div.report-title > div {
 div.teamster-report div.report-title > div:nth-last-child(2), div.teamster-report div.report-row > div:nth-last-child(2) {
 	border-right: solid 1px var(--border-color);
 }/* div.teamster-report div.report-title > div:last-child, div.teamster-report div.report-row > div:last-child */
+
+
+div.teamster-report div.report-indicator {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1px;
+}/* div.teamster-report div.report-indicator */
 
 
 /********/
