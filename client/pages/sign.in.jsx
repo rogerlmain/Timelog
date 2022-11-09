@@ -82,7 +82,11 @@ export default class SigninPage extends BaseControl {
 
 				}// if;
 
-				if (isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
+				if (isset (info.logging)) {
+					info.logging.start_time = Date.fromGMT (info.logging.start_time);
+					localStorage.setItem ("logging", jsonify (info.logging));
+				}// if;
+
 				if (isset (info.credentials)) localStorage.setItem ("credentials", jsonify (info.credentials));
 				if (isset (info.settings)) localStorage.setItem ("settings", jsonify (info.settings));
 				if (isset (info.options)) localStorage.setItem ("options", jsonify (info.options));

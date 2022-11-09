@@ -102,14 +102,14 @@ export default class LoggingPage extends BaseControl {
 	project_selected = () => { return ((this.project_id () > 0) || OptionsStorage.single_project () || this.logged_in ()) }
 
 
-	billable_time = elapsed_time => {
+	metered_bill = elapsed_time => {
 
 		let bill = Math.round ((this.state.billing_rate ?? 0) * (elapsed_time / Date.coefficient.hour));
 
 		if (bill == 0) return "Not billable";
 		return `${bill.toCurrency (currency_symbol.dollars)}`;
 
-	}/* billable_time */;
+	}/* metered_bill */;
 
 
 	// Time limit in hours
@@ -290,7 +290,7 @@ export default class LoggingPage extends BaseControl {
 				
 				<Container visible={OptionsStorage.can_bill () && (this.state.billing_rate > 0)}>
 					<label>Billable</label>
-					<div>{this.billable_time (elapsed_time)}</div> 
+					<div>{this.metered_bill (elapsed_time)}</div> 
 				</Container>
 
 			</div>
