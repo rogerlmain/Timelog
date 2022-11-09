@@ -283,7 +283,7 @@ export default class ReportsPage extends BaseControl {
 						<div>End time</div>
 						<div>Notes</div>
 						<div>Total time</div>
-						<Container visible={OptionStorage.can_bill ()}>{/*  && (data [0].rate > 0)}> */}
+						<Container visible={OptionStorage.can_bill () && (data?.[0].rate > 0)}>
 							<div>Rate</div>
 							<div>Total due</div>
 							<div>Billed</div>
@@ -299,7 +299,7 @@ export default class ReportsPage extends BaseControl {
 						<div className="report-notes">{data.notes}</div>
 						<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
 
-						<Container visible={OptionStorage.can_bill ()}>{/*  && (data.rate > 0)}> */}
+						<Container visible={OptionStorage.can_bill () && (data?.[0].rate > 0)}>
 							<div className="right-aligned-text">{data.rate?.toCurrency ()}</div>
 							<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
 							<BillingCheckbox id={data.log_id} onClick={event => {

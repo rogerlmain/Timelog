@@ -370,10 +370,7 @@ export default class MasterPanel extends BaseControl {
 	update_company_list = () => new Promise ((resolve, reject) => {
 		CompanyModel.get_companies ().then (companies => {
 
-			const resolve_all = () => {
-				if (processed == companies.length) return resolve ();
-				setTimeout (resolve_all);
-			}/* resolve_all */;
+			const resolve_all = () => (processed == companies.length) ? resolve () : setTimeout (resolve_all);
 	
 			let processed = 0;
 	

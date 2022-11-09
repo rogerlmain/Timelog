@@ -49,26 +49,9 @@ let app = express ();
 global.session_namespace = session_namespace;
 
 
-global.request = () => 
+global.request = () => getNamespace (session_namespace).active.request;
+global.response = () => getNamespace (session_namespace).active.response;
 
-{
-
-	let ns = getNamespace (session_namespace);
-	let as = ns.active;
-	return as.request;
-
-	getNamespace (session_namespace).active.request;
-}
-
-
-
-global.response = () => 
-
-{
-	let ns = getNamespace (session_namespace);
-	let as = ns.active;
-	return as.response;
-}
 
 /********/
 
@@ -380,15 +363,30 @@ app.post ("/signin", () => {
 
 		let processed = {
 			companies: false,
-			logging: false,
 			options: false,
+			logging: false,
 			settings: false,
 		}// processed;
 
+
+		const load_options = companies => {
+			
+			let option_count = companies.length;
+
+			companies.forEach (company => new OptionsModel ().get_options_by_company (company.company_id).then (options => {
+				if (not_set (result.options)) result.options = {}
+				result.options [company.company_id] = options;
+				if (--option_count == 0) processed.options = true;
+			}));
+
+		}/* load_options */;
+
+
 		const return_response = () => {
-			if (processed.companies && processed.options && processed.settings && processed.logging) return response ().send (result);
+			if (processed.companies && processed.settings && processed.logging && processed.options) return response ().send (result);
 			setTimeout (return_response);
 		}/* return_response */;
+
 
 		if (is_null (account)) {
 			response ().send ({ 
@@ -400,29 +398,14 @@ app.post ("/signin", () => {
 
 		new CompaniesModel ().get_companies_by_account (account.account_id).then (companies => {
 
+			result.companies = { list: companies };
+
 			if (companies.length == 0) throw `Rogue account: ${account.account_id}`;
-			
-			for (let company of companies) {
+			if (companies.length == 1) result.companies.active_company = companies [0].company_id;
 
-				let options_count = 0;
+			load_options (companies);
 
-				new OptionsModel ().get_options_by_company (company.company_id).then (company_id => {
-
-					options_count++
-
-					result.options = { [company.company_id]: company_id };
-					result.companies = { ...result.companies, [company.company_id]: company }
-
-					if (companies.length == 1) result.companies.active_company = company.company_id;
-					if (options_count == companies.length) processed.options = true;
-
-					delete company.company_id;
-
-				});
-
-				processed.companies = true;
-
-			}// for;
+			processed.companies = true;
 
 		});
 

@@ -219,8 +219,8 @@ export const granularity_types = {
 
 
 export const permissions = {
-	purchase: 62,
-	admin	: 63,
+	admin	: 1,
+	purchase: 2,
 }// permissions;
 
 

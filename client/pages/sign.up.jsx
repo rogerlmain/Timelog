@@ -190,7 +190,7 @@ export default class SignupPage extends BaseControl {
 						project_name: default_project_name,
 						project_code: codify (default_project_name),
 						project_description: default_project_description,
-					})).then (() => OptionsStorage.set_options (parseInt (account.account_type)).then (sign_in));
+					})).then (() => OptionsStorage.default_options (parseInt (account.account_type)).then (sign_in));
 				});
 
 			}).catch (error => this.report_error (this.company_creation_error));

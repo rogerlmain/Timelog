@@ -17,12 +17,14 @@ Options:
 
 	Current available options:
 	
+		Number of clients
+		Number of projects
 		
 	
 
 Permissions:
 	Free to change
 	Per user
-	Based on company permissions
+	Based on company policy
 
-	
+		None

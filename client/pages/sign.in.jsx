@@ -6,7 +6,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
-import { isset } from "client/classes/common";
+import { isset, jsonify } from "client/classes/common";
 
 import { horizontal_alignment } from "client/classes/types/constants";
 import { MasterContext } from "client/classes/types/contexts";
@@ -83,17 +83,14 @@ export default class SigninPage extends BaseControl {
 				}// if;
 
 				if (isset (info.logging)) info.logging.start_time = Date.fromGMT (info.logging.start_time);
-
-				info.map_keys (key => localStorage.setItem (key, JSON.stringify (info [key])));
+				if (isset (info.credentials)) localStorage.setItem ("credentials", jsonify (info.credentials));
+				if (isset (info.settings)) localStorage.setItem ("settings", jsonify (info.settings));
+				if (isset (info.options)) localStorage.setItem ("options", jsonify (info.options));
 				
 				if (this.signed_in ()) {
-
-					let companies = CompanyStorage.company_list ();
-					let ids = companies?.get_keys ();
-
-					if (isset (ids) && (ids.length == 1)) CompanyStorage.set_active_company (ids [0]);
+					CompanyStorage.add_companies (info.companies.list);
+					if (isset (info.companies.active_company)) CompanyStorage.set_active_company (info.companies.active_company);
 					this.context.master_page.sign_in ();
-
 				}// if;
 
 				resolve ();

@@ -107,11 +107,11 @@ export default class ReportGrid extends BaseControl {
 
 	render () {
 
-		const cell_count = (object) => {
+		const cell_count = object => {
 
 			let count = 0;
 
-			if (isset (nested_value (object.props, "children"))) object.props.children.forEach (child => {
+			object.props.children?.forEach (child => {
 				if (dom_element (child)) return count++;
 				if (is_function (child.type) && (child.type.name.equals ("Container"))) count += cell_count (child);
 			});

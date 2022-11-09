@@ -38,6 +38,7 @@ import ExpandingInputTest from "client/tests/controls/inputs/expanding.input";
 import RateSubformTest from "client/tests/rate.subform";
 
 import ToggleSwitchTest from "client/tests/controls/toggle.switch";
+import OptionToggleTest from "client/tests/gadgets/toggles/option.toggle";
 
 import ReportsPage from "client/pages/reports";
 import DeluxeAccountForm from "./forms/deluxe.account.form";
@@ -99,7 +100,8 @@ class Main extends BaseControl {
 				{/* <ResizePanelTest /> */}
 				{/* <ExplodingPanelTest /> */}
 				{/* <EyecandyPanelTest /> */}
-				{/* \ */}
+
+				{/* <OptionToggleTest /> */}
 
 				{/* <LoadListTest /> */}
 				{/* <ClientSelectorTest /> */}

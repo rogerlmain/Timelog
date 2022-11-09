@@ -98,7 +98,7 @@ export default class SettingsPage extends BaseControl {
 		}// for;
 
 		this.state = {...this.state, ...settings};
-			
+
 	}// constructor;
 
 
@@ -177,12 +177,12 @@ export default class SettingsPage extends BaseControl {
 								values={["Round down", "Round off", "Round up"]} value={this.state.start_rounding + 2}
 								option={option_types.start_rounding} parent={this} billable={false}
 								onChange={selected_value => this.set_option (option_types.start_rounding, selected_value - 1)}>
-							</OptionToggle>					
+							</OptionToggle>
 
 							<OptionToggle id="end_time_rounding" title="End time rounding"
 								values={["Round down", "Round off", "Round up"]} value={this.state.end_rounding + 2}
 								option={option_types.end_rounding} parent={this} billable={false}
-								onChange={selected_value => this.set_option (option_types.end_rounding, selected_value - 2)}>
+								onChange={selected_value => this.set_option (option_types.end_rounding, selected_value - 1)}>
 							</OptionToggle>					
 
 						</div>
@@ -291,7 +291,6 @@ export default class SettingsPage extends BaseControl {
 			<InviteForm />
 
 		</Container>
-
 	}// account_options_panel;
 
 
