@@ -277,44 +277,43 @@ export default class ReportsPage extends BaseControl {
 		return <div>
 			<ReportGrid data={this.format_data (this.state.entries)} categories={["year", "month", "day"]}
 
-				header={data => {
-					return <Container inline={false} className="report-header">
-						<div>Start time</div>
-						<div>End time</div>
-						<div>Notes</div>
-						<div>Total time</div>
-						<Container visible={OptionStorage.can_bill () && (data?.[0].rate > 0)}>
-							<div>Rate</div>
-							<div>Total due</div>
-							<div>Billed</div>
-						</Container>
+				header={data => <Container inline={false} className="report-header">
+					<div>Start time</div>
+					<div>End time</div>
+					<div>Notes</div>
+					<div>Total time</div>
+					<Container visible={OptionStorage.can_bill () && (data?.rate > 0)}>
+						<div>Rate</div>
+						<div>Total due</div>
+						<div>Billed</div>
 					</Container>
-				}}
+				</Container>}
 
-				row={data => {
-					return <Container inline={false} className={`report-entry ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
+				row={data => <Container inline={false} className={`report-entry ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
 						
-						<div className="right-aligned-text">{data.start_time}</div>
-						<div className="right-aligned-text">{data.end_time}</div>
-						<div className="report-notes">{data.notes}</div>
-						<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
+					<div className="right-aligned-text">{data.start_time}</div>
+					<div className="right-aligned-text">{data.end_time}</div>
+					<div className="report-notes">{data.notes}</div>
+					<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
 
-						<Container visible={OptionStorage.can_bill () && (data?.[0].rate > 0)}>
-							<div className="right-aligned-text">{data.rate?.toCurrency ()}</div>
-							<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
-							<BillingCheckbox id={data.log_id} onClick={event => {
-								if (event.target.checked === false) return warning (`
-									This entry has been marked as billed!
-									If you continue, your client may be charged twice.
+					<Container visible={OptionStorage.can_bill () && (data?.rate > 0)}>
 
-									Are you sure?
-								`);
-								return true;
-							}} checked={data.billed} />
-						</Container>
+						<div className="right-aligned-text">{data.rate?.toCurrency ()}</div>
+						<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
+
+						<BillingCheckbox id={data.log_id} onClick={event => {
+							if (event.target.checked === false) return warning (`
+								This entry has been marked as billed!
+								If you continue, your client may be charged twice.
+
+								Are you sure?
+							`);
+							return true;
+						}} checked={data.billed} />
 
 					</Container>
-				}}
+
+				</Container>}
 				
 				footer={() => this.show_totals ()}>
 				

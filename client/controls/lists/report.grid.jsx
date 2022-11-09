@@ -60,7 +60,7 @@ export default class ReportGrid extends BaseControl {
 
 		let result = null;
 
-		add_row ("header", data);
+		add_row ("header", data?.[0]);
 		data.forEach (row => add_row ("row", row));
 		
 		return result;
@@ -122,8 +122,8 @@ export default class ReportGrid extends BaseControl {
 
 
 		const max_cell_count = () => {
-			const count = template => { return is_function (this.props [template]) ? cell_count (this.props [template] ({})) : 1 }
-			return Math.max (count ("header"), count ("row"));//, count ("footer"));
+			const count = template => is_function (this.props?.[template]) ? cell_count (this.props [template] (this.props.data?.[0])) : 1;
+			return Math.max (count ("header"), count ("row"), count ("footer"));
 		}/* max_cell_count */;
 
 
