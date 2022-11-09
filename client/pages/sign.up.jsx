@@ -156,10 +156,7 @@ export default class SignupPage extends BaseControl {
 
 	save_account = () => {
 
-		const sign_in = () => {
-			if (company_account_saved) return this.props.parent.sign_in ();
-			setTimeout (sign_in);
-		}/* sign_in */
+		const sign_in = () => (company_account_saved) ? this.props.parent.sign_in () : setTimeout (sign_in);
 
 		let form_data = new FormData (document.getElementById ("account_form"));
 		let company_account_saved = false;
@@ -193,7 +190,7 @@ export default class SignupPage extends BaseControl {
 						project_name: default_project_name,
 						project_code: codify (default_project_name),
 						project_description: default_project_description,
-					})).then (() => OptionsStorage.set_options (parseInt (account.account_type)).then (sign_in));
+					})).then (() => OptionsStorage.default_options (parseInt (account.account_type)).then (sign_in));
 				});
 
 			}).catch (error => this.report_error (this.company_creation_error));
@@ -296,7 +293,7 @@ export default class SignupPage extends BaseControl {
 
 					{signed_out && <FadePanel id="signin_link_panel" visible={!this.state.eyecandy_visible}>
 						<div className="aside">
-							<label style={{ marginRight: "0.5em" }}>Do you already have an RMPC Timelog account?</label>
+							<label style={{ marginRight: "0.5em" }}>Do you already have a Bundion account?</label>
 							<a onClick={this.props.parent.sign_in}>Sign in</a>
 						</div>
 					</FadePanel>}

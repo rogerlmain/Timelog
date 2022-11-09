@@ -5,7 +5,7 @@ drop procedure if exists set_invitation;
 
 delimiter ??
 
-create procedure set_invitation (
+create procedure save_invitation (
 	invite_id			integer,
     company_id			integer,
 	host_id				integer,

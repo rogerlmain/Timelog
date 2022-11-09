@@ -179,14 +179,6 @@ export const directions = {
 }// directions;
 
 
-export const signing_state = {
-	signed_in: "signed_in",
-	signed_out: "signed_out",
-	pending: "pending",
-	failed: "failed"
-}// signing_state;
-
-
 /********/
 
 
@@ -227,8 +219,8 @@ export const granularity_types = {
 
 
 export const permissions = {
-	purchase: 62,
-	admin	: 63,
+	admin	: 1,
+	purchase: 2,
 }// permissions;
 
 

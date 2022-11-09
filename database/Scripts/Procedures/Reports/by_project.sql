@@ -7,7 +7,7 @@ drop procedure if exists create_report;
 
 delimiter ??
 
-create procedure create_report (
+create procedure report_by_project (
 	project_id	int,
     start_date	date,
     end_date	date

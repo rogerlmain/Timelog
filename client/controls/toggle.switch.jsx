@@ -78,7 +78,7 @@ export default class ToggleSwitch extends BaseControl {
 
 	transition_end = event => {
 		if (event.propertyName != "left") return;
-		this.execute (this.props.onChange, this.selected_value ());
+		if (this.props.value != this.state.selected_value) this.execute (this.props.onChange, this.selected_value ());
 	}// transition_end;
 
 
@@ -92,10 +92,7 @@ export default class ToggleSwitch extends BaseControl {
 	/********/
 
 
-	componentDidMount () { 
-		this.switch.current.addEventListener ("transitionend", this.transition_end);
-		this.setState ({ selected_value: this.props.value });
-	}// componentDidMount;
+	componentDidMount = () => this.setState ({ selected_value: this.props.value }, this.switch.current.addEventListener ("transitionend", this.transition_end));
 
 
 	shouldComponentUpdate (new_props) {

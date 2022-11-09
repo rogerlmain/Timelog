@@ -5,6 +5,7 @@ import FadePanel from "client/controls/panels/fade.panel";
 import ResizePanel, { resize_direction } from "client/controls/panels/resize.panel";
 
 import { horizontal_alignment, tracing, vertical_alignment } from "client/classes/types/constants";
+import { not_set } from "client/classes/common";
 
 
 export default class ExplodingPanel extends BaseControl {
@@ -42,6 +43,7 @@ export default class ExplodingPanel extends BaseControl {
 
 	constructor (props) {
 		super (props);
+		if (not_set (props.id)) throw "ExplodingPanel requires and ID";
 		if (tracing) console.log (`exploding panel ${this.props.id} created`);
 	}// constructor;
 

@@ -13,6 +13,9 @@ begin
 		lgg.id as log_id,
         acc.id as account_id,
         clt.id as client_id,
+        prj.id as project_id,
+        clt.`name` as client_name,
+        prj.`name` as project_name,
         
 		acc.last_name,
         acc.first_name,
@@ -23,6 +26,7 @@ begin
         clt.`name` as client_name,
         
         lgg.start_time,
+        (select sum(time_to_sec(timediff(log.end_time, log.start_time))) from logging as log where project_id = prj.id) as total_time,
         lgg.notes
         
 	from 
@@ -43,6 +47,10 @@ begin
 		clients as clt
 	on 
 		(clt.id = lgg.client_id)
+	join
+		projects as prj
+	on
+		(prj.id = lgg.project_id)
 	where 
 		(cpy.id = company_id) and
         (lgg.end_time is null)

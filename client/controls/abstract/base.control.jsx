@@ -90,7 +90,7 @@ export default class BaseControl extends React.Component {
 	}// filtered_properties;
 
 
-	create_key = prefix => { return `${prefix}_${(new Date ().getTime () * random_factor) + (Math.random () * random_factor)}` }
+	create_key = prefix => { return `${prefix ?? "key"}_${(new Date ().getTime () * random_factor) + (Math.random () * random_factor)}` }
 
 
 	/********/

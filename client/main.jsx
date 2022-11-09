@@ -27,6 +27,7 @@ import FadePanelTest from "client/tests/controls/panels/fade.panel";
 import ResizePanelTest from "client/tests/controls/panels/resize.panel";
 import ExplodingPanelTest from "client/tests/controls/panels/exploding.panel";
 import EyecandyPanelTest from "client/tests/controls/panels/eyecandy.panel";
+import ContentsPanelTest from "client/tests/controls/panels/contents.panel";
 
 import LoadListTest from "client/tests/controls/lists/load.list";
 import ClientSelectorTest from "client/tests/controls/selectors/client.selector";
@@ -37,6 +38,7 @@ import ExpandingInputTest from "client/tests/controls/inputs/expanding.input";
 import RateSubformTest from "client/tests/rate.subform";
 
 import ToggleSwitchTest from "client/tests/controls/toggle.switch";
+import OptionToggleTest from "client/tests/gadgets/toggles/option.toggle";
 
 import ReportsPage from "client/pages/reports";
 import DeluxeAccountForm from "./forms/deluxe.account.form";
@@ -98,6 +100,8 @@ class Main extends BaseControl {
 				{/* <ResizePanelTest /> */}
 				{/* <ExplodingPanelTest /> */}
 				{/* <EyecandyPanelTest /> */}
+
+				{/* <OptionToggleTest /> */}
 
 				{/* <LoadListTest /> */}
 				{/* <ClientSelectorTest /> */}

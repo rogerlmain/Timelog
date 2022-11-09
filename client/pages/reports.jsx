@@ -37,8 +37,9 @@ const granularity = {
 
 
 const reports_panels = {
-	project_report	: 1,
-	teamster_report	: 2,
+	client_report	: 1,
+	project_report	: 2,
+	teamster_report	: 3,
 }// reports_panels;
 
 
@@ -51,7 +52,7 @@ export default class ReportsPage extends BaseControl {
 
 	state = {
 
-		current_panel: reports_panels.project_report,
+		current_panel: reports_panels.client_report,
 
 		client_id: null,
 		project_id: null,
@@ -279,44 +280,43 @@ export default class ReportsPage extends BaseControl {
 		return <div>
 			<ReportGrid data={this.format_data (this.state.entries)} categories={["year", "month", "day"]}
 
-				header={data => {
-					return <Container inline={false} className="report-header">
-						<div>Start time</div>
-						<div>End time</div>
-						<div>Notes</div>
-						<div>Total time</div>
-						<Container visible={OptionStorage.can_bill ()}>{/*  && (data [0].rate > 0)}> */}
-							<div>Rate</div>
-							<div>Total due</div>
-							<div>Billed</div>
-						</Container>
+				header={data => <Container inline={false} className="report-header">
+					<div>Start time</div>
+					<div>End time</div>
+					<div>Notes</div>
+					<div>Total time</div>
+					<Container visible={OptionStorage.can_bill () && (data?.rate > 0)}>
+						<div>Rate</div>
+						<div>Total due</div>
+						<div>Billed</div>
 					</Container>
-				}}
+				</Container>}
 
-				row={data => {
-					return <Container inline={false} className={`report-entry ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
+				row={data => <Container inline={false} className={`report-entry ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
 						
-						<div className="right-aligned-text">{data.start_time}</div>
-						<div className="right-aligned-text">{data.end_time}</div>
-						<div className="report-notes">{data.notes}</div>
-						<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
+					<div className="right-aligned-text">{data.start_time}</div>
+					<div className="right-aligned-text">{data.end_time}</div>
+					<div className="report-notes">{data.notes}</div>
+					<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
 
-						<Container visible={OptionStorage.can_bill ()}>{/*  && (data.rate > 0)}> */}
-							<div className="right-aligned-text">{data.rate?.toCurrency ()}</div>
-							<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
-							<BillingCheckbox id={data.log_id} onClick={event => {
-								if (event.target.checked === false) return warning (`
-									This entry has been marked as billed!
-									If you continue, your client may be charged twice.
+					<Container visible={OptionStorage.can_bill () && (data?.rate > 0)}>
 
-									Are you sure?
-								`);
-								return true;
-							}} checked={data.billed} />
-						</Container>
+						<div className="right-aligned-text">{data.rate?.toCurrency ()}</div>
+						<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
+
+						<BillingCheckbox id={data.log_id} onClick={event => {
+							if (event.target.checked === false) return warning (`
+								This entry has been marked as billed!
+								If you continue, your client may be charged twice.
+
+								Are you sure?
+							`);
+							return true;
+						}} checked={data.billed} />
 
 					</Container>
-				}}
+
+				</Container>}
 				
 				footer={() => this.show_totals ()}>
 				
@@ -377,7 +377,7 @@ export default class ReportsPage extends BaseControl {
 
 			{isset (this.state.project_id) && <FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
 				<div className="button-panel with-headspace">
-					<SelectButton onClick={() => this.results_panel.current.animate (() => ReportsModel.fetch_by_project (this.state.project_id, this.state.use_dates ? {
+					<SelectButton onClick={() => this.results_panel.current.animate (() => ReportsModel.get_by_project (this.state.project_id, this.state.use_dates ? {
 						start_date: this.state.start_date.format (date_formats.database_date), 
 						end_date: this.state.end_date.format (date_formats.database_date),
 					} : null).then (data => this.setState ({ entries: data })))}>Generate</SelectButton>
@@ -479,24 +479,25 @@ export default class ReportsPage extends BaseControl {
 	}// show_totals;
 
 
-	timebar (time) {
+	timebar (time, maximum_hours) {
 
-		const minutes_per_hour = 1440;
-		const seconds_per_minute = 60;
+		const color_spread = 240;
 
-		let timestamp = new Date (time);
-		let elapsed_time = Date.timespan (timestamp.elapsed ());
+		let maximum_minutes = maximum_hours * 60;
+ 		let total_minutes = Math.floor (new Date (time).elapsed () / (Date.coefficient.minute * 1000));
 
-		let total_minutes = (elapsed_time.days * 24 * minutes_per_hour) + (elapsed_time.hours * minutes_per_hour) + elapsed_time.mins;
-		let time_width = ((total_minutes > (maximum_hours * seconds_per_minute)) ? minutes_per_hour : total_minutes);
+		let overtime = total_minutes > maximum_minutes;
+		let width_percentage = total_minutes / maximum_minutes;
 
-		let overtime = total_minutes > (maximum_hours * minutes_per_hour);
+		let red = (width_percentage >= 0.5) ? color_spread : color_spread * (width_percentage * 2);
+		let green = (width_percentage <= 0.5) ? color_spread : color_spread * (1 - ((width_percentage - 0.5) * 2));
 
-		let time_color = (overtime ? "#F00" : ((time_width > (maximum_session * seconds_per_minute)) ? "#880" : "#080"));
+		let time_color = `rgb(${red}, ${green}, 0)`;
 
-		return <div className="timebar">
-			<div className="fully-centered" style={{ 
-				width: `${Math.round (time_width / (maximum_hours * minutes_per_hour)) * 100}%`, 
+		return <div className="timebar" style={{ height: "0.5em" }}>
+			<div style={{
+				width: `${width_percentage * 100}%`, 
+				height: "100%",
 				backgroundColor: time_color,
 			}}>{overtime ? "OVERTIME" : blank}</div>
 		</div>
@@ -516,9 +517,10 @@ export default class ReportsPage extends BaseControl {
 		result.push (<div key={0} className="report-title">
 			<div key={1}>Name</div>
 			<div key={2}>Client</div>
-			<div key={3}>Notes</div>
-			<div key={4}>Start Time</div>
-			<div style={{ border: "none", backgroundColor: "var(--background-color)" }} />
+			<div key={3}>Project</div>
+			<div key={4}>Notes</div>
+			<div key={5}>Start Time</div>
+			<div key={6} style={{ border: "none", backgroundColor: "var(--background-color)" }} />
 		</div>);
 
 		for (let teamster of this.state.teamsters) {
@@ -529,9 +531,19 @@ export default class ReportsPage extends BaseControl {
 			result.push (<div className="report-row" key={teamster.log_id}>
 				<div key={1} title={teamster_name}>{teamster_name}</div>
 				<div key={2} title={teamster.client_name}>{teamster.client_name}</div>
-				<div key={3} title={teamster.notes}>{teamster.notes}</div>
-				<div key={4} title={start_time}>{start_time}</div>
-				<div key={5} style={{ border: "none" }}>{this.timebar (teamster.start_time)}</div>
+				<div key={3} title={teamster.project_name}>{teamster.project_name}</div>
+				<div key={4} title={teamster.notes}>{teamster.notes}</div>
+				<div key={5} title={start_time}>{start_time}</div>
+				<div key={6} style={{ border: "none" }}>
+					<div className="report-indicator">
+
+						{this.timebar (teamster.start_time, maximum_hours)}
+						{this.timebar (teamster.start_time, maximum_session)}
+
+						{isset (teamster.project_estimate) && this.timebar (teamster.total_time, teamster.project_estimate ?? 100)}
+
+					</div>					
+				</div>
 			</div>);
 
 		}// for;
@@ -549,10 +561,17 @@ export default class ReportsPage extends BaseControl {
 
 			<div className="button-column">
 	
+				<SelectButton id="client_report_button" className="sticky-button" selected={this.state.current_panel == reports_panels.client_report} 
+					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.client_report }))}>
+						
+					Client Report
+					
+				</SelectButton>
+
 				<SelectButton id="project_report_button" className="sticky-button" selected={this.state.current_panel == reports_panels.project_report} 
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.project_report }))}>
 						
-					Projects
+					Project Report
 					
 				</SelectButton>
 
@@ -560,7 +579,7 @@ export default class ReportsPage extends BaseControl {
 
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.teamster_report}))}>
 						
-					Teamsters
+					Teamsters Report
 					
 				</SelectButton>
 

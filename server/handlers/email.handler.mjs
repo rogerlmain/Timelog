@@ -3,10 +3,10 @@ import "../prototypes.mjs";
 import FileSystem from "fs";
 import nodemailer from "nodemailer";
 
-import InvitationModel from "../models/invitations.model.mjs";
+import InvitationsModel from "../models/invitations.model.mjs";
+import AccountsModel from "../models/accounts.model.mjs";
 
 import { root_path } from "../constants.mjs";
-import AccountsModel from "../models/accounts.model.mjs";
 
 
 const email_details = {
@@ -26,7 +26,7 @@ const email_types = {
 
 
 const timelog_domain	= "rexthestrange.com";	// FOR DEBUGGING - CHANGE TO OFFICIAL ONE WHEN FINAL NAME IS DECIDED
-const inviter_name		= "RMPC Timelog Invitations";
+const inviter_name		= "Bundion Timelog Invitations";
 
 const noreply_address	= `noreply@${timelog_domain}`;
 const inviter_email		= `${inviter_name} <${noreply_address}>`;
@@ -58,7 +58,7 @@ export default class EmailHandler {
 	}// #text_template;
 	
 
-	/********/
+	/**** Creates an ICD or Invitation Code ****/
 
 
 	create_invite = (invitation) => { 
@@ -88,29 +88,29 @@ export default class EmailHandler {
 	}// text_template;
 	
 
-	send_invitation = async () => {
+	send_invitation = () => {
 		try {
+			new AccountsModel ().get_account_by_email (this.fields.invitee_email).then (account => {
 
-			let response = global.response ();
-			let account = await new AccountsModel ().get_account_by_email (this.fields.invitee_email);
+				this.fields.invitee_account_id = (account.length > 0) ? account [0].account_id : null;
 
-			if (isset (account)) this.fields.invitee_account_id = account.id;
+				new InvitationsModel ().save (this.fields).then (invitation => {
 
-			new InvitationModel ().set_invitation (this.fields).then (invitation => {
+					if (!Array.isArray (invitation) || (invitation.length == 0)) return response ().send ("Error: invitation not sent");
 
-				if (!Array.isArray (invitation) || (invitation.length == 0)) return response.send ("Error: invitation not sent");
+					nodemailer.createTransport (email_details).sendMail ({
+						from: inviter_email,
+						to: this.fields.invitee_email,
+						subject: "You have been invited to travel through time",
+						text: this.invitation_template (invitation [0], email_types.text),
+						html: this.invitation_template (invitation [0], email_types.html),
+					}).then (() => response ().send (JSON.stringify (invitation)));
 
-				nodemailer.createTransport (email_details).sendMail ({
-					from: inviter_email,
-					to: this.fields.invitee_email,
-					subject: "You have been invited to travel through time",
-					text: this.invitation_template (invitation [0], email_types.text),
-					html: this.invitation_template (invitation [0], email_types.html),
-				}).then (() => response.send (JSON.stringify (invitation)));
+				});
 
 			});
 		} catch (except) {
-			return response.send (`Error: ${except}`);
+			return response ().send (`Error: ${except}`);
 		}// try;
 	}// send_invitation;
 

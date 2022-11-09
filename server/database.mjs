@@ -25,13 +25,11 @@ class Database {
 
 	connection = null;
 
-	request = null;
-	resposne = null;
 
 	// Standard response
 	send_result_data (data) {
-		this.response.send (data);
 		this.connection.end ();
+		response ().send (data);
 	}// send_result_data;
 
 
@@ -54,13 +52,20 @@ class Database {
 	// Use if special handling required before send 
 	data_query (procedure, parameters = null) {
 		return new Promise ((resolve, reject) => {
+
 			if (global.isset (parameters) && !Array.isArray (parameters)) parameters = Object.values (parameters);			
+
 			let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
 
-			this.connection.query (command, this.normalized (parameters), async (error, results) => {
-				if (isset (error)) return this.send_result_data (error);
-				resolve (results [0]);
-			});
+			try {
+				let blah = this.connection.query (command, this.normalized (parameters), async (error, results) => {
+					if (isset (error)) return this.send_result_data (error);
+					resolve (results [0]);
+				});
+
+				if (isset (blah)) return;
+
+			} catch (except) { reject (except) };
 
 		});
 	}// data_query;
@@ -71,19 +76,12 @@ class Database {
 
 
 	constructor () {
-
-		let session = getNamespace (global.session_namespace);
-
-		this.request = session.get ("request");
-		this.response = session.get ("response");
-		
 		try {
 			this.connection = createConnection ((local_testing ? local_database : interserver_database));
 			this.connection.connect ((error) => { if (isset (error)) console.log (error) });
 		} catch (except) {
 			console.log (except);
 		}// try;
-
 	}// constructor;
 
 

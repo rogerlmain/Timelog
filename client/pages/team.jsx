@@ -117,7 +117,7 @@ export default class TeamsPage extends BaseControl {
 
 
 	componentDidMount () {
-		AccountsModel.fetch_by_company (CompanyStorage.active_company_id ()).then (team => {
+		AccountsModel.get_by_company (CompanyStorage.active_company_id ()).then (team => {
 			let accounts = team.group ("account_id");
 			delete accounts [AccountStorage.account_id ()];
 			this.setState ({ team: accounts })

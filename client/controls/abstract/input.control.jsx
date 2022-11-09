@@ -16,10 +16,10 @@ export const CheckboxCell = props => {
 }// CheckboxCell;
 
 
-export const BillingCheckbox = props => { return <CheckboxCell onClick={event => {
+export const BillingCheckbox = props => <CheckboxCell onClick={event => {
 	if (is_function (props.onClick) && (!props.onClick (event))) return false;
 	LoggingModel.bill (props.id, event.target.checked);
-}} value={props.checked} />}
+}} value={props.checked} />
 
 
 export default class InputControl extends BaseControl {

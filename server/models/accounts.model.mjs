@@ -8,28 +8,12 @@ import LoggingModel from "./logging.model.mjs";
 export default class AccountsModel extends Database {
 
 
-	get_accounts_by_company = company_id => {
-		let procedure = "get_accounts_by_company";
-		let parameters = [parseInt (company_id)];
-		this.execute_query (procedure, parameters);
-	}// get_accounts_by_company;
+	get_by_email = email_address => this.execute_query ("get_account_by_email", [email_address]);
+	get_by_company = company_id => this.execute_query ("get_accounts_by_company", [parseInt (company_id)]);
+	get_by_project = project_id => this.execute_query ("get_accounts_by_project", [project_id]);
+	get_by_task = task_id => this.execute_query ("get_accounts_by_task", [task_id]);
 
-
-	get_accounts_by_project = project_id => {
-		let procedure = "get_accounts_by_project";
-		let parameters = [project_id];
-		return this.data_query (procedure, parameters);
-	}// get_accounts_by_project;
-
-
-	get_accounts_by_task = task_id => {
-		let procedure = "get_accounts_by_task";
-		let parameters = [task_id];
-		return this.data_query (procedure, parameters);
-	}// get_accounts_by_task;
-
-
-	get_account_by_email = email_address => { return this.data_query ("get_account_by_email", [email_address]) }
+	signin = (fields, response) => { return this.data_query ("get_account_by_credentials", [fields ["email"], fields ["password"]])	}
 
 
 	/********/
@@ -57,9 +41,6 @@ export default class AccountsModel extends Database {
 		this.execute_query (procedure, parameters);
 
 	}// save_account;
-
-
-	signin = (fields, response) => { return this.data_query ("get_account_by_credentials", [fields ["email"], fields ["password"]])	}
 
 
 }// AccountsModel;

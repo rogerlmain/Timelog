@@ -133,7 +133,7 @@ export function null_or_undefined (value) { return (is_null (value) || (value ==
 
 export function compare (first_object, second_object) {
 	if (not_set (first_object)) return not_set (second_object);
-	return (JSON.stringify (first_object).equals (JSON.stringify (second_object)));
+	return (jsonify (first_object).equals (jsonify (second_object)));
 }// compare;
 
 

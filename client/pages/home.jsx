@@ -5,7 +5,7 @@ import BaseControl from "client/controls/abstract/base.control";
 
 import LoggingStorage from "client/classes/storage/logging.storage";
 
-import InvitationModel from "client/classes/models/invitation.model";
+import InvitationsModel from "client/classes/models/invitations.model";
 
 import { is_null, not_array, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
@@ -36,7 +36,7 @@ export default class HomePage extends BaseControl {
 
 
 	respond_to_invitation = (invite, response) => {
-		InvitationModel.respond (response, invite.invite_id).then (() => {
+		InvitationsModel.respond (response, invite.invite_id).then (() => {
 
 			if (response == invite_responses.accepted) {
 				return this.context.master_page.update_company_list ().then (() => {
@@ -51,7 +51,7 @@ export default class HomePage extends BaseControl {
 	}// respond_to_invitation;
 
 
-	update_invitations = (callback) => InvitationModel.fetch_all ().then (data => this.setState ({ invitations: (not_array (data) || data.empty ()) ? null : data }, callback));
+	update_invitations = (callback) => InvitationsModel.get_all ().then (data => this.setState ({ invitations: (not_array (data) || data.empty ()) ? null : data }, callback));
 
 
 	show_invitations = () => {

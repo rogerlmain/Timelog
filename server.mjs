@@ -13,7 +13,7 @@ import ClientModel from "./server/models/client.model.mjs";
 import CompanyAccountsModel from "./server/models/company.accounts.model.mjs";
 import CompanyCardModel from "./server/models/company.cards.model.mjs";
 import CompaniesModel from "./server/models/companies.model.mjs";
-import InvitationModel from "./server/models/invitations.model.mjs";
+import InvitationsModel from "./server/models/invitations.model.mjs";
 import LoggingModel from "./server/models/logging.model.mjs";
 import LookupsModel from "./server/models/lookups.model.mjs";
 import OptionsModel from "./server/models/options.model.mjs";
@@ -38,6 +38,7 @@ const districts_id = 2;
 
 const method = { get: "get", post: "post" };
 
+const session_namespace = "timelog_session";
 
 let app = express ();
 
@@ -45,10 +46,14 @@ let app = express ();
 /********/
 
 
-global.session_namespace = "timelog_session";
+global.session_namespace = session_namespace;
 
-global.request = () => getNamespace (global.session_namespace).get ("request");
-global.response = () => getNamespace (global.session_namespace).get ("response");
+
+global.request = () => getNamespace (session_namespace).active.request;
+global.response = () => getNamespace (session_namespace).active.response;
+
+
+/********/
 
 
 app.process = async (handler) => {
@@ -57,7 +62,7 @@ app.process = async (handler) => {
 
 	let request = global.request ();
 	let request_data = request.body;
-	
+
 	if (request.method.equals (method.get)) return handler (request.query);
 
 	new multiparty.Form ().parse (request, (error, fields, files) => {
@@ -80,12 +85,13 @@ app.use (express.json ());
 
 app.use ((request, response, next) => {
 
-	let session = getNamespace (global.session_namespace);
+	let session = getNamespace (session_namespace);
 
 	session.bindEmitter (request);
 	session.bindEmitter (response);
 
 	session.run (function () {
+
 		session.set ("request", request);
 		session.set ("response", response);
 		next ();
@@ -100,14 +106,18 @@ app.use ((request, response, next) => {
 app.post ("/accounts", () => {
 	try {
 		app.process (fields => {
+
 			let account_data = new AccountsModel ();
+
 			switch (fields.action) {
 				case "save"		: account_data.save_account (fields); break;
-				case "company"	: account_data.get_accounts_by_company (fields.company_id); break;
-				case "project"	: account_data.get_accounts_by_project (fields.project_id); break;
-				case "task"		: account_data.get_accounts_by_task (fields.task_id); break;
+				case "email"	: account_data.get_by_email (fields.email_address); break;
+				case "company"	: account_data.get_by_company (fields.company_id); break;
+				case "project"	: account_data.get_by_project (fields.project_id); break;
+				case "task"		: account_data.get_by_task (fields.task_id); break;
 				default: break;
 			}// switch;
+
 		});
 	} catch (except) { console.log (except) }
 });
@@ -192,12 +202,13 @@ app.post ("/email", () => {
 app.post ("/invitations", () => {
 	app.process (fields => {
 
-		let invite = new InvitationModel ();
+		let invite = new InvitationsModel ();
 
 		switch (fields.action) {
-			case "all": invite.get_invitations_by_email (fields.email_address); break;
-			case "accepted": invite.accept_invitation (fields.account_id, fields.invite_id); break;
-			case "declined": invite.decline_invitation (fields.account_id, fields.invite_id); break;
+			case "all": invite.get_by_email (fields.email_address); break;
+			case "id": invite.get_by_id (fields.id); break;
+			case "accepted": invite.accept (fields.account_id, fields.invite_id); break;
+			case "declined": invite.decline (fields.account_id, fields.invite_id); break;
 		}// switch;
 
 	});
@@ -271,7 +282,7 @@ app.post ("/permissions", () => {
 
 
 app.get ("/packages", () => {
-	response.sendFile (`${root_path}/client/pages/static/packages.html`);
+	response ().sendFile (`${root_path}/client/pages/static/packages.html`);
 });
 
 
@@ -345,43 +356,76 @@ app.post ("/payment", () => app.process (fields => new PaymentHandler (response)
 
 
 app.post ("/signin", () => {
-	app.process (fields => new AccountsModel ().signin (fields, response).then (async results => {
+	app.process (fields => new AccountsModel ().signin (fields, response).then (results => {
 
-		let account = (global.is_null (results) || (results.length < 1)) ? null : results [0];
-		let response = global.response ();
-		
-		if (global.is_null (account)) {
-			response.send ({ 
+		let account = (is_null (results) || (results.length < 1)) ? null : results [0];
+		let result = { credentials: account };
+
+		let processed = {
+			companies: false,
+			options: false,
+			logging: false,
+			settings: false,
+		}// processed;
+
+
+		const load_options = companies => {
+			
+			let option_count = companies.length;
+
+			companies.forEach (company => new OptionsModel ().get_options_by_company (company.company_id).then (options => {
+				if (not_set (result.options)) result.options = {}
+				result.options [company.company_id] = options;
+				if (--option_count == 0) processed.options = true;
+			}));
+
+		}/* load_options */;
+
+
+		const return_response = () => {
+			if (processed.companies && processed.settings && processed.logging && processed.options) return response ().send (result);
+			setTimeout (return_response);
+		}/* return_response */;
+
+
+		if (is_null (account)) {
+			response ().send ({ 
 				error: 1,
 				error_message: "Unknown account"
 			});
 			return;
 		}// if;
 
-		let result = { credentials: account };
+		new CompaniesModel ().get_companies_by_account (account.account_id).then (companies => {
 
-		let companies = await (new CompaniesModel ().get_companies_by_account (account.account_id));
-		let settings = await (new SettingsModel ().get_settings (account.account_id));
-		let logging = await (new LoggingModel ().latest_log_entry (account.account_id));
+			result.companies = { list: companies };
 
-		if (companies.length > 0) {
-			for (let company of companies) {
-				result.options = { [company.company_id]: await (new OptionsModel ().get_options_by_company (company.company_id)) };
-				result.companies = { ...result.companies, [company.company_id]: company }
-				delete company.company_id;
+			if (companies.length == 0) throw `Rogue account: ${account.account_id}`;
+			if (companies.length == 1) result.companies.active_company = companies [0].company_id;
+
+			load_options (companies);
+
+			processed.companies = true;
+
+		});
+
+		new SettingsModel ().get_settings (account.account_id).then (settings => {
+
+			for (let setting of settings) {
+				if (not_set (result.settings)) result.settings = {};
+				result.settings [setting.id] = setting.value;
 			}// for;
-		}// if;
 
-		if (companies.length == 1) result.companies.active_company = companies [0].company_id;
+			processed.settings = true;
 
-		for (let setting of settings) {
-			if (not_set (result.settings)) result.settings = {};
-			result.settings [setting.id] = setting.value;
-		}// for;
+		});
+				
+		new LoggingModel ().latest_log_entry (account.account_id).then (logging => {
+			if (logging.length > 0) result.logging = logging [0] ?? blank;
+			processed.logging = true;
+		});
 
-		if (logging.length > 0) result.logging = logging [0];
-
-		response.send (result);
+		return_response ();
 
 	}));
 });
@@ -394,7 +438,7 @@ app.get ("/join", () => app.process (fields => {
 
 
 	const bad_invitation = (data) => {
-		if (global.not_set (data)) return true;
+		if (not_set (data)) return true;
 		if (invite.value != data.invite_id) return true;
 		if (company.value != data.company_id) return true;
 		if (host.value != data.host_id) return true;
@@ -433,11 +477,16 @@ app.get ("/join", () => app.process (fields => {
 	/*********/
 
 
-	new InvitationModel ().get_invitation_by_id (invite.value).then (data => {
+	new InvitationsModel ().get_invitation_by_id (invite.value).then (data => {
+
+		let response = response ();
+
 		if (isset (data)) data = data [0]; 
 		if (isset (data) && bad_invitation (data)) return response.send (condolences);
+
 		response.redirect ("/");
 		response.end ();
+
 	});
 
 }));
@@ -457,7 +506,7 @@ app.get ("/join", () => app.process (fields => {
 // });
 
 
-createNamespace (global.session_namespace);
+createNamespace (session_namespace);
 
 
 var options = {
