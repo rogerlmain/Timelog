@@ -173,13 +173,12 @@ export default class SignupPage extends BaseControl {
 			if (isset (invite_company_id)) return CompanyAccountsModel.save_company_account (FormData.fromObject ({
 				account_id: account.account_id,
 				company_id: invite_company_id,
-			})).then (() => 
-{			
-
-	CompanyStorage.load_companies ().then (this.props.parent.sign_in);
-			
-}			
-			);
+			})).then (() => {			
+				CompanyStorage.load_companies ().then (() => {
+					CompanyStorage.set_active_company (invite_company_id);
+					this.props.parent.sign_in ();
+				});
+			});
 			
 			CompanyStorage.save_company (FormData.fromObject ({
 				name: default_company_name,

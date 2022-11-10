@@ -31,7 +31,7 @@ export default class LocalStorage {
 
 
 	static get (store, name) {
-		let items = this.get_all (store);
+		let items = LocalStorage.get_all (store);
 		return (common.isset (items) && common.isset (items [name]) ? items [name] : null);
 	}// get;
 
@@ -52,10 +52,10 @@ export default class LocalStorage {
 
 	
 	static set_item (store, name, value) {
-		let values = this.get_all (store);
+		let values = LocalStorage.get_all (store);
 		if (common.is_null (values)) values = {};
 		values [name] = value;
-		this.set_store (store, values);
+		LocalStorage.set_store (store, values);
 	}// set_item;\
 	
 

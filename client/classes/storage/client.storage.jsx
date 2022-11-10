@@ -18,7 +18,7 @@ export default class ClientStorage extends LocalStorage {
 
 
 	static #get = () => LocalStorage.get_all (store_name);
-	static #set = values => { LocalStorage.set_store (store_name, values) }
+	static #set = values => LocalStorage.set_store (store_name, values);
 
 
 	static #set_client_by_id = (client_id, data) => {

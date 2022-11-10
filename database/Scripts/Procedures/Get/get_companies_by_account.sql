@@ -43,9 +43,7 @@ create procedure get_companies_by_account (account_id integer) begin
 	on
 		adr.country_id = lkc.id
 	where
-		(acc.id = account_id) or
-        (cpy.primary_contact_id = account_id) or
-        (cpy.secondary_contact_id = account_id);
+		(acc.id = account_id);
 
 end ??
 

@@ -14,8 +14,8 @@ export const default_description = `${default_name} description`;
 export default class CompanyStorage extends LocalStorage {
 
 
-	static #get (company_id) { return super.get (store_name, company_id) }
-	static #set_all (values) { LocalStorage.set_store (store_name, values) }
+	static #get = company_id => LocalStorage.get (store_name, company_id);
+	static #set = values => LocalStorage.set_store (store_name, values);
 
 
 	/**** Public Methods ****/
@@ -37,7 +37,7 @@ export default class CompanyStorage extends LocalStorage {
 				
 			});
 
-			CompanyStorage.#set_all (result);
+			CompanyStorage.#set (result);
 			resolve ();
 
 		}).catch (reject);
@@ -50,9 +50,7 @@ export default class CompanyStorage extends LocalStorage {
 	static company_selected () { return isset (this.active_company_id ()) }
 	static paid_account () { return isset (this.square_id ()) }
 
-	static set_store = values => super.set_store (store_name, values);
 	static set_active_company (value) { super.set_item (store_name, "active_company", value) }
-
 	static active_company = () => this.company_list ()?.[this.active_company_id ()]
 
 
@@ -75,7 +73,7 @@ export default class CompanyStorage extends LocalStorage {
 
 		}// for;
 
-		this.#set_all (company_list);
+		this.#set (company_list);
 
 	}// add_companies;
 
@@ -106,7 +104,7 @@ export default class CompanyStorage extends LocalStorage {
 		delete company.action;
 		delete company.company_id;
 		
-		this.#set_all ({[company_id]: company});
+		this.#set ({[company_id]: company});
 		resolve ({ ...company, company_id: company_id });
 
 	}));
