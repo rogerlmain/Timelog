@@ -37,6 +37,8 @@ import { debugging, isset, jsonify, not_empty } from "client/classes/common";
 import { codify } from "client/forms/project.form";
 
 import user_image from "resources/images/guest.user.svg";
+import InvitationStorage from "client/classes/storage/invitation.storage";
+import CompaniesModel from "client/classes/models/companies.model";
 
 
 const image_uploader_style = { 
@@ -160,6 +162,7 @@ export default class SignupPage extends BaseControl {
 
 		let form_data = new FormData (document.getElementById ("account_form"));
 		let company_account_saved = false;
+		let invite_company_id = InvitationStorage.invitation_data ()?.company_id;
 
 		if (isset (this.state.avatar)) form_data.append ("avatar", this.state.avatar);
 
@@ -167,6 +170,17 @@ export default class SignupPage extends BaseControl {
 
 			if (this.state.existing_account) return this.setState ({ eyecandy_visible: false }, () => this.context.master_page.setState ({ avatar: this.state.avatar }));
 
+			if (isset (invite_company_id)) return CompanyAccountsModel.save_company_account (FormData.fromObject ({
+				account_id: account.account_id,
+				company_id: invite_company_id,
+			})).then (() => 
+{			
+
+	CompanyStorage.load_companies ().then (this.props.parent.sign_in);
+			
+}			
+			);
+			
 			CompanyStorage.save_company (FormData.fromObject ({
 				name: default_company_name,
 				description: default_company_description,

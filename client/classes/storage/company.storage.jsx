@@ -21,13 +21,38 @@ export default class CompanyStorage extends LocalStorage {
 	/**** Public Methods ****/
 
 
+	static load_companies = () => new Promise ((resolve, reject) => {
+		CompaniesModel.get_companies ().then (data => {
+
+			let result = null;
+
+			data.forEach (company => {
+
+				let company_id = company.company_id;
+				
+				if (is_null (result)) result = {};
+				delete company.company_id;
+
+				result [company_id] = company;
+				
+			});
+
+			CompanyStorage.#set_all (result);
+			resolve ();
+
+		}).catch (reject);
+	})/* load_companies */;
+
+
 	static active_company_id () { return this.#get ("active_company") }
 	static square_id () { return nested_value (this.active_company (), "square_id") }
 
 	static company_selected () { return isset (this.active_company_id ()) }
 	static paid_account () { return isset (this.square_id ()) }
 
+	static set_store = values => super.set_store (store_name, values);
 	static set_active_company (value) { super.set_item (store_name, "active_company", value) }
+
 	static active_company = () => this.company_list ()?.[this.active_company_id ()]
 
 

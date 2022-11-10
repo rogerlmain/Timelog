@@ -4,6 +4,7 @@ import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage, { default_name } from "client/classes/storage/company.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 import PermissionsStorage from "client/classes/storage/permissions.storage";
+import InvitationStorage from "client/classes/storage/invitation.storage";
 
 import ThumbnailImage from "client/controls/thumbnail.image";
 
@@ -26,7 +27,6 @@ import SelectList from "client/controls/lists/select.list";
 
 import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/companies.model";
-import InvitationsModel from "./classes/models/invitations.model";
 import OptionsModel from "client/classes/models/options.model";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
@@ -165,7 +165,7 @@ export default class MasterPanel extends BaseControl {
 		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
 		this.state.avatar = AccountStorage.avatar ();
 
-		this.get_invitation ().then (result => {
+		InvitationStorage.get_invitation ().then (result => {
 			if (is_null (result)) return this.setState ({ signing_up: true });
 			AccountsModel.get_by_email (result.invitee_email).then (account => this.setState ({ signing_up: account.empty () }));
 		});
@@ -176,40 +176,6 @@ export default class MasterPanel extends BaseControl {
 
 
 	/********/
-
-
-	invitation_data = invitation => {
-
-		const next_item = () => {
-
-			let length = parseInt (invitation.substr (0, 2));
-			let response = (length > 0) ? parseInt (invitation.substr (2, length)) : null;
-						
-			invitation = invitation.slice (length + 2);
-
-			return response;
-
-		}/* next_item */;
-
-		return isset (invitation) ? {
-			invite_id: next_item (),
-			company_id: next_item (),
-			host_id: next_item (),
-			invitee_account_id: next_item (),
-			date_created: new Date (next_item () * 1000),
-		} : null;
-
-	}// invitation_data;
-
-
-	get_invitation = () => new Promise ((resolve, reject) => {
-
-		let invitation = this.invitation_data (localStorage.getItem ("invitation"));
-
-		if (not_set (invitation) || not_set (invitation.invite_id)) return resolve (null);
-		InvitationsModel.get_by_id (invitation.invite_id).then (result => resolve (result?.[0])).catch (reject);
-
-	})// get_invitation;
 
 
 	set_page = page => this.main_panel.current.animate (() => this.setState ({ active_page: page }));
