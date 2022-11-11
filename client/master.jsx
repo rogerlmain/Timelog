@@ -52,7 +52,7 @@ import LoggingStorage from "client/classes/storage/logging.storage";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.9.7";
+const version = "1.0.9.8";
 
 
 const user_image_style = {
