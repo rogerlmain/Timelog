@@ -39,6 +39,7 @@ import { codify } from "client/forms/project.form";
 import user_image from "resources/images/guest.user.svg";
 import InvitationStorage from "client/classes/storage/invitation.storage";
 import CompaniesModel from "client/classes/models/companies.model";
+import InvitationsModel from "client/classes/models/invitations.model";
 
 
 const image_uploader_style = { 
@@ -87,6 +88,13 @@ export default class SignupPage extends BaseControl {
 
 		account_type: account_types.deadbeat,
 
+		default_user: debugging () ? {
+			first_name: "Moe",
+			last_name: "Howard",
+			password: "stranger",
+			email: "moe@threestooges.com",
+		} : null,
+		
 		payment_required: false,
 		changing_password: false,
 		corporate: false,
@@ -99,7 +107,7 @@ export default class SignupPage extends BaseControl {
 
 		onChange: null,
 		
-	}// componentDidUpdate;
+	}/* state */;
 
 
 	/********/
@@ -110,9 +118,32 @@ export default class SignupPage extends BaseControl {
 
 
 	constructor (props) {
+
 		super (props);
-		this.state.existing_account = AccountStorage.signed_in ();
+
+		let invitation = InvitationStorage.get_invitation ();
+
+		if (isset (invitation)) InvitationsModel.get_by_id (invitation.invite_id).then (data => {
+	
+			if (isset (data)) return setTimeout (this.setState ({ default_user: { ...this.state.default_user,
+				first_name: data.invitee_first_name,
+				last_name: data.invitee_last_name,
+				email: data.invitee_email,
+			}}));
+	
+			this.show_message (`
+				That invitation does not appear to be in our records.
+	
+				It may have expired. Please ask your administrator to
+				send you a new invitation.
+			`);
+	
+	//			InvitationStorage.clear_store ();
+	
+		})
+	
 	}// constructor;
+
 
 
 	/********/
@@ -251,14 +282,18 @@ export default class SignupPage extends BaseControl {
 					<input id="account_id" name="account_id" type="hidden" defaultValue={AccountStorage.account_id ()} />
 
 					<label htmlFor="first_name">First name</label>
-					<input type="text" id="first_name" name="first_name" required={true} 
-						defaultValue={(debugging () && signed_out) ? "High" : AccountStorage.first_name ()}>
-					</input>
+					<div key={this.create_key ("first_name")}>
+						<input type="text" id="first_name" name="first_name" required={true} 
+							defaultValue={signed_out ? this.state.default_user?.first_name : AccountStorage.first_name ()}>
+						</input>
+					</div>
 
 					<label htmlFor="last_name">Last name</label>
-					<input type="text" id="last_name" name="last_name" required={true} 
-						defaultValue={(debugging () && signed_out) ? "Priest" : AccountStorage.last_name ()}>
-					</input>
+					<div key={this.create_key ("last_name")}>
+						<input type="text" id="last_name" name="last_name" required={true} 
+							defaultValue={signed_out ? this.state.default_user?.last_name : AccountStorage.last_name ()}>
+						</input>
+					</div>
 
 					<label htmlFor="friendly_name">Friendly name<div style={{ fontSize: "8pt" }}>(optional)</div></label>
 					<input type="text" id="friendly_name" name="friendly_name" defaultValue={AccountStorage.friendly_name ()} />
@@ -285,17 +320,23 @@ export default class SignupPage extends BaseControl {
 					<Container visible={signed_out}>
 
 						<label htmlFor="password">Password</label>
-						<input type="password" id="password" ref={this.password_field} name="password" required={true} defaultValue={debugging () ? "stranger" : null} />
+						<input type="password" id="password" ref={this.password_field} name="password" required={true} 
+							defaultValue={debugging () && signed_out ? this.state.default_user.password : null}>
+						</input>
 
 						<label htmlFor="confirm_password">Confirm</label>
-						<input type="password" id="confirm_password" ref={this.confirm_password_field} name="confirm_password" required={true} defaultValue={debugging () ? "stranger" : null} />
+						<input type="password" id="confirm_password" ref={this.confirm_password_field} name="confirm_password" required={true} 
+							defaultValue={debugging () && signed_out ? this.state.default_user.password : null}>
+						</input>
 
 					</Container>
 
 					<label htmlFor="email_address">Email address</label>
-					<input type="text" name="email_address" required={true} style={{ gridColumn: "span 3", width: "100%" }} 
-						defaultValue={(debugging () && signed_out) ? "high.priest@solipsology.org" : AccountStorage.email_address ()}>
-					</input>
+					<div key={this.create_key ("email_address")} style={{ gridColumn: "span 3" }}>
+						<input type="text" name="email_address" required={true} style={{ width: "100%" }} 
+							defaultValue={signed_out ? this.state.default_user?.email : AccountStorage.email_address ()}>
+						</input>
+					</div>
 
 				</div>
 

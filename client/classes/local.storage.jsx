@@ -20,26 +20,25 @@ export default class LocalStorage {
 	}// stripped;
 
 
-	static get_all (key) { 
+	static get_store (key) { 
+
+		// Decrypt result (remember to encrypt the store name to retrieve the encrypted result)
+
 		let items = localStorage.getItem (key);
+
 		try {
-			return JSON.parse (items) ?? null;
+			return JSON.parse (items);
 		} catch (except) {
-			return null;
+			return items;
 		}// try;
-	}// get_credentials;
+
+	}// get_store;
 
 
 	static get (store, name) {
-		let items = LocalStorage.get_all (store);
+		let items = LocalStorage.get_store (store);
 		return (common.isset (items) && common.isset (items [name]) ? items [name] : null);
 	}// get;
-
-
-	static get_store (store) { 
-		// Decrypt result (remember to encrypt the store name to retrieve the encrypted result)
-		return localStorage.getItem (store) 
-	}// get_store;
 
 
 	static remove_store = store => localStorage.removeItem (store);
@@ -53,11 +52,11 @@ export default class LocalStorage {
 
 	
 	static set_item (store, name, value) {
-		let values = LocalStorage.get_all (store);
+		let values = LocalStorage.get_store (store);
 		if (common.is_null (values)) values = {};
 		values [name] = value;
 		LocalStorage.set_store (store, values);
-	}// set_item;\
+	}// set_item;
 	
 
 }// LocalStorage;

@@ -42,6 +42,7 @@ import logo from "resources/images/bundy.png";
 import user_image from "resources/images/guest.user.svg";
 
 import "resources/styles/home.page.css";
+import LoggingStorage from "client/classes/storage/logging.storage";
 
 
 /********/
@@ -398,8 +399,9 @@ export default class MasterPanel extends BaseControl {
 	}/* UserData */;
 
 
-	verify_invitations = () => { 
+	verify_invitations = () => {
 		
+		if (LoggingStorage.logged_out ()) return;
 		if (this.state.loading) return setTimeout (this.verify_invitations);
 
 		let invitation = InvitationStorage.get_invitation ();
@@ -410,14 +412,14 @@ export default class MasterPanel extends BaseControl {
 		
 			if (invite_data?.invitee_email.equals (AccountStorage.email_address ())) return InvitationStorage.clear_store ();
 
-			if (confirm ("This invitation is for a different account.\nLog out?")) {
+			if (ask_question ("This invitation is for a different account.\nLog out?")) {
 			
 				let invite_key = InvitationStorage.get_store ();
 		
 				this.sign_out ();
 				return InvitationStorage.set_store (invite_key);
 		
-			}/* sign_out */;
+			}// if;
 				
 			InvitationStorage.clear_store ();
 

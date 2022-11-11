@@ -1,6 +1,6 @@
 import LocalStorage from "client/classes/local.storage"
 
-import AccountsModel from "../models/accounts.model";
+import AccountsModel from "client/classes/models/accounts.model";
 
 import { credential_fields } from "client/classes/types/constants";
 import { isset, not_set } from "client/classes/common";
@@ -13,15 +13,19 @@ export default class AccountStorage extends LocalStorage {
 
 
 	static #get (name) { return LocalStorage.get (store_name, name) }
-	static #get_all () { return LocalStorage.get_all (store_name) }
-
-	static #set_all (credentials) { LocalStorage.set_store (store_name, credentials) }
 
 
 	/********/
 
 
-	static signed_in = () => { return isset (AccountStorage.#get_all ()) }
+	static get_store = () => LocalStorage.get_store (store_name);
+	static set_store = credentials => LocalStorage.set_store (store_name, credentials);
+
+
+	/********/
+
+
+	static signed_in = () => { return isset (AccountStorage.get_store ()) }
 
 	
 	static account_id = () => { return AccountStorage.#get (credential_fields.account_id) }
@@ -43,7 +47,7 @@ export default class AccountStorage extends LocalStorage {
 
 		if (not_set (response?.account_id)) return reject (response);
 
-		this.#set_all (account);
+		this.set_store (account);
 		resolve (account);
 		
 	}));

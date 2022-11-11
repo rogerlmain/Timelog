@@ -22,13 +22,16 @@ export default class ProjectStorage extends LocalStorage {
 	/**** Private Methods ****/
 
 
-	static #get = () => LocalStorage.get_all (store_name);
-	static #set = values => { LocalStorage.set_store (store_name, values) };
+	static get_store = () => LocalStorage.get_store (store_name);
+	static set_store = values => { LocalStorage.set_store (store_name, values) };
+
+
+	/********/
 
 
 	static #delete = project_id => {
 
-		let projects = this.#get ();
+		let projects = this.get_store ();
 		let found = false;
 
 		for (let company_id of Object.keys (projects)) {
@@ -42,7 +45,7 @@ export default class ProjectStorage extends LocalStorage {
 			}// for;
 
 			if (found) {
-				this.#set (projects);
+				this.set_store (projects);
 				break;
 			}// if;
 
@@ -51,9 +54,9 @@ export default class ProjectStorage extends LocalStorage {
 	}// #delete;
 
 
-	static #set_by_id = (client_id, project_id, data) => {
+	static set_store_by_id = (client_id, project_id, data) => {
 
-		let projects = this.#get ();
+		let projects = this.get_store ();
 		let company_id = CompanyStorage.active_company_id ();
 
 		if (not_set (projects)) projects = {};
@@ -62,12 +65,12 @@ export default class ProjectStorage extends LocalStorage {
 
 		projects [company_id][client_id][project_id] = data;
 
-		ProjectStorage.#set (projects);
+		ProjectStorage.set_store (projects);
 
-	}/* #set_by_id */;
+	}/* set_store_by_id */;
 
 
-	static #set_project = project => {
+	static set_store_project = project => {
 
 		let client_id = project.client_id;
 		let project_id = project.project_id;
@@ -78,10 +81,10 @@ export default class ProjectStorage extends LocalStorage {
 			delete project.project_id;
 		}// if;
 
-		ProjectStorage.#set_by_id (client_id, project_id, project);
+		ProjectStorage.set_store_by_id (client_id, project_id, project);
 		return project;
 
-	}/* #set_project */;
+	}/* set_store_project */;
 
 
 	/**** Public Methods *****/
@@ -104,7 +107,7 @@ export default class ProjectStorage extends LocalStorage {
 
 	
 	static save_project = form_data => new Promise ((resolve, reject) => ProjectModel.save_project (form_data).then (data => {
-		ProjectStorage.#set_project (data);
+		ProjectStorage.set_store_project (data);
 		resolve (data);
 	}).catch (reject));
 
@@ -112,7 +115,7 @@ export default class ProjectStorage extends LocalStorage {
 	static get_by_id (project_id) {
 		return new Promise ((resolve, reject) => {
 
-			let store = this.#get ();
+			let store = this.get_store ();
 			let project_data = null;
 
 			if (not_set (project_id)) return resolve (null);
@@ -123,7 +126,7 @@ export default class ProjectStorage extends LocalStorage {
 
 			if (isset (project_data)) return resolve (project_data);
 				
-			ProjectModel.get_project_by_id (project_id).then (data => resolve (this.#set_project (data))).catch (reject);
+			ProjectModel.get_project_by_id (project_id).then (data => resolve (this.set_store_project (data))).catch (reject);
 
 		});
 	}/* get_by_id */;
@@ -132,7 +135,7 @@ export default class ProjectStorage extends LocalStorage {
 	static get_by_client (client_id) {
 		return new Promise ((resolve, reject) => {
 
-			let result = this.#get ()?.[CompanyStorage.active_company_id ()]?.[client_id];
+			let result = this.get_store ()?.[CompanyStorage.active_company_id ()]?.[client_id];
 
 			if (isset (result)) return resolve (result);
 			if (not_number (client_id)) return resolve (null);
@@ -144,7 +147,7 @@ export default class ProjectStorage extends LocalStorage {
 				if (project_count == 0) return resolve (data); // return an empty array - it's how to distinguish unread from no value
 
 				data.forEach (project => {
-					ProjectStorage.#set_project (project);
+					ProjectStorage.set_store_project (project);
 					if (--project_count == 0) ProjectStorage.get_by_client (client_id).then (data => resolve (data));
 				});
 

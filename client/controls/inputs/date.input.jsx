@@ -8,7 +8,7 @@ import PopupPanel from "client/controls/panels/popup.panel";
 
 import calendar_glyph from "resources/images/glyphs/calendar.glyph.svg";
 
-import { is_null, notify, not_set } from "client/classes/common";
+import { is_null, not_set } from "client/classes/common";
 import { date_formats } from "client/classes/types/constants";
 
 import "resources/styles/controls/date.input.css";

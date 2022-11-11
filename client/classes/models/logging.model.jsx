@@ -2,7 +2,7 @@ import Database from "client/classes/database";
 
 import { blank, date_formats } from "client/classes/types/constants";
 import { isset } from "client/classes/common";
-import CompanyStorage from "../storage/company.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 
 const table = "logging";

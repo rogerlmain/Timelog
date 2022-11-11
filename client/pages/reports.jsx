@@ -305,7 +305,7 @@ export default class ReportsPage extends BaseControl {
 						<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
 
 						<BillingCheckbox id={data.log_id} onClick={event => {
-							if (event.target.checked === false) return warning (`
+							if (event.target.checked === false) return this.ask_question (`
 								This entry has been marked as billed!
 								If you continue, your client may be charged twice.
 

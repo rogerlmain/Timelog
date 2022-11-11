@@ -8,13 +8,16 @@ const store_name = "logging";
 export default class LoggingStorage extends LocalStorage {
 
 
-	static #get_all = () => { return super.get_all (store_name) }
-
-
 	static #get = field => {
-		let result = this.#get_all ();
+		let result = this.get_store ();
 		return is_object (result) ? result [field] : null;
-	}// #get;
+	}/* #get */;
+
+
+	/********/
+
+
+	static get_store = () => LocalStorage.get_store (store_name);
 
 
 	/********/
@@ -24,7 +27,7 @@ export default class LoggingStorage extends LocalStorage {
 
 	static delete = () => super.remove_store (store_name);	
 
-	static logged_in = () => { return isset (this.#get_all ()) }
+	static logged_in = () => { return isset (this.get_store ()) }
 	static logged_out = () => { return !this.logged_in () }
 
 	static start_time = () => { return this.#get ("start_time") }
@@ -33,7 +36,7 @@ export default class LoggingStorage extends LocalStorage {
 
 
 	static current_entry = () => { 
-		let result = this.#get_all ();
+		let result = this.get_store ();
 		if (isset (result) && isset (result.start_time)) result.start_time = new Date (result.start_time);
 		return result;
 	}// current_entry;

@@ -27,28 +27,34 @@ export default class OptionsStorage extends LocalStorage {
 
 
 	static #get = name => super.get (store_name, CompanyStorage.active_company_id ())?.[name];
-	static #get_all = () => super.get_all (store_name)?.[CompanyStorage.active_company_id ()];
-
 
 	static #set (name, value) {
 
 		let company_id = CompanyStorage.active_company_id ();
-		let options = super.get_all (store_name);
+		let options = OptionsStorage.get_store ();
 		
 		if (not_set (options)) options = {};
 		if (not_set (options [company_id])) options [company_id] = {};
 
 		options [company_id][name] = value;
 
-		LocalStorage.set_store (store_name, options);
+		OptionsStorage.set_store (options);
+
 	}// #set;
 
 
 	/********/
 
 
-	static get_options = () => OptionsStorage.#get_all ();
-	static set_by_company_id (company_id, value) { this.set_store (store_name, {...super.get_all (), [company_id]: value }) }
+	static get_store = () => LocalStorage.get_store (store_name);
+	static set_store = value => LocalStorage.set_store (store_name, value);
+
+
+	/********/
+
+
+	static get_options = () => OptionsStorage.get_store ()?.[CompanyStorage.active_company_id ()];
+	static set_by_company_id = (company_id, value) => LocalStorage.set_store ({...LocalStorage.get_store (), [company_id]: value });
 
 
 	static save_option (option, value) {	

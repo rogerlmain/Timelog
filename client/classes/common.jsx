@@ -4,13 +4,10 @@ import { blank } from "client/classes/types/constants";
 import { unlimited } from "client/classes/types/options";
 
 
-const detab = (text) => { 
-	while (text.matches (/\n\t/g)) { text = text.replace (/\n\t/g, "\n") } 
-	return text;
-}// detab;
-
-
 /********/
+
+
+export const detab = text => text.replace (/\n[\t]*/g, "\n");
 
 
 export const debugging = (active = true) => (active && window.location.hostname.equals ("localhost"));
@@ -23,7 +20,7 @@ export function multiline_text () { return Array.from (arguments).join ("\n") }
 export function integer_value (value) { return isset (value) ? parseInt (value) : null }
 
 export function notify () { alert (not_empty (arguments) ? multiline_text (...arguments) : "paused") }
-export function warning (text) { return confirm (detab (text)) } // TEMPORARY - TO BE REPLACED WITH A POPUP WINDOW WHEN THE TIME IS RIGHT
+
 export function randomized (number) { return ((parseInt (number) * 1000) + (Math.random () * 1000)) }
 
 export function is_unlimited (value) { return (value == unlimited) }

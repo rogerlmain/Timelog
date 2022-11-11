@@ -2,9 +2,9 @@ import React from "react";
 
 import Container from "client/controls/container";
 import BaseControl from "client/controls/abstract/base.control";
+import ThumbnailImage from "client/controls/thumbnail.image";
 
 import SettingsStorage from "client/classes/storage/settings.storage";
-import ThumbnailImage from "../thumbnail.image";
 
 
 export default class ImageUploader extends BaseControl {
