@@ -25,7 +25,8 @@ export default class InvitationsModel extends Database {
 			invite_id			: integer_value (data.invite_id ?? null),
 			company_id			: integer_value (data.company_id),
 			host_id				: integer_value (data.host_id),
-			invitee_name		: data.invitee_name,
+			invitee_first_name	: data.invitee_first_name,
+			invitee_last_name	: data.invitee_last_name,
 			invitee_email		: data.invitee_email,
 			invitee_account_id	: integer_value (data.invitee_account_id ?? null),
 		}// parameters;

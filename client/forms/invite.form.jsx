@@ -15,6 +15,12 @@ import { debugging, isset, not_set } from "client/classes/common";
 
 const notification_delay = 2000;
 
+const test = {
+	first_name: "The High",
+	last_name: "Priest",
+	email_address: "high.priest@solipsology.org",
+}/* test */;
+
 
 export default class InviteForm extends BaseControl {
 
@@ -46,39 +52,52 @@ export default class InviteForm extends BaseControl {
 
 
 	invitee_details = () => {
+
 		if (not_set (this.state.invite_data)) return blank;
-		return `Inviting ${this.state.invite_data.get ("invitee_name")} (${this.state.invite_data.get ("invitee_email")})`;
+
+		let first_name = this.state.invite_data.get ("invitee_first_name");
+		let last_name = this.state.invite_data.get ("invitee_last_name");
+
+		return `Inviting ${first_name} ${last_name} (${this.state.invite_data.get ("invitee_email")})`;
+		
 	}// invitee_details;
 
 
 	invite_form = () => <form id="invite_form" ref={this.invite_reference}>
 		<div className="horizontally-aligned with-headspace">
 
-			<label htmlFor="invitation">Invite a contributor</label>
+			<input type="hidden" id="company_id" value={CompanyStorage.active_company_id ()} />
+					
+			<div className="two-column-grid">
 
-			<div className="three-column-grid" style={{ columnGap: "0.2em" }}>
+				<label htmlFor="invitee_first_name">First name</label>
+				<div className="horizontally-spaced-out">
 
-				<input type="hidden" id="company_id" value={CompanyStorage.active_company_id ()} />
-				
-				<input type="text" id="invitee_name" name="invitee_name" placeholder="Name" style={{ width: "8em" }} 
-					onChange={event => this.setState ({ invitee: event.target.value })} required={true}
-					defaultValue={debugging () ? 
-//									"Roger"
-						"The High Priest"
-					: null}>
+					<input type="text" id="invitee_first_name" name="invitee_first_name" placeholder="Name" style={{ width: "8em" }} 
+						onChange={event => this.setState ({ invitee: event.target.value })} required={true}
+						defaultValue={debugging () ? test.first_name : null}>
+					</input>
+
+					<label htmlFor="invitee_last_name">Last name</label>
+					<input type="text" id="last_name" name="invitee_last_name" placeholder="Name" style={{ width: "8em" }} 
+						onChange={event => this.setState ({ invitee: event.target.value })} required={true}
+						defaultValue={debugging () ? test.last_name : null}>
+					</input>
+
+				</div>
+
+				<label htmlFor="email">Email address</label>
+				<input type="email" id="invitee_email" name="invitee_email" 
+					placeholder="Email address" required={true} style={{ width: "22em" }}
+					defaultValue={debugging () ? test.email_address : null}>
 				</input>
 
-				<input type="email" id="invitee_email" name="invitee_email" placeholder="Email address" required={true}
-					defaultValue={debugging () ? 
-//									"roger.main@rexthestrange.com" 
-						"high.priest@solipsology.org"
-					: null}>
-				</input>
-
-				<button onClick={event => {
-					this.setState ({ invite_data: new FormData (this.invite_reference.current) });
-					event.preventDefault ();
-				}}>Invite</button>
+				<div className="span-all-columns button-panel" style={{ marginTop: "0.5em" }}>
+					<button onClick={event => {
+						this.setState ({ invite_data: new FormData (this.invite_reference.current) });
+						event.preventDefault ();
+					}}>Invite</button>
+				</div>
 
 			</div>
 
@@ -93,7 +112,7 @@ export default class InviteForm extends BaseControl {
 			
 		onEyecandy={() => this.invite_contributor ().then (invitation => this.setState ({ 
 			invite_data: null,
-			notification: `${invitation.invitee_name} has been invited to join us.`,
+			notification: `${invitation.invitee_first_name} ${invitation.invitee_last_name} has been invited to join us.`,
 		}, () => setTimeout (() => this.setState ({ notification: null }), notification_delay)))}
 
 		eyecandyVisible={isset (this.state.invite_data)}>

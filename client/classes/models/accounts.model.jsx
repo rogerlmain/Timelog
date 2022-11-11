@@ -20,18 +20,18 @@ export default class AccountsModel extends DataModel {
 	}// get_by_company;
 
 
-	static get_by_email (email_address) {
+	static get_by_email = email_address => new Promise ((resolve, reject) => {
 
-		if (is_null (email_address)) return null;
+		if (is_null (email_address)) return resolve (null);
 
 		let parameters = new FormData ();
 
 		parameters.set ("action", "email");
 		parameters.set ("email_address", email_address);
 
-		return Database.fetch_data (table, parameters);
+		Database.fetch_data (table, parameters).then (resolve).catch (reject);
 
-	}// get_by_email;
+	})/* get_by_email */;
 
 
 	static get_by_project (project_id, callback = null) {

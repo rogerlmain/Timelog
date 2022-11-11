@@ -27,6 +27,7 @@ import SelectList from "client/controls/lists/select.list";
 
 import AccountsModel from "client/classes/models/accounts.model";
 import CompanyModel from "client/classes/models/companies.model";
+import InvitationsModel from "client/classes/models/invitations.model";
 import OptionsModel from "client/classes/models/options.model";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
@@ -50,7 +51,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.9.5";
+const version = "1.0.9.7";
 
 
 const user_image_style = {
@@ -118,6 +119,8 @@ export default class MasterPanel extends BaseControl {
 
 		active_page: page_names.home,
 
+		loading: true,
+
 		buttons: null,
 		eyecandy_callback: null,
 
@@ -161,14 +164,13 @@ export default class MasterPanel extends BaseControl {
 		
 		let company_list = CompanyStorage.company_list ();
 		let active_company = CompanyStorage.active_company_id ();
+		
+		let invitation = InvitationStorage.get_invitation ();
 
 		this.state.company_id = isset (company_list) ? ((not_set (active_company) && (company_list.length == 1)) ? company_list [0].company_id : active_company) : null;
 		this.state.avatar = AccountStorage.avatar ();
 
-		InvitationStorage.get_invitation ().then (result => {
-			if (is_null (result)) return this.setState ({ signing_up: true });
-			AccountsModel.get_by_email (result.invitee_email).then (account => this.setState ({ signing_up: account.empty () }));
-		});
+		(isset (invitation) && AccountsModel.get_by_email (invitation.invitee_email).then (account => this.setState ({ signing_up: not_set (account) })))
 
 		if (debugging (false)) console.log ("creating master page");
 
@@ -193,15 +195,27 @@ export default class MasterPanel extends BaseControl {
 			company_id: CompanyStorage.active_company_id (),
 		}));
 		
-	}// sign_in;
+	}/* sign_in */;
 
 
 	sign_up = () => this.main_panel.current.animate (() => this.setState ({ signing_up: true }));
 
 
+	sign_out = () => {
+
+		localStorage.clear ();
+
+		this.button_panel.current.animate (() => this.setState ({ buttons: null }));
+		this.user_data_panel.current.animate (() => this.setState ({ company_id: null }));
+
+		this.set_page (this.main_contents ());
+
+	}/* sign_out */;
+
+
 	main_contents = () => {
 		if (this.signed_in ()) return this.get_page (this.state.active_page);
-		if (this.state.signing_up) return <SignupPage parent={this} />
+		if (this.state.signing_up || isset (this.state.invitee)) return <SignupPage parent={this} />
 		return <SigninPage parent={this} />
 	}/* main_contents */;
 
@@ -292,18 +306,7 @@ export default class MasterPanel extends BaseControl {
 	signout_button () {
 		return <SelectButton key="signout_button" 
 
-			onClick={() => {
-
-				localStorage.clear ();
-
-				this.button_panel.current.animate (() => this.setState ({ buttons: null }));
-				this.user_data_panel.current.animate (() => this.setState ({ company_id: null }));
-
-				this.set_page (this.main_contents ());
-
-//				this.setState ();
-
-			}}>
+			onClick={this.sign_out}>
 				
 			Sign out
 			
@@ -392,9 +395,37 @@ export default class MasterPanel extends BaseControl {
 	
 		</div>
 	
-	}// UserData;
-	
-	
+	}/* UserData */;
+
+
+	verify_invitations = () => { 
+		
+		if (this.state.loading) return setTimeout (this.verify_invitations);
+
+		let invitation = InvitationStorage.get_invitation ();
+
+		if (not_set (invitation)) return;
+
+		InvitationsModel.get_by_id (invitation?.invite_id).then (invite_data => {
+		
+			if (invite_data?.invitee_email.equals (AccountStorage.email_address ())) return InvitationStorage.clear_store ();
+
+			if (confirm ("This invitation is for a different account.\nLog out?")) {
+			
+				let invite_key = InvitationStorage.get_store ();
+		
+				this.sign_out ();
+				return InvitationStorage.set_store (invite_key);
+		
+			}/* sign_out */;
+				
+			InvitationStorage.clear_store ();
+
+		});
+
+	}// verify_invitations;
+
+
 	/********/
 
 
@@ -413,8 +444,12 @@ export default class MasterPanel extends BaseControl {
 
 
 	componentDidMount () {
+
 		if (live ()) this.update_clock ();
+
 		this.componentDidUpdate ();
+		this.verify_invitations ();
+
 	}// componentDidMount;
 	
 	
@@ -429,7 +464,7 @@ export default class MasterPanel extends BaseControl {
 		}// context_value;
 
 		if (isset (icd)) {
-			localStorage.setItem ("invitation", icd);
+			InvitationStorage.set_store (icd);
 			window.location.href = window.location.origin;
 			return null;
 		}// if;
@@ -459,7 +494,9 @@ export default class MasterPanel extends BaseControl {
 					</div>
 
 					<div className="home_button_panel with-headspace">
-						<ExplodingPanel id="main_button_panel" ref={this.button_panel}>{this.state.buttons}</ExplodingPanel>
+						<ExplodingPanel id="main_button_panel" ref={this.button_panel} afterChanging={() => this.setState ({ loading: false })}>
+							{this.state.buttons}
+						</ExplodingPanel>
 					</div>
 
 				</div>

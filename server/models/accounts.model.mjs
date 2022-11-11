@@ -8,7 +8,8 @@ import LoggingModel from "./logging.model.mjs";
 export default class AccountsModel extends Database {
 
 
-	get_by_email = email_address => this.execute_query ("get_account_by_email", [email_address]);
+	get_by_email = email_address => this.data_query ("get_account_by_email", [email_address]);
+
 	get_by_company = company_id => this.execute_query ("get_accounts_by_company", [parseInt (company_id)]);
 	get_by_project = project_id => this.execute_query ("get_accounts_by_project", [project_id]);
 	get_by_task = task_id => this.execute_query ("get_accounts_by_task", [task_id]);

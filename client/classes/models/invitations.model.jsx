@@ -38,7 +38,7 @@ export default class InvitationsModel extends DataModel {
 		parameters.set ("action", "id");
 		parameters.set ("id", invitation_id);
 
-		Database.fetch_data (table, parameters).then (result => resolve (result)).catch (reject);
+		Database.fetch_data (table, parameters).then (result => resolve (result?.[0])).catch (reject);
 
 	})// get_by_id;
 

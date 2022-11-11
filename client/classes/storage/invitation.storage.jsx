@@ -1,13 +1,17 @@
 import LocalStorage from "client/classes/local.storage";
-import InvitationsModel from "client/classes/models/invitations.model";
 
-import { isset, not_set } from "client/classes/common";
+import { isset } from "client/classes/common";
 
 
 const store_name = "invitation";
 
 
 export default class InvitationStorage extends LocalStorage {
+
+
+	static get_store = () => LocalStorage.get_store (store_name);
+	static set_store = values => LocalStorage.set_store (store_name, values);
+	static clear_store = () => LocalStorage.clear_store (store_name);
 
 
 	static invitation_data = () => {
@@ -36,14 +40,7 @@ export default class InvitationStorage extends LocalStorage {
 	}/* invitation_data */;
 
 
-	static get_invitation = () => new Promise ((resolve, reject) => {
-
-		let invitation = this.invitation_data (localStorage.getItem ("invitation"));
-
-		if (not_set (invitation) || not_set (invitation.invite_id)) return resolve (null);
-		InvitationsModel.get_by_id (invitation.invite_id).then (result => resolve (result?.[0])).catch (reject);
-
-	})/* get_invitation */;
+	static get_invitation = () => this.invitation_data (localStorage.getItem ("invitation"));
 
 
 }// InvitationStorage;

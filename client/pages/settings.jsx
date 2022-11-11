@@ -286,7 +286,7 @@ export default class SettingsPage extends BaseControl {
 
 			</div>
 
-			<div className="full-row section-header">Contributors</div>
+			<div className="full-row section-header">Invite a contributor</div>
 
 			<InviteForm />
 

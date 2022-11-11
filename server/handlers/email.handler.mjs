@@ -90,7 +90,7 @@ export default class EmailHandler {
 
 	send_invitation = () => {
 		try {
-			new AccountsModel ().get_account_by_email (this.fields.invitee_email).then (account => {
+			new AccountsModel ().get_by_email (this.fields.invitee_email).then (account => {
 
 				this.fields.invitee_account_id = (account.length > 0) ? account [0].account_id : null;
 

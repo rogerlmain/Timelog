@@ -5,10 +5,13 @@ import BaseControl from "client/controls/abstract/base.control";
 
 import LoggingStorage from "client/classes/storage/logging.storage";
 
+import InvitationStorage from "client/classes/storage/invitation.storage";
 import InvitationsModel from "client/classes/models/invitations.model";
 
-import { is_null, not_array, not_set } from "client/classes/common";
+import { isset, is_null, not_array, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
+import AccountStorage from "client/classes/storage/account.storage";
+import LocalStorage from "client/classes/local.storage";
 
 
 const invite_responses = {
@@ -32,7 +35,16 @@ export default class HomePage extends BaseControl {
 	static contextType = MasterContext;
 
 
+	constructor (props) {
+		super (props);
+		this.update_invitations ();
+	}// constructor;
+
+
 	/********/
+
+
+	update_invitations = (callback) => InvitationsModel.get_all ().then (data => this.setState ({ invitations: (not_array (data) || data.empty ()) ? null : data }, callback));
 
 
 	respond_to_invitation = (invite, response) => {
@@ -49,9 +61,6 @@ export default class HomePage extends BaseControl {
 
 		});
 	}// respond_to_invitation;
-
-
-	update_invitations = (callback) => InvitationsModel.get_all ().then (data => this.setState ({ invitations: (not_array (data) || data.empty ()) ? null : data }, callback));
 
 
 	show_invitations = () => {
@@ -83,12 +92,6 @@ export default class HomePage extends BaseControl {
 
 
 	/********/
-
-
-	componentDidMount () { this.update_invitations () }
-
-
-	componentDidUpdate = this.componentDidMount;
 
 
 	render () {

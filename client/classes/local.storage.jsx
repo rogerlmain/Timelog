@@ -42,7 +42,8 @@ export default class LocalStorage {
 	}// get_store;
 
 
-	static remove_store = (store) => localStorage.removeItem (store);
+	static remove_store = store => localStorage.removeItem (store);
+	static clear_store = LocalStorage.remove_store;
 
 
 	static set_store (store, values) {
