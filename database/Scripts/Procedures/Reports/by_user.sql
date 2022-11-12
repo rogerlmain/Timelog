@@ -9,7 +9,7 @@ create procedure report_by_user (account_id int, active_date date) begin
 	select 
 		clt.`name` as client_name,
 		prj.`name` as project_name,
-		sec_to_time(sum(time_to_sec(coalesce(log.end_time, now())) - time_to_sec(log.start_time)))
+		sec_to_time(sum(time_to_sec(coalesce(log.end_time, now())) - time_to_sec(log.start_time))) as total_time
 	from 
 		logging as log
 	join
@@ -21,9 +21,9 @@ create procedure report_by_user (account_id int, active_date date) begin
 	on
 		prj.id = log.project_id
 	where 
-		(account_id = 101) and 
-		(start_time >= '2022-11-10') and 
-		((end_time <= '2022-11-10 23:59:59.999') or (end_time is null))
+		(account_id = account_id) and 
+		(start_time >= active_date) and 
+		((end_time < date_add(active_date, interval 1 day)) or (end_time is null))
 	group by
 		client_name,
 		project_name
