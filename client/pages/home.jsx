@@ -52,12 +52,12 @@ export default class HomePage extends BaseControl {
 
 			if (response == invite_responses.accepted) {
 				return this.context.master_page.update_company_list ().then (() => {
-					if (confirm (`Do you want to log into ${invite.company_name}, now?`)) this.context.master_page.select_company (invite.company_id);
-					this.update_invitations (() => alert (`Invitation accepted`))
+					if (ask_question (`Do you want to log into ${invite.company_name}, now?`)) this.context.master_page.select_company (invite.company_id);
+					this.update_invitations (() => this.show_message (`Invitation accepted`))
 				});
 			}// if;
 
-			this.update_invitations (() => alert (`Invitation ${response}`));
+			this.update_invitations (() => this.show_message (`Invitation ${response}`));
 
 		});
 	}// respond_to_invitation;

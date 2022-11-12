@@ -1,7 +1,6 @@
 import Database from "client/classes/database";
-import AccountStorage from "client/classes/storage/account.storage";
 import DataModel from "client/classes/models/data.model";
-import CompanyStorage from "../storage/company.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 
 const table = "permissions";

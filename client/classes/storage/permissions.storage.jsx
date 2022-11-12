@@ -3,11 +3,11 @@ import LocalStorage from "client/classes/local.storage";
 import PermissionObject from "client/classes/types/permission.object";
 import PermissionsModel from "client/classes/models/permissions.model";
 import AccountStorage from "client/classes/storage/account.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 
 import ActivityLog from "client/classes/activity.log";
 
-import { is_null, nested_value, not_null, not_set } from "client/classes/common";
-import CompanyStorage from "./company.storage";
+import { nested_value, not_null, not_set } from "client/classes/common";
 
 
 const store = "permissions";

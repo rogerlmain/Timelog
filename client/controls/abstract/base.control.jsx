@@ -5,7 +5,7 @@ import ActivityLog from "client/classes/activity.log";
 import SettingsStorage from "client/classes/storage/settings.storage";
 
 import { blank, default_settings, empty } from "client/classes/types/constants";
-import { isset, is_function, is_null, jsonify, not_null, not_set } from "client/classes/common";
+import { detab, isset, is_function, is_null, jsonify, not_null, not_set } from "client/classes/common";
 
 
 const random_factor = 1000;
@@ -245,6 +245,18 @@ export default class BaseControl extends React.Component {
 		if (is_null (array)) return;
 		return array.map (callback);
 	}// mapping;
+
+
+	/**** Popup Messages ****/
+
+
+	// TEMPORARY - TO BE REPLACED WITH A POPUP WINDOW WHEN THE TIME IS RIGHT
+
+	show_message = text => alert (detab (text));
+	ask_question = text => confirm (detab (text));
+
+
+	/********/
 
 
 	componentDidUpdate () {

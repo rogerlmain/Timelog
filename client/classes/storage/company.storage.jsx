@@ -56,7 +56,7 @@ export default class CompanyStorage extends LocalStorage {
 
 	static add_companies (companies) {
 
-		let company_list = CompanyStorage.get_all (store_name);
+		let company_list = LocalStorage.get_store (store_name);
 		
 		if (is_null (companies)) return;
 
@@ -85,7 +85,7 @@ export default class CompanyStorage extends LocalStorage {
 	
 
 	static company_list () { 
-		let result = LocalStorage.get_all (store_name);
+		let result = LocalStorage.get_store (store_name);
 		if (isset (result)) delete result.active_company;
 		return result;
 	}// company_list;

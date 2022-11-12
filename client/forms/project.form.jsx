@@ -69,7 +69,7 @@ export default class ProjectForm extends FormControl {
 
 		event.preventDefault ();
 
-		if (!confirm (`Delete ${name}.\nAre you sure?`)) return false;
+		if (!ask_question (`Delete ${name}.\nAre you sure?`)) return false;
 
 		this.setState ({ status: `Deleting ${name}...` }, () => ProjectStorage.delete_project (this.project_data ("project_id")).then (success => {
 			this.setState ({ status: null }, () => { if (success) this.execute (this.props.onDelete) });

@@ -61,7 +61,7 @@ export default class ClientForm extends FormControl {
 
 		event.preventDefault ();
 
-		if (!confirm (`Delete ${this.client_data ("name")}.\nAre you sure?`)) return false;
+		if (!ask_question (`Delete ${this.client_data ("name")}.\nAre you sure?`)) return false;
 
 		this.setState ({ status: `Deleting ${this.client_data ("name")}...` }, () => ClientModel.delete_client (client_id).then (data => {
 

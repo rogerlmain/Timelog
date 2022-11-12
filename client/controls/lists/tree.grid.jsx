@@ -6,7 +6,7 @@ import TreeView from "client/controls/lists/tree.view";
 
 import Container from "client/controls/container";
 
-import { isset, is_array, is_empty, is_function, is_null, nested_value, notify } from "client/classes/common";
+import { isset, is_array, is_empty, is_function, is_null, nested_value } from "client/classes/common";
 
 
 export default class TreeGrid extends BaseControl {

@@ -17,7 +17,7 @@ export const default_description = `${default_name} description`;
 export default class ClientStorage extends LocalStorage {
 
 
-	static #get = () => LocalStorage.get_all (store_name);
+	static #get = () => LocalStorage.get_store (store_name);
 	static #set = values => LocalStorage.set_store (store_name, values);
 
 

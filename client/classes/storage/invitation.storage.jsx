@@ -40,7 +40,7 @@ export default class InvitationStorage extends LocalStorage {
 	}/* invitation_data */;
 
 
-	static get_invitation = () => this.invitation_data (localStorage.getItem ("invitation"));
+	static get_invitation = () => InvitationStorage.invitation_data (localStorage.getItem ("invitation"));
 
 
 }// InvitationStorage;

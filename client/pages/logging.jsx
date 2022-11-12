@@ -24,7 +24,6 @@ import { Break } from "client/controls/html/components";
 import { MasterContext } from "client/classes/types/contexts";
 
 import "resources/styles/pages/logging.css";
-import { resize_direction } from "client/controls/panels/resize.panel";
 
 
 const action_types = {
@@ -96,10 +95,8 @@ export default class LoggingPage extends BaseControl {
 	project_id = () => 	{ return null_value (this.state.current_entry?.project_id) }
 	notes = () => 		{ return null_value (this.state.current_entry?.notes) }
 
-	logged_in = () => { return isset (this.state.current_entry) && isset (this.state.current_entry.start_time) }
-	logged_out = () => { return !this.logged_in () }
 
-	project_selected = () => { return ((this.project_id () > 0) || OptionsStorage.single_project () || this.logged_in ()) }
+	project_selected = () => { return ((this.project_id () > 0) || OptionsStorage.single_project () || LoggingStorage.logged_in ()) }
 
 
 	metered_bill = elapsed_time => {
@@ -115,7 +112,7 @@ export default class LoggingPage extends BaseControl {
 	// Time limit in hours
 	needs_editing = time_limit => { 
 
-		if (this.logged_out ()) return false;
+		if (LoggingStorage.logged_out ()) return false;
 
 		let same_day = this.state.current_entry.start_time.same_day (this.state.current_entry.end_time);
 		let result = (!same_day || (this.elapsed_time () > (time_limit * Date.coefficient.hour)));
@@ -318,7 +315,7 @@ export default class LoggingPage extends BaseControl {
 
 		if (not_set (this.context)) return null;
 
-		let logged_in = this.logged_in ();
+		let logged_in = LoggingStorage.logged_in ();
 		let elapsed_time = logged_in ? this.elapsed_time () : null;
 		let project_selected = this.project_selected ();
 
