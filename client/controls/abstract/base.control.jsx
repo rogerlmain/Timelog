@@ -5,7 +5,7 @@ import ActivityLog from "client/classes/activity.log";
 import SettingsStorage from "client/classes/storage/settings.storage";
 
 import { blank, default_settings, empty } from "client/classes/types/constants";
-import { detab, isset, is_function, is_null, jsonify, not_null, not_set } from "client/classes/common";
+import { detab, isset, is_function, is_null, is_promise, jsonify, not_null, not_set } from "client/classes/common";
 
 
 const random_factor = 1000;
@@ -134,7 +134,7 @@ export default class BaseControl extends React.Component {
 	}// execute;
 
 
-	run (method, ...parameters) { return (is_function (method)) ? method (...parameters) : null }
+	run = (method, ...parameters) => (is_function (method) ? method (...parameters) : null);
 
 
 	get_id (control) {
