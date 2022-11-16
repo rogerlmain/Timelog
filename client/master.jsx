@@ -5,6 +5,7 @@ import CompanyStorage, { default_name } from "client/classes/storage/company.sto
 import OptionsStorage from "client/classes/storage/options.storage";
 import PermissionsStorage from "client/classes/storage/permissions.storage";
 import InvitationStorage from "client/classes/storage/invitation.storage";
+import LoggingStorage from "client/classes/storage/logging.storage";
 
 import ThumbnailImage from "client/controls/thumbnail.image";
 
@@ -42,7 +43,6 @@ import logo from "resources/images/bundy.png";
 import user_image from "resources/images/guest.user.svg";
 
 import "resources/styles/home.page.css";
-import LoggingStorage from "client/classes/storage/logging.storage";
 
 
 /********/
@@ -52,7 +52,7 @@ import LoggingStorage from "client/classes/storage/logging.storage";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.0.9.7";
+const version = "1.0.9.9";
 
 
 const user_image_style = {

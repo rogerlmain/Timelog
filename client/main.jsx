@@ -96,6 +96,7 @@ class Main extends BaseControl {
 
 				{/* Tests */}
 
+				{/* <ContentsPanelTest /> */}
 				{/* <FadePanelTest /> */}
 				{/* <ResizePanelTest /> */}
 				{/* <ExplodingPanelTest /> */}

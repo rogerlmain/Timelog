@@ -85,7 +85,7 @@ export default class SelectList extends BaseControl {
 			
 			className={this.props.className} style={this.props.style}
 
-			onChange={event => this.setState ({ selected_value: parseInt (event.target.value) }, () => this.execute (this.props.onChange, event))}>
+			onChange={event => this.setState ({ selected_value: event.target.value }, () => this.execute (this.props.onChange, event))}>
 
 			{this.header_visible () && <option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.header}</option>}
 

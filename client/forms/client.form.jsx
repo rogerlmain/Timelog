@@ -1,6 +1,6 @@
 import React from "react";
 
-import FormControl from "client/controls/form.control";
+import FormControl from "client/controls/forms/form.control";
 import FadePanel from "client/controls/panels/fade.panel";
 import ExpandingInput from "client/controls/inputs/expanding.input";
 

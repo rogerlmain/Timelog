@@ -15,6 +15,7 @@ import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 import DeluxeAccountForm from "client/forms/deluxe.account.form";
 import InviteForm from "client/forms/invite.form";
+import RepositoryForm from "client/forms/repository.form";
 
 import OptionToggle from "client/gadgets/toggles/option.toggle";
 
@@ -30,6 +31,7 @@ import { client_limit_options } from "client/pages/clients";
 import { project_limit_options } from "client/pages/projects";
 
 import "resources/styles/pages.css";
+import ContentsPanel from "client/controls/panels/contents.panel";
 
 
 const options_panels = {
@@ -62,6 +64,8 @@ export default class SettingsPage extends BaseControl {
 
 		cc_form: null,
 		pricing: null,
+
+		repos: null,
 
 	}/* state */;
 
@@ -168,7 +172,7 @@ export default class SettingsPage extends BaseControl {
 				onPaymentConfirmed={selected_option => this.process_option ("rounding_option", selected_option)}>
 			</OptionToggle>
 
-			<div className="span-all-columns">
+			<div className="span-columns">
 				<ExplodingPanel id="rounding_options_panel">
 					<Container id="rounding_options_container" visible={OptionsStorage.can_round ()}>
 						<div className="credit-centered with-headspace">
@@ -216,7 +220,7 @@ export default class SettingsPage extends BaseControl {
 		let option_available = ((OptionsStorage.client_limit () > 1) || (OptionsStorage.project_limit () > 1));
 		let option_purchased = (OptionsStorage.can_bill ());
 
-		return <div className="span-all-columns">
+		return <div className="span-columns">
 			<ExplodingPanel id="option_panel" direction={resize_direction.vertical} className="full-width">
 				<Container id="billing_options_container" visible={option_available}>
 
@@ -251,44 +255,66 @@ export default class SettingsPage extends BaseControl {
 	}/* billing_options */;
 
 
+	repo_list = () => <div>Coming soom</div>
+
+
 	/**** Panels ****/
 
 
 	account_options_panel = () => {
 		return <Container id="account_options_container" visible={this.state.current_panel == options_panels.account_options}>
 
-			<div className="full-row section-header">Account Options</div>
-
-			<div className="full-row horizontally-aligned" style={{ display: "flex", margin: "1em 0 2em" }}>
-				<div className="one-piece-form">
-					<label htmlFor="package">{account_types?.get_key (this.state.account_type).titled ()} account</label>
-					<ToggleSwitch id="package" onChange={option => this.setState ({ account_type: parseInt (option) })}>{this.account_options ()}</ToggleSwitch>
-				</div>
-			</div>
-
 			<div className="two-column-newspaper with-headspace">
 
 				<div>
-					<div className="credit-centered">
+
+					<div className="span-columns section-header">Account Options</div>
+
+					<div className="one-piece-form">
+
+						<div className="span-columns horizontally-aligned">
+							<div className="one-piece-form">
+								<label htmlFor="package">{account_types?.get_key (this.state.account_type).titled ()} account</label>
+								<ToggleSwitch id="package" onChange={option => this.setState ({ account_type: parseInt (option) })}>{this.account_options ()}</ToggleSwitch>
+							</div>
+						</div>
+
+					</div>
+
+					<br />
+
+					<div className="one-piece-form">
 						{this.granularity_option ()}
 						<Break />
 						{this.limit_options ()}
+						<Break />
+						{this.editing_option ()}
+						{this.rounding_options ()}
+						<Break />
+						{this.billing_options ()}
 					</div>
+
 				</div>
 
 				<div>
-					<div className="horizontally-aligned">{this.editing_option ()}</div>
+
+					<div className="section-header">Invite a contributor</div>
+					<InviteForm />
+
 					<br />
-					<div className="horizontally-aligned">{this.billing_options ()}</div>
+
+					<div className="section-header">Connect to a repository</div>
+					<RepositoryForm />
+
 					<br />
-					<div className="credit-centered">{this.rounding_options ()}</div>
+
+					<ContentsPanel index={isset (this.state.repos) ? 1 : 0}>
+						{this.repo_list ()}
+					</ContentsPanel>
+
 				</div>
 
 			</div>
-
-			<div className="full-row section-header">Invite a contributor</div>
-
-			<InviteForm />
 
 		</Container>
 	}// account_options_panel;
@@ -297,7 +323,7 @@ export default class SettingsPage extends BaseControl {
 	user_settings_panel = () => {
 		return <Container id="user_settings_container" visible={this.state.current_panel == options_panels.user_settings}>
 
-			<div className="full-row section-header">User Settings</div>
+			<div className="span-columns section-header">User Settings</div>
 
 			<div className="one-piece-form">
 				<label>Animation Speed</label>

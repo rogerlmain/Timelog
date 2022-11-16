@@ -59,7 +59,7 @@ export default class EyecandyForm extends BaseControl {
 
 		eyecandyVisible={isset (this.state.data)}>
 
-		<ContentsPanel value={isset (this.state.notification) ? 1 : 2} stretchOnly={true}>
+		<ContentsPanel index={isset (this.state.notification) ? 1 : 2} stretchOnly={true}>
 			<div>{this.state.notification}</div>
 			<div><form id={`${this.props.id}_invite_form`} ref={this.form}>{this.props.children}</form></div>
 		</ContentsPanel>

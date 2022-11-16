@@ -1,6 +1,6 @@
 import "./server/globals.mjs";
 
-import express from "express";
+import express, { response } from "express";
 
 import file_system from "fs";
 import https from "https";
@@ -13,9 +13,11 @@ import ClientModel from "./server/models/client.model.mjs";
 import CompanyAccountsModel from "./server/models/company.accounts.model.mjs";
 import CompanyCardModel from "./server/models/company.cards.model.mjs";
 import CompaniesModel from "./server/models/companies.model.mjs";
+import GithubModel, { repository_type } from "./server/models/offshore/github.mjs";
 import InvitationsModel from "./server/models/invitations.model.mjs";
 import LoggingModel from "./server/models/logging.model.mjs";
 import LookupsModel from "./server/models/lookups.model.mjs";
+import OffshoreModel from "./server/models/offshore.model.mjs";
 import OptionsModel from "./server/models/options.model.mjs";
 import PermissionsModel from "./server/models/permissions.model.mjs";
 import PricingModel from "./server/models/pricing.model.mjs";
@@ -39,6 +41,7 @@ const districts_id = 2;
 const method = { get: "get", post: "post" };
 
 const session_namespace = "timelog_session";
+
 
 let app = express ();
 
@@ -251,6 +254,25 @@ app.post ("/misc", () => {
 });
 
 
+
+app.post ("/offshore", () => {
+	try {
+
+		app.process (async fields => {
+			switch (fields.action) {
+				case "save_token": OffshoreModel.save_offshore_token (fields); break;
+
+				case repository_type.git: new GithubModel ().get_projects (fields.account_id); break;
+
+			}/* switch */;
+		});					
+
+	} catch (except) { 
+		console.log (except);
+	}// try;
+});
+
+
 app.post ("/options", () => {
 	try {
 		app.process (async fields => {
@@ -383,7 +405,7 @@ app.post ("/signin", () => {
 
 
 		const return_response = () => {
-			if (processed.companies && processed.settings && processed.logging && processed.options) return response ().send (result);
+			if (processed.companies && processed.settings && processed.logging && processed.options) return global.response ().send (result);
 			setTimeout (return_response);
 		}/* return_response */;
 

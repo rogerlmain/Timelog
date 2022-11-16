@@ -13,7 +13,7 @@ export default class ContentsPanelTest extends BaseControl {
 	render () {
 		return <div>
 		
-			<ContentsPanel value={this.state.value}>
+			<ContentsPanel index={this.state.value}>
 
 				<div style={{ border: "solid 1px green" }} id="small">Small Item</div>
 
@@ -34,6 +34,7 @@ export default class ContentsPanelTest extends BaseControl {
 
 			<br />
 
+			<button onClick={() => this.setState ({ value: 0 })}>No contents</button>
 			<button onClick={() => this.setState ({ value: 1 })}>Small contents</button>
 			<button onClick={() => this.setState ({ value: 2 })}>Mediocre contents</button>
 			<button onClick={() => this.setState ({ value: 3 })}>Big contents</button>

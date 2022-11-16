@@ -2,7 +2,7 @@ import React from "react";
 
 import ProjectStorage from "client/classes/storage/project.storage";
 
-import FormControl from "client/controls/form.control";
+import FormControl from "client/controls/forms/form.control";
 import FadePanel from "client/controls/panels/fade.panel";
 
 import AlphaCapitalInput from "client/controls/inputs/alpha.capital.input";

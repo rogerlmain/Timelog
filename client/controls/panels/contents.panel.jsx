@@ -17,7 +17,7 @@ export default class ContentsPanel extends BaseControl {
 	/********/
 
 
-	static defaultProps = { value: 1 }
+	static defaultProps = { index: 1 }
 
 
 	constructor (props) {
@@ -25,7 +25,7 @@ export default class ContentsPanel extends BaseControl {
 		super (props);
 		
 		this.id = `${this.props.id ?? this.create_key ()}_contents_panel`;
-		this.state.index = this.props.value;
+		this.state.index = this.props.index;
 
 	}// constructor;
 
@@ -40,7 +40,7 @@ export default class ContentsPanel extends BaseControl {
 
 
 	componentDidUpdate (props) {
-		if (props.value != this.props.value) this.animate (this.props.value);
+		if (props.index != this.props.index) this.animate (this.props.index);
 	}// componentDidUpdate;
 	
 
