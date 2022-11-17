@@ -1,4 +1,3 @@
-drop table if exists company_offshore_accounts;
 drop table if exists offshore_accounts;
 
 create table offshore_accounts (
