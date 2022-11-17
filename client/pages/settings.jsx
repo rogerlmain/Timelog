@@ -2,6 +2,7 @@ import React from "react";
 
 import OptionsStorage, { toggled } from "client/classes/storage/options.storage";
 import SettingsStorage from "client/classes/storage/settings.storage";
+import OffshoreModel from "client/classes/models/offshore.model";
 
 import Container from "client/controls/container";
 import Slider from "client/controls/slider";
@@ -11,17 +12,18 @@ import BaseControl from "client/controls/abstract/base.control";
 import SelectButton from "client/controls/buttons/select.button";
 import CurrencyInput from "client/controls/inputs/currency.input";
 
+import ContentsPanel from "client/controls/panels/contents.panel";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 import DeluxeAccountForm from "client/forms/deluxe.account.form";
 import InviteForm from "client/forms/invite.form";
-import RepositoryForm from "client/forms/repository.form";
+import OffshoreAccountsForm, { repository_type } from "client/forms/offshore.accounts.form";
 
 import OptionToggle from "client/gadgets/toggles/option.toggle";
 
 import { account_types, date_rounding, vertical_alignment } from "client/classes/types/constants";
 import { deadbeat_options, option_types } from "client/classes/types/options";
-import { isset, is_null, not_set } from "client/classes/common";
+import { isset, is_null, jsonify, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 import { resize_direction } from "client/controls/panels/resize.panel";
@@ -30,8 +32,10 @@ import { Break } from "client/controls/html/components";
 import { client_limit_options } from "client/pages/clients";
 import { project_limit_options } from "client/pages/projects";
 
+import git_image from "resources/images/logos/repositories/git.png";
+import jira_image from "resources/images/logos/repositories/jira.png";
+
 import "resources/styles/pages.css";
-import ContentsPanel from "client/controls/panels/contents.panel";
 
 
 const options_panels = {
@@ -65,7 +69,7 @@ export default class SettingsPage extends BaseControl {
 		cc_form: null,
 		pricing: null,
 
-		repos: null,
+		repositories: null,
 
 	}/* state */;
 
@@ -102,6 +106,8 @@ export default class SettingsPage extends BaseControl {
 		}// for;
 
 		this.state = {...this.state, ...settings};
+		
+		OffshoreModel.get_offshore_tokens ().then (response => this.setState ({ repositories: response }));
 
 	}// constructor;
 
@@ -255,7 +261,35 @@ export default class SettingsPage extends BaseControl {
 	}/* billing_options */;
 
 
-	repo_list = () => <div>Coming soom</div>
+	repository_list () {
+
+		let result = null;
+
+		this.state.repositories?.forEach (repo => {
+
+			let image = null;
+
+			switch (repo.offshore_type.toLowerCase ()) {
+				case repository_type.jira: image = jira_image; break;
+
+				/* other repos here */
+
+				default: image = git_image; break;
+			}// switch;
+
+			if (not_set (result)) result = new Array ();
+
+			result.push (<div className="ghost-box" key={repo.offshore_token}>
+				<div><img src={image} /></div>
+				<div>{repo.offshore_id}</div>
+				<div>{`${repo.offshore_token.substring (0, 15)}...`}</div>
+			</div>);
+
+		});
+
+		return <div className="three-column-grid repository-list">{result}</div>
+
+	}/* repository_list */
 
 
 	/**** Panels ****/
@@ -300,17 +334,19 @@ export default class SettingsPage extends BaseControl {
 
 					<div className="section-header">Invite a contributor</div>
 					<InviteForm />
+ 
+					<br />
+
+					<div className="section-header">Repositories</div>
+					<ContentsPanel index={isset (this.state.repositories) ? 1 : 2}>
+						<div>{this.repository_list ()}</div>
+						<div>No repositories connected</div>
+					</ContentsPanel>
 
 					<br />
 
 					<div className="section-header">Connect to a repository</div>
-					<RepositoryForm />
-
-					<br />
-
-					<ContentsPanel index={isset (this.state.repos) ? 1 : 0}>
-						{this.repo_list ()}
-					</ContentsPanel>
+					<OffshoreAccountsForm />
 
 				</div>
 

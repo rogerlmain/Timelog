@@ -1,4 +1,3 @@
-import https from "https";
 import Database from "../database.mjs";
 
 
@@ -9,7 +8,8 @@ export default class OffshoreModel {
 
 		let parameters = {
 			company_id: data.company_id,
-			offshore_type: data.repository_type,
+			offshore_type: data.offshore_type,
+			offshore_id: data.offshore_id,
 			offshore_token: data.offshore_token
 		}/* parameters */;
 
@@ -18,20 +18,7 @@ export default class OffshoreModel {
 	}/* save_offshore_token */;
 
 
-	static get_offshore_data = (url, options) => {
-		https.get (`${url}`, options, result => {
+	static get_offshore_tokens = data => new Database ().execute_query ("get_offshore_tokens", { company_id: data.company_id });
 
-			let data = blank;
-				
-			result.on ("data", chunk => data += chunk);
-
-			result.on ("end", () => { 
-				let blah = JSON.parse (data);
-				global.response ().send (data);
-			});
-
-		}).on ("error", error => console.log ("Error: " + error.message));
-	}/* get_offshore_data */;
-	
 
 }// OffshoreModel;

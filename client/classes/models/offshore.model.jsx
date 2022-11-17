@@ -18,4 +18,10 @@ export default class OffshoreModel {
 	}/* save_offshore_token */;
 
 
+	static get_offshore_tokens = () => Database.fetch_data (table, { 
+		action: "get_tokens",
+		company_id: CompanyStorage.active_company_id (),
+	});
+
+
 }// OffshoreModel;

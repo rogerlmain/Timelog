@@ -143,7 +143,7 @@ export default class MasterPanel extends BaseControl {
 		[page_names.projects]	: { name: "Projects", permission: true },
 		[page_names.logging]	: { name: "Logging", permission: true }, 
 		[page_names.reports]	: { name: "Reports", permission: true },
-		[page_names.team]		: { name: "Team", permission: team_permissions },
+		[page_names.team]		: { name: "Team", permission: true }, //team_permissions },
 		[page_names.settings]	: { name: "Settings", permission: true }
 	}// master_pages;
 

@@ -7,7 +7,7 @@ import ContentsPanel from "client/controls/panels/contents.panel";
 export default class ContentsPanelTest extends BaseControl {
 
 
-	state = { value: 1 }
+	state = { value: 0 }
 
 
 	render () {

@@ -4,3 +4,24 @@ div.section-header {
 	margin: 1em 0;
 	padding-bottom: 0.2em;
 }/* div.section-header */
+
+
+/********/
+
+
+div.repository-list {
+	column-gap: 1.5em;
+}/* div.repository-list */
+
+
+div.repository-list div[class=ghost-box] > div { 
+	display: flex;
+	align-items: center;
+	justify-content: left;
+}/* div.repository-list div[class=ghost-box] > div */
+
+
+div.repository-list img {
+	height: 22px;
+	width: auto;
+}/* div.repository-list img */

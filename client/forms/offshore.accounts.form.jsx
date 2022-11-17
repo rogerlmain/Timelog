@@ -13,14 +13,8 @@ import { blank } from "client/classes/types/constants";
 import { debugging, isset, jsonify } from "client/classes/common";
 
 
-const rmpc_git_id = "f5de3479196ad4f9150c";
 const rmpc_github_token = "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";
-
-
-const repository_type = {
-	git: "GIT",
-	jira: "JIRA"
-}/* repository_type */;
+const rmpc_username = "rexthestrange";
 
 
 const repository_name = {
@@ -29,7 +23,13 @@ const repository_name = {
 }/* repository_type */;
 
 
-export default class RepositoryForm extends BaseControl {
+export const repository_type = {
+	git: "GIT",
+	jira: "JIRA"
+}/* repository_type */;
+
+
+export default class OffshoreAccountsForm extends BaseControl {
 
 
 	state = { 
@@ -75,8 +75,13 @@ export default class RepositoryForm extends BaseControl {
 	repository_form = () => <Container>
 
 		<div className="one-piece-form">
+
+			<label htmlFor="offshore_username">Account ID</label>
+			<input type="text" id="offshore_id" name="offshore_id" defaultValue={debugging () ? rmpc_username : blank} />
+
 			<label htmlFor="offshore_token">{repository_name [this.state.repository]}</label>
 			<input type="text" id="offshore_token" name="offshore_token" defaultValue={debugging () ? rmpc_github_token : blank} />
+
 		</div>
 
 		<div className="button-panel with-some-headspace">
@@ -100,7 +105,10 @@ export default class RepositoryForm extends BaseControl {
 		<ExplodingPanel id="repository_panel" ref={this.repository_panel}>
 			{isset (this.state.repository) && <EyecandyForm id="repository_form" ref={this.repository_eyecandy_form} 
 
-				onEyecandy={OffshoreModel.save_offshore_token}
+				onEyecandy={data => {
+					data.append ("offshore_type", this.state.repository);
+					return OffshoreModel.save_offshore_token (data);
+				}}
 
 				eyecandyText={() => `Connecting to ${repository_name [this.state.repository]}`}
 				notificationText={() => `Connected.`}>
@@ -113,4 +121,4 @@ export default class RepositoryForm extends BaseControl {
 	</Container>
 
 
-}/* RepositoryForm */;
+}/* OffshoreAccountsForm */;

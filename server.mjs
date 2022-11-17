@@ -13,7 +13,6 @@ import ClientModel from "./server/models/client.model.mjs";
 import CompanyAccountsModel from "./server/models/company.accounts.model.mjs";
 import CompanyCardModel from "./server/models/company.cards.model.mjs";
 import CompaniesModel from "./server/models/companies.model.mjs";
-import GithubModel, { repository_type } from "./server/models/offshore/github.mjs";
 import InvitationsModel from "./server/models/invitations.model.mjs";
 import LoggingModel from "./server/models/logging.model.mjs";
 import LookupsModel from "./server/models/lookups.model.mjs";
@@ -29,10 +28,12 @@ import MiscData from "./server/models/misc.mjs";
 import TaskData from "./server/models/tasks.mjs";
 
 import EmailHandler from "./server/handlers/email.handler.mjs";
+import GithubHandler, { repository_type } from "./server/handlers/offshore/github.mjs";
 import PaymentHandler from "./server/handlers/payment.handler.mjs";
 
 import { createNamespace, getNamespace } from "continuation-local-storage";
 import { root_path } from "./server/constants.mjs";
+import OffshoreHandler from "./server/handlers/offshore.handler.mjs";
 
 
 const countries_id = 1;
@@ -254,19 +255,17 @@ app.post ("/misc", () => {
 });
 
 
-
 app.post ("/offshore", () => {
 	try {
-
 		app.process (async fields => {
 			switch (fields.action) {
 				case "save_token": OffshoreModel.save_offshore_token (fields); break;
+				case "get_tokens": OffshoreModel.get_offshore_tokens (fields); break;
 
-				case repository_type.git: new GithubModel ().get_projects (fields.account_id); break;
+//				case repository_type.git: new GithubModel ().get_projects (fields.account_id); break;
 
 			}/* switch */;
 		});					
-
 	} catch (except) { 
 		console.log (except);
 	}// try;
