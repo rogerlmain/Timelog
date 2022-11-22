@@ -2,9 +2,10 @@ import CompanyStorage from "client/classes/storage/company.storage";
 import LocalStorage from "client/classes/local.storage";
 
 import ClientModel from "client/classes/models/client.model";
+import OffshoreModel from "../models/offshore.model";
 
 import { stores } from "client/classes/types/constants";
-import { isset, not_set, nested_value, nulled, live } from "client/classes/common";
+import { isset, not_set, nested_value, nulled, live, is_null } from "client/classes/common";
 
 
 const store_name = stores.clients;
@@ -38,11 +39,12 @@ export default class ClientStorage extends LocalStorage {
 
 	static #set_client = client => {
 
-		let client_id = client.client_id;
+		let client_id = client.client_id ?? client.id;
 
 		if (live ()) {
 			delete client.company_id;
 			delete client.client_id;
+			delete client.id;
 		}// if;
 
 		ClientStorage.#set_client_by_id (client_id, client);
@@ -75,16 +77,29 @@ puke ();
 	}).catch (reject));
 
 
-	static get_by_company = (company_id) => { 
+	static get_by_company = (company_id) => {
 		return new Promise ((resolve, reject) => {
 
 			let store = this.#get ();
+			let result = null;
+
+			const add_client = client => {
+				this.#set_client (client);
+				if (is_null (result)) result = new Array ();
+				result.push (client);
+			}// add_client;
 	
 			if (isset (store?.[company_id])) return resolve (store [company_id]);
 	
 			ClientModel.get_by_company (company_id).then (data => {
-				data.forEach (item => this.#set_client (item));
-				resolve (data);
+
+				data.forEach (item => add_client (item));
+
+				OffshoreModel.get_repositories ().then (respositories => {
+					respositories.forEach (repository => add_client (repository));
+					resolve (result);
+				});
+
 			}).catch (reject);
 
 		});
