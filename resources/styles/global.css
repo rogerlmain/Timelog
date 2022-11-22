@@ -11,7 +11,14 @@
 	--footer-background-color: #E5FFF0;
 
 	--highlight-color: #F5FFF9;
-	--highlight-border: solid 2px #004D43;
+	--highlight-border-color: #004D43;
+
+	--hover-color: white;
+	--hover-background-color: #025022;
+
+	--disabled-background-color: #CCC;
+	--disabled-border-color: #AAA;
+
 
 	--anchor-color: #0000AA;
 	--anchor-highlight-color: #0000F0;
@@ -150,15 +157,15 @@ button {
 
 
 button:hover {
-	color: white;
-	background-color: #025022;
+	color: var(--hover-color);
+	background-color: var(--hover-background-color);
 }/* button:hover */
 
 
 button[disabled], button[disabled]:hover {
-	color: white;
-	background-color: #CCC;
-	border-color: #AAA;
+	color: var(--hover-color);
+	background-color: var(--disabled-background-color);
+	border-color: var(--disabled-border-color);
 	cursor: default;
 }/* button[disabled],button [disabled]:hover */
 

@@ -23,7 +23,7 @@ import OptionToggle from "client/gadgets/toggles/option.toggle";
 
 import { account_types, date_rounding, vertical_alignment } from "client/classes/types/constants";
 import { deadbeat_options, option_types } from "client/classes/types/options";
-import { isset, is_null, jsonify, not_set } from "client/classes/common";
+import { isset, is_null, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 import { resize_direction } from "client/controls/panels/resize.panel";
@@ -107,7 +107,7 @@ export default class SettingsPage extends BaseControl {
 
 		this.state = {...this.state, ...settings};
 		
-		OffshoreModel.get_offshore_tokens ().then (response => this.setState ({ repositories: response }));
+		OffshoreModel.get_tokens ().then (response => this.setState ({ repositories: response }));
 
 	}// constructor;
 
@@ -269,7 +269,7 @@ export default class SettingsPage extends BaseControl {
 
 			let image = null;
 
-			switch (repo.offshore_type.toLowerCase ()) {
+			switch (repo.offshore_type) {
 				case repository_type.jira: image = jira_image; break;
 
 				/* other repos here */
@@ -279,10 +279,10 @@ export default class SettingsPage extends BaseControl {
 
 			if (not_set (result)) result = new Array ();
 
-			result.push (<div className="ghost-box" key={repo.offshore_token}>
+			result.push (<div className="ghost-box" key={repo.token}>
 				<div><img src={image} /></div>
 				<div>{repo.offshore_id}</div>
-				<div>{`${repo.offshore_token.substring (0, 15)}...`}</div>
+				<div>{`${repo.token.substring (0, 15)}...`}</div>
 			</div>);
 
 		});

@@ -263,7 +263,9 @@ div.button-column {
 	flex-direction: column;
 	justify-content: stretch;
 	row-gap: 0.25em;
-	padding: 0 2em 0 0
+	padding: 0 2em 0 0;
+	width: 100%;
+	height: 100%;
 }/* div.button-column */
 
 
@@ -454,6 +456,8 @@ div[class*="six-column-"]	{ grid-template-columns: repeat(6, min-content) }
 
 div[class*="-column-grid"], div[class*="-column-table"] {
 	display: grid;
+	align-items: center;
+	justify-content: center;
 	row-gap: 0.2em;
 }/* div[class*="-column-grid"], div[class*="-column-table"] */
 

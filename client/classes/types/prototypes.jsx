@@ -489,6 +489,9 @@ HTMLElement.prototype.availableHeight = function () {
 }// availableHeight;
 
 
+HTMLElement.prototype.hasChildren = function () { return (this.children?.length > 0) }
+
+
 HTMLElement.prototype.freezeWidth = function () { this.style.width = `${this.scrollWidth}px` }
 HTMLElement.prototype.freezeHeight = function () { this.style.height = `${this.scrollHeight}px` }
 

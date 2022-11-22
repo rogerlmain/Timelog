@@ -30,11 +30,15 @@ import { MainContext } from "client/classes/types/contexts";
 // import ContentsPanelTest from "client/tests/controls/panels/contents.panel";
 
 // import LoadListTest from "client/tests/controls/lists/load.list";
+// import DropDownListTest from "client/tests/controls/lists/drop.down.list";
+
 // import ClientSelectorTest from "client/tests/controls/selectors/client.selector";
 // import ProjectSelectorTest from "client/tests/controls/selectors/project.selector";
+
 // import DateInputTest from "client/tests/controls/inputs/date.input";
 // import CurrencyInputTest from "client/tests/controls/inputs/currency.input";
 // import ExpandingInputTest from "client/tests/controls/inputs/expanding.input";
+
 // import RateSubformTest from "client/tests/rate.subform";
 
 // import ToggleSwitchTest from "client/tests/controls/toggle.switch";
@@ -42,6 +46,19 @@ import { MainContext } from "client/classes/types/contexts";
 
 // import ReportsPage from "client/pages/reports";
 // import DeluxeAccountForm from "client/forms/deluxe.account.form";
+
+
+/**** FOR DEBUGGING ONLY ****/
+
+
+class QuickTest extends BaseControl {
+	render () {
+		return <div>Waiting for something to test</div>
+	}// render;
+}// QuickTest;
+
+
+/********/
 
 
 class Main extends BaseControl {
@@ -105,6 +122,7 @@ class Main extends BaseControl {
 				{/* <OptionToggleTest /> */}
 
 				{/* <LoadListTest /> */}
+				{/* <DropDownListTest /> */}
 				{/* <ClientSelectorTest /> */}
 
 				{/* <ExpandingInputTest /> */}
@@ -120,23 +138,13 @@ class Main extends BaseControl {
 
 				{/* <DeluxeAccountForm option={1} optionPrice={199} hasCredit={true} /> */}
 
+				{/* <QuickTest /> */}
+
 			</div>
 		</MainContext.Provider>
 	}// render;
 
 }// Main;
-
-
-/**** FOR DEBUGGING ONLY *****/
-
-
-class QuickTest extends BaseControl {
-
-	render () {
-		return <div>Waiting for something to test</div>
-	}// render;
-
-}// QuickTest;
 
 
 /*********/

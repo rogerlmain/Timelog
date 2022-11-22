@@ -28,7 +28,7 @@ import MiscData from "./server/models/misc.mjs";
 import TaskData from "./server/models/tasks.mjs";
 
 import EmailHandler from "./server/handlers/email.handler.mjs";
-import GithubHandler, { repository_type } from "./server/handlers/offshore/github.mjs";
+import GithubHandler, { repository_type } from "./server/handlers/offshore/github.handler.mjs";
 import PaymentHandler from "./server/handlers/payment.handler.mjs";
 
 import { createNamespace, getNamespace } from "continuation-local-storage";
@@ -259,10 +259,13 @@ app.post ("/offshore", () => {
 	try {
 		app.process (async fields => {
 			switch (fields.action) {
-				case "save_token": OffshoreModel.save_offshore_token (fields); break;
-				case "get_tokens": OffshoreModel.get_offshore_tokens (fields); break;
 
-//				case repository_type.git: new GithubModel ().get_projects (fields.account_id); break;
+				case "save_account": OffshoreModel.save_account (fields); break;
+				case "save_token": OffshoreModel.save_token (fields); break;
+				case "get_tokens": OffshoreModel.get_tokens (fields).then (result => global.response ().send (JSON.stringify (result))); break;
+
+				case "get_repositories": OffshoreHandler.get_repositories (fields); break;
+				case "get_users": OffshoreHandler.get_users (fields.token, fields.repo); break;
 
 			}/* switch */;
 		});					

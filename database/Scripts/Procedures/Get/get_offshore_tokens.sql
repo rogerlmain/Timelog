@@ -7,12 +7,14 @@ delimiter ??
 create procedure get_offshore_tokens (company_id integer) begin
 
 	select 
-        oft.offshore_type,
+		oft.id as token_id,
+        oft.`type`,
         oft.offshore_id,
-		oft.offshore_token
+		oft.token
 	from 
 		offshore_tokens as oft
 	where
 		oft.company_id = company_id;
 
 end??
+

@@ -24,8 +24,8 @@ const repository_name = {
 
 
 export const repository_type = {
-	git: "GIT",
-	jira: "JIRA"
+	git	: 1,
+	jira: 2,
 }/* repository_type */;
 
 
@@ -97,8 +97,8 @@ export default class OffshoreAccountsForm extends BaseControl {
 
 			onChange={event => this.repository_panel?.current.animate (() => this.setState ({ repository: event.target.value }))}>
 
-			<option value={repository_type.git.toLowerCase ()}>{repository_type.git}</option>
-			<option value={repository_type.jira.toLowerCase ()}>{repository_type.jira}</option>
+			<option value={repository_type.git}>GIT</option>
+			<option value={repository_type.jira}>JIRA</option>
 
 		</SelectList>
 
@@ -107,7 +107,7 @@ export default class OffshoreAccountsForm extends BaseControl {
 
 				onEyecandy={data => {
 					data.append ("offshore_type", this.state.repository);
-					return OffshoreModel.save_offshore_token (data);
+					return OffshoreModel.save_token (data);
 				}}
 
 				eyecandyText={() => `Connecting to ${repository_name [this.state.repository]}`}

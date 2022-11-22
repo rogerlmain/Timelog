@@ -25,6 +25,7 @@ export default class SelectList extends BaseControl {
 
 		header: null,
 		headerSelectable: false,
+		headerVisible: false,
 
 		disabled: false,
 
@@ -34,12 +35,18 @@ export default class SelectList extends BaseControl {
 
 	}// defaultProps;
 
+
+	constructor (props) {
+		super (props);
+		this.state.style = this.props.style;
+	}/* constructor */;
+
     
 	/********/
 
 
 	header_visible () {
-		let result = isset (this.props.header) && ((this.state.selected_value == 0) || (this.props.headerSelectable));
+		let result = isset (this.props.header) && ((this.state.selected_value == 0) || (this.props.headerSelectable) || (this.props.headerVisible));
 		return result;
 	}// headser_visible;
 
@@ -54,7 +61,7 @@ export default class SelectList extends BaseControl {
 		let result = option_list.map (item => {
 
 			let text_field = is_function (this.props.textField) ? this.props.textField (item) : item [this.props.textField];
-			let value = is_array ? item [this.props.idField] : this.props.data?.get_key (item);
+			let value = is_function (this.props.idField) ? this.props.idField (item) : item [this.props.idField];
 
 			return <option value={value} key={value}>{text_field}</option>
 
@@ -67,7 +74,8 @@ export default class SelectList extends BaseControl {
 
 
 	componentDidMount () {
-		this.setState ({ selected_value: (this.props.selectedValue ?? 0) });
+		this.setState ({ selected_value: (this.props.selectedValue ?? 0) });		
+		if (this.props.stretchOnly) this.setState ({ style: { ...this.state.style, minWidth: `${this.list.current.offsetWidth}px`}});
 	}// componentDidUpdate;
 
 
@@ -77,25 +85,21 @@ export default class SelectList extends BaseControl {
 	}// shouldComponentUpdate;
 
 
-    render () {
+    render = () => <select id={this.props.id} name={this.props.id} ref={this.list} disabled={this.props.disabled}
 
-		let selected_value = this.state.selected_value ?? this.props.selectedValue ?? header_value;
+		value={this.state.selected_value ?? this.props.selectedValue ?? header_value} style={this.state.style}
 
-        return <select id={this.props.id} name={this.props.id} ref={this.list} value={selected_value} disabled={this.props.disabled}
-			
-			className={this.props.className} style={this.props.style}
+		onChange={event => {
+			if ((this.state.selected_value == 0) && (this.props.headerVisible) && (event.target.hasChildren ())) event.target.children [0].disabled = true;
+			this.setState ({ selected_value: event.target.value }, () => this.execute (this.props.onChange, event));
+		}}>
 
-			onChange={event => this.setState ({ selected_value: event.target.value }, () => this.execute (this.props.onChange, event))}>
+		{this.header_visible () && <option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.header}</option>}
+		{this.props.children}
+		{this.select_options (this.props.data, this.props.textField, this.props.idField)}
 
-			{this.header_visible () && <option key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.header}</option>}
+	</select>
 
-			{this.props.children}
-			{this.select_options (this.props.data, this.props.textField, this.props.idField)}
-
-		</select>
-
-    }// render;
-	
 	
 }// SelectList;
 

@@ -1,19 +1,21 @@
+/*
+
 input.number-input { caret-color: transparent }
 
 
 input:focus, select:focus, textarea:focus {
-	border: var(--highlight-border);
+	border: solid 2px var(--highlight-border-color);
 	background-color: var(--highlight-color);
 }/* input:focus, select:focus, textarea:focus */
 
 
-/********/
+/******** /
 
 
 div.currency-input {
 	display: flex; 
 	position: relative;
-}/* div.currency-input */
+}/* div.currency-input * /
 
 
 div.currency-input > div {
@@ -23,23 +25,23 @@ div.currency-input > div {
 	top: 0.35em;
 	z-index: 1;
 	align-items: center;
-}/* div.currency-input > div */
+}/* div.currency-input > div * /
 
 
 div.currency-input input[type=text] { 
 	text-align: right;
 	caret-color: transparent;
-}/* div.currency-input input[type=text] */
+}/* div.currency-input input[type=text] * /
 
 
-/********/
+/******** /
 
 
 div.arrow-glyph {
 	display: inline-flex;
     align-items: center;
     justify-content: center;
-}/* div.arrow-glyph */
+}/* div.arrow-glyph * /
 
 
 div.tree-glyph {
@@ -47,12 +49,69 @@ div.tree-glyph {
 	border-right: none;
 	border-left: solid 0.7em #444;
 	margin-right: 0.5em;
-}/* div.tree-glyph */
+}/* div.tree-glyph * /
 
 
 div.report-grid-data div { margin: 0.2em 0 }
 
 
-/********/
+/**** Dropdown List ****/
+
+
+div.dropdown-list {
+	display: inline-block;
+	cursor: pointer;
+	position: absolute;
+}/* div.dropdown-list */
+
+
+div.dropdown-list-sleeve { 
+	box-sizing: content-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	overflow: hidden;
+	width: 100%;
+	border-radius: 0.5em;
+	background-color: var(--highlight-color);
+	border: solid 1px var(--highlight-border-color);
+}/* div.dropdown-list-sleeve */
+
+
+div.dropdown-child-item:hover { 
+	color: var(--hover-color);
+	background-color: var(--hover-background-color);
+}/* div.dropdown-child-item:hover */
+
+
+div.dropdown-glyph {
+	width: 7px;
+	height: 7px;
+	margin-left: 5px;
+	position: absolute;
+	right: 0.5em;
+	border: solid 2px var(--border-color);
+	border-top: none;
+	border-left: none;
+	transform: rotate(45deg);
+}/* div.dropdown-glyph */
+
+
+div.active-dropdown-item { 
+	height: var(--double-height);	
+	padding-left: 0.6em;
+	padding-right: 2em;
+	position: relative;
+	display: flex;
+	align-items: center;
+}/* div.active-dropdown-item */
+
+
+div.active-dropdown-selection {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	min-height: 1.8em;
+}/* div.active-dropdown-selection */
 
 
