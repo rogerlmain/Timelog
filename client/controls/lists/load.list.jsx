@@ -2,9 +2,8 @@
 import React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
-
-import SelectList from "client/controls/lists/select.list";
 import EyecandyPanel from "client/controls/panels/eyecandy.panel";
+import DropDownList from "client/controls/lists/drop.down.list";
 
 import { debugging, isset, is_null, not_set } from "client/classes/common";
 
@@ -95,7 +94,9 @@ export default class LoadList extends BaseControl {
 
 		return <div className={new_button ? "two-column-grid" : null} style={form_style}>
 
-			{single_option ? <div className="vertically-aligned">{this.props.data [Object.keys (this.props.data) [0]].name}</div> : <SelectList id={this.props.id} 
+			{single_option ? <div className="vertically-aligned">{this.props.data [Object.keys (this.props.data) [0]].name}</div> : 
+			
+			<DropDownList id={this.props.id} 
 			
 				data={this.props.data} selectedValue={this.props.selectedItem} disabled={this.props.disabled}
 				style={this.props.style}
@@ -107,7 +108,7 @@ export default class LoadList extends BaseControl {
 
 				onChange={event => this.execute (this.props.onChange, event)}>
 
-			</SelectList>}
+			</DropDownList>}
 
 			{new_button && <button onClick={() => this.context.master_page.set_page (this.props.newButtonPage)}>New</button>}
 

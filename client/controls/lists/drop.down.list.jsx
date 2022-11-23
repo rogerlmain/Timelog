@@ -67,7 +67,7 @@ export default class DropDownList extends BaseControl {
 		let result = null;
 		let index = 1;
 
-		this.props.data.forEach (child => {
+		this.props.data?.forEach (child => {
 
 			let value = is_function (this.props.idField) ? this.props.idField (child) : child [this.props.idField];
 			let text = is_function (this.props.textField) ? this.props.textField (child) : child [this.props.textField];

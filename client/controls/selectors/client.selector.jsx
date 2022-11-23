@@ -6,7 +6,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 
-import { debugging, integer_value, isset } from "client/classes/common";
+import { debugging, integer_value, isset, is_null } from "client/classes/common";
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 import { MasterContext } from "client/classes/types/contexts";
 import { page_names } from "client/master";
@@ -55,10 +55,23 @@ export default class ClientSelector extends BaseControl {
 
 	get_client_data = () => ClientStorage.get_by_company (this.context.company_id).then (data => {
 
+		const normalize = data => {
+
+			let result = null;
+
+			Object.keys (data)?.forEach (key => {
+				if (is_null (result)) result = new Array ();
+				result.push ({ id: key, ...data?.[key] });
+			});
+
+			return result;
+
+		}/* normalize */;
+
 		let keys = Object.keys (data);
 
 		this.execute (this.props.onLoad, data).then (() => this.setState ({ 
-			client_data: data,
+			client_data: normalize (data),
 			selected_client_id: (keys.length == 1) ? data [keys [0]].client_id : null,
 		}, () => this.execute (this.props.onChange, this.state.selected_client_id)));
 
