@@ -72,7 +72,7 @@ export default class ClientsPage extends BaseControl {
 		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="one-piece-form">
-				<ClientSelector id="client_selector" ref={this.client_selector} parent={this}
+				<ClientSelector id="client_selector" ref={this.client_selector} parent={this} includeOffshoreAccounts={false}
 				
 					header={can_create ? "New client" : ((this.state.client_list?.key_length () > 1) ? "Select a client" : null)}
 					headerSelectable={can_create}
@@ -89,7 +89,7 @@ export default class ClientsPage extends BaseControl {
 				</ClientSelector>
 			</div>
 
-			<EyecandyPanel id="edit_client_panel" text="Loading..." ref={this.eyecandy_panel} eyecandyVisible={this.state.updating} 
+			<EyecandyPanel id="edit_client_panel" text="Loading..." ref={this.eyecandy_panel} eyecandyVisible={this.state.updating}
 			
 				onEyecandy={() => ClientStorage.get_by_id (this.state.selected_client).then (data => this.setState ({ 
 					client_data: data,

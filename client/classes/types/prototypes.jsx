@@ -28,11 +28,11 @@ Array.get_element = (array, index) => { return (Array.isArray (array) && (array.
 Array.has_value = function (candidate) { return Array.isArray (candidate) && (candidate.length > 0) }
 
 
-Array.concat = (...args) => {
+Array.concat = function () {
 
 	let result = null;
 
-	args?.forEach (list => {
+	Array.from (arguments)?.forEach (list => {
 		if (!Array.isArray (list) || (list.length == 0)) return;
 		if (is_null (result)) result = new Array ();
 		result = result.concat (list);

@@ -81,7 +81,7 @@ export default class ProjectSelector extends BaseControl {
 
 		return <div id={this.props.id} className="one-piece-form">
 
-			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={this.props.newButton}
+			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={this.props.newButton} includeOffshoreAccounts={false}
 
 				header={(this.state.client_list?.key_length () > 1) ? "Select a client" : null}
 				headerSelectable={false} 
