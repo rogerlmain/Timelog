@@ -7,6 +7,7 @@ import ProjectModel from "client/classes/models/project.model";
 
 import { stores } from "client/classes/types/constants";
 import { isset, not_null, not_empty, is_promise, not_number, not_set, live } from "client/classes/common";
+import OffshoreModel from "../models/offshore.model";
 
 
 const store_name = stores.projects;
@@ -150,6 +151,10 @@ export default class ProjectStorage extends LocalStorage {
 					ProjectStorage.set_store_project (project);
 					if (--project_count == 0) ProjectStorage.get_by_client (client_id).then (data => resolve (data));
 				});
+
+				OffshoreModel.get_projects (client_id).then (projects => {
+					alert ("exciting stuff: " + JSON.stringify (projects));
+				})
 
 			}).catch (reject);
 

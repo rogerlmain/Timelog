@@ -50,6 +50,12 @@ export default class OffshoreModel {
 	})/* get_repositories */;
 
 
+	static get_projects = repository_id => Database.fetch_data (table, {
+		action: "get_projects",
+		repository_id: repository_id,
+	})/* get_projects */;
+
+
 	static get_users = (token, repo) => Database.fetch_data (table, { 
 		action: "get_users",
 		token: token, 
