@@ -57,23 +57,10 @@ export default class ClientSelector extends BaseControl {
 
 	get_client_data = () => ClientStorage.get_by_company (this.context.company_id, this.props.includeOffshoreAccounts).then (data => {
 
-		const normalize = data => {
-
-			let result = null;
-
-			Object.keys (data)?.forEach (key => {
-				if (is_null (result)) result = new Array ();
-				result.push ({ id: key, ...data?.[key] });
-			});
-
-			return result;
-
-		}/* normalize */;
-
 		let keys = Object.keys (data);
 
 		this.execute (this.props.onLoad, data).then (() => this.setState ({ 
-			client_data: normalize (data),
+			client_data: data.normalize (),
 			selected_client_id: (keys.length == 1) ? data [keys [0]].client_id : null,
 		}, () => this.execute (this.props.onChange, this.state.selected_client_id)));
 

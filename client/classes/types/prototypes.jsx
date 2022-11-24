@@ -17,6 +17,19 @@ Object.defineProperties (Object.prototype, {
 	"key_length": { value: function () { return this?.get_keys ()?.length ?? 0 } },
 	"map_keys": { value: function (callback) { return this?.get_keys ()?.map (callback) }},
 
+	"normalize": { value: function () {
+
+		let result = null;
+
+		Object.keys (this)?.forEach (key => {
+			if (is_null (result)) result = new Array ();
+			result.push ({ id: key, ...this?.[key] });
+		});
+
+		return result;
+
+	}}/* normalize */,
+
 })/* Object.prototype */;
 
 
