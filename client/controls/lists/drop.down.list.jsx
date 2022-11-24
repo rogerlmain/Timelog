@@ -71,25 +71,35 @@ export default class DropDownList extends BaseControl {
 
 		list?.forEach (child => {
 
+			let preprocessed_text = is_function (this.props.textField);
+
 			let value = is_function (this.props.idField) ? this.props.idField (child) : child?.[this.props.idField];
-			let contents = is_function (this.props.textField) ? this.props.textField (child) : child?.[this.props.textField];
+			let contents = preprocessed_text ? this.props.textField (child) : child?.[this.props.textField];
 	
 			if (is_null (result)) result = new Array ();
 
-			result.push (<div id={`${this.props.id}_item_${index}`} value={value} key={index++} className="dropdown-child-item" onClick={event => {
+			result.push (<div id={`${this.props.id}_item_${index}`} value={value} key={index++} className="dropdown-child-item" 
 
-				let selected_html = (event?.currentTarget ?? event?.target)?.innerHTML;
+				style={preprocessed_text ? null : { padding: "0.2em 0 0.2em 0.5em" }}
+			
+				onClick={event => {
 
-				if (this.state.selected_value != value) this.execute (this.props.onChange, event);
+					let selected_html = (event?.currentTarget ?? event?.target)?.innerHTML;
+
+					if (this.state.selected_value != value) this.execute (this.props.onChange, event);
+					
+					this.setState ({ selected_value: value }, () => {
+						this.execute (child.onClick);
+						this.execute (this.props.onClick);
+						this.active_selection.current.innerHTML = selected_html;
+						this.close_list ();
+					});
+
+				}}>
+					
+				{contents ?? child?.props?.children}
 				
-				this.setState ({ selected_value: value }, () => {
-					this.execute (child.onClick);
-					this.execute (this.props.onClick);
-					this.active_selection.current.innerHTML = selected_html;
-					this.close_list ();
-				});
-
-			}}>{contents ?? child?.props?.children}</div>);
+			</div>);
 
 		});
 
