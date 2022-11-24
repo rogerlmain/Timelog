@@ -18,7 +18,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import LoggingModel from "client/classes/models/logging.model";
 
 import { blank, currency_symbol, date_formats, date_rounding, granularity_types, space } from "client/classes/types/constants";
-import { isset, is_empty, nested_value, not_set, multiline_text, null_value, debugging } from "client/classes/common";
+import { isset, is_empty, not_set, multiline_text, null_value, debugging } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
 import { MasterContext } from "client/classes/types/contexts";
@@ -74,8 +74,8 @@ export default class LoggingPage extends BaseControl {
 
 		this.state.current_entry = { ...LoggingStorage.current_entry (), end_time: this.end_time () }
 
-		let project_id = nested_value (this.state.current_entry, "project_id");
-		let client_id = nested_value (this.state.current_entry, "client_id");
+		let project_id = this.state.current_entry?.project_id;
+		let client_id = this.state.current_entry?.client_id;
 
 		ProjectStorage.billing_rate (project_id, client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
 			console.log (error);
@@ -248,8 +248,8 @@ export default class LoggingPage extends BaseControl {
 
 	entry_details = elapsed_time => {
 	
-		let start_time = nested_value (this.state.current_entry, "start_time");
-		let end_time = nested_value (this.state.current_entry, "end_time");
+		let start_time = this.state.current_entry?.start_time;
+		let end_time = this.state.current_entry?.end_time;
 
 		if (not_set (start_time) ) return null;
 
@@ -270,10 +270,10 @@ export default class LoggingPage extends BaseControl {
 				<Break />
 
 				<label>Start</label>
-				{this.link_cell (nested_value (start_time, "format", date_formats.full_datetime))}
+				{this.link_cell (start_time?.format (date_formats.full_datetime))}
 
 				<label>Stop</label>
-				{this.link_cell (end_time.format (nested_value (start_time, "same_day", end_time) ? date_formats.timestamp : date_formats.full_datetime))}
+				{this.link_cell (end_time.format (start_time?.same_day (end_time)) ? date_formats.timestamp : date_formats.full_datetime)}
 
 				<Break />
 

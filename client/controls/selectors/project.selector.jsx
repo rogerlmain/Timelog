@@ -95,11 +95,11 @@ export default class ProjectSelector extends BaseControl {
 					this.setState ({ 
 						selected_client_id: client_id,
 						selected_project_id: null,
-					 }, () => {
+					}, () => {
 
-						ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: data }, () => {
+						ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
 
-							let project_id = (not_set (this.props.header) && (data?.key_length () > 0)) ? Object.keys (data) [0] : null;
+							let project_id = (!this.props.hasHeader || (data?.key_length () == 1)) ? Object.keys (data) [0] : null;
 
 							if (isset (project_id)) this.setState ({ selected_project_id: project_id });
 							this.execute (this.props.onProjectChange, project_id);
@@ -131,7 +131,7 @@ export default class ProjectSelector extends BaseControl {
 					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
 					onChange={event => {
-						let project_id = integer_value (event.target.value);
+						let project_id = integer_value (event.target.getAttribute ("value"));
 						this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
 					}}>
 
