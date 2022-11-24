@@ -40,18 +40,22 @@ export default class ClientSelectorTest extends BaseControl {
 	render () {
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
 
-			<div className="one-piece-form">
-				<ClientSelector id="client_selector" ref={this.client_selector} parent={this}
-					headerText="New client"
-					selectedClient={this.state.selected_client}>
-				</ClientSelector>
-			</div>
+			<div>
 
-			<br /><br />
+				<div className="one-piece-form">
+					<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={true}
+						headerText="New client"
+						selectedClient={this.state.selected_client}>
+					</ClientSelector>
+				</div>
 
-			<div className="two-column-grid">
-				<button onClick={() => this.setState ({ client_data: this.client_list ()})}>Load clients</button>
-				<button onClick={() => this.forceRefresh ()}>Force refresh</button>
+				<br /><br />
+
+				<div className="two-column-grid">
+					<button onClick={() => this.setState ({ client_data: this.client_list ()})}>Load clients</button>
+					<button onClick={() => this.forceRefresh ()}>Force refresh</button>
+				</div>
+
 			</div>
 
 		</MasterContext.Provider>

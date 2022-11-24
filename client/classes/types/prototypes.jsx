@@ -28,6 +28,21 @@ Array.get_element = (array, index) => { return (Array.isArray (array) && (array.
 Array.has_value = function (candidate) { return Array.isArray (candidate) && (candidate.length > 0) }
 
 
+Array.concat = (...args) => {
+
+	let result = null;
+
+	args?.forEach (list => {
+		if (!Array.isArray (list) || (list.length == 0)) return;
+		if (is_null (result)) result = new Array ();
+		result = result.concat (list);
+	});
+
+	return result;
+
+}/* concat */;
+
+
 Array.push = (array, ...datastuff) => { 
 	if (null_or_undefined (array)) array = [];
 	if (is_array (array)) array.push (...datastuff);
@@ -890,3 +905,10 @@ let global_prototype = null;
 try { global_prototype = Window.prototype; } catch { global_prototype = global.__proto__; }
 
 global_prototype.dispatchAll = (event) => document.querySelectorAll ("*").forEach (item => item.dispatchEvent (is_string (event) ? new Event (event) : event));
+
+
+
+
+Event.prototype.get_target = function () { return this?.currentTarget ?? this?.target }
+
+

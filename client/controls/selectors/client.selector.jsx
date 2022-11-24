@@ -1,6 +1,7 @@
 import React from "react";
 
 import ClientStorage from "client/classes/storage/client.storage";
+import OffshoreModel from "client/classes/models/offshore.model";
 
 import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
@@ -103,13 +104,17 @@ export default class ClientSelector extends BaseControl {
 			
 				header={this.props.header} headerSelectable={this.props.headerSelectable} selectedItem={this.props.selectedClient}
 
-				dataIdField="client_id" dataTextField="name" data={this.state.client_data} 
+				data={this.state.client_data} dataIdField="client_id" dataTextField={field => <div className="glyph-list-item">
+					<div><img src={OffshoreModel.glyph_image (field)} className="list-glyph" /></div>
+					<div>{field.name}</div>
+				</div>}
+
 				newButtonPage={this.props.newButton ? page_names.clients : null}
 
 				hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
 				onChange={event => {
-					let client_id = integer_value (event.target.value);
+					let client_id = integer_value (event.currentTarget.value);
 					this.setState ({ selected_client_id: client_id }, () => this.execute (this.props.onChange, client_id))
 				}}>
 				

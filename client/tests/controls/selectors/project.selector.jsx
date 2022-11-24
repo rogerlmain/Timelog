@@ -25,7 +25,7 @@ export default class ProjectSelectorTest extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		this.state.company_id = 478; //268;
+		this.state.company_id = 268;
 		CompanyStorage.set_active_company (this.state.company_id);
 	}// constructor;
 
@@ -42,18 +42,23 @@ export default class ProjectSelectorTest extends BaseControl {
 	render () {
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
 
-			<div className="one-piece-form">
-				<ProjectSelector id="client_selector" ref={this.client_selector} parent={this}
-					headerText="New client"
-					selectedClient={this.state.selected_client}>
-				</ProjectSelector>
-			</div>
+			<div>
 
-			<br /><br />
+				<div className="one-piece-form">
+					<ProjectSelector id="client_selector" ref={this.client_selector} parent={this} newButton={true}
+						headerText="New client"
+						selectedClient={this.state.selected_client}>
+					</ProjectSelector>
 
-			<div className="two-column-grid">
-				<button onClick={() => this.setState ({ client_data: this.client_list ()})}>Load clients</button>
-				<button onClick={() => this.forceRefresh ()}>Force refresh</button>
+				</div>
+
+				<br /><br />
+
+				<div className="two-column-grid">
+					<button onClick={() => this.setState ({ client_data: this.client_list ()})}>Load clients</button>
+					<button onClick={() => this.forceRefresh ()}>Force refresh</button>
+				</div>
+
 			</div>
 
 		</MasterContext.Provider>

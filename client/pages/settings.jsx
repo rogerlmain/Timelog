@@ -17,7 +17,7 @@ import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 import DeluxeAccountForm from "client/forms/deluxe.account.form";
 import InviteForm from "client/forms/invite.form";
-import OffshoreAccountsForm, { repository_type } from "client/forms/offshore.accounts.form";
+import OffshoreAccountsForm from "client/forms/offshore.accounts.form";
 
 import OptionToggle from "client/gadgets/toggles/option.toggle";
 
@@ -31,9 +31,6 @@ import { Break } from "client/controls/html/components";
 
 import { client_limit_options } from "client/pages/clients";
 import { project_limit_options } from "client/pages/projects";
-
-import git_image from "resources/images/logos/repositories/git.png";
-import jira_image from "resources/images/logos/repositories/jira.png";
 
 import "resources/styles/pages.css";
 
@@ -267,20 +264,12 @@ export default class SettingsPage extends BaseControl {
 
 		this.state.repositories?.forEach (repo => {
 
-			let image = null;
-
-			switch (repo.offshore_type) {
-				case repository_type.jira: image = jira_image; break;
-
-				/* other repos here */
-
-				default: image = git_image; break;
-			}// switch;
+			let image = OffshoreModel.glyph_image (repo);
 
 			if (not_set (result)) result = new Array ();
 
 			result.push (<div className="ghost-box" key={repo.token}>
-				<div><img src={image} /></div>
+				<div><img src={image} className="list-glyph" /></div>
 				<div>{repo.offshore_id}</div>
 				<div>{`${repo.token.substring (0, 15)}...`}</div>
 			</div>);

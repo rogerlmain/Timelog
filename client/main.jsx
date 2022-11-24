@@ -1,9 +1,3 @@
-import "regenerator-runtime/runtime.js";
-import "classes/types/prototypes";
-
-import "resources/styles/main.css";
-import "resources/styles/forms.css";
-
 import React from "react";
 
 import BaseControl from "client/controls/abstract/base.control";
@@ -19,6 +13,11 @@ import { tracing, globals, date_formats } from "client/classes/types/constants";
 import { debugging, isset } from "client/classes/common";
 
 import { MainContext } from "client/classes/types/contexts";
+
+import "classes/types/prototypes";
+
+import "resources/styles/main.css";
+import "resources/styles/forms.css";
 
 
 // Guest Imports
@@ -104,7 +103,6 @@ class Main extends BaseControl {
 		}// context_value;
 
 		return <MainContext.Provider value={context_value}>
-
 			<div className="page-centered">
 
 				{isset (this.state.popup_contents) && <PopupWindow id="popup_panel" visible={this.state.popup_visible}>{this.state.popup_contents}</PopupWindow>}
@@ -123,8 +121,7 @@ class Main extends BaseControl {
 
 				{/* <LoadListTest /> */}
 				{/* <DropDownListTest /> */}
-				{/* <ClientSelectorTest /> */}
-
+				
 				{/* <ExpandingInputTest /> */}
 				{/* <CurrencyInputTest /> */}
 				{/* <DateInputTest /> */}
@@ -142,6 +139,7 @@ class Main extends BaseControl {
 
 			</div>
 		</MainContext.Provider>
+
 	}// render;
 
 }// Main;

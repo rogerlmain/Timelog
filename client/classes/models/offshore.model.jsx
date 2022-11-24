@@ -1,5 +1,11 @@
 import Database from "client/classes/database";
-import CompanyStorage from "../storage/company.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
+
+import git_glyph from "resources/images/logos/repositories/git.png";
+import jira_glyph from "resources/images/logos/repositories/jira.png";
+import bundion_glyph from "resources/images/logos/repositories/bundion.png";
+
+import { repository_type } from "client/forms/offshore.accounts.form";
 
 
 const table = "offshore";
@@ -49,6 +55,21 @@ export default class OffshoreModel {
 		token: token, 
 		repo: repo,
 	})/* get_users */;
+
+
+	/**** Helper Functions */
+
+
+	static glyph_image = repo => {
+		switch (repo.type) {
+			case repository_type.git: return git_glyph;
+			case repository_type.jira: return jira_glyph;
+
+			/* other repos here */
+
+			default: return bundion_glyph;
+		}// switch;
+	}/* glyph_image */;
 
 
 }// OffshoreModel;

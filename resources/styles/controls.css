@@ -78,10 +78,13 @@ div.dropdown-list-sleeve {
 }/* div.dropdown-list-sleeve */
 
 
-div.dropdown-child-item:hover { 
+div.dropdown-list-items div:hover { 
 	color: var(--hover-color);
 	background-color: var(--hover-background-color);
-}/* div.dropdown-child-item:hover */
+}/* div.dropdown-list-items div:hover */
+
+
+div.dropdown-list-items div:hover img { filter: invert(100%) }
 
 
 div.dropdown-glyph {
