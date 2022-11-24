@@ -38,6 +38,7 @@ export default class ClientSelector extends BaseControl {
 		headerSelectable: false,
 
 		inline: true,
+		includeOffshoreAccounts: true,
 
 		onChange: null,
 
@@ -54,7 +55,7 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	get_client_data = () => ClientStorage.get_by_company (this.context.company_id).then (data => {
+	get_client_data = () => ClientStorage.get_by_company (this.context.company_id, this.props.includeOffshoreAccounts).then (data => {
 
 		const normalize = data => {
 

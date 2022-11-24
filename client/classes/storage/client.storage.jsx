@@ -77,7 +77,7 @@ puke ();
 	}).catch (reject));
 
 
-	static get_by_company = (company_id) => {
+	static get_by_company = (company_id, include_offshore_accounts = true) => {
 		return new Promise ((resolve, reject) => {
 
 			let store = this.#get ();
@@ -87,9 +87,21 @@ puke ();
 				this.#set_client (client);
 				if (is_null (result)) result = new Array ();
 				result.push (client);
-			}// add_client;
+			}/* add_client */;
+
 	
-			if (isset (store?.[company_id])) return resolve (store [company_id]);
+			const selected_set = items => {
+
+				if (!include_offshore_accounts) Object.keys (items)?.forEach (key => {
+					if (not_set (items [key]?.client_id)) delete items [key];
+				});
+
+				return items;
+
+			}/* selected_set */;
+
+
+			if (isset (store?.[company_id])) return resolve (selected_set (store [company_id]));
 	
 			ClientModel.get_by_company (company_id).then (data => {
 
@@ -97,7 +109,7 @@ puke ();
 
 				OffshoreModel.get_repositories ().then (respositories => {
 					respositories.forEach (repository => add_client (repository));
-					resolve (result);
+					resolve (selected_set (result));
 				});
 
 			}).catch (reject);

@@ -7,6 +7,7 @@ import { isset, is_function, is_null, not_set } from "client/classes/common";
 
 const header_value = -1;
 const highlight_classname = "dropdown-list-items";
+const item_padding = "0.2em 0 0.2em 0.5em";
 
 
 export default class DropDownList extends BaseControl {
@@ -30,7 +31,7 @@ export default class DropDownList extends BaseControl {
 		focused: false,
 		losing_focus: false,
 
-		selected_value: null,
+		selected_value: -1,
 		list_class: null,
 
 	}/* state */;
@@ -50,7 +51,7 @@ export default class DropDownList extends BaseControl {
 
 		onChange: null,
 
-		speed: (default_settings.animation_speed / 2)
+		speed: (default_settings.animation_speed / 3)
 	
 	}/* defaultProps */;
 
@@ -62,6 +63,23 @@ export default class DropDownList extends BaseControl {
 
 
 	is_open = () => (this.list_sleeve.current?.offsetHeight > 0);
+
+
+	list_click_handler = (event, child = null) => {
+
+		let item = event?.currentTarget ?? event?.target;
+		let value = item.getAttribute ("value");
+
+		if (this.state.selected_value != value) this.execute (this.props.onChange, event);
+		
+		this.setState ({ selected_value: value }, () => {
+			this.active_selection.current.innerHTML = item?.innerHTML;
+			this.execute (child?.onClick);
+			this.execute (this.props.onClick);
+			this.close_list ();
+		});
+
+	}/* list_click_handler */;
 
 
 	dropdown_list_items = list => {
@@ -80,22 +98,9 @@ export default class DropDownList extends BaseControl {
 
 			result.push (<div id={`${this.props.id}_item_${index}`} value={value} key={index++} className="dropdown-child-item" 
 
-				style={preprocessed_text ? null : { padding: "0.2em 0 0.2em 0.5em" }}
+				style={preprocessed_text ? null : { padding: item_padding }}
 			
-				onClick={event => {
-
-					let selected_html = (event?.currentTarget ?? event?.target)?.innerHTML;
-
-					if (this.state.selected_value != value) this.execute (this.props.onChange, event);
-					
-					this.setState ({ selected_value: value }, () => {
-						this.execute (child.onClick);
-						this.execute (this.props.onClick);
-						this.active_selection.current.innerHTML = selected_html;
-						this.close_list ();
-					});
-
-				}}>
+				onClick={event => this.list_click_handler (event, child)}>
 					
 				{contents ?? child?.props?.children}
 				
@@ -109,9 +114,15 @@ export default class DropDownList extends BaseControl {
 
 
 	child_list = () => Array.concat (
-		this.header_visible () ? <div key="placeholder" style={{ fontStyle: "italic" }} value={header_value}>{this.props.header}</div> : null,
+
+		this.header_visible () ? [<div key="placeholder" style={{ 
+			fontStyle: "italic", 
+			padding: item_padding 
+		}} value={header_value} onClick={this.props.headerSelectable ? this.list_click_handler : null}>{this.props.header}</div>] : null,
+
 		this.dropdown_list_items (this.props.data),
 		this.dropdown_list_items (this.props.children)
+
 	)/* child_list */;
 
 
@@ -162,7 +173,7 @@ export default class DropDownList extends BaseControl {
 
 	componentDidMount () {
 
-		document.addEventListener ("click", event => not_set (event.target.closest (`#${this.props.id}_main_panel`)) ? this.setState ({ losing_focus: true }, this.close_list) : null);
+		document.addEventListener ("click", event => not_set (event.target.closest (`#${this.props.id}_dropdown_panel`)) ? this.setState ({ losing_focus: true }, this.close_list) : null);
 
 		this.list_sleeve.current.addEventListener ("transitionstart", this.start_transition.bind (this));
 		this.list_sleeve.current.addEventListener ("transitionend", this.end_transition.bind (this));
@@ -176,14 +187,17 @@ export default class DropDownList extends BaseControl {
 
 
 	render () {
-		return <div id={`${this.props.id}_main_panel`} className="dropdown" ref={this.dropdown}>
+
+		let item_list = this.child_list ();
+
+		return <div id={`${this.props.id}_dropdown_panel`} className="dropdown" ref={this.dropdown}>
 			<div className="dropdown-list" ref={this.dropdown_list} style={{ zIndex: this.state.focused ? 1 : 0 }}>
 
 				<div className="active-dropdown-item bordered"
 				
 					style={{
-						backgroundColor: this.state.focused ? "var(--highlight-color)" : "var (--border-color)",
-						border: this.state.focused ? "solid 2px var(--highlight-border-color)" : "solid 1px var(--border-color)",
+						backgroundColor: this.state.focused ? "var(--highlight-color)" : "var(--background-color)",
+						border: this.state.focused ? "solid 1px var(--highlight-border-color)" : "solid 1px var(--border-color)",
 					}}
 				
 					onClick={() => this.setState ({ focused: true }, () => this.state.opened ? this.close_list () : this.open_list ())}>
@@ -192,7 +206,7 @@ export default class DropDownList extends BaseControl {
 						style={{ transition: `transform ${this.props.speed}ms ease-in-out, top ${this.props.speed}ms ease-in-out` }}>
 					</div>
 
-					<div className="active-dropdown-selection" ref={this.active_selection} style={{ paddingRight: "0.25em" }} />
+					<div className="active-dropdown-selection" ref={this.active_selection} style={{ paddingRight: "0.25em" }}>{item_list [0].props.children}</div>
 
 				</div>
 
@@ -204,12 +218,13 @@ export default class DropDownList extends BaseControl {
 						visibility: "hidden",
 					}}>
 
-					<div id="item_list" className={this.state.list_class} ref={this.item_list}>{this.child_list ()}</div>
+					<div id="item_list" className={this.state.list_class} ref={this.item_list}>{item_list}</div>
 
 				</div>
 
 			</div>
 		</div>
+
 	}// render;
 
 
