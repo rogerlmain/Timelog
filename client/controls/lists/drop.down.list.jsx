@@ -150,20 +150,8 @@ export default class DropDownList extends BaseControl {
 
 	end_transition () {
 		this.setState ({ opened: !this.state.opened }, () => {
-
 			this.execute (this.state.opened ? this.props.afterOpening : this.props.afterClosing);
-
-			if (!this.state.opened) {
-			
-				this.list_sleeve.current.style.visibility = "hidden";
-				
-				if (this.state.losing_focus) this.setState ({ 
-					focused: false,
-					losing_focus: false,
-				});
-
-			}// if;
-
+			if (!this.state.opened) return this.list_sleeve.current.style.visibility = "hidden";
 			this.item_list.current.className = highlight_classname;
 		});
 	}/* end_transition */;
@@ -174,7 +162,7 @@ export default class DropDownList extends BaseControl {
 
 	componentDidMount () {
 
-		document.addEventListener ("click", event => not_set (event.target.closest (`#${this.props.id}_dropdown_panel`)) ? this.setState ({ losing_focus: true }, this.close_list) : null);
+		document.addEventListener ("click", event => not_set (event.target.closest (`#${this.props.id}_dropdown_panel`)) ? this.setState ({ focused: false }, this.close_list.bind (this)) : null);
 
 		this.list_sleeve.current.addEventListener ("transitionstart", this.start_transition.bind (this));
 		this.list_sleeve.current.addEventListener ("transitionend", this.end_transition.bind (this));
@@ -201,7 +189,7 @@ export default class DropDownList extends BaseControl {
 						border: this.state.focused ? "solid 1px var(--highlight-border-color)" : "solid 1px var(--border-color)",
 					}}
 				
-					onClick={() => this.setState ({ focused: true }, () => this.state.opened ? this.close_list () : this.open_list ())}>
+					onClick={event => this.setState ({ focused: true }, (this.state.opened ? this.close_list : this.open_list))}>
 
 					<div id="item_list_glyph" ref={this.list_glyph} className="dropdown-glyph"
 						style={{ transition: `transform ${this.props.speed}ms ease-in-out, top ${this.props.speed}ms ease-in-out` }}>
