@@ -67,6 +67,31 @@ export default class ProjectSelector extends BaseControl {
 	/*********/
 
 
+	update_projects_list = client_id => {
+
+		if ((this.state.selected_client_id == client_id) || not_set (client_id)) return;
+
+		this.setState ({ 
+			selected_client_id: client_id,
+			selected_project_id: null,
+		}, () => {
+
+			ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
+
+				let project_id = (!this.props.hasHeader || (data?.key_length () == 1)) ? Object.keys (data) [0] : null;
+
+				if (isset (project_id)) this.setState ({ selected_project_id: project_id });
+				this.execute (this.props.onProjectChange, project_id);
+
+			}));
+
+			this.execute (this.props.onClientChange, client_id);
+		
+		})/* setState */;
+
+	}/* update_projects_list */;
+
+
 	shouldComponentUpdate (new_props) {
 
 		if (this.props.selectedClient != new_props.selectedClient) return !!this.setState ({ selected_client_id: new_props.selectedClient });
@@ -90,30 +115,7 @@ export default class ProjectSelector extends BaseControl {
 
 				selectedClient={this.state.selected_client_id}
 
-				onChange={client_id => {
-
-					if ((this.state.selected_client_id == client_id) || not_set (client_id)) return;
-
-					this.setState ({ 
-						selected_client_id: client_id,
-						selected_project_id: null,
-					}, () => {
-
-						ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
-
-							let project_id = (!this.props.hasHeader || (data?.key_length () == 1)) ? Object.keys (data) [0] : null;
-
-							if (isset (project_id)) this.setState ({ selected_project_id: project_id });
-							this.execute (this.props.onProjectChange, project_id);
-
-						}));
-
-						this.execute (this.props.onClientChange, client_id);
-					
-					});
-
-				}}
-				
+				onChange={this.update_projects_list}
 				onLoad={data => this.setState ({ client_list: data })}>
 
 			</ClientSelector>
@@ -125,7 +127,7 @@ export default class ProjectSelector extends BaseControl {
 			<FadePanel id={`${this.props.id}_project_selector_fade_panel`} visible={isset (this.state.selected_client_id)}>
 				<LoadList id={this.props.id} label="Project" style={{ width: "100%" }}
 
-					header={this.props.header} headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_project_id}
+					header={this.props.headerText} headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_project_id}
 
 					dataIdField="project_id" dataTextField="name" data={this.state.project_data} 
 					newButtonPage={this.props.newButton ? page_names.projects : null} 

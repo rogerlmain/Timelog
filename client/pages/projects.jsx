@@ -87,7 +87,7 @@ export default class ProjectsPage extends BaseControl {
 			<div className="project-select-form">
 				<ProjectSelector id="project_selector" ref={this.project_selector} parent={this} includeOffshoreAccounts={false}
 
-					header={can_create ? "New project" : ((project_count > 1) ? "Select a project" : null)}
+					headerText={can_create ? "New project" : ((project_count > 1) ? "Select a project" : null)}
 					headerSelectable={can_create}
 
 					selectedClient={this.state.selected_client}

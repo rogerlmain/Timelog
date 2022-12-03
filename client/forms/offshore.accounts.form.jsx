@@ -24,8 +24,9 @@ const repository_name = {
 
 
 export const repository_type = {
-	git	: 1,
-	jira: 2,
+	github	: 1,
+	gitlab	: 2,
+	jira	: 3,
 }/* repository_type */;
 
 
@@ -97,7 +98,8 @@ export default class OffshoreAccountsForm extends BaseControl {
 
 			onChange={event => this.repository_panel?.current.animate (() => this.setState ({ repository: event.target.value }))}>
 
-			<option value={repository_type.git}>GIT</option>
+			<option value={repository_type.github}>GITHub</option>
+			<option value={repository_type.gitlab}>GITLab</option>
 			<option value={repository_type.jira}>JIRA</option>
 
 		</SelectList>

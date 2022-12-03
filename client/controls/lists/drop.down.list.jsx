@@ -32,6 +32,7 @@ export default class DropDownList extends BaseControl {
 		losing_focus: false,
 
 		selected_value: -1,
+		
 		list_class: null,
 
 	}/* state */;
@@ -59,7 +60,7 @@ export default class DropDownList extends BaseControl {
 	/********/
 
 
-	header_visible = () => isset (this.props.header) && ((this.state.selected_value == 0) || (this.props.headerSelectable) || (this.props.headerVisible));
+	header_visible = () => isset (this.props.header) && ((this.state.selected_value < 1) || (this.props.headerSelectable) || (this.props.headerVisible));
 
 
 	is_open = () => (this.list_sleeve.current?.offsetHeight > 0);
@@ -180,8 +181,8 @@ export default class DropDownList extends BaseControl {
 
 		this.active_selection.current.style.width = `calc(${this.dropdown_list.current.offsetWidth + this.list_glyph.current.offsetWidth}px + 0.25em)`;
 
-		this.dropdown.current.style.width = `${this.dropdown_list.current.offsetWidth}px`;
-		this.dropdown.current.style.height = `${this.dropdown_list.current.offsetHeight}px`;
+		this.dropdown.current.style.width = this.props?.style?.width ?? `${this.dropdown_list.current.offsetWidth}px`;
+		this.dropdown.current.style.height = this.props?.style?.height ?? `${this.dropdown_list.current.offsetHeight}px`;
 
 	}/* componentDidMount */;
 
@@ -190,8 +191,8 @@ export default class DropDownList extends BaseControl {
 
 		let item_list = this.child_list ();
 
-		return <div id={`${this.props.id}_dropdown_panel`} className="dropdown" ref={this.dropdown}>
-			<div className="dropdown-list" ref={this.dropdown_list} style={{ zIndex: this.state.focused ? 1 : 0 }}>
+		return <div id={`${this.props.id}_dropdown_panel`} className="dropdown" ref={this.dropdown} style={{ position: "relative" }}>
+			<div className="dropdown-list" ref={this.dropdown_list} style={{ zIndex: this.state.focused ? 1 : 0 , minWidth: "100%" }}>
 
 				<div className="active-dropdown-item bordered"
 				
@@ -206,7 +207,7 @@ export default class DropDownList extends BaseControl {
 						style={{ transition: `transform ${this.props.speed}ms ease-in-out, top ${this.props.speed}ms ease-in-out` }}>
 					</div>
 
-					<div className="active-dropdown-selection" ref={this.active_selection} style={{ paddingRight: "0.25em" }}>{item_list [0].props.children}</div>
+					<div className="active-dropdown-selection" ref={this.active_selection} style={{ paddingRight: "0.25em" }}>{item_list?.[0]?.props.children}</div>
 
 				</div>
 

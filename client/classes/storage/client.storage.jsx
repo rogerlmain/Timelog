@@ -93,7 +93,7 @@ puke ();
 			const selected_set = items => {
 
 				if (!include_offshore_accounts) Object.keys (items)?.forEach (key => {
-					if (not_set (items [key]?.client_id)) delete items [key];
+					if (isset (items [key]?.type)) delete items [key];
 				});
 
 				return items;
@@ -121,14 +121,12 @@ puke ();
 	static get_by_id = client_id => {
 		return new Promise ((resolve, reject) => {
 
-			let store = this.#get ();
-
 			if (not_set (client_id)) return resolve (null);
 
-			if (isset (store)) for (let company_id of Object.keys (store)) {
-				let client = nested_value (store, company_id, "find", item => { return item.client_id == client_id });
-				if (isset (client)) return resolve (client);
-			}// for;
+			let store = this.#get ();
+			let client = store?.[CompanyStorage.active_company_id ()][client_id];
+
+			if (isset (client)) return resolve (client);
 
 			ClientModel.get_by_id (client_id).then (client => {
 				ClientStorage.#set_client (client);

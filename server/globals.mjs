@@ -47,3 +47,20 @@ String.prototype.equals = function (comparison, case_sensitive = false) {
 }// equals;
 
 
+String.prototype.replaceWith = String.prototype.replaceAll;
+
+
+String.prototype.replaceAll = function () {
+
+	let values = Array.from (arguments);
+	let result = this;
+
+	if ((values.length != 1) || !is_object (values [0])) return this.replaceWith (...values);
+	Object.keys (values [0]).forEach (key => result = result.replace (key, values [0][key]));
+	
+	return result;
+
+}/* replaceAll */;
+
+
+String.prototype.stripped = function () { return this.replace (/\s{1,}/g, space) }

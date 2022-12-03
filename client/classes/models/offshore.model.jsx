@@ -1,9 +1,10 @@
 import Database from "client/classes/database";
 import CompanyStorage from "client/classes/storage/company.storage";
 
-import git_glyph from "resources/images/logos/repositories/git.png";
-import jira_glyph from "resources/images/logos/repositories/jira.png";
-import bundion_glyph from "resources/images/logos/repositories/bundion.png";
+import github_glyph from "resources/images/logos/repositories/github.icon.png";
+import gitlab_glyph from "resources/images/logos/repositories/gitlab.icon.png";
+import jira_glyph from "resources/images/logos/repositories/jira.icon.png";
+import bundion_glyph from "resources/images/logos/repositories/bundion.icon.png";
 
 import { repository_type } from "client/forms/offshore.accounts.form";
 
@@ -50,13 +51,14 @@ export default class OffshoreModel {
 	})/* get_repositories */;
 
 
-	static get_projects = repository_id => Database.fetch_data (table, {
+	static get_projects = (token, repo) => Database.fetch_data (table, {
 		action: "get_projects",
-		repository_id: repository_id,
+		token: token,
+		repo: repo,
 	})/* get_projects */;
 
 
-	static get_users = (token, repo) => Database.fetch_data (table, { 
+	static get_users = (token, repo) => Database.fetch_data (table, {
 		action: "get_users",
 		token: token, 
 		repo: repo,
@@ -68,7 +70,8 @@ export default class OffshoreModel {
 
 	static glyph_image = repo => {
 		switch (repo.type) {
-			case repository_type.git: return git_glyph;
+			case repository_type.github: return github_glyph;
+			case repository_type.gitlab: return gitlab_glyph;
 			case repository_type.jira: return jira_glyph;
 
 			/* other repos here */

@@ -6,8 +6,9 @@ import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectModel from "client/classes/models/project.model";
 
 import { stores } from "client/classes/types/constants";
-import { isset, not_null, not_empty, is_promise, not_number, not_set, live } from "client/classes/common";
+import { isset, not_null, not_empty, is_promise, not_number, not_set, live, is_null } from "client/classes/common";
 import OffshoreModel from "../models/offshore.model";
+import { repository_type } from "client/forms/offshore.accounts.form";
 
 
 const store_name = stores.projects;
@@ -139,24 +140,34 @@ export default class ProjectStorage extends LocalStorage {
 			let result = this.get_store ()?.[CompanyStorage.active_company_id ()]?.[client_id];
 
 			if (isset (result)) return resolve (result);
-			if (not_number (client_id)) return resolve (null);
 
-			ProjectModel.get_projects_by_client (client_id).then (data => {
+			ClientStorage.get_by_id (client_id).then (client => {
 
-				let project_count = data.length;
-				
-				if (project_count == 0) return resolve (data); // return an empty array - it's how to distinguish unread from no value
+				if (isset (client.token_id)) return OffshoreModel.get_projects (client.token_id, client.name).then (projects => {
+					
+					projects.forEach (project => {
+						project.client_id = client_id;
+						ProjectStorage.set_store_project (project);
+					});
 
-				data.forEach (project => {
-					ProjectStorage.set_store_project (project);
-					if (--project_count == 0) ProjectStorage.get_by_client (client_id).then (data => resolve (data));
+					resolve (projects);
+					
 				});
 
-				OffshoreModel.get_projects (client_id).then (projects => {
-					alert ("exciting stuff: " + JSON.stringify (projects));
-				})
+				ProjectModel.get_projects_by_client (client_id).then (data => {
 
-			}).catch (reject);
+					let project_count = data.length;
+					
+					if (project_count == 0) return resolve (data); // return an empty array - it's how to distinguish unread from no value
+
+					data.forEach (project => {
+						ProjectStorage.set_store_project (project);
+						if (--project_count == 0) ProjectStorage.get_by_client (client_id).then (data => resolve (data));
+					});
+
+				}).catch (reject);
+
+			});
 
 		});
 	}// get_by_client;

@@ -28,12 +28,11 @@ import MiscData from "./server/models/misc.mjs";
 import TaskData from "./server/models/tasks.mjs";
 
 import EmailHandler from "./server/handlers/email.handler.mjs";
-import GithubHandler, { repository_type } from "./server/handlers/offshore/github.handler.mjs";
 import PaymentHandler from "./server/handlers/payment.handler.mjs";
+import OffshoreHandler from "./server/handlers/offshore.handler.mjs";
 
 import { createNamespace, getNamespace } from "continuation-local-storage";
 import { root_path } from "./server/constants.mjs";
-import OffshoreHandler from "./server/handlers/offshore.handler.mjs";
 
 
 const countries_id = 1;
@@ -265,6 +264,7 @@ app.post ("/offshore", () => {
 				case "get_tokens": OffshoreModel.get_tokens (fields).then (result => global.response ().send (JSON.stringify (result))); break;
 
 				case "get_repositories": OffshoreHandler.get_repositories (fields); break;
+				case "get_projects": OffshoreHandler.get_projects (fields.token, fields.repo); break;
 				case "get_users": OffshoreHandler.get_users (fields.token, fields.repo); break;
 
 			}/* switch */;

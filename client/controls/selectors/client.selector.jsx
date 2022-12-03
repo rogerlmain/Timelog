@@ -102,8 +102,8 @@ export default class ClientSelector extends BaseControl {
 				hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
 				onChange={event => {
-					let client_id = integer_value (event.currentTarget.getAttribute ("value"));
-					this.setState ({ selected_client_id: client_id }, () => this.execute (this.props.onChange, client_id))
+					let client_id = event.currentTarget.getAttribute ("value");
+					this.setState ({ selected_client_id: client_id }, () => this.execute (this.props.onChange, client_id));
 				}}>
 				
 			</LoadList>

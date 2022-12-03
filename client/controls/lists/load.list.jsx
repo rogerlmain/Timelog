@@ -83,6 +83,7 @@ export default class LoadList extends BaseControl {
 		let single_option = ((this.props.data?.key_length () == 1) && not_set (this.props.header));
 
 		let form_style = {
+			...this.props.style,
 			columnGap: (new_button && isset (this.props.data)) ? "0.25em" : null,
 			gridTemplateColumns: "1fr min-content",
 		}// form_style;
