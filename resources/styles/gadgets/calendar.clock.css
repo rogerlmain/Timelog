@@ -20,7 +20,8 @@ div.react-calendar button {
 
 
 button.react-calendar__tile--now {
-	background-color: var(--highlight-color) !important;
+	background-color: var(--dark-highlight-color) !important;
+	color: white !important;
 }/* button.react-calendar__tile--now */
 
 
