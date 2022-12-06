@@ -13,7 +13,7 @@ import ProjectStorage from "client/classes/storage/project.storage";
 
 import CalendarClock from "client/gadgets/calendar.clock";
 import PopupNotice from "client/gadgets/popup.notice";
-import TaskSelector from "client/controls/selectors/task.selector";
+import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging.model";
 
@@ -332,7 +332,22 @@ export default class LoggingPage extends BaseControl {
 		return <div id="log_panel" className="horizontally-centered">
 
 			<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
-			<Container visible={!logged_in}><TaskSelector /></Container>
+
+			<Container visible={!logged_in}>
+
+				<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
+
+					clientId={this.client_id ()} projectId={this.project_id ()}
+
+					hasHeader={true} 
+					headerSelectable={false} 
+
+					onClientChange={client_id => this.setState ({ current_entry: {...this.state.current_entry, client_id: client_id } })}
+					onProjectChange={project_id => this.setState ({ current_entry: {...this.state.current_entry, project_id: project_id } })}>
+
+				</ProjectSelector>
+
+			</Container>
 
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}

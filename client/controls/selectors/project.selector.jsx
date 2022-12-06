@@ -36,8 +36,6 @@ export default class ProjectSelector extends BaseControl {
 
 		id: null,
 
-		embedded: false,
-
 		selectedClient: null,
 		selectedProject: null,
 
@@ -108,7 +106,7 @@ export default class ProjectSelector extends BaseControl {
 
 		let single_project = (OptionsStorage.project_limit () == 1);
 
-		return <div id={this.props.id} className={this.props.embedded ? "ghost-box" : "one-piece-form"}>
+		return <div id={this.props.id} className="one-piece-form">
 
 			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={this.props.newButton} includeOffshoreAccounts={this.props.includeOffshoreAccounts}
 
@@ -137,7 +135,7 @@ export default class ProjectSelector extends BaseControl {
 					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
 					onChange={event => {
-						let project_id = event.target.getAttribute ("value");
+						let project_id = integer_value (event.target.getAttribute ("value"));
 						this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
 					}}>
 
