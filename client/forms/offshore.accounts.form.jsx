@@ -13,7 +13,7 @@ import { blank } from "client/classes/types/constants";
 import { debugging, isset, jsonify } from "client/classes/common";
 
 
-const rmpc_github_token = "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";
+const rmpc_github_token = "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";
 const rmpc_username = "rexthestrange";
 
 

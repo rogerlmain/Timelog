@@ -31,27 +31,25 @@ export default class PopupWindow extends BaseControl {
 	}// defaultProps;
 
 
-	state = { zindex: hidden_zindex }
-
-
 	constructor (props) {
 		super (props);
 		if (not_set (this.props.id)) throw "PopupWindow requires an ID";
 		if (not_set (this.props.parent) && isset (this.props.switch)) throw "PopupWindow requires a parent if the switch is set";
 		if (not_set (this.props.switch) && isset (this.props.parent)) throw "PopupWindow requires a switch if the parent is set";
-		this.state.zindex = props.visible ? visible_zindex : hidden_zindex;
 	}// constructor;
 
 
 	render () {
 		return (
-			<FadePanel id={`${this.props.id}_fade_panel`} className="full-screen" visible={this.props.visible} style={{ zIndex: this.state.zindex }}
+			<FadePanel id={`${this.props.id}_fade_panel`} className="full-screen" visible={this.props.visible} 
+			
+				style={{ zIndex: this.props.visible ? visible_zindex : hidden_zindex }}
 
-				beforeShowing={() => this.setState ({ zindex: visible_zindex }, () => this.execute (this.props.beforeOpening))}
-				afterHiding={() => this.setState ({ zindex: hidden_zindex }, () => this.execute (this.props.afterClosing))}
-
+				beforeShowing={() => this.execute (this.props.beforeOpening)}
 				beforeHiding={() => this.execute (this.props.beforeClosing)}
-				afterShowing={() => this.execute (this.props.afterOpening)}>
+
+				afterShowing={() => this.execute (this.props.afterOpening)}
+				afterHiding={() => this.execute (this.props.afterClosing)}>
 
 				<div className="full-screen popup-panel">
 					{this.props.modal ? <div className="full-screen fully-centered popup-modal" /> : null}

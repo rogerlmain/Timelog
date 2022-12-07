@@ -133,9 +133,7 @@ export default class OptionsStorage extends LocalStorage {
 	static can_edit = () => OptionsStorage.editing_option () == toggled.true;
 	static can_round = () => OptionsStorage.rounding_option () == toggled.true;
 
-
 	static truetime = () => (OptionsStorage.granularity () == granularity_types.truetime);
-
 	
 	static default_rate (value = null) { 
 		if (isset (value)) return OptionsStorage.save_option (option_types.default_rate, value);

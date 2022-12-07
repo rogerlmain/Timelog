@@ -3,7 +3,6 @@ import React from "react";
 import BaseControl from"client/controls/abstract/base.control";
 import Container from"client/controls/container";
 
-import ExplodingPanel from"client/controls/panels/exploding.panel";
 import EyecandyPanel from"client/controls/panels/eyecandy.panel";
 import FadePanel from"client/controls/panels/fade.panel";
 
@@ -12,7 +11,6 @@ import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
 
 import CalendarClock from "client/gadgets/calendar.clock";
-import PopupNotice from "client/gadgets/popup.notice";
 import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging.model";
@@ -21,7 +19,7 @@ import { blank, currency_symbol, date_formats, date_rounding, granularity_types,
 import { isset, is_empty, not_set, multiline_text, null_value, debugging } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
-import { MasterContext } from "client/classes/types/contexts";
+import { MainContext } from "client/classes/types/contexts";
 
 import "resources/styles/pages/logging.css";
 
@@ -52,6 +50,7 @@ export default class LoggingPage extends BaseControl {
 	state = {
 
 		current_entry: null,
+		current_timestamp: null,
 
 		action: null,
 
@@ -64,15 +63,13 @@ export default class LoggingPage extends BaseControl {
 	}/* state */;
 
 
-	static contextType = MasterContext;
+	static contextType = MainContext;
 	static defaultProps = { id: "logging_page" }
 
 
 	constructor (props) { 
 
 		super (props);
-
-		this.state.current_entry = { ...LoggingStorage.current_entry (), end_time: this.end_time () }
 
 		let project_id = this.state.current_entry?.project_id;
 		let client_id = this.state.current_entry?.client_id;
@@ -81,7 +78,10 @@ export default class LoggingPage extends BaseControl {
 			console.log (error);
 			throw (error);
 		});
-		
+
+		this.state.current_entry = { ...LoggingStorage.current_entry (), end_time: this.end_time () }
+		this.state.current_timestamp = this.rounded (new Date ());
+
 		if (debugging ()) console.log ("logging page created");
 
 	}// constructor;
@@ -179,22 +179,19 @@ export default class LoggingPage extends BaseControl {
 		
 	link_cell = value => {
 
-		let editable = this.needs_editing (8);
+		let needs_editing = this.needs_editing (8);
+		let can_edit = OptionsStorage.can_edit ();
 
-		return <div title={editable && !this.state.editing ? 
-			multiline_text (
+		return <div className={(can_edit || needs_editing) ? (needs_editing ? "error-link" : "standard-link") : null}
+
+			title={needs_editing ? multiline_text (
 				"Whoa! Are you a workaholic?",
 				"You've been going for more than eight hours straight!",
 				space,
 				"Click here to change your log times."
 			) : null} 
 		
-			className={editable && !OptionsStorage.can_edit () ? "error-link" : "standard-link"} 
-
-			onClick={(editable || OptionsStorage.can_edit ()) ? () => this.setState ({ 
-				editing: true,
-				fixing: true
-			}) : null}>
+			onClick={can_edit || needs_editing ? () => this.context.load_popup (this.calendar_clock ()).then (this.context.show_popup) : null}>
 				
 			{value}
 
@@ -203,47 +200,40 @@ export default class LoggingPage extends BaseControl {
 	}/* link_cell */;
 
 
-	overtime_notice = () => {
-		return <PopupNotice id="overtime_notice" visible={this.state.editing}>
-			<ExplodingPanel id="overtime_notice_panel" ref={this.notice_panel}>
+	calendar_clock = () => <div>
+	
+		<CalendarClock id="log_calendar_clock"
+			start={this.state.current_entry.start_time} end={this.state.current_entry.end_time}
+			onChange={data => {
+				this.state.current_entry [`${data.boundary}_time`] = data.date;
+				this.forceUpdate ();
+			}}>
+		</CalendarClock>
 
-				<Container id="calendar_clock" visible={this.state.fixing}>
+		<div className="button-panel">
+			<button onClick={() => this.context.hide_popup ()}>Close</button>
+		</div>
 
-					<CalendarClock id="log_calendar_clock"
-						start={this.state.current_entry.start_time} end={this.state.current_entry.end_time}
-						onChange={data => {
-							this.state.current_entry [`${data.boundary}_time`] = data.date;
-							this.forceUpdate ();
-						}}>
-					</CalendarClock>
+	</div>
 
-					<div className="button-panel">
-						<button onClick={() => this.setState ({ editing: false })}>Close</button>
-					</div>
 
-				</Container>
+	overtime_notice = () => <Container id="overtime_instructions" visible={!this.state.fixing}>
+		<div style={{ padding: "0.5em 0" }}>
 
-				<Container id="overtime_instructions" visible={!this.state.fixing}>
-					<div style={{ padding: "0.5em 0" }}>
+			Whoa! Are you sure this is right?<br/>
+			You have a single session going for more than a day!<br />
+			<br />
+			Did you forget to log out?<br />	
 
-						Whoa! Are you sure this is right?<br/>
-						You have a single session going for more than a day!<br />
-						<br />
-						Did you forget to log out?<br />	
+			<br />
 
-						<br />
+			<div className="button-panel">
+				<button onClick={() => this.setState ({ editing: false })}>Yep, that's right</button>
+				<button onClick={() => this.notice_panel.current.animate (() => this.setState ({ fixing: true }))}>Oops. Fix it.</button>
+			</div>
 
-						<div className="button-panel">
-							<button onClick={() => this.setState ({ editing: false })}>Yep, that's right</button>
-							<button onClick={() => this.notice_panel.current.animate (() => this.setState ({ fixing: true }))}>Oops. Fix it.</button>
-						</div>
-
-					</div>
-				</Container>
-
-			</ExplodingPanel>
-		</PopupNotice>
-	}/* overtime_notice */;
+		</div>
+	</Container>
 
 
 	entry_details = elapsed_time => {
@@ -283,7 +273,7 @@ export default class LoggingPage extends BaseControl {
 						<div>{elapsed_time == 0 ? "No time elapsed" : Date.elapsed (elapsed_time)}</div>
 						<div style={{ position: "relative" }}>{this.overtime_notice ()}</div>
 					</div>
-				</div>
+				</div>					
 				
 				<Container visible={OptionsStorage.can_bill () && (this.state.billing_rate > 0)}>
 					<label>Billable</label>
@@ -331,23 +321,23 @@ export default class LoggingPage extends BaseControl {
 
 		return <div id="log_panel" className="horizontally-centered">
 
-			<Container visible={logged_in}>{this.entry_details (elapsed_time)}</Container>
+			{logged_in ? this.entry_details (elapsed_time) : <Container>
 
-			<Container visible={!logged_in}>
+				<div className="with-headspace">
+					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
 
-				<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
+						clientId={this.client_id ()} projectId={this.project_id ()}
 
-					clientId={this.client_id ()} projectId={this.project_id ()}
+						hasHeader={true} 
+						headerSelectable={false} 
 
-					hasHeader={true} 
-					headerSelectable={false} 
+						onClientChange={client_id => this.setState ({ current_entry: {...this.state.current_entry, client_id: client_id } })}
+						onProjectChange={project_id => this.setState ({ current_entry: {...this.state.current_entry, project_id: project_id } })}>
 
-					onClientChange={client_id => this.setState ({ current_entry: {...this.state.current_entry, client_id: client_id } })}
-					onProjectChange={project_id => this.setState ({ current_entry: {...this.state.current_entry, project_id: project_id } })}>
+					</ProjectSelector>
+				</div>
 
-				</ProjectSelector>
-
-			</Container>
+			</Container>}
 
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
@@ -362,6 +352,11 @@ export default class LoggingPage extends BaseControl {
 					<FadePanel id="login_button" visible={project_selected} style={{ display: "flex" }}>
 
 						{project_selected && <div className="flex-column">
+
+							{OptionsStorage.can_edit () && <div className="one-piece-form">
+								<label>Start:</label>
+								<div>{this.link_cell (this.state.current_timestamp?.format (date_formats.full_datetime))}</div>
+							</div>}
 
 							<div className="flex-column with-headspace">
 								<div style={{ paddingLeft: "0.75em" }}><label htmlFor="memo" style={{ fontWeight: "bold" }}>Notes</label></div>

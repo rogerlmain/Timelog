@@ -13,6 +13,7 @@ import { boundaries } from "client/classes/storage/options.storage";
 
 import "react-clock/dist/Clock.css";
 import "resources/styles/gadgets/calendar.clock.css";
+import { isset } from "client/classes/common";
 
 
 export default class CalendarClock extends BaseControl {
@@ -56,14 +57,14 @@ export default class CalendarClock extends BaseControl {
 	render () {
 		return <Container visible={this.props.visible} id={this.props.id}>
 
-			<div className="three-column-grid boundary-toggle-switch">
+			{(isset (this.props.start) && isset (this.props.end)) && <div className="three-column-grid boundary-toggle-switch">
 				<ToggleButton htmlFor="log_boundary_start" className="fully-centered">Start</ToggleButton>
 				<ToggleSwitch id="log_boundary_toggle" value={boundaries.end} onChange={data => this.setState ({ boundary: data })}>
 					<option id="log_boundary_start" value={boundaries.start}>Start</option>
 					<option id="log_boundary_end" value={boundaries.end}>End</option>
 				</ToggleSwitch>
 				<ToggleButton htmlFor="log_boundary_end" className="fully-centered">End</ToggleButton>
-			</div>
+			</div>}
 
 			<div className="two-column-grid date-time-controls">
 
