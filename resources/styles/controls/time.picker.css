@@ -17,11 +17,15 @@ div.time-picker div.meridian > div {
 
 
 div.time-picker div.meridian > div:hover {
-	background-color: var(--mouseover-color)
+	color: var(--hover-color);
+	background-color: var(--hover-background-color);
 }/* div.time-picker div.meridian > div:hover */
 
 
-div.time-picker div.meridian > div.selected { background-color: var(--highlight-color) }
+div.time-picker div.meridian > div.selected { 
+	background-color: var(--dark-highlight-color) !important;
+	color: white !important;
+}/* div.time-picker div.meridian > div.selected */
 
 
 time.react-clock {

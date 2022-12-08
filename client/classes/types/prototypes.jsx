@@ -186,7 +186,7 @@ Date.parts = {
 	minutes			: "minutes",
 	seconds			: "seconds",
 	milliseconds	: "milliseconds",
-	meridians		: "meridian",
+	meridian		: "meridian",
 }/* parts */;
 
 

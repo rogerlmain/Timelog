@@ -49,8 +49,7 @@ export default class LoggingPage extends BaseControl {
 
 	state = {
 
-		current_entry: null,
-		current_timestamp: null,
+		current_entry: { start: null, end: null },
 
 		action: null,
 
@@ -74,13 +73,17 @@ export default class LoggingPage extends BaseControl {
 		let project_id = this.state.current_entry?.project_id;
 		let client_id = this.state.current_entry?.client_id;
 
+		let current_entry = LoggingStorage.current_entry ();
+
 		ProjectStorage.billing_rate (project_id, client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
 			console.log (error);
 			throw (error);
 		});
 
-		this.state.current_entry = { ...LoggingStorage.current_entry (), end_time: this.end_time () }
-		this.state.current_timestamp = this.rounded (new Date ());
+		this.state.current_entry = {
+			start: isset (current_entry) ? current_entry.start : this.rounded (new Date (), ranges.start),
+			end: isset (current_entry) ? this.rounded (new Date (), ranges.end) : null,
+		}/* current_entry */;
 
 		if (debugging ()) console.log ("logging page created");
 
@@ -114,7 +117,7 @@ export default class LoggingPage extends BaseControl {
 
 		if (LoggingStorage.logged_out ()) return false;
 
-		let same_day = this.state.current_entry.start_time.same_day (this.state.current_entry.end_time);
+		let same_day = this.state.current_entry.start.same_day (this.state.current_entry.end);
 		let result = (!same_day || (this.elapsed_time () > (time_limit * Date.coefficient.hour)));
 
 		return result;
@@ -141,7 +144,7 @@ export default class LoggingPage extends BaseControl {
 	log_entry = () => {
 
 		let entry = this.state.current_entry;
-		let timestamp = this.rounded ((this.state.action == action_types.cancel) ? entry.start_time : (entry.end_time ?? new Date ()));
+		let timestamp = this.rounded ((this.state.action == action_types.cancel) ? entry.start : (entry.end ?? new Date ()));
 
 		if (not_set (timestamp)) return;
 
@@ -151,11 +154,9 @@ export default class LoggingPage extends BaseControl {
 				LoggingStorage.delete ();
 			} else {
 
-				let start_time = Date.validated (entry.start_time);
+				let start_time = Date.validated (entry.start);
 
-				entry.start_time = start_time;
-				entry.end_time = this.end_time ();
-
+				entry = { start: start_time, end: this.end_time () }
 				LoggingStorage.set (entry);
 
 			}// if;
@@ -173,10 +174,50 @@ export default class LoggingPage extends BaseControl {
 	end_time = () => { return this.rounded (new Date (), ranges.end) }
 
 
-	elapsed_time = () => { return Math.max (Math.floor ((this.state.current_entry.end_time.getTime () - this.state.current_entry.start_time.getTime ()) / 1000), 0) }
-	invalid_entry = () => { return (this.state.current_entry.end_time.before (this.state.current_entry.start_time)) }
+	elapsed_time = () => { return Math.max (Math.floor ((this.state.current_entry.end.getTime () - this.state.current_entry.start.getTime ()) / 1000), 0) }
+	invalid_entry = () => { return (this.state.current_entry.end.before (this.state.current_entry.start)) }
 		
 		
+	overtime_notice = () => <Container id="overtime_instructions" visible={!this.state.fixing}>
+		<div style={{ padding: "0.5em 0" }}>
+
+			Whoa! Are you sure this is right?<br/>
+			You have a single session going for more than a day!<br />
+			<br />
+			Did you forget to log out?<br />	
+
+			<br />
+
+			<div className="button-panel">
+				<button onClick={() => this.setState ({ editing: false })}>Yep, that's right</button>
+				<button onClick={() => this.notice_panel.current.animate (() => this.setState ({ fixing: true }))}>Oops. Fix it.</button>
+			</div>
+
+		</div>
+	</Container>
+
+
+	calendar_clock = () => <div>
+	
+		<CalendarClock id="log_calendar_clock"
+
+			start={this.state.current_entry.start} 
+			end={this.state.current_entry.end}
+
+			onChange={data => this.setState ({ current_entry: { 
+				...this.state.current_entry, 
+				[data.boundary]: data.date
+			} })}>
+
+		</CalendarClock>
+
+		<div className="button-panel">
+			<button onClick={() => this.context.hide_popup ()}>Close</button>
+		</div>
+
+	</div>
+
+
 	link_cell = value => {
 
 		let needs_editing = this.needs_editing (8);
@@ -200,46 +241,10 @@ export default class LoggingPage extends BaseControl {
 	}/* link_cell */;
 
 
-	calendar_clock = () => <div>
-	
-		<CalendarClock id="log_calendar_clock"
-			start={this.state.current_entry.start_time} end={this.state.current_entry.end_time}
-			onChange={data => {
-				this.state.current_entry [`${data.boundary}_time`] = data.date;
-				this.forceUpdate ();
-			}}>
-		</CalendarClock>
-
-		<div className="button-panel">
-			<button onClick={() => this.context.hide_popup ()}>Close</button>
-		</div>
-
-	</div>
-
-
-	overtime_notice = () => <Container id="overtime_instructions" visible={!this.state.fixing}>
-		<div style={{ padding: "0.5em 0" }}>
-
-			Whoa! Are you sure this is right?<br/>
-			You have a single session going for more than a day!<br />
-			<br />
-			Did you forget to log out?<br />	
-
-			<br />
-
-			<div className="button-panel">
-				<button onClick={() => this.setState ({ editing: false })}>Yep, that's right</button>
-				<button onClick={() => this.notice_panel.current.animate (() => this.setState ({ fixing: true }))}>Oops. Fix it.</button>
-			</div>
-
-		</div>
-	</Container>
-
-
 	entry_details = elapsed_time => {
 	
-		let start_time = this.state.current_entry?.start_time;
-		let end_time = this.state.current_entry?.end_time;
+		let start_time = this.state.current_entry?.start;
+		let end_time = this.state.current_entry?.end;
 
 		if (not_set (start_time) ) return null;
 
@@ -350,12 +355,11 @@ export default class LoggingPage extends BaseControl {
 					onEyecandy={this.log_entry}>
 
 					<FadePanel id="login_button" visible={project_selected} style={{ display: "flex" }}>
-
 						{project_selected && <div className="flex-column">
 
 							{OptionsStorage.can_edit () && <div className="one-piece-form">
 								<label>Start:</label>
-								<div>{this.link_cell (this.state.current_timestamp?.format (date_formats.full_datetime))}</div>
+								<div>{this.link_cell (this.state.current_entry?.start?.format (date_formats.full_datetime))}</div>
 							</div>}
 
 							<div className="flex-column with-headspace">
@@ -388,7 +392,6 @@ export default class LoggingPage extends BaseControl {
 							</div>
 
 						</div>}
-
 					</FadePanel>
 
 				</EyecandyPanel>

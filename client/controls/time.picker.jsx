@@ -26,6 +26,12 @@ export default class TimePicker extends BaseControl {
 	}// defaultProps;
 
 
+	constructor (props) {
+		super (props);
+		this.state.value = this.rounded (this.props.defaultValue);
+	}/* constructor */;
+
+
 	rounded = date => {
 		switch (OptionStorage.granularity ()) {
 			case granularity_types.hourly: return date.round_hours (date_rounding.down);
@@ -47,15 +53,12 @@ export default class TimePicker extends BaseControl {
 			new_time.add (Date.parts [part], value);
 		}// if;
 
-		this.execute (this.props.onChange, new_time);
+		this.setState ({ value: new_time }, () => this.execute (this.props.onChange, new_time));
 
 	}// update_time;
 
 
 	/********/
-
-
-	componentDidMount = () => this.setState ({ value: this.rounded (this.props.defaultValue) });
 
 
 	shouldComponentUpdate (new_props) {
