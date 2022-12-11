@@ -16,6 +16,7 @@ import { isset, integer_value, debugging, not_set } from "client/classes/common"
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
+import LoggingStorage from "client/classes/storage/logging.storage";
 
 
 export default class ProjectSelector extends BaseControl {
@@ -36,8 +37,8 @@ export default class ProjectSelector extends BaseControl {
 
 		id: null,
 
-		selectedClient: null,
-		selectedProject: null,
+		selectedClientId: null,
+		selectedProjectId: null,
 
 		onClientChange: null,
 		onProjectChange: null,
@@ -56,12 +57,13 @@ export default class ProjectSelector extends BaseControl {
 
 		super (props);
 
-		this.state.selected_client_id = this.props.selectedClient;
-		this.state.selected_project_id = this.props.selectedProject;
+		this.state.selected_client_id = this.props.selectedClientId;
+		this.state.selected_project_id = this.props.selectedProjectId;
 
+		if (isset (this.state.selected_client_id)) ProjectStorage.get_by_client (this.state.selected_client_id).then (data => this.setState ({ project_data: Object.values (data) }));
 		if (debugging (false)) console.log (`${props.id} object created`);
 
-	}// constructor;
+	}/* constructor */;
 
 
 	/*********/
@@ -69,19 +71,23 @@ export default class ProjectSelector extends BaseControl {
 
 	update_projects_list = client_id => {
 
-		if ((this.state.selected_client_id == client_id) || not_set (client_id)) return;
+		let current_entry = LoggingStorage.current_entry ();
 
-		this.setState ({ 
+		let new_selection = { 
 			selected_client_id: client_id,
-			selected_project_id: null,
-		}, () => {
+			selected_project_id:  (client_id == current_entry?.client_id) ? current_entry?.project_id : null,
+		}/* new_selection */;
+
+		this.setState (new_selection, () => {
 
 			ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
 
-				let project_id = (!this.props.hasHeader || (data?.key_length () == 1)) ? Object.keys (data) [0] : null;
+				let project_id = (!this.props.hasHeader || (data?.key_length () == 1)) ? Object.keys (data) [0] : this.state.selected_project_id;
 
-				if (isset (project_id)) this.setState ({ selected_project_id: project_id });
-				this.execute (this.props.onProjectChange, project_id);
+				switch (project_id) {
+					case this.state.selected_project_id: return this.execute (this.props.onProjectChange, project_id);
+					default: this.setState ({ selected_project_id: project_id }, this.execute (this.props.onProjectChange, this.state.selected_project_id));
+				}/* switch */;
 
 			}));
 
@@ -94,12 +100,12 @@ export default class ProjectSelector extends BaseControl {
 
 	shouldComponentUpdate (new_props) {
 
-		if (this.props.selectedClient != new_props.selectedClient) return !!this.setState ({ selected_client_id: new_props.selectedClient });
-		if (this.props.selectedProject != new_props.selectedProject) return !!this.setState ({ selected_project_id: new_props.selectedProject });
+		if (this.props.selectedClientId != new_props.selectedClientId) return !!this.setState ({ selected_client_id: new_props.selectedClientId });
+		if (this.props.selectedProjectId != new_props.selectedProjectId) return !!this.setState ({ selected_project_id: new_props.selectedProjectId });
 
 		return true;
 
-	}// shouldComponentUpdate;
+	}/* shouldComponentUpdate */;
 
 
 	render () {
@@ -113,7 +119,7 @@ export default class ProjectSelector extends BaseControl {
 				header={(this.state.client_list?.key_length () > 1) ? "Select a client" : null}
 				headerSelectable={false} 
 
-				selectedClient={this.state.selected_client_id}
+				selectedClientId={this.state.selected_client_id}
 
 				onChange={this.update_projects_list}
 				onLoad={data => this.setState ({ client_list: data })}>
@@ -143,6 +149,6 @@ export default class ProjectSelector extends BaseControl {
 			</FadePanel>
 
 		</div>
-	}// render;
+	}/* render */;
 
-}// ProjectSelector;
+}/* ProjectSelector */;

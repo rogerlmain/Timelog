@@ -112,7 +112,7 @@ export default class CalendarClock extends BaseControl {
 				</Calendar>
 
 				<TimePicker id="time_picker" 
-					defaultValue={this.state.values [this.state.boundary]}
+					defaultValue={this.state.values [this.state.boundary].rounded (this.state.boundary)}
 					onChange={value => this.update_datetime (value)}>
 				</TimePicker>
 

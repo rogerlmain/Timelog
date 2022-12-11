@@ -15,8 +15,8 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 
 import LoggingModel from "client/classes/models/logging.model";
 
-import { blank, currency_symbol, date_formats, date_rounding, granularity_types, space } from "client/classes/types/constants";
-import { isset, is_empty, not_set, multiline_text, null_value, debugging } from "client/classes/common";
+import { blank, currency_symbol, date_formats, ranges, space } from "client/classes/types/constants";
+import { isset, not_set, multiline_text, null_value, debugging } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
 import { MainContext } from "client/classes/types/contexts";
@@ -30,15 +30,8 @@ const action_types = {
 }// action_types;
 
 
-const ranges = {
-	start	: "start",
-	end		: "end",
-}// ranges;
-
-
 export const maximum_hours = 8; // for US with 40 hour work week - TODO make adustable for govt or foreign
 export const maximum_session = 4; // for US - equals half of daily maximum - TODO make adustable for govt or foreign
-
 
 export default class LoggingPage extends BaseControl {
 
@@ -49,15 +42,17 @@ export default class LoggingPage extends BaseControl {
 
 	state = {
 
-		current_entry: { start: null, end: null },
+		current_entry: { start: null, end: null }, // both are always set as per the interface
 
 		action: null,
 
 		editable: false,
 		editing: false,
-		fixing: false,
 		initialized: false,
-		updating: false
+		updating: false,
+
+		logged_in: false, // determined by not this.state.logged_out
+		logged_out: true, // determined by issset (LoggingStorage.end_time)
 
 	}/* state */;
 
@@ -70,19 +65,19 @@ export default class LoggingPage extends BaseControl {
 
 		super (props);
 
-		let project_id = this.state.current_entry?.project_id;
-		let client_id = this.state.current_entry?.client_id;
-
 		let current_entry = LoggingStorage.current_entry ();
 
-		ProjectStorage.billing_rate (project_id, client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
+		this.state.logged_in = !(this.state.logged_out = isset (current_entry?.end));
+
+		ProjectStorage.billing_rate (current_entry?.project_id, current_entry?.client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
 			console.log (error);
 			throw (error);
 		});
 
 		this.state.current_entry = {
-			start: isset (current_entry) ? current_entry.start : this.rounded (new Date (), ranges.start),
-			end: isset (current_entry) ? this.rounded (new Date (), ranges.end) : null,
+			...current_entry,
+			start: (this.state.logged_in ? new Date (current_entry?.start) : new Date ()).rounded (ranges.start),
+			end: new Date ().rounded (ranges.end),
 		}/* current_entry */;
 
 		if (debugging ()) console.log ("logging page created");
@@ -99,7 +94,7 @@ export default class LoggingPage extends BaseControl {
 	notes = () => 		{ return null_value (this.state.current_entry?.notes) }
 
 
-	project_selected = () => { return ((this.project_id () > 0) || OptionsStorage.single_project () || LoggingStorage.logged_in ()) }
+	project_selected = () => ((this.state?.current_entry?.project_id > 0) || OptionsStorage.single_project () || this.state.logged_in);
 
 
 	metered_bill = elapsed_time => {
@@ -115,7 +110,7 @@ export default class LoggingPage extends BaseControl {
 	// Time limit in hours
 	needs_editing = time_limit => { 
 
-		if (LoggingStorage.logged_out ()) return false;
+		if (this.state.logged_out) return false;
 
 		let same_day = this.state.current_entry.start.same_day (this.state.current_entry.end);
 		let result = (!same_day || (this.elapsed_time () > (time_limit * Date.coefficient.hour)));
@@ -125,60 +120,42 @@ export default class LoggingPage extends BaseControl {
 	}// needs_editing;
 
 
-	rounded = (date, range) => {
-
-		let rounding_direction = (range == ranges.end) ? date_rounding.down : date_rounding.up;
-		
-		if (OptionsStorage.can_round (this.company_id ())) rounding_direction = (ranges.start ? OptionsStorage.start_rounding () : OptionsStorage.end_rounding ());
-
-		switch (OptionsStorage.granularity (this.company_id ())) {
-			case granularity_types.hourly	: return date.round_hours (rounding_direction);
-			case granularity_types.quarterly: return date.round_minutes (15, rounding_direction);
-			case granularity_types.minutely	: return date.round_minutes (1, rounding_direction);
-			case granularity_types.truetime	: return date;
-		}// switch;
-
-	}// rounded;
-
-	
 	log_entry = () => {
 
-		let entry = this.state.current_entry;
-		let timestamp = this.rounded ((this.state.action == action_types.cancel) ? entry.start : (entry.end ?? new Date ()));
+		let timestamp = this.state?.current_entry?.[this.state.logged_in ? "end" : "start"];
+	
+		LoggingModel.log (this.state.current_entry, timestamp).then (entry => {
 
-		if (not_set (timestamp)) return;
-
-		LoggingModel.log (this.client_id (), this.project_id (), this.notes (), timestamp).then (entry => {
-
-			if (is_empty (entry)) {
-				LoggingStorage.delete ();
-			} else {
-
-				let start_time = Date.validated (entry.start);
-
-				entry = { start: start_time, end: this.end_time () }
-				LoggingStorage.set (entry);
-
-			}// if;
+			let logged_in = !(this.state.logged_out = isset (entry.end_time));
 
 			this.setState ({ 
-				current_entry: entry,
-				updating: false
-			});
 
-		});
+				current_entry: {
+					...this.state.current_entry,
+					start: logged_in ? new Date (entry.start_time) : new Date (ranges.start),
+					end: new Date ().rounded (ranges.end),
+				}/* current_entry */,
+
+				logged_in: logged_in,
+				updating: false,
+
+			}, LoggingStorage.set (this.state.current_entry)
+		
+		)});
 		
 	}// log_entry;
 
 
-	end_time = () => { return this.rounded (new Date (), ranges.end) }
+	elapsed_time = () => { 
+		let end_time = (this.state.current_entry.end ?? new Date ().rounded (ranges.end)).getTime ();
+		return Math.max (Math.floor ((end_time - this.state.current_entry.start.getTime ()) / 1000), 0);
+	}/* elapsed_time */;
 
 
-	elapsed_time = () => { return Math.max (Math.floor ((this.state.current_entry.end.getTime () - this.state.current_entry.start.getTime ()) / 1000), 0) }
-	invalid_entry = () => { return (this.state.current_entry.end.before (this.state.current_entry.start)) }
+	invalid_entry = () => (this.state.current_entry.end?.before (this.state.current_entry.start) ?? false);
+
 		
-		
-	overtime_notice = () => <Container id="overtime_instructions" visible={!this.state.fixing}>
+	overtime_notice = () => <Container id="overtime_instructions" visible={this.needs_editing (24)}>{/* 
 		<div style={{ padding: "0.5em 0" }}>
 
 			Whoa! Are you sure this is right?<br/>
@@ -190,10 +167,14 @@ export default class LoggingPage extends BaseControl {
 
 			<div className="button-panel">
 				<button onClick={() => this.setState ({ editing: false })}>Yep, that's right</button>
-				<button onClick={() => this.notice_panel.current.animate (() => this.setState ({ fixing: true }))}>Oops. Fix it.</button>
+				<button onClick={() => 
+					
+					this.notice_panel.current.animate (() => this.setState ({ fixing: true }))}>Oops. Fix it.</button>
+
+
 			</div>
 
-		</div>
+		</div> */}
 	</Container>
 
 
@@ -268,7 +249,7 @@ export default class LoggingPage extends BaseControl {
 				{this.link_cell (start_time?.format (date_formats.full_datetime))}
 
 				<label>Stop</label>
-				{this.link_cell (end_time.format (start_time?.same_day (end_time)) ? date_formats.timestamp : date_formats.full_datetime)}
+				{this.link_cell ((end_time ?? new Date ().rounded (ranges.end))?.format (start_time?.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime))}
 
 				<Break />
 
@@ -310,8 +291,7 @@ export default class LoggingPage extends BaseControl {
 
 		if (not_set (this.context)) return null;
 
-		let logged_in = LoggingStorage.logged_in ();
-		let elapsed_time = logged_in ? this.elapsed_time () : null;
+		let elapsed_time = this.state.logged_in ? this.elapsed_time () : null;
 		let project_selected = this.project_selected ();
 
 		let log_button_panel = {
@@ -319,19 +299,20 @@ export default class LoggingPage extends BaseControl {
 			width: "100%",
 		}// log_button_panel;
 
-		if (logged_in && (elapsed_time > 0)) log_button_panel = {...log_button_panel,
+		if (this.state.logged_in && (elapsed_time > 0)) log_button_panel = {...log_button_panel,
 			display: "grid",
 			gridTemplateColumns: "repeat(2, 1fr)",
 		}// if;
 
 		return <div id="log_panel" className="horizontally-centered">
 
-			{logged_in ? this.entry_details (elapsed_time) : <Container>
+			{this.state.logged_in ? this.entry_details (elapsed_time) : <Container>
 
 				<div className="with-headspace">
 					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
 
-						clientId={this.client_id ()} projectId={this.project_id ()}
+						selectedClientId={this.state.current_entry.client_id} 
+						selectedProjectId={this.state.current_entry.project_id}
 
 						hasHeader={true} 
 						headerSelectable={false} 
@@ -347,7 +328,7 @@ export default class LoggingPage extends BaseControl {
 			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 				
-					text={(elapsed_time == 0) ? "Cancelling entry..." : `Logging you ${logged_in ? "out" : "in"}...`}
+					text={(elapsed_time == 0) ? "Cancelling entry..." : `Logging you ${this.state.logged_in ? "out" : "in"}...`}
 					
 					eyecandyVisible={this.state.updating}
 					eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
@@ -357,7 +338,7 @@ export default class LoggingPage extends BaseControl {
 					<FadePanel id="login_button" visible={project_selected} style={{ display: "flex" }}>
 						{project_selected && <div className="flex-column">
 
-							{OptionsStorage.can_edit () && <div className="one-piece-form">
+							{(OptionsStorage.can_edit () && this.state.logged_out) && <div className="one-piece-form log-details">
 								<label>Start:</label>
 								<div>{this.link_cell (this.state.current_entry?.start?.format (date_formats.full_datetime))}</div>
 							</div>}
@@ -374,18 +355,18 @@ export default class LoggingPage extends BaseControl {
 
 							<div style={log_button_panel} className="with-some-headspace">
 
-								<Container visible={logged_in}>
+								<Container visible={this.state.logged_in}>
 									<button className="full-width"
 										onClick={() => this.setState ({ updating: true, action: action_types.cancel })}>
 										Cancel entry
 									</button>
 								</Container>
 
-								<Container visible={(!logged_in) || (elapsed_time > 0)}>
+								<Container visible={this.state.logged_out || (elapsed_time > 0)}>
 									<button className="full-width"
 										onClick={() => this.setState ({ updating: true, action: action_types.log })} style={{ flex: 1 }} 
-										disabled={logged_in && this.invalid_entry ()}>
-										{logged_in ? "Log out" : "Log in"}
+										disabled={this.state.logged_in && this.invalid_entry ()}>
+										{this.state.logged_in ? "Log out" : "Log in"}
 									</button>
 								</Container>
 

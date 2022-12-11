@@ -181,7 +181,8 @@ div.credit-centered *:nth-child(::even) { justify-self: flex-start }
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-align-items: center;}/* .horizontally-spaced-out */
+	align-items: center;
+}/* .horizontally-spaced-out */
 
 
 /** Flex Column **/

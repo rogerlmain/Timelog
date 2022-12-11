@@ -46,6 +46,8 @@ export default class DropDownList extends BaseControl {
 		idField: null,
 		textField: null,
 
+		selectedValue: null,
+
 		header: null,
 		headerSelectable: false,
 		headerVisible: false,
@@ -55,6 +57,12 @@ export default class DropDownList extends BaseControl {
 		speed: (default_settings.animation_speed / 3)
 	
 	}/* defaultProps */;
+
+
+	constructor (props) {
+		super (props);
+		this.state.selected_value = this.props.selectedValue;
+	}/* constructor */;
 
 
 	/********/
@@ -91,19 +99,16 @@ export default class DropDownList extends BaseControl {
 		list?.forEach (child => {
 
 			let preprocessed_text = is_function (this.props.textField);
-
 			let value = is_function (this.props.idField) ? this.props.idField (child) : child?.[this.props.idField];
-			let contents = preprocessed_text ? this.props.textField (child) : child?.[this.props.textField];
 	
 			if (is_null (result)) result = new Array ();
 
 			result.push (<div id={`${this.props.id}_item_${index}`} value={value} key={index++} className="dropdown-child-item" 
 
 				style={preprocessed_text ? null : { padding: item_padding }}
-			
 				onClick={event => this.list_click_handler (event, child)}>
-					
-				{contents ?? child?.props?.children}
+
+				{preprocessed_text ? this.props.textField (child) : child?.[this.props.textField] ?? child?.props?.children}
 				
 			</div>);
 
@@ -172,13 +177,22 @@ export default class DropDownList extends BaseControl {
 		this.dropdown.current.style.width = this.props?.style?.width ?? `${this.dropdown_list.current.offsetWidth}px`;
 		this.dropdown.current.style.height = this.props?.style?.height ?? `${this.dropdown_list.current.offsetHeight}px`;
 
+		this.setState ({ selected_value: this.props.selectedValue });
+
 	}/* componentDidMount */;
+
+
+	shouldComponentUpdate (new_props) {
+		if (new_props.selectedValue != this.props.selectedValue) return !!this.setState ({ selected_value: new_props.selectedValue });
+		return true;
+	}/* shouldComponentUpdate */
 
 
 	render () {
 
 		let item_list = this.child_list ();
-
+		let active_item = (isset (this.state.selected_value) ? item_list.find (item => item.props.value == this.state.selected_value) : item_list [0])?.props.children;
+	
 		return <div id={`${this.props.id}_dropdown_panel`} className="dropdown" ref={this.dropdown} style={{ position: "relative" }}>
 			<div className="dropdown-list" ref={this.dropdown_list} style={{ zIndex: this.state.focused ? 1 : 0 , minWidth: "100%" }}>
 
@@ -195,7 +209,7 @@ export default class DropDownList extends BaseControl {
 						style={{ transition: `transform ${this.props.speed}ms ease-in-out, top ${this.props.speed}ms ease-in-out` }}>
 					</div>
 
-					<div className="active-dropdown-selection" ref={this.active_selection} style={{ paddingRight: "0.25em" }}>{item_list?.[0]?.props.children}</div>
+					<div className="active-dropdown-selection" ref={this.active_selection} style={{ paddingRight: "0.25em" }}>{active_item}</div>
 
 				</div>
 

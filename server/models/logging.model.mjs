@@ -3,10 +3,9 @@ import Database from "../database.mjs";
 
 class LoggingModel extends Database {
 
+	
 	get_logs (client_id, project_id) {
-		let procedure = "call get_entries (?, ?)";
-		let parameters = [ client_id, project_id ];
-		this.data_query (procedure, parameters);
+		this.execute_query ("get_entries", [client_id, project_id]);
 	}// get_logs;
 
 
@@ -15,9 +14,9 @@ class LoggingModel extends Database {
 	}// get_active_logging_by_company;
 
 
-	latest_log_entry (account_id) {
+	get_latest_entry (account_id) {
 		return this.data_query ("get_latest_entry", [account_id]);
-	}// latest_log_entry;
+	}// get_latest_entry;
 
 
 	save_billing (fields) {
@@ -35,14 +34,15 @@ class LoggingModel extends Database {
 	save_log_entry (fields) {
 
 		let parameters = [
-			fields.account_id,
+			parseInt (fields.account_id),
 			parseInt (fields.client_id),
 			parseInt (fields.project_id),
+			fields.offshore_task_id,
 			fields.notes,
 			fields.time_stamp
 		];
 
-		this.execute_query ("set_log_entry", parameters);
+		this.execute_query ("save_log_entry", parameters);
 
 	}// save_log_entry;
 

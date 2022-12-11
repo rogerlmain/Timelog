@@ -1,6 +1,7 @@
 import React from "react";
 
 import CompanyStorage from "client/classes/storage/company.storage";
+import LoggingStorage from "client/classes/storage/logging.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
@@ -8,8 +9,8 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import { isset, jsonify } from "client/classes/common";
 
-import { horizontal_alignment } from "client/classes/types/constants";
 import { MasterContext } from "client/classes/types/contexts";
+import { horizontal_alignment, ranges } from "client/classes/types/constants";
 
 
 const bad_credentials = <div id="bad_credentials" className="form-error">
@@ -82,10 +83,13 @@ export default class SigninPage extends BaseControl {
 
 				}// if;
 
-				if (isset (info.logging)) {
-					info.logging.start_time = Date.fromGMT (info.logging.start_time);
-					localStorage.setItem ("logging", jsonify (info.logging));
-				}// if;
+				LoggingStorage.set ({
+					client_id: info?.logging?.client_id,
+					project_id: info?.logging?.project_id,
+					start: new Date (info?.logging?.start_time),
+					end: isset (info?.logging?.end_time) ? new Date (info.logging.end_time) : null,
+					notes: info?.logging?.notes,
+				});
 
 				if (isset (info.credentials)) localStorage.setItem ("credentials", jsonify (info.credentials));
 				if (isset (info.settings)) localStorage.setItem ("settings", jsonify (info.settings));

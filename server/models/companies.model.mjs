@@ -5,9 +5,7 @@ export default class CompaniesModel extends Database {
 
 
 	get_companies_by_account = async (account_id) => {
-		let procedure = "get_companies_by_account";
-		let parameters = [account_id];
-		return this.data_query (procedure, parameters);
+		return this.data_query ("get_companies_by_account", [account_id]);
 	}// get_companies_by_account;
 
 

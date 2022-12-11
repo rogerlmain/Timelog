@@ -1,4 +1,3 @@
-import { getNamespace } from "continuation-local-storage";
 import { createConnection } from "mysql";
 
 
@@ -28,7 +27,6 @@ class Database {
 
 	// Standard response
 	send_result_data (data) {
-		this.connection.end ();
 		response ().send (data);
 	}// send_result_data;
 
@@ -58,13 +56,11 @@ class Database {
 			let command = `call ${procedure} (${new Array (global.is_null (parameters) ? 0 : parameters.length).fill ("?").join (", ")})`;
 
 			try {
-				let blah = this.connection.query (command, this.normalized (parameters), async (error, results) => {
+				this.connection.query (command, this.normalized (parameters), async (error, results) => {
 					if (isset (error)) return this.send_result_data (error);
+					this.connection.end ();
 					resolve (results [0]);
 				});
-
-				if (isset (blah)) return;
-
 			} catch (except) { reject (except) };
 
 		});

@@ -444,7 +444,7 @@ app.post ("/signin", () => {
 
 		});
 				
-		new LoggingModel ().latest_log_entry (account.account_id).then (logging => {
+		new LoggingModel ().get_latest_entry (account.account_id).then (logging => {
 			if (logging.length > 0) result.logging = logging [0] ?? blank;
 			processed.logging = true;
 		});

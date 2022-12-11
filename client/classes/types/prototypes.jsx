@@ -1,5 +1,7 @@
-import { blank, space, date_formats, date_rounding, directions, empty, currency_symbol } from "client/classes/types/constants";
+import { blank, space, date_formats, date_rounding, directions, empty, currency_symbol, granularity_types, ranges } from "client/classes/types/constants";
 import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, null_or_undefined, is_array, nested_value } from "client/classes/common";
+
+import OptionsStorage from "../storage/options.storage";
 
 
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -326,6 +328,22 @@ result.setMinutes ((direction == date_rounding.down) || ((direction == date_roun
 	return result;
 
 }// round_minutes;
+
+
+Date.prototype.rounded = function (range) {
+
+	let rounding_direction = (range == ranges.end) ? date_rounding.down : date_rounding.up;
+	
+	if (OptionsStorage.can_round ()) rounding_direction = (ranges.start ? OptionsStorage.start_rounding () : OptionsStorage.end_rounding ());
+
+	switch (OptionsStorage.granularity ()) {
+		case granularity_types.hourly	: return this.round_hours (rounding_direction);
+		case granularity_types.quarterly: return this.round_minutes (15, rounding_direction);
+		case granularity_types.minutely	: return this.round_minutes (1, rounding_direction);
+		case granularity_types.truetime	: return this;
+	}// switch;
+
+}// rounded;
 
 
 Date.prototype.same_day = function (input_date) {

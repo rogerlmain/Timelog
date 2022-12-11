@@ -32,7 +32,7 @@ export default class ClientSelector extends BaseControl {
 		
 		newButton: false,
 
-		selectedClient: null,
+		selectedClientId: null,
 
 		header: null,
 		headerSelectable: false,
@@ -47,7 +47,7 @@ export default class ClientSelector extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		this.state.selected_client_id = this.props.selectedClient;
+		this.state.selected_client_id = this.props.selectedClientId;
 		if (debugging (false)) console.log (`${props.id} object created`);
 	}// constructor;
 
@@ -55,14 +55,14 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	get_client_data = () => ClientStorage.get_by_company (this.context.company_id, this.props.includeOffshoreAccounts).then (data => {
+	get_client_data = (loaded = true) => ClientStorage.get_by_company (this.context.company_id, this.props.includeOffshoreAccounts).then (data => {
 
 		let keys = Object.keys (data);
 
 		this.execute (this.props.onLoad, data).then (() => this.setState ({ 
 			client_data: data.normalize (),
-			selected_client_id: (keys.length == 1) ? data [keys [0]].client_id : null,
-		}, () => this.execute (this.props.onChange, this.state.selected_client_id)));
+			selected_client_id: this.state.selected_client_id ?? ((keys.length == 1) ? data [keys [0]].client_id : null),
+		}, () => loaded && this.execute (this.props.onChange, this.state.selected_client_id)));
 
 	})/* get_client_data */;
 
@@ -70,12 +70,12 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	componentDidMount = this.get_client_data;
+	componentDidMount = () => this.get_client_data (false);
 
 
 	shouldComponentUpdate (new_props, new_state, new_context) {
 		if (new_context.company_id != this.context.company_id) this.get_client_data ();
-		if (this.props.selectedClient != new_props.selectedClient) return !!this.setState ({ selected_client_id: new_props.selectedClient });
+		if (this.props.selectedClientId != new_props.selectedClientId) return !!this.setState ({ selected_client_id: new_props.selectedClientId });
 		return true;
 	}// shouldComponentUpdate;
 
@@ -90,7 +90,7 @@ export default class ClientSelector extends BaseControl {
 
 			<LoadList id={`${this.props.id}_load_list`} label="Client" 
 			
-				header={this.props.header} headerSelectable={this.props.headerSelectable} selectedItem={this.props.selectedClient}
+				header={this.props.header} headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_client_id}
 
 				data={this.state.client_data} dataIdField="client_id" dataTextField={field => <div className="glyph-list-item">
 					<div><img src={OffshoreModel.glyph_image (field)} className="list-glyph" /></div>

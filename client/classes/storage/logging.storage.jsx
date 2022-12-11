@@ -36,9 +36,12 @@ export default class LoggingStorage extends LocalStorage {
 
 
 	static current_entry = () => { 
+
 		let result = this.get_store ();
+
 		if (isset (result) && isset (result.start_time)) result.start_time = new Date (result.start_time);
 		return result;
+		
 	}// current_entry;
 
 

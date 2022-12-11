@@ -2,19 +2,21 @@ start transaction;
 
 drop procedure if exists save_entry;
 drop procedure if exists set_log_entry;
+drop procedure if exists save_log_entry;
 
 delimiter ??
 
-create procedure set_log_entry (
-	account_id	integer, 
-    client_id	integer,
-	project_id	integer,
-    notes		text,
-    time_stamp	datetime
+create procedure save_log_entry (
+	account_id			integer, 
+    client_id			integer,
+	project_id			integer,
+    offshore_task_id	integer,
+    notes				text,
+    time_stamp			datetime
 ) begin
 
 	declare last_entry integer;
-    
+
 	select
 		max(id) into last_entry
 	from
@@ -30,6 +32,7 @@ create procedure set_log_entry (
 			account_id,
             client_id,
 			project_id,
+            offshore_task_id,
             notes,
             false,
 			time_stamp,

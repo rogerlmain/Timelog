@@ -36,7 +36,13 @@ export const stores = {
 }// stores;
 
 
-/********/
+export const ranges = {
+	start	: "start",
+	end		: "end",
+}// ranges;
+
+
+/**** Alignments ****/
 
 
 export const vertical_alignment = {
@@ -56,7 +62,7 @@ export const horizontal_alignment = {
 }// horizontal_alignment;
 
 
-/**** Dates ****/
+/**** Money ****/
 
 
 export const currency_symbol = {
@@ -83,7 +89,7 @@ export const date_formats = {
 	full_datetime			: "w, MMMM d, yyyy - H:mm ap",
 	timestamp				: "H:mm ap",
 	database_date			: "yyyy-MM-dd",
-	database_timestamp		: "yyyy-MM-dd HH:mm",
+	database_timestamp		: "yyyy-MM-dd HH:mm:ss",
 	detailed_datetime		: "w, MMMM ad yyyy, H:mm:ss ap",
 	short_detailed_datetime	: "w, MMMM ad yyyy, H:mm ap",
 	us_datetime				: "MM-dd-yyyy H:mm ap",

@@ -28,18 +28,8 @@ export default class TimePicker extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		this.state.value = this.rounded (this.props.defaultValue);
+		this.state.value = this.props.defaultValue;
 	}/* constructor */;
-
-
-	rounded = date => {
-		switch (OptionStorage.granularity ()) {
-			case granularity_types.hourly: return date.round_hours (date_rounding.down);
-			case granularity_types.quarterly: return date.round_minutes (15);
-			case granularity_types.minutely: return date.round_minutes (1);
-			default: return date;
-		}// switch;
-	}/* rounded */;
 
 
 	update_time (part, value) {

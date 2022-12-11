@@ -35,15 +35,17 @@ export default class LoggingModel {
 	}// bill;
 
 
-	static log (client_id, project_id, notes, timestamp) {
+	static log (current_entry, timestamp) {
 
 		let parameters = new FormData ();
 		
 		parameters.set ("action", table);
-		parameters.set ("client_id", isset (client_id) ? client_id.toString () : null);
-		parameters.set ("project_id", isset (project_id) ? project_id.toString () : null);
-		parameters.set ("notes", notes ?? blank);
+		parameters.set ("client_id", current_entry?.client_id?.toString ());
+		parameters.set ("project_id", current_entry?.project_id?.toString ());
+
+		parameters.set ("notes", current_entry?.notes ?? blank);
 		parameters.set ("billed", false);
+
 		parameters.set ("time_stamp", timestamp.format (date_formats.database_timestamp));
 
 		return Database.save_row (table, parameters);

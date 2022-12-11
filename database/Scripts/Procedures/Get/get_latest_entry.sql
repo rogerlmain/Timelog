@@ -11,6 +11,7 @@ create procedure get_latest_entry (account_id integer) begin
         clt.company_id,
         clt.id as client_id,
 		log.project_id,
+        log.offshore_task_id,
 		clt.`name` as client_name,
 		prj.`name` as project_name,
         log.notes,
@@ -27,10 +28,10 @@ create procedure get_latest_entry (account_id integer) begin
 	on
 		(log.client_id = clt.id)
 	where
-		(log.account_id  = account_id) and
-        (log.end_time is null)
+		(log.account_id  = account_id)
 	order by
-		start_time
-	limit 1;
+		(end_time is not null),
+		end_time desc
+ 	limit 1;
         
 end??

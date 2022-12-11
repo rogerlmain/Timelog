@@ -40,6 +40,7 @@ export const deadbeat_options = {
 	project_limit: 1,
 	billing_option: toggled.false,
 	rounding_option: toggled.false,
+	editing_option: toggled.false,
 }// deadbeat_options;
 
 
@@ -52,6 +53,7 @@ export const freelance_options = {
 	billing_option: 2,
 	billing_option: toggled.false,
 	rounding_option: toggled.false,
+	editing_option: toggled.true,
 }// freelance_options;
 
 
@@ -64,6 +66,7 @@ export const company_options = {
 	billing_option: 2,
 	billing_option: toggled.false,
 	rounding_option: toggled.false,
+	editing_option: toggled.true,
 }// company_options;
 
 
@@ -76,6 +79,7 @@ export const corporate_options = {
 	billing_option: 2,
 	billing_option: toggled.false,
 	rounding_option: toggled.false,
+	editing_option: toggled.true,
 }// corporate_options;
 
 
@@ -88,6 +92,7 @@ export const enterprise_options = {
 	billing_option: 2,
 	billing_option: toggled.false,
 	rounding_option: toggled.false,
+	editing_option: toggled.true,
 }// enterprise_options;
 
 
