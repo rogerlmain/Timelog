@@ -18,7 +18,7 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import Container from "client/controls/container";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
-import { debugging, isset, is_array, is_blank, is_null, is_object, not_set, warning } from "client/classes/common";
+import { debugging, isset, is_blank, is_null, is_object, not_set } from "client/classes/common";
 
 import { maximum_hours, maximum_session } from "client/pages/logging";
 
@@ -52,7 +52,7 @@ export default class ReportsPage extends BaseControl {
 
 	state = {
 
-		current_panel: reports_panels.client_report,
+		current_panel: null,
 
 		client_id: null,
 		project_id: null,
@@ -63,6 +63,8 @@ export default class ReportsPage extends BaseControl {
 		use_billable: true,
 		use_cancelled: false,
 		use_dates: false,
+
+		billable: false,
 
 		start_date: new Date (),
 		end_date: new Date (),
@@ -90,9 +92,8 @@ export default class ReportsPage extends BaseControl {
 
 	project_report_panel = () => <Container id="project_report_panel" visible={this.state.current_panel == reports_panels.project_report}>
 		<div className="horizontally-centered">
-			<div style={{ display: "inline-block" }}>{this.show_project_options ()}</div>
-			<br />
-			<div>{this.project_report ()}</div>
+			<div style={{ display: "inline-block" }}>{this.project_report_options ()}</div>
+			<div className="with-headspace">{this.project_report ()}</div>
 		</div>
 	</Container>
 
@@ -276,59 +277,135 @@ export default class ReportsPage extends BaseControl {
 	}/* format_data */;
 
 
-	daily_breakdown () {
-		return <div>
-			<ReportGrid data={this.format_data (this.state.entries)} categories={["year", "month", "day"]}
+	expand_dates (items) {
 
-				header={data => <Container inline={false} className="report-header">
-					<div>Start time</div>
-					<div>End time</div>
-					<div>Notes</div>
-					<div>Total time</div>
-					<Container visible={OptionStorage.can_bill () && (data?.rate > 0)}>
-						<div>Rate</div>
-						<div>Total due</div>
-						<div>Billed</div>
-					</Container>
-				</Container>}
+		items = Array.arrayify (items);
 
-				row={data => <Container inline={false} className={`report-entry ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
-						
-					<div className="right-aligned-text">{data.start_time}</div>
-					<div className="right-aligned-text">{data.end_time}</div>
-					<div className="report-notes">{data.notes}</div>
-					<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
+		if (Array.isArray (items)) items.forEach (item => {
 
-					<Container visible={OptionStorage.can_bill () && (data?.rate > 0)}>
+			let item_date = new Date (item.start_time);
 
-						<div className="right-aligned-text">{data.rate?.toCurrency ()}</div>
-						<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
+			item.year = item_date.get_year ();
+			item.month = item_date.get_month_name ();
+			item.day = item_date.get_day ();
+			item.weekday = item_date.get_weekday_name ();
 
-						<BillingCheckbox id={data.log_id} onClick={event => {
-							if (event.target.checked === false) return this.ask_question (`
-								This entry has been marked as billed!
-								If you continue, your client may be charged twice.
+		});
 
-								Are you sure?
-							`);
-							return true;
-						}} checked={data.billed} />
+		return items;
 
-					</Container>
+	}/* expand_dates */;
 
-				</Container>}
-				
-				footer={() => this.show_totals ()}>
-				
-			</ReportGrid>
-		</div>
-	}// daily_breakdown;
+
+	has_billable_items = () => (this.state?.entries?.find (item => (item.billed == 0))?.length ?? 0) > 0;
+	
+
+	/********/
+
+
+	client_report = () => <div>Client report results</div>
 
 
 	/********/
 
 
-	show_project_options () {
+	daily_breakdown_header = () => <Container inline={false} className="report-header">
+
+		<div>Start time</div>
+		<div>End time</div>
+		<div>Notes</div>
+		<div>Total time</div>
+
+		{(this.state.billable) && <Container>
+			<div>Rate</div>
+			<div>Total due</div>
+			<div>Billed</div>
+		</Container>}
+
+	</Container>
+
+
+	daily_breakdown_row = data => <Container inline={false} className={`report-entry ${(data.total_time > ((Date.increments.hours / 1000) * 8)) ? "overtime-grid" : blank}`} style={{ cursor: "pointer" }}>
+						
+		<div className="right-aligned-text">{data.start_time}</div>
+		<div className="right-aligned-text">{data.end_time}</div>
+		<div className="report-notes">{data.notes}</div>
+		<div className="right-aligned-text">{Date.elapsed (data.total_time)}</div>
+
+		{(this.state.billable) && <Container> {/* make data?.rate optional depending on whether 'include unbillable items' (new checkbox option) is set */}
+
+			<div className="right-aligned-text">{data.rate?.toCurrency ()}</div>
+			<div className="right-aligned-text">{data.total_due?.toCurrency ()}</div>
+
+			<BillingCheckbox id={data.log_id} onClick={event => {
+				if (event.target.checked === false) return this.ask_question (`
+					This entry has been marked as billed!
+					If you continue, your client may be charged twice.
+
+					Are you sure?
+				`);
+				return true;
+			}} checked={data.billed} />
+
+		</Container>}
+
+	</Container>
+
+
+	daily_breakdown_footer = data => {
+
+		let total_time = 0;
+		let total_earned = 0;
+		let total_due = 0;
+
+		if (isset (this.state.entries)) this.state.entries.map (row => {
+			total_time += row.total_time;
+			total_earned += row.total_due;
+			if (!row.billed) total_due += row.total_due;
+		});
+
+		return <Container>			
+
+			{(this.state.billable) && <div className="footer">
+
+				<div style={{ textAlign: "left", gridColumn: "1 / 4" }}>Paid</div>
+				<div style={{ gridColumn: "4", gridRow: "auto / span 2" }} className="vertically-centered">{Date.elapsed (total_time)}</div>
+				<div style={{ gridColumn: "5 / 7" }}>{(total_earned - total_due).toCurrency ()}</div>
+				<div />
+
+				<div style={{ textAlign: "left", gridColumn: "1 / 4" }}>Outstanding</div>
+				<div style={{ gridColumn: "5 / 7" }}>{total_due.toCurrency ()}</div>
+				<div />
+
+			</div>}
+
+			<div className="footer-total">
+				<div style={{ textAlign: "left", gridColumn: "1 / -2" }}>Total</div>
+				<div>{Date.elapsed (total_time)}</div>
+
+				{(this.state.billable) && <Container>
+					<div>{total_earned.toCurrency ()}</div>
+					<div><input type="checkbox" onClick={() => alert ("On click should set all checkboxes to 'billed' (i.e. checked)")} /></div>
+				</Container>}
+			</div>
+
+		</Container>
+
+	}/* daily_breakdown_footer */;
+
+
+	daily_breakdown () {
+		return <div>
+			<ReportGrid data={this.format_data (this.state.entries)} ref={this.daily_breakdown_report_grid} categories={["year", "month", "day"]}
+				header={this.daily_breakdown_header}
+				row={this.daily_breakdown_row}
+				footer={this.daily_breakdown_footer}>
+			</ReportGrid>
+		</div>
+	}// daily_breakdown;
+
+
+	project_report_options () {
 		return <Container>
 		
 			<div className="horizontally-centered">
@@ -380,44 +457,21 @@ export default class ReportsPage extends BaseControl {
 					<SelectButton onClick={() => this.results_panel.current.animate (() => ReportsModel.get_by_project (this.state.project_id, this.state.use_dates ? {
 						start_date: this.state.start_date.format (date_formats.database_date), 
 						end_date: this.state.end_date.format (date_formats.database_date),
-					} : null).then (data => this.setState ({ entries: data })))}>Generate</SelectButton>
+					} : null).then (data => this.setState ({ 
+						entries: data,
+						is_billable: this.has_billable_items (data),
+					})))}>Generate</SelectButton>
 				</div>
 			</FadePanel>}
 
 		</Container>
 
-	}// show_project_options;
-
-
-	expand_dates (items) {
-
-		items = Array.arrayify (items);
-
-		if (Array.isArray (items)) items.forEach (item => {
-
-			let item_date = new Date (item.start_time);
-
-			item.year = item_date.get_year ();
-			item.month = item_date.get_month_name ();
-			item.day = item_date.get_day ();
-			item.weekday = item_date.get_weekday_name ();
-
-		});
-
-		return items;
-
-	}/* expand_dates */;
-
-
-	client_report = () => <div>Client report results</div>
+	}// project_report_options;
 
 
 	project_report () {
-
-		let has_data = isset (this.state.entries);
-
 		return <ExplodingPanel id="report_results_panel" ref={this.results_panel}>
-			<Container visible={has_data}>
+			{isset (this.state.entries) && <Container visible={this.state.granularity < 4}>
 				
 				{/* 
 					REINSTATE WHEN LINEAR OPTION BECOMES NECESSARY 
@@ -430,55 +484,16 @@ export default class ReportsPage extends BaseControl {
 					</div>
 				*/}
 
-				<Container visible={this.state.granularity < 4}>
-					{this.daily_breakdown ()}
-				</Container>
+				{this.daily_breakdown ()}
 
-			</Container>
+			</Container>}
 		</ExplodingPanel>
-
 	}// project_report;
 
-
-	show_totals () {
-
-		let total_time = 0;
-		let total_earned = 0;
-		let total_due = 0;
-
-		if (isset (this.state.entries)) this.state.entries.map (row => {
-			total_time += row.total_time;
-			total_earned += row.total_due;
-			if (!row.billed) total_due += row.total_due;
-		});
-
-		return <Container>
-
-			<div className="footer">
-
-				<div style={{ textAlign: "left", gridColumn: "1 / 4" }}>Paid</div>
-				<div style={{ gridColumn: "4", gridRow: "auto / span 2" }} className="vertically-centered">{Date.elapsed (total_time)}</div>
-				<div style={{ gridColumn: "5 / 7" }}>{(total_earned - total_due).toCurrency ()}</div>
-				<div />
-
-				<div style={{ textAlign: "left", gridColumn: "1 / 4" }}>Outstanding</div>
-				<div style={{ gridColumn: "5 / 7" }}>{total_due.toCurrency ()}</div>
-				<div />
-
-			</div>
-
-			<div className="footer-total">
-				<div style={{ textAlign: "left", gridColumn: "1 / 5" }}>Total</div>
-				<div style={{ gridColumn: "5 / 7" }}>{total_earned.toCurrency ()}</div>
-				<div />
-			</div>
-
-
-		</Container>
-
-	}// show_totals;
-
-
+	
+	/********/
+	
+	
 	timebar (time, maximum_hours) {
 
 		const color_spread = 240;
@@ -553,6 +568,21 @@ export default class ReportsPage extends BaseControl {
 	}// teamster_report;
 
 
+	report_home_panel = props => <Container>
+			Select a report
+	</Container>
+
+
+	load_panel = () => {
+		switch (this.state.current_panel) {
+			case reports_panels.client_report: return this.client_report_panel ();
+			case reports_panels.project_report: return this.project_report_panel ();
+			case reports_panels.teamster_report: return this.teamster_report_panel ();
+			default: return this.report_home_panel ();
+		}/* switch */;
+	}/* load_panel */;
+
+
 	/********/
 
 
@@ -586,16 +616,10 @@ export default class ReportsPage extends BaseControl {
 			</div>					
 				
 			<ExplodingPanel id="reports_panel" ref={this.reports_panel} stretchOnly={true} hAlign={horizontal_alignment.left} vAlign={vertical_alignment.top}
-
 				afterChanging={() => { 
 					if (this.state.current_panel != reports_panels.teamster_report) return;
 					this.setState ({ teamster_report_loading: true });
-				}}>
-
-				{this.client_report_panel ()}
-				{this.project_report_panel ()}
-				{this.teamster_report_panel ()}
-
+				}}>{this.load_panel ()}
 			</ExplodingPanel>
 			
 		</div>

@@ -25,7 +25,30 @@ export default class ReportGrid extends BaseControl {
 		row: null,
 		footer: null,
 
+		billable: false,
+
 	}// defaultProps;
+
+
+	cell_count = object => {
+
+		const has_children = item => Array.isArray (item?.props?.children) && (item?.props?.children?.length > 0);
+
+		const count_children = item => {
+
+			let count = 0;
+
+			if (!has_children (item)) return isset (item?.props) ? 1 : 0;
+			item?.props?.children?.forEach (child => count += count_children (child));
+			return count;
+
+		}/* count_children */;
+
+		let result = count_children (this.props?.["header"] ());
+
+		return result;
+
+	}/* cell_count */;
 
 
 	subset = (data, category) => {
@@ -107,41 +130,20 @@ export default class ReportGrid extends BaseControl {
 
 	render () {
 
-		const cell_count = object => {
-
-			let count = 0;
-
-			object.props.children?.forEach (child => {
-				if (dom_element (child)) return count++;
-				if (is_function (child.type) && (child.type.name.equals ("Container"))) count += cell_count (child);
-			});
-
-			return count;
-
-		}/* cell_count */;
-
-
-		const max_cell_count = () => {
-			const count = template => is_function (this.props?.[template]) ? cell_count (this.props [template] (this.props.data?.[0])) : 1;
-			return Math.max (count ("header"), count ("row"), count ("footer"));
-		}/* max_cell_count */;
-
-
 		if (is_null (this.props.data)) return null;
-
 		
 		return <div className="report-grid" 
 			style={{
 				display: "grid",
-				gridTemplateColumns: `repeat(${max_cell_count ()}, min-content)`,
+				gridTemplateColumns: `repeat(${this.cell_count ()}, min-content)`,
 			}}>
 			
 			{this.report_branch (this.props.data, this.props.categories)}
-			{is_function (this.props.footer) ? this.props.footer () : null}
+			{is_function (this.props.footer) ? this.props.footer (this.props.data) : null}
 
 		</div>
 
 	}// render;
 
 
-}// ReportGrid;
+}// ReportGrid; 	
