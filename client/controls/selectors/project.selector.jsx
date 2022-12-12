@@ -86,7 +86,7 @@ export default class ProjectSelector extends BaseControl {
 
 				switch (project_id) {
 					case this.state.selected_project_id: return this.execute (this.props.onProjectChange, project_id);
-					default: this.setState ({ selected_project_id: project_id }, this.execute (this.props.onProjectChange, this.state.selected_project_id));
+					default: this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, this.state.selected_project_id));
 				}/* switch */;
 
 			}));
