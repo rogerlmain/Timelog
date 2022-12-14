@@ -1,0 +1,11 @@
+div.pricing-table {
+	margin-bottom: 1em;
+	justify-self: center;
+}/* div.pricing-table */
+
+
+div.pricing-table > * { margin: 0 0.25em }
+div.pricing-table input[type=radio] { align-self: center }
+div.pricing-table a { justify-self: center }
+
+div.pricing-table > div:nth-child(3n+3) { justify-self: flex-end }

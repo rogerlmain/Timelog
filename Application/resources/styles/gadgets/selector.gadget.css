@@ -1,0 +1,10 @@
+div.project-selector-form > label { 
+	align-self: center;
+	justify-self: end;
+}/* div.project-selector-form > label */
+
+
+div.project-selector-label { 
+	display: flex;
+	flex-direction: row;
+}/* div.project-selector-label */

@@ -1,0 +1,10 @@
+div.butterfly-ballot {
+	display: grid;
+	grid-template-columns: repeat(3, min-content) 1fr;
+	align-items: center;
+	column-gap: 0.5em;
+}/* div.butterfly-ballot */
+
+
+div.butterfly-ballot label:first-of-type { text-align: right }
+

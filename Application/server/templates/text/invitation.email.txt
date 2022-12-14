@@ -1,0 +1,11 @@
+Hello {{invitee}},
+
+{{host}} with {{company}} has invited you to join Bundion as a contributor.
+
+To accept this invitation, paste the following link into your favourite browser:
+
+http://{{domain}}/{{address}}
+
+Thank you and remember to be nice :)
+
+Your friends at Bundion.

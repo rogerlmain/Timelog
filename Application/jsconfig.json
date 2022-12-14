@@ -1,0 +1,48 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+
+		"module": "es2015", /* same as es6 */
+		"target": "es2015",
+
+		"noEmitOnError": true,
+		"strict": false,
+		"removeComments": false,
+		"sourceMap": true,
+
+		"jsx": "react",
+
+		"outDir": "./publish/",
+
+		"baseUrl": "./",
+
+		"paths": {
+			"client/*"		: ["client/*"],
+			"classes/*"		: ["client/classes/*"],
+			"controls/*"	: ["client/controls/*"],
+			"forms/*"		: ["client/forms/*"],
+			"models/*"		: ["client/models/*"],
+			"pages/*"		: ["client/pages/*"],
+			"panels/*"		: ["client/panels/*"],
+			"tests/*"		: ["client/tests/*"],
+			"types/*"		: ["client/classes/types/*"],
+			"resources/*"	: ["client/resources/*"],
+			"/*"			: ["/*"]
+		}/* paths */,
+
+		"skipLibCheck": true,
+		"checkJs": false
+	},
+
+	"exclude": ["node_modules", "publish"],
+
+	"files": [ "client/main.jsx" ],
+
+	"lib": [
+		"dom",
+		"dom.iterable",
+		"esnext"
+	],
+
+	"declaration": true
+}

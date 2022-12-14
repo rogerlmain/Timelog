@@ -1,0 +1,53 @@
+{
+	"name": "timelog",
+	"version": "0.0.0",
+	"description": "Timelog",
+	"main": "server.mjs",
+	"author": {
+		"name": "Roger L. (Rex) Main (the Strange)"
+	},
+	"keywords": [],
+	"license": "ISC",
+	"scripts": {
+		"server": "webpack-dev-server --mode development --open --hot",
+		"start": "node server.mjs",
+		"build": "webpack --mode development",
+		"watch-start": "watch \"npm run start\" publish",
+		"watch-build": "watch \"npm run build\" client",
+		"check-types": "tsc"
+	},
+	"dependencies": {
+		"@babel/preset-env": "^7.18.2",
+		"@babel/preset-react": "^7.17.12",
+		"babel-loader": "^8.2.5",
+		"continuation-local-storage": "^3.2.1",
+		"css-loader": "^6.7.1",
+		"express": "^4.18.1",
+		"file-loader": "^6.2.0",
+		"html-webpack-plugin": "^5.5.0",
+		"multiparty": "^4.2.3",
+		"mysql": "^2.18.1",
+		"node-fetch": "^3.3.0",
+		"nodemailer": "^6.7.5",
+		"react": "^18.2.0",
+		"react-calendar": "^3.7.0",
+		"react-clock": "^3.1.0",
+		"react-input-mask": "^2.0.4",
+		"style-loader": "^3.3.1",
+		"url-loader": "^4.1.1",
+		"uuid": "^8.3.2",
+		"watch": "^0.13.0",
+		"webpack": "^5.73.0"
+	},
+	"-vs-binding": {
+		"AfterBuild": [
+			"build"
+		]
+	},
+	"browser": {
+		"crypto": false
+	},
+	"devDependencies": {
+		"webpack-cli": "^4.10.0"
+	}
+}

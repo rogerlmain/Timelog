@@ -1,0 +1,30 @@
+#home_page_panel {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1em;
+}/* #home_page_panel */
+
+
+#details_panel, #home_eyecandy {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}/* #details_panel, #home_eyecandy */
+
+
+/********/
+
+
+.home_button_panel {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}/* #home_button_panel */
+
+
+.home_button_panel button {
+	margin: 0 0.25em;
+}/* #home_button_panel button */
+
+

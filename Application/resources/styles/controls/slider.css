@@ -1,0 +1,35 @@
+:root {
+	--track-color: #888;
+	--track-background: white;
+}/* :root */
+
+
+div.slider {
+	display: inline-block;
+	position: relative;
+	overflow: visible;
+
+/* border: solid 1px red; */
+
+}/* div.slider */
+
+
+div.slider div.slider-track {
+	height: 3px;
+	background-color: var(--track-background);
+	border: solid 1px var(--track-color);
+	border-radius: 3px;
+	flex-grow: 1;
+	margin-right: 0.75em;
+}/* div.slider div.slider-track */
+
+
+div.slider div.slider-button {
+    width: 1.5em;
+    height: 1.5em;
+    background-color: var(--default-color);
+    border-radius: 1.5em;
+    top: calc(-0.75em + 50%);
+    position: absolute;
+	cursor: pointer;
+}/* div.slider div.slider-button */

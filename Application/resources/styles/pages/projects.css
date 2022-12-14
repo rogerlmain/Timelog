@@ -1,0 +1,51 @@
+#projects_panel label { text-align: right }
+
+#new_project_button { width: 100% }
+
+
+#projects_page hr {
+	height: 0;
+	width: 100%;
+	border: none;
+	border-top: solid 1px black;
+	margin: 2em 0;
+}/* #projects_page hr */
+
+
+/********/
+
+
+#project_list > div { display: block !important }
+
+
+/********/
+
+
+.project-select-form {
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(2, auto);
+	column-gap: 0.5em;
+}/* .project-select-form */
+
+
+.project-select-form .button-panel {
+	display: grid;
+	grid-template-rows: repeat(2, auto);
+	justify-items: stretch;
+	row-gap: 0.2em;
+}/* .project-select-form .button-panel */
+
+
+.project-select-form .button-cell {
+	display: grid;
+	grid-template-columns: repeat(2, min-content);
+	column-gap: 0.25em;
+	/* row-gap: 0.2em; */
+}/* project-select-form .button-panel */
+
+
+/********/
+
+
+/* #project_selector_select_list_eyecandy_panel_slideshow_panel_exploding_panel_resize_panel_inner_control { display: block !important } */
