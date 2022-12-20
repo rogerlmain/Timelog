@@ -109,6 +109,8 @@ class Main extends BaseControl {
 
 				<MasterPanel id="master_panel" parent={this} />
 
+				<div>{window.location.href}</div>
+
 				{/* Tests */}
 
 				{/* <ContentsPanelTest /> */}

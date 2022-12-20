@@ -20,21 +20,25 @@
 	<meta property="og:title" content="The Bundion System">
 	<meta property="og:description" content="The solution to that perennial business question: how long with it take? The answer is The Bundion System.">
 	<meta property="og:url" content="http://bundion.com">
-	<meta property="og:image" content="http://bundion.com/resources/bundion.placard.png">
-
-	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9182902529353306" crossorigin="anonymous"></script>
+	<meta property="og:image" content="http://bundion.com/resources/images/bundion.placard.png">
 
 	<style>
 
 
 		@font-face {
 			font-family: Gabriola;
-			src: url("http://<?=domain_name?>/timelog/resources/fonts/Gabriola.ttf") format("truetype");
+			src: url("http://bundion.com/resources/fonts/Gabriola.ttf") format("truetype");
+		}/* @font-face */
+
+
+		@font-face {
+			font-family: "Work Sans Light";
+			src: url("http://bundion.com/resources/fonts/Work.ttf") format("truetype");
 		}/* @font-face */
 
 
 		:root {
-			--serious-font: Verdana, Tahoma, sans-serif;
+			--serious-font: "Work Sans Light", Verdana, Tahoma, sans-serif;
 			--fun-font: Gabriola;
 		}/* :root */
 
@@ -60,23 +64,31 @@
 		*.fully-bordered, *.fully-bordered * { border: solid 1px red }
 
 		
-		*.spaced-out {
+		*.horizontally-spaced-out {
 			display: flex;
 			flex-direction: row;
 			justify-content: space-between;
 			align-items: center;
-
-			/* border: solid 1px red; */
-		}/* *.spaced-out */
+		}/* *.horizontally-spaced-out */
 
 
-		*.spaced-out * { margin: 0 !important }
+		*.horizontally-spaced-out * { margin: 0 !important }
 
 
-		*.spaced-out img { 
+		*.horizontally-spaced-out img { 
 			position: relative;
     		left: -0.8em;
-		}/* *.spaced-out img */
+		}/* *.horizontally-spaced-out img */
+
+
+		*.vertically-spaced-out {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}/* *.vertically-spaced-out */
+
+
+		*.vertically-spaced-out > div:nth-child(2) { margin: 1em 0 }
 
 
 		*.subtext { 
@@ -119,12 +131,6 @@
 		div.header img { width: <?=image_width?>px }
 
 
-		div.subheader {
-			font-family: var(--serious-font);
-			font-size: 14pt;
-		}/* div.subheader */
-
-		
 		div.column-layout {
 			display: flex;
 			flex-direction: column;
@@ -133,6 +139,17 @@
 		}/* div.column-layout */
 
 
+		div.release-date {
+			font-size: 22pt;
+		}/* div.release-date */
+
+
+		div.subheader {
+			font-family: var(--serious-font);
+			font-size: 14pt;
+		}/* div.subheader */
+
+		
 		img.rexlogo {
 			height: 38px;
 		}/* div.rexlogo */
@@ -174,11 +191,13 @@
 
 		/********/
 
+
 		#mc_embed_signup div#mce-responses { 
 			float: none !important;
 			width: 100%;
 			text-align: center;
 		}
+
 
  		#mc_embed_signup div.response { 
 			float: none !important;
@@ -186,6 +205,7 @@
 			padding: 0 !important;
 			width: auto !important;
 		}
+
 
 	</style>
 
@@ -196,29 +216,36 @@
 	<div class="row-layout">
 
 		<div class="centered">
-			<div class="column-layout">
+			<div class="vertically-spaced-out">
 
-				<div class="centered">
-					<div class="header">
-						<div class="gabriola">The</div>
-						<img src="<?=image_path?>" />
-						<div class="gabriola">System</div>
+				<div class="column-layout">
+
+					<div class="centered">
+						<div class="header">
+							<div class="gabriola">The</div>
+							<img src="<?=image_path?>" />
+							<div class="gabriola">System</div>
+						</div>
 					</div>
+
+					<div class="centered subheader">Time is precious. Make every second count.</div>
+
 				</div>
 
-				<div class="centered subheader">Time is precious. Make every second count.</div>
-
-				<div class="centered">SPRING 2023</div>
+				<div class="centered release-date">SPRING 2023</div>
 
 				<div class="centered">
 					<div class="row-layout" style="column-gap: 0.5em">
-						<img class="rexlogo" src="resources/cartoon.circle.png" />
+
+						<img class="rexlogo" src="resources/images/cartoon.circle.png" />
+
 						<div class="centered">
 							<div class="column-layout copyright-footer">
 								<div>&copy; Copyright 2022 - Roger L. Main (DBA RMPC)</div>
 								<div>All rights reserved</div>
 							</div>
 						</div>
+
 					</div>
 				</div>
 
@@ -304,7 +331,7 @@
 
 							<div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_87a9501b5bb50c93faa07f09f_97a435a4e3" tabindex="-1" value=""></div>
 
-							<div class="spaced-out">
+							<div class="horizontally-spaced-out">
 								<a href="http://eepurl.com/h_gyxX" title="Mailchimp - email marketing made easy and fun"><img src="https://eep.io/mc-cdn-images/template_images/branding_logo_text_dark_dtp.svg"></a>
 								<input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
 							</div>

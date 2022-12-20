@@ -1,7 +1,7 @@
 import { createConnection } from "mysql";
 
 
-const local_testing = true;
+const live_testing = true;
 
 
 const local_database = {
@@ -84,7 +84,7 @@ class Database {
 
 	constructor () {
 		try {
-			this.connection = createConnection ((local_testing ? local_database : interserver_database));
+			this.connection = createConnection ((live_testing ? interserver_database : local_database));
 			this.connection.connect ((error) => { if (isset (error)) console.log (error) });
 		} catch (except) {
 			console.log (except);
@@ -96,5 +96,3 @@ class Database {
 
 
 export default Database;
-
-
