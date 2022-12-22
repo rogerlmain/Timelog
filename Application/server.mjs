@@ -534,13 +534,15 @@ app.get ("/join", () => app.process (fields => {
 createNamespace (session_namespace);
 
 
-var options = {
-    key: file_system.readFileSync (`${root_path}/server/certificates/timelog.key`),
-    cert: file_system.readFileSync (`${root_path}/server/certificates/timelog.crt`),
-};
+// var options = {
+//     key: file_system.readFileSync (`${root_path}/server/certificates/timelog.key`),
+//     cert: file_system.readFileSync (`${root_path}/server/certificates/timelog.crt`),
+// };
 
-let server = https.createServer (options, app).listen (app.get ("port"), function () {
-    console.log (`listening: ${root_path}`);
+//let server = https.createServer (options, app).listen (app.get ("port"), "127.0.0.1", function () {
+	
+let server = http.createServer (app).listen (app.get ("port"), "127.0.0.1", function () {
+	console.log (`listening: ${root_path}`);
 });
 
 server.keepAliveTimeout = 10000;
