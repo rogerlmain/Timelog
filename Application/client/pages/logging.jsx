@@ -309,7 +309,7 @@ export default class LoggingPage extends BaseControl {
 			{this.state.logged_in ? this.entry_details (elapsed_time) : <Container>
 
 				<div className="with-headspace">
-					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButton={true}
+					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButtons={true}
 
 						selectedClientId={this.state.current_entry.client_id} 
 						selectedProjectId={this.state.current_entry.project_id}
@@ -325,7 +325,7 @@ export default class LoggingPage extends BaseControl {
 
 			</Container>}
 
-			<div id="eyecandy_cell" style={{ marginTop: "1em" }}>
+			<div id="eyecandy_cell" style={{ marginTop: "1em", width: "100%" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 				
 					text={(elapsed_time == 0) ? "Cancelling entry..." : `Logging you ${this.state.logged_in ? "out" : "in"}...`}

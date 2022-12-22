@@ -22,6 +22,9 @@ export default class ClientSelector extends BaseControl {
 	}// state;
 
 
+	client_list = React.createRef ();
+
+
 	static contextType = MasterContext;
 
 
@@ -55,14 +58,14 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	get_client_data = (loaded = true) => ClientStorage.get_by_company (this.context.company_id, this.props.includeOffshoreAccounts).then (data => {
+	get_client_data = () => ClientStorage.get_by_company (this.context.company_id, this.props.includeOffshoreAccounts).then (data => {
 
 		let keys = Object.keys (data);
 
 		this.execute (this.props.onLoad, data).then (() => this.setState ({ 
 			client_data: data.normalize (),
 			selected_client_id: this.state.selected_client_id ?? ((keys.length == 1) ? data [keys [0]].client_id : null),
-		}, () => loaded && this.execute (this.props.onChange, this.state.selected_client_id)));
+		}, () => isset (this.selected_client_id) ? this.execute (this.props.onChange, this.state.selected_client_id) : null));
 
 	})/* get_client_data */;
 
@@ -70,7 +73,7 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
-	componentDidMount = () => this.get_client_data (false);
+	componentDidMount = () => setTimeout (() => this.get_client_data (false), 1);
 
 
 	shouldComponentUpdate (new_props, new_state, new_context) {
@@ -88,7 +91,7 @@ export default class ClientSelector extends BaseControl {
 
 			<label htmlFor={`${this.props.id}_load_list`}>Client<Container visible={single_client}>:</Container></label>
 
-			<LoadList id={`${this.props.id}_load_list`} label="Client" 
+			<LoadList id={`${this.props.id}_load_list`} ref={this.client_list} label="Client" 
 			
 				header={this.props.header} headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_client_id}
 

@@ -94,6 +94,8 @@ export default class EyecandyPanel extends BaseControl {
 
 		if (is_null (this.props.id)) throw ("Eyecandy requires an ID");
 
+		this.rendered = true;
+
 		return <ExplodingPanel id={`${this.props.id}_exploding_panel`} ref={this.exploding_panel} speed={this.animation_speed ()} 
 
 			hAlign={this.props.hAlign} vAlign={this.props.vAlign} stretchOnly={this.props.stretchOnly}

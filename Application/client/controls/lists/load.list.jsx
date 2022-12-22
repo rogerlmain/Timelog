@@ -57,6 +57,7 @@ export default class LoadList extends BaseControl {
 		visible: true,
 
 		onChange: null,
+		onEyecandy: null,
 
 	}// defaultProps;
 
@@ -121,14 +122,15 @@ export default class LoadList extends BaseControl {
 	/*********/
 
 
-	componentDidMount = this.forceRefresh;
-
-
 	render () {
 
 		let list_panel_id = `${this.props.id}_list_panel`;
 
+		this.rendered = true;
+
 		return <EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} ref={this.eyecandy_panel} text="Loading..." 
+
+			onEyecandy={this.props.onEyecandy}
 		
 			hAlign={this.props.hAlign} vAlign={this.props.vAlign} stretchOnly={true}
 			eyecandyVisible={not_set (this.props.data)}>

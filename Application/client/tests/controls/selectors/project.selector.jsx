@@ -49,7 +49,6 @@ export default class ProjectSelectorTest extends BaseControl {
 						headerText="New client"
 						selectedClient={this.state.selected_client}>
 					</ProjectSelector>
-
 				</div>
 
 				<br /><br />

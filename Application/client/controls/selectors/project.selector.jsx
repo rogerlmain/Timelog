@@ -2,6 +2,7 @@ import React from "react";
 
 import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
+import LoggingStorage from "client/classes/storage/logging.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
 
@@ -16,7 +17,6 @@ import { isset, integer_value, debugging, not_set } from "client/classes/common"
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
-import LoggingStorage from "client/classes/storage/logging.storage";
 
 
 export default class ProjectSelector extends BaseControl {
@@ -49,6 +49,11 @@ export default class ProjectSelector extends BaseControl {
 		includeOffshoreAccounts: true,
 
 		headerText: "Select a project",
+
+		newClientButton: false,
+		newProjectButton: false,
+
+		newButtons: false,
 
 	}// defaultProps;
 
@@ -114,7 +119,11 @@ export default class ProjectSelector extends BaseControl {
 
 		return <div id={this.props.id} className="one-piece-form">
 
-			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={this.props.newButton} includeOffshoreAccounts={this.props.includeOffshoreAccounts}
+			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} 
+			
+				newButton={this.props.newClientButton || this.props.newButtons} 
+			
+				includeOffshoreAccounts={this.props.includeOffshoreAccounts}
 
 				header={(this.state.client_list?.key_length () > 1) ? "Select a client" : null}
 				headerSelectable={false} 
@@ -136,7 +145,7 @@ export default class ProjectSelector extends BaseControl {
 					header={this.props.headerText} headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_project_id}
 
 					dataIdField="project_id" dataTextField="name" data={this.state.project_data} 
-					newButtonPage={this.props.newButton ? page_names.projects : null} 
+					newButtonPage={(this.props.newProjectButton || this.props.newButtons) ? page_names.projects : null} 
 					
 					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
