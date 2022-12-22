@@ -27,12 +27,12 @@ export default class LoggingStorage extends LocalStorage {
 
 	static delete = () => super.remove_store (store_name);	
 
-	static logged_in = () => { return isset (this.get_store ()) }
+	static logged_in = () => { return this.#get ("logged_in") }
 	static logged_out = () => { return !this.logged_in () }
 
 	static start_time = () => { return this.#get ("start_time") }
-	static client_name = () => { return this.#get ("client_name") }
-	static project_name = () => { return this.#get ("project_name") }
+	static client_id = () => { return this.#get ("client_id") }
+	static project_id = () => { return this.#get ("project_id") }
 
 
 	static current_entry = () => { 

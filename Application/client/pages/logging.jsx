@@ -42,7 +42,11 @@ export default class LoggingPage extends BaseControl {
 
 	state = {
 
-		current_entry: { start: null, end: null }, // both are always set as per the interface
+		current_entry: { 
+			start: null, 
+			end: null,
+			logged_in: false,
+		}/* current_entry */,
 
 		action: null,
 
@@ -50,9 +54,6 @@ export default class LoggingPage extends BaseControl {
 		editing: false,
 		initialized: false,
 		updating: false,
-
-		logged_in: false, // determined by not this.state.logged_out
-		logged_out: true, // determined by issset (LoggingStorage.end_time)
 
 	}/* state */;
 
@@ -66,8 +67,7 @@ export default class LoggingPage extends BaseControl {
 		super (props);
 
 		let current_entry = LoggingStorage.current_entry ();
-
-		this.state.logged_in = !(this.state.logged_out = isset (current_entry?.end));
+		let logged_in = isset (current_entry?.end);
 
 		ProjectStorage.billing_rate (current_entry?.project_id, current_entry?.client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
 			console.log (error);
@@ -132,6 +132,7 @@ export default class LoggingPage extends BaseControl {
 
 				current_entry: {
 					...this.state.current_entry,
+					logged_in: logged_in,
 					start: logged_in ? new Date (entry.start_time) : new Date (ranges.start),
 					end: new Date ().rounded (ranges.end),
 				}/* current_entry */,

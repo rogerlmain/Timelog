@@ -3,15 +3,14 @@ import React from "react";
 import Container from "client/controls/container";
 import BaseControl from "client/controls/abstract/base.control";
 
+import ClientStorage from "client/classes/storage/client.storage";
+import ProjectStorage from "client/classes/storage/project.storage";
 import LoggingStorage from "client/classes/storage/logging.storage";
 
-import InvitationStorage from "client/classes/storage/invitation.storage";
 import InvitationsModel from "client/classes/models/invitations.model";
 
-import { isset, is_null, not_array, not_set } from "client/classes/common";
+import { is_null, not_array, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
-import AccountStorage from "client/classes/storage/account.storage";
-import LocalStorage from "client/classes/local.storage";
 
 
 const invite_responses = {
@@ -23,7 +22,11 @@ const invite_responses = {
 export default class HomePage extends BaseControl {
 
 
-	state = { invitations: null }
+	state = { 
+		invitations: null,
+		client_name: null,
+		project_name: null,
+	}/* state */;
 
 
 	static defaultProps = { 
@@ -94,12 +97,27 @@ export default class HomePage extends BaseControl {
 	/********/
 
 
+	componentDidMount () {
+		new Promise (async () => {
+
+			let active_client_name = (await ClientStorage.get_by_id (LoggingStorage.client_id ()))?.name;
+			let active_project_name = (await ProjectStorage.get_by_id (LoggingStorage.project_id ()))?.name;
+
+			this.setState ({ 
+				client_name: active_client_name.equals ("default") ? null : active_client_name,
+				project_name: active_project_name.equals ("default") ? null : active_project_name,
+			});
+		
+		});
+	}/* componentDidMount */;
+
+
 	render () {
 
-		let use_default = (is_null (LoggingStorage.project_name ()) && is_null (LoggingStorage.client_name ()));
+		let use_default = (is_null (this.state.client_name) && is_null (this.state.project_name));
 
 		return <div id={this.props.id} className="full-size horizontally-centered">
-			<div className="two-column-table with-headspace" style={{ columnGap: "2em" }}>
+			<div className="two-column-table with-headspace" style={{ columnGap: "2em", alignItems: "flex-start" }}>
 
 				{/* Invitations */}
 
@@ -115,18 +133,10 @@ export default class HomePage extends BaseControl {
 
 					<div className="section-header">Logging Status</div>
 
-					<Container visible={LoggingStorage.logged_in ()}>
-						You are currently logged&nbsp;
-						<Container visible={use_default}>in</Container>
-						<Container visible={!use_default}>
-							into<br />
-							{LoggingStorage.project_name () ?? "the default project"} for {LoggingStorage.client_name ()}
-						</Container>
-					</Container>
-
-					<Container visible={LoggingStorage.logged_out ()}>
-						You are not logged in to any projects.
-					</Container>
+					{LoggingStorage.logged_in () ? <div>
+						You are currently logged {use_default ? "in" : "into "} {this.state.project_name?.equals ("default") ? "the default project" : this.state.project_name}<br />
+						for {this.state.client_name}
+					</div> : <div>You are not logged in to any projects.</div>}
 
 				</div>
 

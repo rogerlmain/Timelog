@@ -10,7 +10,7 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import { debugging, isset, jsonify } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
-import { horizontal_alignment, ranges, support_address } from "client/classes/types/constants";
+import { horizontal_alignment, support_address } from "client/classes/types/constants";
 
 
 const bad_credentials = <div id="bad_credentials" className="form-error">
@@ -105,7 +105,8 @@ export default class SigninPage extends BaseControl {
 					client_id: info?.logging?.client_id,
 					project_id: info?.logging?.project_id,
 					start: new Date (info?.logging?.start_time),
-					end: isset (info?.logging?.end_time) ? new Date (info.logging.end_time) : null,
+					end: isset (info?.logging?.end_time) ? new Date (info.logging.end_time) : new Date (),
+					logged_in: (info?.logging?.logged_in == 1), // convert from bit to boolean
 					notes: info?.logging?.notes,
 				});
 

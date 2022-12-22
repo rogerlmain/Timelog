@@ -16,7 +16,8 @@ create procedure get_latest_entry (account_id integer) begin
 		prj.`name` as project_name,
         log.notes,
 		log.start_time,
-        log.end_time
+        log.end_time,
+        (log.end_time is null) as logged_in
 	from
 		logging as log
 	left outer join
