@@ -39,33 +39,38 @@ export default class PopupWindow extends BaseControl {
 	}// constructor;
 
 
-	render () {
-		return (
-			<FadePanel id={`${this.props.id}_fade_panel`} className="full-screen" visible={this.props.visible} 
-			
-				style={{ zIndex: this.props.visible ? visible_zindex : hidden_zindex }}
+	/********/
 
-				beforeShowing={() => this.execute (this.props.beforeOpening)}
-				beforeHiding={() => this.execute (this.props.beforeClosing)}
 
-				afterShowing={() => this.execute (this.props.afterOpening)}
-				afterHiding={() => this.execute (this.props.afterClosing)}>
+	render = () => <FadePanel id={`${this.props.id}_fade_panel`} className="full-screen" visible={this.props.visible}
 
-				<div className="full-screen popup-panel">
-					{this.props.modal ? <div className="full-screen fully-centered popup-modal" /> : null}
-					<div className="popup-window">
+		beforeShowing={event => {
+			event.target.style.zIndex = visible_zindex;
+			this.execute (this.props.beforeOpening)
+		}}
 
-						{this.props.children}
+		afterHiding={event => {		
+			this.execute (this.props.afterClosing);
+			event.target.style.zIndex = hidden_zindex;
+		}}
 
-						{isset (this.props.parent) && isset (this.props.switch) && <SelectButton id="close_button" sticky={false} 
-							onClick={() => this.props.parent.setState ({ [this.props.switch] : false })}>Close
-						</SelectButton>}
+		afterShowing={() => this.execute (this.props.afterOpening)}
+		beforeHiding={() => this.execute (this.props.beforeClosing)}>
 
-					</div>
-				</div>
+		<div className="full-screen popup-panel">
+			{this.props.modal ? <div className="full-screen fully-centered popup-modal" /> : null}
+			<div className="popup-window">
 
-			</FadePanel>
-		);
-	}// render;
+				{this.props.children}
+
+				{isset (this.props.parent) && isset (this.props.switch) && <SelectButton id="close_button" sticky={false} 
+					onClick={() => this.props.parent.setState ({ [this.props.switch] : false })}>Close
+				</SelectButton>}
+
+			</div>
+		</div>
+
+	</FadePanel>
+
 
 }// PopupWindow;

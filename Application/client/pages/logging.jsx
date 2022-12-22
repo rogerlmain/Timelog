@@ -216,7 +216,7 @@ export default class LoggingPage extends BaseControl {
 				"Click here to change your log times."
 			) : null} 
 		
-			onClick={can_edit || needs_editing ? () => this.context.load_popup (this.calendar_clock (boundary)).then (this.context.show_popup) : null}>
+			onClick={(can_edit || needs_editing) ? () => this.context.load_popup (this.calendar_clock (boundary)).then (this.context.show_popup) : null}>
 				
 			{value}
 

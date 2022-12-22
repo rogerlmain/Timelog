@@ -98,7 +98,7 @@ class Main extends BaseControl {
 
 		let context_value = {
 			load_popup: popup => new Promise (resolve => this.setState ({ popup_contents: popup }, resolve)),
-			show_popup: () => this.setState ({ popup_visible: true }),
+			show_popup: () => setTimeout (() => this.setState ({ popup_visible: true }), 1),
 			hide_popup: callback => this.setState ({ popup_visible: false }, callback),
 		}// context_value;
 
