@@ -52,7 +52,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.1.0.6";
+const version = "1.1.0.7";
 
 
 const user_image_style = {
@@ -70,6 +70,17 @@ const page_rule_style = {
 	borderTop: "solid 1px var(--border-color)",
 	backgroundImage: "linear-gradient(var(--rule-color), var(--background-color))"
 }// page_rule_style;
+
+
+const debug_panel_style ={
+	backgroundColor: "var(--background-color)",
+	border: "solid 1px black",
+	position: "absolute",
+	right: "0",
+	top: "50%",
+	padding: "0.5em",
+	marginRight: "1em",
+}/* debug_panel_style */
 
 
 const logo_image = {
@@ -473,6 +484,8 @@ export default class MasterPanel extends BaseControl {
 
 		return <MasterContext.Provider value={context_value}>
 			<div id="master_panel" className="full-screen" >
+
+				{debugging () && <div id="debug_panel" style={debug_panel_style}>No data</div>}
 
 				<div className="page-header">
 

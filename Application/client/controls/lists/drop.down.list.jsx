@@ -147,17 +147,30 @@ export default class DropDownList extends BaseControl {
 
 
 	start_transition () {
+
 		this.item_list.current.className = null;
 		this.execute (this.state.opened ? this.props.beforeClosing : this.props.beforeOpening);
-		if (!this.state.opened) this.list_sleeve.current.style.visibility = "visible";
+
+		if (!this.state.opened) {
+			this.dropdown_list.current.style.position = "absolute";
+			this.list_sleeve.current.style.visibility = "visible";
+		}/* if */;
+
 	}/* start_transition */;
 
 
 	end_transition () {
 		this.setState ({ opened: !this.state.opened }, () => {
+
 			this.execute (this.state.opened ? this.props.afterOpening : this.props.afterClosing);
-			if (!this.state.opened) return this.list_sleeve.current.style.visibility = "hidden";
+
+			if (!this.state.opened) {
+				this.dropdown_list.current.style.position = null;
+				return this.list_sleeve.current.style.visibility = "hidden";
+			}/* if */;
+
 			this.item_list.current.className = highlight_classname;
+
 		});
 	}/* end_transition */;
 

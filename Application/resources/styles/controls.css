@@ -61,7 +61,6 @@ div.report-grid-data div { margin: 0.2em 0 }
 div.dropdown-list {
 	display: inline-block;
 	cursor: pointer;
-	position: absolute;
 }/* div.dropdown-list */
 
 

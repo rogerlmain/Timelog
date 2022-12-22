@@ -65,7 +65,6 @@ export default class ProjectSelector extends BaseControl {
 		this.state.selected_client_id = this.props.selectedClientId;
 		this.state.selected_project_id = this.props.selectedProjectId;
 
-		if (isset (this.state.selected_client_id)) ProjectStorage.get_by_client (this.state.selected_client_id).then (data => this.setState ({ project_data: Object.values (data) }));
 		if (debugging (false)) console.log (`${props.id} object created`);
 
 	}/* constructor */;
@@ -111,6 +110,12 @@ export default class ProjectSelector extends BaseControl {
 		return true;
 
 	}/* shouldComponentUpdate */;
+
+
+	componentDidMount = () => setTimeout (() => {
+		if (not_set (this.state.selected_client_id)) return;
+		ProjectStorage.get_by_client (this.state.selected_client_id).then (data => this.setState ({ project_data: Object.values (data) }));
+	}, 1)/* componentDidMount */;
 
 
 	render () {

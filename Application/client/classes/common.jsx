@@ -4,12 +4,15 @@ import { blank } from "client/classes/types/constants";
 import { unlimited } from "client/classes/types/options";
 
 
+const live_debugging = true;
+
+
 /********/
 
 
 export const detab = text => text.replace (/\n[\t]*/g, "\n");
 
-export const debugging = (active = true) => (active && window.location.hostname.equals ("localhost"));
+export const debugging = (active = true) => (active && window.location.hostname.equals ("localhost") || live_debugging);
 export const live = (live = true) => !debugging (live);
 
 
