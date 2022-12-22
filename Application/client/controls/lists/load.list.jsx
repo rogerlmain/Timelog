@@ -81,7 +81,7 @@ export default class LoadList extends BaseControl {
 	select_list = () => {
 
 		let new_button = isset (this.props.newButtonPage);
-		let single_option = ((this.props.data?.key_length () == 1) && not_set (this.props.header));
+		let single_option = ((this.props.data?.key_length () == 1));
 
 		let form_style = {
 			...this.props.style,
@@ -96,21 +96,27 @@ export default class LoadList extends BaseControl {
 
 		return <div className={new_button ? "two-column-grid" : null} style={form_style}>
 
-			{single_option ? <div className="vertically-aligned">{this.props.data [Object.keys (this.props.data) [0]].name}</div> : 
-			
-			<DropDownList id={this.props.id} 
-			
-				data={this.props.data} selectedValue={this.props.selectedItem} disabled={this.props.disabled}
-				style={this.props.style}
+			<div style={{ display: "grid", gridTemplateColumns: "1fr" }}>
 
-				header={this.props.header} 
-				headerSelectable={this.props.headerSelectable}
+				<div className="vertically-aligned" style={{ display: (single_option ? null : "none"), gridColumn: 1 }}>{this.props.data [Object.keys (this.props.data) [0]].name}</div>
 				
-				idField={this.props.dataIdField} textField={this.props.dataTextField}
+				<div style={{ display: (single_option ? "none" : null), gridColumn: 1 }}>
+					<DropDownList id={this.props.id} 
+					
+						data={this.props.data} selectedValue={this.props.selectedItem} disabled={this.props.disabled}
+						style={this.props.style}
 
-				onChange={event => this.execute (this.props.onChange, event)}>
+						header={this.props.header} 
+						headerSelectable={this.props.headerSelectable}
+						
+						idField={this.props.dataIdField} textField={this.props.dataTextField}
 
-			</DropDownList>}
+						onChange={event => this.execute (this.props.onChange, event)}>
+
+					</DropDownList>
+				</div>
+
+			</div>
 
 			{new_button && <button onClick={() => this.context.master_page.set_page (this.props.newButtonPage)}>New</button>}
 

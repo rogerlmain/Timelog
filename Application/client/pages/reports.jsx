@@ -40,6 +40,7 @@ const reports_panels = {
 	client_report	: 1,
 	project_report	: 2,
 	teamster_report	: 3,
+	daily_report	: 4,
 }// reports_panels;
 
 
@@ -87,7 +88,14 @@ export default class ReportsPage extends BaseControl {
 	/********/
 
 
-	client_report_panel = () => <div>Client report goes here</div>
+	client_report_panel = () => <div>
+		
+		Client report goes here<br />
+		<br />
+		Show a client selector. When submitted show a list<br />
+		of projects and total times per project.
+		
+	</div>
 
 
 	project_report_panel = () => <Container id="project_report_panel" visible={this.state.current_panel == reports_panels.project_report}>
@@ -112,6 +120,25 @@ export default class ReportsPage extends BaseControl {
 
 		</EyecandyPanel>
 	</Container>
+
+
+	daily_report_panel = () => <div>
+		
+		Daily report goes here.<br />
+		<br />
+		1. Add a permission for daily_report_accounts<br />
+		2. If the user has the daily_report_accounts:<br />
+		<br />
+		&#9;yes: show a list of all company users<br />
+		&#9;no: immediately show the report for this user<br />
+		<br />
+		3. Show a report that is a list of daily activities (all projects worked on). Include:<br />
+		<br />
+		&#9;a) A total for each project<br />
+		&#9;b) A total for all projects<br />
+
+	</div>;
+
 
 
 	/********/
@@ -578,6 +605,7 @@ export default class ReportsPage extends BaseControl {
 			case reports_panels.client_report: return this.client_report_panel ();
 			case reports_panels.project_report: return this.project_report_panel ();
 			case reports_panels.teamster_report: return this.teamster_report_panel ();
+			case reports_panels.daily_report: return this.daily_report_panel ();
 			default: return this.report_home_panel ();
 		}/* switch */;
 	}/* load_panel */;
@@ -610,6 +638,14 @@ export default class ReportsPage extends BaseControl {
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.teamster_report}))}>
 						
 					Teamsters Report
+					
+				</SelectButton>
+
+				<SelectButton id="daily_button" className="sticky-button" selected={this.state.current_panel == reports_panels.daily_report} 
+
+					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.daily_report}))}>
+						
+					Daily Report
 					
 				</SelectButton>
 
