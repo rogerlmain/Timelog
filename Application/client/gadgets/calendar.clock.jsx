@@ -36,7 +36,8 @@ export default class CalendarClock extends BaseControl {
 		start: null,
 		end: null,
 		visible: true,
-		onChange: null
+		onChange: null,
+		boundary: null,
 	}// defaultProps;
 
 
@@ -48,6 +49,8 @@ export default class CalendarClock extends BaseControl {
 			start: props.start,
 			end: props.end,
 		}/* values */;
+
+		this.state.boundary = props.boundary;
 
 	}/* constructor */;
 
@@ -85,7 +88,10 @@ export default class CalendarClock extends BaseControl {
 	/********/
 
 
-	calendar = React.createRef ();
+	shouldComponentUpdate (props) {
+		if (props.boundary != this.state.boundary) return !!this.setState ({ boundary: props.boundary });
+		return true;
+	}/* shouldComponentUpdate */;
 
 
 	render () {
@@ -95,7 +101,7 @@ export default class CalendarClock extends BaseControl {
 
 				<ToggleButton htmlFor="log_boundary_start" className="fully-centered">Start</ToggleButton>
 
-				<ToggleSwitch id="log_boundary_toggle" value={boundaries.end} onChange={data => this.setState ({ boundary: data })}>
+				<ToggleSwitch id="log_boundary_toggle" value={this.state.boundary} onChange={data => this.setState ({ boundary: data })}>
 					<option id="log_boundary_start" value={boundaries.start}>Start</option>
 					<option id="log_boundary_end" value={boundaries.end}>End</option>
 				</ToggleSwitch>
@@ -106,7 +112,7 @@ export default class CalendarClock extends BaseControl {
 
 			<div className="two-column-grid date-time-controls">
 
-				<Calendar id="calendar_object" ref={this.calendar} calendarType="US" selectRange={false} 
+				<Calendar id="calendar_object" calendarType="US" selectRange={false} 
 					value={this.state.values [this.state.boundary]} 
 					onChange={value => this.update_datetime (this.date_value (value))}>
 				</Calendar>

@@ -10,8 +10,6 @@ import LoadList from "client/controls/lists/load.list";
 import FadePanel from "client/controls/panels/fade.panel";
 import ClientSelector from "client/controls/selectors/client.selector";
 
-import Container from "client/controls/container";
-
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 import { isset, integer_value, debugging, not_set } from "client/classes/common";
 import { page_names } from "client/master";
@@ -141,7 +139,7 @@ export default class ProjectSelector extends BaseControl {
 			</ClientSelector>
 
 			<FadePanel id={`${this.props.id}_project_selector_label_fade_panel`} visible={isset (this.state.selected_client_id)}>
-				<label htmlFor={`${this.props.id}_load_list`}>Project<Container visible={single_project}>:</Container></label>
+				<label htmlFor={`${this.props.id}_load_list`}>Project{(single_project || LoggingStorage.logged_in ()) && ":"}</label>
 			</FadePanel>
 			
 			<FadePanel id={`${this.props.id}_project_selector_fade_panel`} visible={isset (this.state.selected_client_id)}>

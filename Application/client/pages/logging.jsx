@@ -7,7 +7,7 @@ import EyecandyPanel from"client/controls/panels/eyecandy.panel";
 import FadePanel from"client/controls/panels/fade.panel";
 
 import LoggingStorage from"client/classes/storage/logging.storage";
-import OptionsStorage from "client/classes/storage/options.storage";
+import OptionsStorage, { boundaries } from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
 
 import CalendarClock from "client/gadgets/calendar.clock";
@@ -67,7 +67,6 @@ export default class LoggingPage extends BaseControl {
 		super (props);
 
 		let current_entry = LoggingStorage.current_entry ();
-		let logged_in = isset (current_entry?.end);
 
 		ProjectStorage.billing_rate (current_entry?.project_id, current_entry?.client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
 			console.log (error);
@@ -76,7 +75,8 @@ export default class LoggingPage extends BaseControl {
 
 		this.state.current_entry = {
 			...current_entry,
-			start: (this.state.logged_in ? new Date (current_entry?.start) : new Date ()).rounded (ranges.start),
+			logged_out: !current_entry.logged_in,
+			start: (current_entry.logged_in ? new Date (current_entry?.start) : new Date ()).rounded (ranges.start),
 			end: new Date ().rounded (ranges.end),
 		}/* current_entry */;
 
@@ -94,7 +94,7 @@ export default class LoggingPage extends BaseControl {
 	notes = () => 		{ return null_value (this.state.current_entry?.notes) }
 
 
-	project_selected = () => ((this.state?.current_entry?.project_id > 0) || OptionsStorage.single_project () || this.state.logged_in);
+	project_selected = () => ((this.state?.current_entry?.project_id > 0) || OptionsStorage.single_project () || this.state.current_entry.logged_in);
 
 
 	metered_bill = elapsed_time => {
@@ -110,7 +110,7 @@ export default class LoggingPage extends BaseControl {
 	// Time limit in hours
 	needs_editing = time_limit => { 
 
-		if (this.state.logged_out) return false;
+		if (this.state.current_entry.logged_out) return false;
 
 		let same_day = this.state.current_entry.start.same_day (this.state.current_entry.end);
 		let result = (!same_day || (this.elapsed_time () > (time_limit * Date.coefficient.hour)));
@@ -122,11 +122,11 @@ export default class LoggingPage extends BaseControl {
 
 	log_entry = () => {
 
-		let timestamp = this.state?.current_entry?.[this.state.logged_in ? "end" : "start"];
+		let timestamp = this.state?.current_entry?.[this.state.current_entry.logged_in ? "end" : "start"];
 	
 		LoggingModel.log (this.state.current_entry, timestamp).then (entry => {
 
-			let logged_in = !(this.state.logged_out = isset (entry.end_time));
+			let logged_in = !(this.state.current_entry.logged_out = isset (entry.end_time));
 
 			this.setState ({ 
 
@@ -179,12 +179,14 @@ export default class LoggingPage extends BaseControl {
 	</Container>
 
 
-	calendar_clock = () => <div>
+	calendar_clock = boundary => <div>
 	
 		<CalendarClock id="log_calendar_clock"
 
 			start={this.state.current_entry.start} 
 			end={this.state.current_entry.end}
+
+			boundary={boundary}
 
 			onChange={data => this.setState ({ current_entry: { 
 				...this.state.current_entry, 
@@ -200,7 +202,7 @@ export default class LoggingPage extends BaseControl {
 	</div>
 
 
-	link_cell = value => {
+	link_cell = (value, boundary) => {
 
 		let needs_editing = this.needs_editing (8);
 		let can_edit = OptionsStorage.can_edit ();
@@ -214,7 +216,7 @@ export default class LoggingPage extends BaseControl {
 				"Click here to change your log times."
 			) : null} 
 		
-			onClick={can_edit || needs_editing ? () => this.context.load_popup (this.calendar_clock ()).then (this.context.show_popup) : null}>
+			onClick={can_edit || needs_editing ? () => this.context.load_popup (this.calendar_clock (boundary)).then (this.context.show_popup) : null}>
 				
 			{value}
 
@@ -247,10 +249,10 @@ export default class LoggingPage extends BaseControl {
 				<Break />
 
 				<label>Start</label>
-				{this.link_cell (start_time?.format (date_formats.full_datetime))}
+				{this.link_cell (start_time?.format (date_formats.full_datetime), boundaries.start)}
 
 				<label>Stop</label>
-				{this.link_cell ((end_time ?? new Date ().rounded (ranges.end))?.format (start_time?.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime))}
+				{this.link_cell ((end_time ?? new Date ().rounded (ranges.end))?.format (start_time?.same_day (end_time) ? date_formats.timestamp : date_formats.full_datetime), boundaries.end)}
 
 				<Break />
 
@@ -292,7 +294,7 @@ export default class LoggingPage extends BaseControl {
 
 		if (not_set (this.context)) return null;
 
-		let elapsed_time = this.state.logged_in ? this.elapsed_time () : null;
+		let elapsed_time = this.state.current_entry.logged_in ? this.elapsed_time () : null;
 		let project_selected = this.project_selected ();
 
 		let log_button_panel = {
@@ -300,17 +302,17 @@ export default class LoggingPage extends BaseControl {
 			width: "100%",
 		}// log_button_panel;
 
-		if (this.state.logged_in && (elapsed_time > 0)) log_button_panel = {...log_button_panel,
+		if (this.state.current_entry.logged_in && (elapsed_time > 0)) log_button_panel = {...log_button_panel,
 			display: "grid",
 			gridTemplateColumns: "repeat(2, 1fr)",
 		}// if;
 
 		return <div id="log_panel" className="horizontally-centered">
 
-			{this.state.logged_in ? this.entry_details (elapsed_time) : <Container>
+			{this.state.current_entry.logged_in ? this.entry_details (elapsed_time) : <Container>
 
 				<div className="with-headspace">
-					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButtons={true}
+					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButtons={!this.state.current_entry.logged_in}
 
 						selectedClientId={this.state.current_entry.client_id} 
 						selectedProjectId={this.state.current_entry.project_id}
@@ -329,7 +331,7 @@ export default class LoggingPage extends BaseControl {
 			<div id="eyecandy_cell" style={{ marginTop: "1em", width: "100%" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}
 				
-					text={(elapsed_time == 0) ? "Cancelling entry..." : `Logging you ${this.state.logged_in ? "out" : "in"}...`}
+					text={(elapsed_time == 0) ? "Cancelling entry..." : `Logging you ${this.state.current_entry.logged_in ? "out" : "in"}...`}
 					
 					eyecandyVisible={this.state.updating}
 					eyecandyStyle={{ justifyContent: "center", gap: "0.5em" }}
@@ -339,7 +341,7 @@ export default class LoggingPage extends BaseControl {
 					<FadePanel id="login_button" visible={project_selected} style={{ display: "flex" }}>
 						{project_selected && <div className="flex-column">
 
-							{(OptionsStorage.can_edit () && this.state.logged_out) && <div className="one-piece-form log-details">
+							{(OptionsStorage.can_edit () && this.state.current_entry.logged_out) && <div className="one-piece-form log-details">
 								<label>Start:</label>
 								<div>{this.link_cell (this.state.current_entry?.start?.format (date_formats.full_datetime))}</div>
 							</div>}
@@ -356,18 +358,18 @@ export default class LoggingPage extends BaseControl {
 
 							<div style={log_button_panel} className="with-some-headspace">
 
-								<Container visible={this.state.logged_in}>
+								<Container visible={this.state.current_entry.logged_in}>
 									<button className="full-width"
 										onClick={() => this.setState ({ updating: true, action: action_types.cancel })}>
 										Cancel entry
 									</button>
 								</Container>
 
-								<Container visible={this.state.logged_out || (elapsed_time > 0)}>
+								<Container visible={this.state.current_entry.logged_out || (elapsed_time > 0)}>
 									<button className="full-width"
 										onClick={() => this.setState ({ updating: true, action: action_types.log })} style={{ flex: 1 }} 
-										disabled={this.state.logged_in && this.invalid_entry ()}>
-										{this.state.logged_in ? "Log out" : "Log in"}
+										disabled={this.state.current_entry.logged_in && this.invalid_entry ()}>
+										{this.state.current_entry.logged_in ? "Log out" : "Log in"}
 									</button>
 								</Container>
 
