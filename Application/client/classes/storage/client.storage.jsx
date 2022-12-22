@@ -5,7 +5,7 @@ import ClientModel from "client/classes/models/client.model";
 import OffshoreModel from "../models/offshore.model";
 
 import { stores } from "client/classes/types/constants";
-import { isset, not_set, nested_value, nulled, live, is_null } from "client/classes/common";
+import { isset, not_set, nulled, live, is_null } from "client/classes/common";
 
 
 const store_name = stores.clients;
@@ -108,7 +108,7 @@ puke ();
 				data.forEach (item => add_client (item));
 
 				OffshoreModel.get_repositories ().then (repositories => {
-					repositories.forEach (repository => add_client (repository));
+					repositories?.forEach (repository => add_client (repository));
 					resolve (selected_set (result));
 				});
 

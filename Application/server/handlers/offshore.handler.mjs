@@ -17,17 +17,25 @@ export default class OffshoreHandler {
 	}).on ("error", error => reject (error)));
 
 
-	static get_repositories = data => {
-		OffshoreModel.get_tokens (data).then (tokens => {
-			tokens.forEach (item => {
+	static get_repositories = data => new Promise ((resolve, reject) => OffshoreModel.get_tokens (data).then (async tokens => {
+
+		try {
+
+			let result = null;
+
+			for (let item of tokens) {
 				switch (item.type) {
-					case repository_type.github: new GithubHandler ().get_repositories (item); break;
+					case repository_type.github: result = Array.concat (result, await new GithubHandler ().get_repositories (item)); break;
 					case repository_type.gitlab: break;
 					case repository_type.jira: break;
 				}/* switch */;
-			});
-		});
-	}/* get_offshore_respositories */
+			}/* for */;
+
+			resolve (result);
+
+		} catch (except) { reject (except) }
+
+	}))/* get_respositories */;
 
 
 	static get_projects = (token_id, repo_code) => {

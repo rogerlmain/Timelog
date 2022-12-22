@@ -60,7 +60,7 @@ export default class GithubHandler {
 	}/* get_projects */;
 
 	
-	get_repositories = details => {
+	get_repositories = details => new Promise ((resolve, reject) => {
 
 		details.query = `query { user (login: "rexthestrange") {
 			id,
@@ -85,11 +85,11 @@ export default class GithubHandler {
 
 			});
 
-			global.response ().send (repositories);
+			resolve (repositories);
 			
-		}).catch (error => global.response ().send (JSON.stringify (error)));
+		}).catch (reject);
 
-	}/* get_repositories */;
+	})/* get_repositories */;
 
 
 	get_users = (offshore_account, repo_id) => {

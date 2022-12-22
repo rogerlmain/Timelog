@@ -38,6 +38,20 @@ const directions = {
 /********/
 
 
+Array.concat = function () {
+
+	let result = null;
+
+	Array.from (arguments)?.forEach (list => {
+		if (!Array.isArray (list) || (list.length == 0)) return;
+		result = (result ?? new Array).concat (list);
+	});
+
+	return result;
+
+}/* concat */;
+
+
 Number.prototype.padded = function (length) { return `${"0".repeat (length - this.toString ().length)}${this.toString ()}` }
 
 

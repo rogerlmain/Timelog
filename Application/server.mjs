@@ -264,7 +264,7 @@ app.post ("/offshore", () => {
 				case "save_token": OffshoreModel.save_token (fields); break;
 				case "get_tokens": OffshoreModel.get_tokens (fields).then (result => global.response ().send (JSON.stringify (result))); break;
 
-				case "get_repositories": OffshoreHandler.get_repositories (fields); break;
+				case "get_repositories": OffshoreHandler.get_repositories (fields).then (result => global.response ().send (JSON.stringify (result))); break;
 				case "get_projects": OffshoreHandler.get_projects (fields.token, fields.repo); break;
 				case "get_users": OffshoreHandler.get_users (fields.token, fields.repo); break;
 
