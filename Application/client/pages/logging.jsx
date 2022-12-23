@@ -75,7 +75,6 @@ export default class LoggingPage extends BaseControl {
 
 		this.state.current_entry = {
 			...current_entry,
-			logged_out: !current_entry.logged_in,
 			start: (current_entry.logged_in ? new Date (current_entry?.start) : new Date ()).rounded (ranges.start),
 			end: new Date ().rounded (ranges.end),
 		}/* current_entry */;
@@ -110,7 +109,7 @@ export default class LoggingPage extends BaseControl {
 	// Time limit in hours
 	needs_editing = time_limit => { 
 
-		if (this.state.current_entry.logged_out) return false;
+		if (!this.state.current_entry.logged_in) return false;
 
 		let same_day = this.state.current_entry.start.same_day (this.state.current_entry.end);
 		let result = (!same_day || (this.elapsed_time () > (time_limit * Date.coefficient.hour)));
@@ -126,14 +125,12 @@ export default class LoggingPage extends BaseControl {
 	
 		LoggingModel.log (this.state.current_entry, timestamp).then (entry => {
 
-			let logged_in = !(this.state.current_entry.logged_out = isset (entry.end_time));
-
 			this.setState ({ 
 
 				current_entry: {
 					...this.state.current_entry,
-					logged_in: logged_in,
-					start: logged_in ? new Date (entry.start_time) : new Date (ranges.start),
+					logged_in: entry.logged_in,
+					start: entry.logged_in ? new Date (entry.start_time) : new Date (ranges.start),
 					end: new Date ().rounded (ranges.end),
 				}/* current_entry */,
 

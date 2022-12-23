@@ -107,10 +107,12 @@ puke ();
 
 				data.forEach (item => add_client (item));
 
-				OffshoreModel.get_repositories ().then (repositories => {
+				if (include_offshore_accounts) return OffshoreModel.get_repositories ().then (repositories => {
 					repositories?.forEach (repository => add_client (repository));
 					resolve (selected_set (result));
 				});
+
+				resolve (this.#get ())
 
 			}).catch (reject);
 
