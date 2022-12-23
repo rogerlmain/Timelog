@@ -125,19 +125,19 @@ export default class LoggingPage extends BaseControl {
 	
 		LoggingModel.log (this.state.current_entry, timestamp).then (entry => {
 
+			let is_logged_in = (entry.logged_in === 1);
+			
+			let new_entry = {
+				...this.state.current_entry,
+				logged_in: is_logged_in,
+				start: is_logged_in ? new Date (entry.start_time) : new Date (ranges.start),
+				end: new Date ().rounded (ranges.end),
+			}/* current_entry */;
+
 			this.setState ({ 
-
-				current_entry: {
-					...this.state.current_entry,
-					logged_in: entry.logged_in,
-					start: entry.logged_in ? new Date (entry.start_time) : new Date (ranges.start),
-					end: new Date ().rounded (ranges.end),
-				}/* current_entry */,
-
-				logged_in: logged_in,
+				current_entry: new_entry,
 				updating: false,
-
-			}, LoggingStorage.set (this.state.current_entry)
+			}, LoggingStorage.set (new_entry)
 		
 		)});
 		
@@ -338,7 +338,7 @@ export default class LoggingPage extends BaseControl {
 					<FadePanel id="login_button" visible={project_selected} style={{ display: "flex" }}>
 						{project_selected && <div className="flex-column">
 
-							{(OptionsStorage.can_edit () && this.state.current_entry.logged_out) && <div className="one-piece-form log-details">
+							{(OptionsStorage.can_edit () && (!this.state.current_entry.logged_in)) && <div className="one-piece-form log-details">
 								<label>Start:</label>
 								<div>{this.link_cell (this.state.current_entry?.start?.format (date_formats.full_datetime))}</div>
 							</div>}
@@ -362,7 +362,7 @@ export default class LoggingPage extends BaseControl {
 									</button>
 								</Container>
 
-								<Container visible={this.state.current_entry.logged_out || (elapsed_time > 0)}>
+								<Container visible={(!this.state.current_entry.logged_in) || (elapsed_time > 0)}>
 									<button className="full-width"
 										onClick={() => this.setState ({ updating: true, action: action_types.log })} style={{ flex: 1 }} 
 										disabled={this.state.current_entry.logged_in && this.invalid_entry ()}>

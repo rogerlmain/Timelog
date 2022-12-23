@@ -102,12 +102,15 @@ export default class HomePage extends BaseControl {
 
 			let active_client_id = LoggingStorage.client_id ();
 
-			let active_client_name = (await ClientStorage.get_by_company (this.context.company_id))?.[active_client_id]?.name;
-			let active_project_name = (await ProjectStorage.get_by_client (active_client_id))?.[LoggingStorage.project_id ()]?.name;
+			let clients = await ClientStorage.get_by_company (this.context.company_id);
+			let projects = await ProjectStorage.get_by_client (active_client_id);
+
+			let active_client_name = clients?.[active_client_id]?.name;
+			let active_project_name = projects?.[LoggingStorage.project_id ()]?.name;
 
 			this.setState ({ 
-				client_name: active_client_name?.equals ("default") ? null : active_client_name,
-				project_name: active_project_name?.equals ("default") ? null : active_project_name,
+				client_name: (not_set (active_client_name) || active_client_name?.equals ("default")) ? null : active_client_name,
+				project_name: (not_set (active_project_name) || active_project_name?.equals ("default")) ? null : active_project_name,
 			});
 		
 		});

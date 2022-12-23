@@ -89,7 +89,6 @@ puke ();
 				result.push (client);
 			}/* add_client */;
 
-	
 			const selected_set = items => {
 
 				if (!include_offshore_accounts) Object.keys (items)?.forEach (key => {
@@ -100,7 +99,6 @@ puke ();
 
 			}/* selected_set */;
 
-
 			if (isset (store?.[company_id])) return resolve (selected_set (store [company_id]));
 	
 			ClientModel.get_by_company (company_id).then (data => {
@@ -109,10 +107,10 @@ puke ();
 
 				if (include_offshore_accounts) return OffshoreModel.get_repositories ().then (repositories => {
 					repositories?.forEach (repository => add_client (repository));
-					resolve (selected_set (result));
+					resolve (this.#get ()?.[company_id]);
 				});
 
-				resolve (this.#get ())
+				resolve (this.#get ()?.[company_id])
 
 			}).catch (reject);
 
