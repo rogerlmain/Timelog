@@ -79,11 +79,7 @@ tests: path.resolve (__dirname, "client/tests"),
 			{
 				test: /\.(jpg|png|svg)$/,
 				loader: "url-loader",
-			},
-			// {
-			// 	test: /\.(jpg|png|svg)$/,
-			// 	use: [{ loader: 'file-loader' }],
-			// }
+			}
 		]
 	}/* module */,
 
