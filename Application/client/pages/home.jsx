@@ -4,6 +4,7 @@ import Container from "client/controls/container";
 import BaseControl from "client/controls/abstract/base.control";
 
 import ClientStorage from "client/classes/storage/client.storage";
+import CompanyStorage from "client/classes/storage/company.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
 import LoggingStorage from "client/classes/storage/logging.storage";
 
@@ -102,7 +103,7 @@ export default class HomePage extends BaseControl {
 
 			let active_client_id = LoggingStorage.client_id ();
 
-			let clients = await ClientStorage.get_by_company (this.context.company_id);
+			let clients = await ClientStorage.get_by_company (CompanyStorage.active_company_id ());
 			let projects = await ProjectStorage.get_by_client (active_client_id);
 
 			let active_client_name = clients?.[active_client_id]?.name;
