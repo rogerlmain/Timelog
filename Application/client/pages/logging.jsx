@@ -180,6 +180,8 @@ export default class LoggingPage extends BaseControl {
 	
 		<CalendarClock id="log_calendar_clock"
 
+			showToggle={this.state.current_entry.logged_in}
+
 			start={this.state.current_entry.start} 
 			end={this.state.current_entry.end}
 

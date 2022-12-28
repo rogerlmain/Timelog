@@ -26,7 +26,7 @@ export default class CalendarClock extends BaseControl {
 			end: null,
 		}/* values */,
 
-		boundary: boundaries.start,
+		boundary: null,
 
 	}/* state */;
 
@@ -37,7 +37,8 @@ export default class CalendarClock extends BaseControl {
 		end: null,
 		visible: true,
 		onChange: null,
-		boundary: null,
+		boundary: boundaries.start,
+		showToggle: false,
 	}// defaultProps;
 
 
@@ -97,7 +98,7 @@ export default class CalendarClock extends BaseControl {
 	render () {
 		return <Container visible={this.props.visible} id={this.props.id}>
 
-			{(isset (this.props.start) && isset (this.props.end)) && <div className="three-column-grid boundary-toggle-switch">
+			{this.props.showToggle && <div className="three-column-grid boundary-toggle-switch">
 
 				<ToggleButton htmlFor="log_boundary_start" className="fully-centered">Start</ToggleButton>
 
