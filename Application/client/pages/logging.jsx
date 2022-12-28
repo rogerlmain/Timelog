@@ -130,7 +130,7 @@ export default class LoggingPage extends BaseControl {
 			let new_entry = {
 				...this.state.current_entry,
 				logged_in: is_logged_in,
-				start: is_logged_in ? new Date (entry.start_time) : new Date (ranges.start),
+				start: is_logged_in ? new Date (entry.start_time) : new Date ().rounded (ranges.start),
 				end: new Date ().rounded (ranges.end),
 			}/* current_entry */;
 
