@@ -1,12 +1,9 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
 import BaseControl from "client/controls/abstract/base.control";
 import TreeView from "client/controls/lists/tree.view";
 
-import Container from "client/controls/container";
-
-import { isset, is_array, is_empty, is_function, is_null, nested_value } from "client/classes/common";
+import { isset, is_empty, is_function, is_null } from "client/classes/common";
 
 
 export default class TreeGrid extends BaseControl {
@@ -60,7 +57,7 @@ export default class TreeGrid extends BaseControl {
 
 		lists.forEach (item => { 
 
-			let child = nested_value (item.children, index);
+			let child = item.children?.[index];
 
 			if (is_null (child)) return;
 			if (child.property ("grid-column-start") != child.property ("grid-column-end")) return;

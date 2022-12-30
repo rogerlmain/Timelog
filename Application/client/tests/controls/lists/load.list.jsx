@@ -8,7 +8,6 @@ import BaseControl from "client/controls/abstract/base.control";
 import LoadList from "client/controls/lists/load.list";
 import ClientStorage from "client/classes/storage/client.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
-import ClientSelector from "client/controls/selectors/client.selector";
 
 
 export default class LoadListTest extends BaseControl {
@@ -22,21 +21,15 @@ export default class LoadListTest extends BaseControl {
 
 	constructor (props) {
 		super (props);
-//		this.state.client_data = this.client_list ();
+		ClientStorage.get_by_company (CompanyStorage.active_company_id ()).then (data => this.setState ({ client_data: data.normalize () }));
 	}// constructor;
 
 
 	/********/
 
 
-	client_list = () => ClientStorage.get_by_company (CompanyStorage.active_company_id ());
-
-
-	/********/
-
-
 	render () {
-		return <div className="outlined" style={{ border: "solid 1px blue" }}>
+		return <div style={{ border: "solid 1px blue" }}>
 
 			<br /><br />
 
@@ -48,7 +41,7 @@ export default class LoadListTest extends BaseControl {
 
 					newButtonPage={this.props.newButton ? page_names.clients : null}
 
-					listHeader={this.props.headerSelectable ? "New client" : "Select a client"}
+					header={"New client"} headerSelectable={true}
 					selectedItem={this.props.selectedClient}
 
 					onChange={event => this.forceRefresh ()}>

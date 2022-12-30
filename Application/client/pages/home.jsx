@@ -10,7 +10,7 @@ import LoggingStorage from "client/classes/storage/logging.storage";
 
 import InvitationsModel from "client/classes/models/invitations.model";
 
-import { is_null, not_array, not_set } from "client/classes/common";
+import { isset, is_null, not_array, not_set } from "client/classes/common";
 import { MasterContext } from "client/classes/types/contexts";
 
 
@@ -102,17 +102,21 @@ export default class HomePage extends BaseControl {
 		new Promise (async () => {
 
 			let active_client_id = LoggingStorage.client_id ();
-
 			let clients = await ClientStorage.get_by_company (CompanyStorage.active_company_id ());
-			let projects = await ProjectStorage.get_by_client (active_client_id);
 
-			let active_client_name = clients?.[active_client_id]?.name;
-			let active_project_name = projects?.[LoggingStorage.project_id ()]?.name;
+			if (isset (active_client_id)) {
 
-			this.setState ({ 
-				client_name: (not_set (active_client_name) || active_client_name?.equals ("default")) ? null : active_client_name,
-				project_name: (not_set (active_project_name) || active_project_name?.equals ("default")) ? null : active_project_name,
-			});
+				let projects = await ProjectStorage.get_by_client (active_client_id);
+
+				let active_client_name = clients?.[active_client_id]?.name;
+				let active_project_name = projects?.[LoggingStorage.project_id ()]?.name;
+
+				this.setState ({ 
+					client_name: (not_set (active_client_name) || active_client_name?.equals ("default")) ? null : active_client_name,
+					project_name: (not_set (active_project_name) || active_project_name?.equals ("default")) ? null : active_project_name,
+				});
+
+			}// if;
 		
 		});
 	}/* componentDidMount */;

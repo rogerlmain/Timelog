@@ -51,6 +51,7 @@ export default class LoadList extends BaseControl {
 
 		style: null,
 
+		static: false,
 		disabled: false,
 
 		animated: true,
@@ -66,10 +67,9 @@ export default class LoadList extends BaseControl {
 		
 		super (props);
 		
-		if (this.props.id.equals (load_list_id)) console.warn ("Your LoadList really should have a unique ID");
-
 		this.state.eyecandy_visible = is_null (this.props.data);
 
+		if (this.props.id.equals (load_list_id)) console.warn ("Your LoadList really should have a unique ID");
 		if (debugging ()) console.log (`${props.id} list created`);
 
 	}// constructor;
@@ -81,7 +81,6 @@ export default class LoadList extends BaseControl {
 	select_list = () => {
 
 		let new_button = isset (this.props.newButtonPage);
-		let single_option = ((this.props.data?.key_length () == 1));
 
 		let form_style = {
 			...this.props.style,
@@ -98,10 +97,11 @@ export default class LoadList extends BaseControl {
 
 			<div style={{ display: "grid", gridTemplateColumns: "1fr" }}>
 
-				<div className="vertically-aligned" style={{ display: (single_option ? null : "none"), gridColumn: 1 }}>{this.props.data [Object.keys (this.props.data) [0]].name}</div>
-				
-				<div style={{ display: (single_option ? "none" : null), gridColumn: 1 }}>
-					<DropDownList id={this.props.id} 
+				{this.props.static ? <div className="vertically-aligned" style={{ gridColumn: 1 }}>{this.props.data [Object.keys (this.props.data) [0]].name}</div> : <div style={{ 
+
+					display: (this.props.static ? "none" : null), gridColumn: 1 }}>
+
+					<DropDownList id={`${this.props.id}_dropdown`}
 					
 						data={this.props.data} selectedValue={this.props.selectedItem} disabled={this.props.disabled}
 						style={this.props.style}
@@ -114,7 +114,8 @@ export default class LoadList extends BaseControl {
 						onChange={event => this.execute (this.props.onChange, event)}>
 
 					</DropDownList>
-				</div>
+
+				</div>}
 
 			</div>
 

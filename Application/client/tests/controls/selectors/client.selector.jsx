@@ -16,7 +16,10 @@ import { MasterContext } from "client/classes/types/contexts";
 export default class ClientSelectorTest extends BaseControl {
 
 
-	state = { client_data: null }
+	state = { 
+		client_data: null,
+		selected_client: null
+	}
 
 
 	/********/
@@ -43,10 +46,24 @@ export default class ClientSelectorTest extends BaseControl {
 			<div>
 
 				<div className="one-piece-form">
-					<ClientSelector id="client_selector" ref={this.client_selector} parent={this} newButton={true}
-						headerText="New client"
-						selectedClient={this.state.selected_client}>
+
+					<ClientSelector id="client_selector" ref={this.client_selector} parent={this} includeOffshoreAccounts={false}
+				
+						header={"New client"}
+						headerSelectable={true}
+
+						selectedClient={this.state.selected_client}
+		
+						onChange={client_id => this.setState ({ 
+							selected_client: client_id,
+							updating: true
+						})}
+
+						onLoad={data => this.setState ({ client_list: data })}>
+
 					</ClientSelector>
+
+
 				</div>
 
 				<br /><br />

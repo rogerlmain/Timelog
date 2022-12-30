@@ -2,6 +2,7 @@ import React from "react";
 
 import OptionsStorage from "client/classes/storage/options.storage";
 import AccountStorage from "client/classes/storage/account.storage";
+import InvitationStorage from "client/classes/storage/invitation.storage";
 
 import CompanyStorage, { 
 	default_name as default_company_name, 
@@ -19,6 +20,7 @@ import ProjectStorage, {
 } from "client/classes/storage/project.storage";
 
 import CompanyAccountsModel from "client/classes/models/company.accounts.model";
+import InvitationsModel from "client/classes/models/invitations.model";
 
 import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
@@ -37,9 +39,6 @@ import { debugging, isset, jsonify, not_empty } from "client/classes/common";
 import { codify } from "client/forms/project.form";
 
 import user_image from "resources/images/guest.user.svg";
-import InvitationStorage from "client/classes/storage/invitation.storage";
-import CompaniesModel from "client/classes/models/companies.model";
-import InvitationsModel from "client/classes/models/invitations.model";
 
 
 const image_uploader_style = { 
@@ -101,8 +100,6 @@ export default class SignupPage extends BaseControl {
 		eyecandy_visible: false,
 		button_visible: true,
 
-		existing_account: true,
-
 		error_message: null,
 
 		onChange: null,
@@ -113,7 +110,12 @@ export default class SignupPage extends BaseControl {
 	/********/
 
 
-	static defaultProps = { id: "signup_page" }
+	static defaultProps = { 
+		id: "signup_page",
+		existingAccount: false,
+	}/* defaultProps */
+
+
 	static contextType = MasterContext;
 
 
@@ -138,7 +140,7 @@ export default class SignupPage extends BaseControl {
 				send you a new invitation.
 			`);
 	
-	//			InvitationStorage.clear_store ();
+			InvitationStorage.clear_store ();
 	
 		})
 	
@@ -199,7 +201,7 @@ export default class SignupPage extends BaseControl {
 
 		AccountStorage.save_account (form_data).then (account => {
 
-			if (this.state.existing_account) return this.setState ({ eyecandy_visible: false }, () => this.context.master_page.setState ({ avatar: this.state.avatar }));
+			if (this.props.existingAccount) return this.setState ({ eyecandy_visible: false }, () => this.context.master_page.setState ({ avatar: this.state.avatar }));
 
 			if (isset (invite_company_id)) return CompanyAccountsModel.save_company_account (FormData.fromObject ({
 				account_id: account.account_id,
@@ -372,4 +374,4 @@ export default class SignupPage extends BaseControl {
 	}// render;
 
 
-}// SignupPage;z
+}// SignupPage;

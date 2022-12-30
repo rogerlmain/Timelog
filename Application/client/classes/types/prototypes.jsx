@@ -1,5 +1,5 @@
 import { blank, space, date_formats, date_rounding, directions, empty, currency_symbol, granularity_types, ranges } from "client/classes/types/constants";
-import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, null_or_undefined, is_array, nested_value } from "client/classes/common";
+import { isset, is_object, is_string, is_null, is_number, not_empty, not_set, null_value, null_or_undefined, is_array } from "client/classes/common";
 
 import OptionsStorage from "../storage/options.storage";
 
@@ -821,10 +821,13 @@ Location.prototype.urlParameters = function () {
 }// urlParameters;
 
 
-Location.prototype.urlParameter = function (parameter) { return nested_value (this.urlParameters (), parameter) }
+Location.prototype.urlParameter = function (parameter) { return this.urlParameters ()?.[parameter] }
 
 
 /**** Number Prototype Functions ****/
+
+
+Number.prototype.matches = function (comparison) { return this.toString ().matches (comparison?.toString ()) }
 
 
 Number.prototype.padded = function (length) { return this.toString ().padded (length, "0", directions.left) }

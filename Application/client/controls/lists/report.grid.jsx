@@ -2,9 +2,7 @@ import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 
-import { CheckboxCell } from "client/controls/abstract/input.control";
-
-import { dom_element, isset, is_empty, is_function, is_null, nested_value, not_set } from "client/classes/common";
+import { isset, is_empty, is_function, is_null, not_set } from "client/classes/common";
 
 import "resources/styles/forms.css";
 

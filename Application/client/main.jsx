@@ -28,10 +28,10 @@ import "resources/styles/forms.css";
 // import EyecandyPanelTest from "client/tests/controls/panels/eyecandy.panel";
 // import ContentsPanelTest from "client/tests/controls/panels/contents.panel";
 
-// import LoadListTest from "client/tests/controls/lists/load.list";
+import LoadListTest from "client/tests/controls/lists/load.list";
 // import DropDownListTest from "client/tests/controls/lists/drop.down.list";
 
-// import ClientSelectorTest from "client/tests/controls/selectors/client.selector";
+import ClientSelectorTest from "client/tests/controls/selectors/client.selector";
 // import ProjectSelectorTest from "client/tests/controls/selectors/project.selector";
 
 // import DateInputTest from "client/tests/controls/inputs/date.input";

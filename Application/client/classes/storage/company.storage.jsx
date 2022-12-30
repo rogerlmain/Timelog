@@ -1,7 +1,7 @@
 import LocalStorage from "client/classes/local.storage"
 import CompaniesModel from "client/classes/models/companies.model";
 
-import { isset, is_null, nested_value, not_set } from "client/classes/common";
+import { isset, is_null, not_set } from "client/classes/common";
 
 
 const store_name = "companies";
@@ -45,7 +45,7 @@ export default class CompanyStorage extends LocalStorage {
 
 
 	static active_company_id () { return this.#get ("active_company") }
-	static square_id () { return nested_value (this.active_company (), "square_id") }
+	static square_id () { return this.active_company ()?.square_id }
 
 	static company_selected () { return isset (this.active_company_id ()) }
 	static paid_account () { return isset (this.square_id ()) }

@@ -23,7 +23,7 @@ import { MainContext } from "client/classes/types/contexts";
 import { dynamic_input_classname } from "client/controls/inputs/dynamic.input";
 
 import { account_types, credit_card_masks, credit_card_names, credit_card_types } from "client/classes/types/constants";
-import { debugging, isset, is_empty, is_function, is_null, is_number, nested_value, not_empty, not_set } from "client/classes/common";
+import { debugging, isset, is_empty, is_function, is_number, not_empty, not_set } from "client/classes/common";
 import { option_types } from "client/classes/types/options";
 
 import "resources/styles/forms/deluxe.account.form.css";
@@ -154,7 +154,7 @@ export default class DeluxeAccountForm extends BaseControl {
 		
 		if (data.keep_card) {
 			let card_data = await this.state.square_handler.save_card (data);
-			new CustomerHandler ().save_card (nested_value (data, "company_id") ?? nested_value (data, "company", "company_data", "company_id"), card_data.card);
+			new CustomerHandler ().save_card (data?.company_id ?? data?.company?.company_data?.company_id, card_data.card);
 			return card_data.card.id;
 		}// if;
 

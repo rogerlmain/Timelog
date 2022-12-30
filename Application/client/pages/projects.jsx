@@ -11,7 +11,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import ProjectForm from "client/forms/project.form";
 
 import { vertical_alignment } from "client/classes/types/constants";
-import { isset, is_unlimited } from "client/classes/common";
+import { debug_state, isset, is_unlimited, jsonify } from "client/classes/common";
 import { unlimited } from "client/classes/types/options";
 
 import { MasterContext } from "client/classes/types/contexts";
@@ -43,6 +43,7 @@ export default class ProjectsPage extends BaseControl {
 
 		form_visible: false,
 		updating: false,
+		initialized: false,
 
 	}// state;
 
@@ -75,6 +76,15 @@ export default class ProjectsPage extends BaseControl {
 	/********/
 
 
+	componentDidMount () { this.context.master_page.debug_state (this.state) }
+
+
+	componentDidUpdate (props, state) {
+		if (jsonify (this.state).matches (jsonify (state))) return true;
+		this.context.master_page.debug_state (this.state);
+	}/* componentDidMount */;
+
+
 	render () {
 
 		let project_data = this.project_selector.current?.state.project_data;
@@ -88,11 +98,11 @@ export default class ProjectsPage extends BaseControl {
 				<ProjectSelector id="project_selector" ref={this.project_selector} parent={this} includeOffshoreAccounts={false} newClientButton={true}
 
 					headerText={can_create ? "New project" : ((project_count > 1) ? "Select a project" : null)}
-					headerSelectable={can_create}
-
+					headerSelectable={can_create} allowStatic={false}
+/* 
 					selectedClient={this.state.selected_client}
 					selectedProject={this.state.selected_project}
-
+ */
 					onClientChange={client_id => this.setState ({
 						selected_client: client_id,
 						selected_project: null,
@@ -112,11 +122,16 @@ export default class ProjectsPage extends BaseControl {
 				onEyecandy={() => ProjectStorage.get_by_id (this.state.selected_project).then (data => this.setState ({ 
 					project_data: data,
 					updating: false,
+					initialized: true
 				}))}>
 
-				{(isset (this.state.selected_project) || can_create) && <ProjectForm formData={this.state.project_data} parent={this} clientId={this.state.selected_client} 
+				{(this.state.initialized && can_create) && <ProjectForm parent={this}
+
+					formData={this.state.project_data} clientId={this.state.selected_client} 
+
 					onSave={project => this.update_projects (project.project_id)}
 					onDelete={() => this.update_projects (null)}>
+
 				</ProjectForm>}
 				
 			</EyecandyPanel>

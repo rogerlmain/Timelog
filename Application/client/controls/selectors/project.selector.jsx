@@ -20,17 +20,6 @@ import "resources/styles/gadgets/selector.gadget.css";
 export default class ProjectSelector extends BaseControl {
 
 
-	client_selector = React.createRef ();
-
-
-	state = { 
-		client_list: null,
-		project_data: null,
-		selected_client_id: null,
-		selected_project_id: null,
-	}// state;
-
-
 	static defaultProps = {
 
 		id: null,
@@ -45,6 +34,9 @@ export default class ProjectSelector extends BaseControl {
 		headerSelectable: false,
 
 		includeOffshoreAccounts: true,
+
+		static: false,
+		allowStatic: true,
 
 		headerText: "Select a project",
 
@@ -66,6 +58,20 @@ export default class ProjectSelector extends BaseControl {
 		if (debugging (false)) console.log (`${props.id} object created`);
 
 	}/* constructor */;
+
+
+	/*********/
+
+
+	client_selector = React.createRef ();
+
+
+	state = { 
+		client_list: null,
+		project_data: null,
+		selected_client_id: null,
+		selected_project_id: null,
+	}// state;
 
 
 	/*********/
@@ -118,11 +124,12 @@ export default class ProjectSelector extends BaseControl {
 
 	render () {
 
-		let single_project = (OptionsStorage.project_limit () == 1);
+		let single_item = (Object.keys (this.state.project_data ?? []).length == 1) && not_set (this.props.header);
+		let static_text = this.props.static ? true : (this.props.allowStatic ? single_item : false);
 
 		return <div id={this.props.id} className="one-piece-form">
 
-			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} 
+			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} static={static_text}
 			
 				newButton={this.props.newClientButton || this.props.newButtons} 
 			
@@ -139,11 +146,11 @@ export default class ProjectSelector extends BaseControl {
 			</ClientSelector>
 
 			<FadePanel id={`${this.props.id}_project_selector_label_fade_panel`} visible={isset (this.state.selected_client_id)}>
-				<label htmlFor={`${this.props.id}_load_list`}>Project{(single_project || LoggingStorage.logged_in ()) && ":"}</label>
+				<label htmlFor={`${this.props.id}_load_list`} style={{ fontWeight: static_text ? "bold" : null }}>Project</label>
 			</FadePanel>
 			
 			<FadePanel id={`${this.props.id}_project_selector_fade_panel`} visible={isset (this.state.selected_client_id)}>
-				<LoadList id={this.props.id} label="Project" style={{ width: "100%" }}
+				<LoadList id={this.props.id} label="Project" style={{ width: "100%" }} static={static_text}
 
 					header={this.props.headerText} headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_project_id}
 

@@ -7,7 +7,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 
-import { debugging, integer_value, isset, is_null } from "client/classes/common";
+import { debugging, isset, not_set } from "client/classes/common";
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 import { MasterContext } from "client/classes/types/contexts";
 import { page_names } from "client/master";
@@ -15,15 +15,6 @@ import { page_names } from "client/master";
 
 export default class ClientSelector extends BaseControl {
 	
-
-	state = { 
-		client_data: null,
-		selected_client_id: null,
-	}// state;
-
-
-	client_list = React.createRef ();
-
 
 	static contextType = MasterContext;
 
@@ -43,6 +34,8 @@ export default class ClientSelector extends BaseControl {
 		inline: true,
 		includeOffshoreAccounts: true,
 
+		static: false,
+
 		onChange: null,
 
 	}// defaultProps;
@@ -58,15 +51,23 @@ export default class ClientSelector extends BaseControl {
 	/*********/
 
 
+	state = { 
+		client_data: null,
+		selected_client_id: null,
+	}// state;
+
+
+	client_list = React.createRef ();
+
+
+	/*********/
+
+
 	get_client_data = () => ClientStorage.get_by_company (this.context.company_id, this.props.includeOffshoreAccounts).then (data => {
-
-		let keys = Object.keys (data);
-
 		this.execute (this.props.onLoad, data).then (() => this.setState ({ 
 			client_data: data.normalize (),
-			selected_client_id: this.state.selected_client_id ?? ((keys.length == 1) ? data [keys [0]].client_id : null),
-		}, () => isset (this.selected_client_id) ? this.execute (this.props.onChange, this.state.selected_client_id) : null));
-
+			selected_client_id: this.state.selected_client_id
+		}, () => isset (this.state.selected_client_id) ? this.execute (this.props.onChange, this.state.selected_client_id) : null));
 	})/* get_client_data */;
 
 
@@ -85,17 +86,19 @@ export default class ClientSelector extends BaseControl {
 
 	render () {
 
-		let single_client = (isset (this.state.client_data) && (Object.keys (this.state.client_data).length == 1));
+		let static_text = this.props.static || (Object.keys (this.state.client_data ?? []).length == 1) && not_set (this.props.header);
 
 		return <Container>
 
-			<label htmlFor={`${this.props.id}_load_list`}>Client<Container visible={single_client}>:</Container></label>
+			<label htmlFor={`${this.props.id}_load_list`} style={{ fontWeight: static_text ? "bold" : null }}>Client</label>
 
-			<LoadList id={`${this.props.id}_load_list`} ref={this.client_list} label="Client" 
+			<LoadList id={`${this.props.id}_load_list`} ref={this.client_list} label="Client" static={static_text}
 			
 				header={this.props.header} headerSelectable={this.props.headerSelectable} selectedItem={this.state.selected_client_id}
 
-				data={this.state.client_data} dataIdField="client_id" dataTextField={field => <div className="glyph-list-item">
+				data={this.state.client_data} dataIdField="client_id" 
+
+				dataTextField={field => <div className="glyph-list-item">
 					<div><img src={OffshoreModel.glyph_image (field)} className="list-glyph" /></div>
 					<div>{field.name}</div>
 				</div>}

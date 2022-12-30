@@ -3,7 +3,6 @@ import React from "react";
 import Container from "client/controls/container";
 import BaseControl from "client/controls/abstract/base.control";
 
-import SelectList from "client/controls/lists/select.list";
 import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 import PermissionToggle, { butterfly_alignment } from "client/gadgets/toggles/permission.toggle";
@@ -16,7 +15,7 @@ import AccountStorage from "client/classes/storage/account.storage";
 
 import ActivityLog from "client/classes/activity.log";
 
-import { isset, nested_value } from "client/classes/common";
+import { isset } from "client/classes/common";
 import { date_formats } from "client/classes/types/constants";
 import { team_permissions } from "client/classes/storage/permissions.storage";
 
@@ -47,7 +46,7 @@ export default class TeamPermissions extends BaseControl {
 
 	team_permissions_panel = () => {
 
-		let active_account = nested_value (this.state?.team, this.state.selected_account);
+		let active_account = this.state?.team?.[this.state.selected_account];
 
 		return isset (active_account) && <Container id="team_permissions_panel" >
 

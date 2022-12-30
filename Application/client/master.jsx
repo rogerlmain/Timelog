@@ -18,7 +18,6 @@ import ProjectsPage from "client/pages/projects";
 import LoggingPage from "client/pages/logging";
 import ReportsPage from "client/pages/reports";
 import TeamPage from "client/pages/team";
-import AccountPage from "client/pages/sign.up";
 import SigninPage from "client/pages/sign.in";
 import SignupPage from "client/pages/sign.up";
 import SettingsPage from "client/pages/settings";
@@ -52,7 +51,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.1.2.3";
+const version = "1.1.2.4";
 
 
 const user_image_style = {
@@ -131,6 +130,8 @@ export default class MasterPanel extends BaseControl {
 
 		active_page: page_names.home,
 
+		debug_text: "No data",
+
 		loading: true,
 
 		buttons: null,
@@ -192,6 +193,9 @@ export default class MasterPanel extends BaseControl {
 	/********/
 
 
+	debug_state (state) { this.setState ({ debug_text: <pre>{JSON.stringify (state, undefined, 4)}</pre> }) }
+
+
 	set_page = page => this.main_panel.current.animate (() => this.setState ({ active_page: page }));
 
 
@@ -226,9 +230,14 @@ export default class MasterPanel extends BaseControl {
 
 
 	main_contents = () => {
-		if (this.signed_in ()) return this.get_page (this.state.active_page);
-		if (this.state.signing_up || isset (this.state.invitee)) return <SignupPage parent={this} />
+
+		let signed_in = this.signed_in ();
+		
+		if (signed_in) return this.get_page (this.state.active_page);
+		if (this.state.signing_up || isset (this.state.invitee)) return <SignupPage parent={this} existingAccount={signed_in} />
+
 		return <SigninPage parent={this} />
+		
 	}/* main_contents */;
 
 
@@ -309,7 +318,7 @@ export default class MasterPanel extends BaseControl {
 			case page_names.logging		: return <LoggingPage />;
 			case page_names.reports		: return <ReportsPage />;
 			case page_names.team		: return <TeamPage />;
-			case page_names.account		: return <AccountPage parent={this.props.parent} />;
+			case page_names.account		: return <SignupPage parent={this.props.parent} existingAccount={true} />;
 			case page_names.settings	: return <SettingsPage />;
 		}// switch;
 	}/* get_page */;
@@ -483,9 +492,9 @@ export default class MasterPanel extends BaseControl {
 		}// if;
 
 		return <MasterContext.Provider value={context_value}>
-			<div id="master_panel" className="full-screen" >
+			<div id="master_panel" className="full-screen">
 
-				{debugging () && <div id="debug_panel" style={debug_panel_style}>No data</div>}
+				{debugging () && <div id="debug_panel" style={debug_panel_style}>{this.state.debug_text}</div>}
 
 				<div className="page-header">
 

@@ -43,9 +43,15 @@ export default class LoggingPage extends BaseControl {
 	state = {
 
 		current_entry: { 
+
 			start: null, 
 			end: null,
+
+			client_id: null,
+			project_id: null,
+
 			logged_in: false,
+			
 		}/* current_entry */,
 
 		action: null,
@@ -231,21 +237,9 @@ export default class LoggingPage extends BaseControl {
 
 		if (not_set (start_time) ) return null;
 
-		return <div id={this.props.id} className="two-column-grid">
+		return <div id={this.props.id} className="two-column-grid with-headspace">
 		
 			<div className="log-details one-piece-form">
-
-				<Container visible={isset (this.state.current_entry.client_name)}>
-					<label>Client</label>
-					<div>{this.state.current_entry.client_name}</div>
-				</Container>
-
-				<Container visible={isset (this.state.current_entry.project_name)}>
-					<label>Project</label>
-					<div>{this.state.current_entry.project_name}</div>
-				</Container>
-
-				<Break />
 
 				<label>Start</label>
 				{this.link_cell (start_time?.format (date_formats.full_datetime), boundaries.start)}
@@ -308,24 +302,24 @@ export default class LoggingPage extends BaseControl {
 
 		return <div id="log_panel" className="horizontally-centered">
 
-			{this.state.current_entry.logged_in ? this.entry_details (elapsed_time) : <Container>
+			<div className="with-headspace">
+				<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButtons={!this.state.current_entry.logged_in} 
+				
+					static={this.state.current_entry.logged_in}
 
-				<div className="with-headspace">
-					<ProjectSelector id="project_selector" ref={this.selector} parent={this} newButtons={!this.state.current_entry.logged_in}
+					selectedClientId={this.state.current_entry.client_id} 
+					selectedProjectId={this.state.current_entry.project_id}
 
-						selectedClientId={this.state.current_entry.client_id} 
-						selectedProjectId={this.state.current_entry.project_id}
+					hasHeader={true} 
+					headerSelectable={false} 
 
-						hasHeader={true} 
-						headerSelectable={false} 
+					onClientChange={client_id => this.setState ({ current_entry: {...this.state.current_entry, client_id: client_id } })}
+					onProjectChange={project_id => this.setState ({ current_entry: {...this.state.current_entry, project_id: project_id } })}>
 
-						onClientChange={client_id => this.setState ({ current_entry: {...this.state.current_entry, client_id: client_id } })}
-						onProjectChange={project_id => this.setState ({ current_entry: {...this.state.current_entry, project_id: project_id } })}>
+				</ProjectSelector>
+			</div>
 
-					</ProjectSelector>
-				</div>
-
-			</Container>}
+			{this.state.current_entry.logged_in ? this.entry_details (elapsed_time) : null}
 
 			<div id="eyecandy_cell" style={{ marginTop: "1em", width: "100%" }}>
 				<EyecandyPanel id="log_button_eyecandy"  style={{ marginTop: "1em" }} stretchOnly={true}

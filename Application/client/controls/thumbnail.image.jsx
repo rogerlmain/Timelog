@@ -5,7 +5,7 @@ import BaseControl from "client/controls/abstract/base.control";
 
 import SettingsStorage from "client/classes/storage/settings.storage";
 
-import { nested_value, not_set } from "client/classes/common";
+import { not_set } from "client/classes/common";
 
 
 const default_width		= "10vw";
@@ -109,8 +109,8 @@ export default class ThumbnailImage extends BaseControl {
 	render () {
 
 		let image_size = {
-			width: nested_value (this.props.style, "width") ?? default_width,
-			height: nested_value (this.props.style, "height") ?? default_height,
+			width: this.props.style?.width ?? default_width,
+			height: this.props.style?.height ?? default_height,
 		}// image_size;
 
 		return <Container>

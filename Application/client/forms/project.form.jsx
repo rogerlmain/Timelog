@@ -11,7 +11,7 @@ import ExpandingInput from "client/controls/inputs/expanding.input";
 import RateSubform from "client/forms/subforms/rate.subform";
 
 import { blank, space } from "client/classes/types/constants";
-import { nested_value, isset, not_empty  } from "client/classes/common";
+import { isset, not_empty  } from "client/classes/common";
 
 import { SmallProgressMeter } from "client/controls/progress.meter";
 import { MasterContext } from "client/classes/types/contexts";
@@ -150,7 +150,7 @@ export default class ProjectForm extends FormControl {
 	/********/
 
 	
-	componentDidMount () { this.setState ({ code: nested_value (this, "props", "formData", "code") }) }
+	componentDidMount () { this.setState ({ code: this?.props?.formData?.code }) }
 
 
 	render () {

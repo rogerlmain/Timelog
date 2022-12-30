@@ -7,8 +7,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 import NumberPicker from "client/controls/number.picker";
 
-import { nested_value } from "client/classes/common";
-import { date_rounding, granularity_types } from "client/classes/types/constants";
+import { granularity_types } from "client/classes/types/constants";
 
 import "resources/styles/controls/time.picker.css";
 
@@ -76,27 +75,27 @@ export default class TimePicker extends BaseControl {
 			<div className={`time-picker ${column_class ()}`}>
 
 				<NumberPicker id="hours" min="1" max="12" 
-					value={nested_value (this.state.value, "get_hours")} loop={true}
+					value={this.state.value?.get_hours} loop={true}
 					onChange={data => this.update_time (Date.parts.hours, data.change )}>
 				</NumberPicker>
 
 				<Container visible={granularity != granularity_types.hourly}>
 					<NumberPicker id="minutes" min="0" max="59" step={granularity == granularity_types.quarterly ? 15 : 1}
-						value={nested_value (this.state.value, "getMinutes")} loop={true} padding={2}
+						value={this.state.value?.getMinutes} loop={true} padding={2}
 						onChange={data => this.update_time (Date.parts.minutes, data.change )}>
 					</NumberPicker>
 				</Container>
 
 				<Container visible={granularity == granularity_types.truetime}>
 					<NumberPicker id="minutes" min="0" max="59"
-						value={nested_value (this.state.value, "getSeconds")} loop={true} padding={2}
+						value={this.state.value?.getSeconds} loop={true} padding={2}
 						onChange={data => this.update_time (Date.parts.seconds, data.change )}>
 					</NumberPicker>
 				</Container>
 
 				<div className="vertically-centered meridian">
-					<div onClick={() => this.update_time (Date.parts.meridian, Date.meridians.am)} className={`fully-centered ${nested_value (this.state.value, "morning") ? "selected" : null}`}>am</div>
-					<div onClick={() => this.update_time (Date.parts.meridian, Date.meridians.pm)} className={`fully-centered ${nested_value (this.state.value, "afternoon") ? "selected" : null}`}>pm</div>
+					<div onClick={() => this.update_time (Date.parts.meridian, Date.meridians.am)} className={`fully-centered ${this.state.value?.morning ? "selected" : null}`}>am</div>
+					<div onClick={() => this.update_time (Date.parts.meridian, Date.meridians.pm)} className={`fully-centered ${this.state.value?.afternoon ? "selected" : null}`}>pm</div>
 				</div>
 
 			</div>

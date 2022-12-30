@@ -75,11 +75,6 @@ export function html_encode (value) {
 }// html_encode;
 
 
-export function json_string (value) {
-	return JSON.stringify (value).replace (",", ",\n");
-}// json_string;
-
-
 export function jsonify (value) {
 
 	const visited = new WeakSet ();
@@ -212,27 +207,6 @@ export function exists (object, ...methods) {
 }// exists;
 
 
-// DEPRECATED - USE BUILD-IN ?.
-export function nested_value () {
-
-	if (debugging (false)) console.log ("nested_value is deprecated. Use built-in ?. instead.");
-
-	if (is_null (arguments [0])) return null;
-
-	if (arguments.length < 2) throw "nested_value requires at least two parameters";
-	if (not_object (arguments [0], true)) throw "first parameter in nested_value must be an object";
-
-	let next_object = arguments [0][arguments [1]];
-	let remaining_parameters = Array.from (arguments).slice (2);
-
-	if (is_function (next_object)) return arguments [0][arguments [1]] (...remaining_parameters);
-	if (is_empty (remaining_parameters)) return next_object;
-
-	return nested_value (next_object, ...remaining_parameters);
-
-}// nested_value;
-
-
 export function refresh (control, callback = null) {
 	if (isset (control.props) && isset (control.props.children)) {
 		let children = Array.isArray (control.props.children) ? control.props.children : [control.props.children];
@@ -264,7 +238,6 @@ export let not_blank = not_empty;
 
 
 /**** Operating Theatre ****/
-
 
 
 export function raw_style (control) {

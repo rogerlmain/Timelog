@@ -82,7 +82,7 @@
 }/* * */
 
 
-*:not(textarea) {white-space: nowrap;}
+*:not(textarea):not(pre) {white-space: nowrap;}
 
 
 *:focus {

@@ -47,24 +47,6 @@ export default class ClientsPage extends BaseControl {
 	/********/
 
 
-	componentDidMount () {
-		
-		if (OptionsStorage.client_limit () > 1) return;
-
-		ClientStorage.get_by_company (CompanyStorage.active_company_id ()).then (data => {
-
-			let client = data [Object.keys (data) [0]];
-
-			this.setState ({ 
-				client_data: client,
-				selected_client: client.client_id,
-			});
-
-		});
-
-	}// componentDidMount;
-
-
 	render () {
 
 		let can_create = ((OptionsStorage.client_slots (this.state.client_list?.key_length ()) > 0) || is_unlimited (OptionsStorage.client_limit ()));
@@ -83,7 +65,7 @@ export default class ClientsPage extends BaseControl {
 						selected_client: client_id,
 						updating: true
 					})}
-					
+
 					onLoad={data => this.setState ({ client_list: data })}>
 
 				</ClientSelector>

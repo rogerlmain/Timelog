@@ -1,7 +1,7 @@
 import React from "react";
 import BaseControl from "client/controls/abstract/base.control";
 
-import { debugging , nested_value, null_value } from "client/classes/common";
+import { debugging, null_value } from "client/classes/common";
 
 
 export default class Container extends BaseControl {
@@ -18,7 +18,7 @@ export default class Container extends BaseControl {
 
 	constructor (props) {
 		super (props);
-		let name = null_value (this.props.id) ?? nested_value (this.container.current, "pathed_id");
+		let name = null_value (this.props.id) ?? this.container.current?.pathed_id;
 		if (debugging (false)) console.log (`container ${name} created`);
 	}// constructor;
 

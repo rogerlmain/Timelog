@@ -5,7 +5,7 @@ import { default_settings } from "client/classes/types/constants";
 import { isset, is_function, is_null, not_set } from "client/classes/common";
 
 
-const header_value = -1;
+const header_value = null;
 const highlight_classname = "dropdown-list-items";
 const item_padding = "0.2em 0 0.2em 0.5em";
 
@@ -31,7 +31,7 @@ export default class DropDownList extends BaseControl {
 		focused: false,
 		losing_focus: false,
 
-		selected_value: -1,
+		selected_value: "0",
 		
 		list_class: null,
 
@@ -82,7 +82,6 @@ export default class DropDownList extends BaseControl {
 		if (this.state.selected_value != value) this.execute (this.props.onChange, event);
 		
 		this.setState ({ selected_value: value }, () => {
-			this.active_selection.current.innerHTML = item?.innerHTML;
 			this.execute (child?.onClick);
 			this.execute (this.props.onClick);
 			this.close_list ();
@@ -100,7 +99,7 @@ export default class DropDownList extends BaseControl {
 
 			let preprocessed_text = is_function (this.props.textField);
 			let value = is_function (this.props.idField) ? this.props.idField (child) : child?.[this.props.idField];
-	
+
 			if (is_null (result)) result = new Array ();
 
 			result.push (<div id={`${this.props.id}_item_${index}`} value={value} key={index++} className="dropdown-child-item" 
@@ -108,7 +107,7 @@ export default class DropDownList extends BaseControl {
 				style={preprocessed_text ? null : { padding: item_padding }}
 				onClick={event => this.list_click_handler (event, child)}>
 
-				{preprocessed_text ? this.props.textField (child) : child?.[this.props.textField] ?? child?.props?.children}
+				{preprocessed_text ? this.props.textField (child) : (child?.[this.props.textField] ?? child?.props?.children)}
 				
 			</div>);
 
@@ -204,7 +203,7 @@ export default class DropDownList extends BaseControl {
 	render () {
 
 		let item_list = this.child_list ();
-		let active_item = (isset (this.state.selected_value) ? item_list.find (item => item.props.value == this.state.selected_value) : item_list [0])?.props.children;
+		let active_item = isset (this.state.selected_value) ? item_list.find (item => this.state.selected_value.matches (item.props.value)) : item_list [0];
 	
 		return <div id={`${this.props.id}_dropdown_panel`} className="dropdown" ref={this.dropdown} style={{ position: "relative" }}>
 			<div className="dropdown-list" ref={this.dropdown_list} style={{ zIndex: this.state.focused ? 1 : 0 , minWidth: "100%" }}>
