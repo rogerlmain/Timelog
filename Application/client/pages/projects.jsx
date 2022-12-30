@@ -76,15 +76,6 @@ export default class ProjectsPage extends BaseControl {
 	/********/
 
 
-	componentDidMount () { this.context.master_page.debug_state (this.state) }
-
-
-	componentDidUpdate (props, state) {
-		if (jsonify (this.state).matches (jsonify (state))) return true;
-		this.context.master_page.debug_state (this.state);
-	}/* componentDidMount */;
-
-
 	render () {
 
 		let project_data = this.project_selector.current?.state.project_data;
