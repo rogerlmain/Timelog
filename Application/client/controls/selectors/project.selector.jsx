@@ -1,8 +1,6 @@
 import React from "react";
 
-import OptionsStorage from "client/classes/storage/options.storage";
 import ProjectStorage from "client/classes/storage/project.storage";
-import LoggingStorage from "client/classes/storage/logging.storage";
 
 import BaseControl from "client/controls/abstract/base.control";
 
@@ -11,7 +9,7 @@ import FadePanel from "client/controls/panels/fade.panel";
 import ClientSelector from "client/controls/selectors/client.selector";
 
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
-import { isset, integer_value, debugging, not_set } from "client/classes/common";
+import { isset, debugging, not_set, is_empty } from "client/classes/common";
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
@@ -30,7 +28,6 @@ export default class ProjectSelector extends BaseControl {
 		onClientChange: null,
 		onProjectChange: null,
 
-		hasHeader: false,
 		headerSelectable: false,
 
 		includeOffshoreAccounts: true,
@@ -78,19 +75,11 @@ export default class ProjectSelector extends BaseControl {
 
 
 	update_projects_list = client_id => {
-
-		let current_entry = LoggingStorage.current_entry ();
-
-		let new_selection = { 
-			selected_client_id: client_id,
-			selected_project_id:  (client_id == current_entry?.client_id) ? current_entry?.project_id : null,
-		}/* new_selection */;
-
-		this.setState (new_selection, () => {
+		this.setState ({ selected_client_id: client_id }, () => {
 
 			ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
 
-				let project_id = (!this.props.hasHeader || (data?.key_length () == 1)) ? Object.keys (data) [0] : this.state.selected_project_id;
+				let project_id = data.has_key (this.state.selected_project_id) ? this.state.selected_project_id : (is_empty (this.props.headerText) ? data.get_keys () [0] : null );
 
 				switch (project_id) {
 					case this.state.selected_project_id: return this.execute (this.props.onProjectChange, project_id);
@@ -102,7 +91,6 @@ export default class ProjectSelector extends BaseControl {
 			this.execute (this.props.onClientChange, client_id);
 		
 		})/* setState */;
-
 	}/* update_projects_list */;
 
 
@@ -159,10 +147,9 @@ export default class ProjectSelector extends BaseControl {
 					
 					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
-					onChange={event => {
-						let project_id = integer_value (event.target.getAttribute ("value"));
-						this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
-					}}>
+					onChange={event => this.setState ({ selected_project_id: event.target.getAttribute ("value") }, () => {
+						this.execute (this.props.onProjectChange, this.state.selected_project_id);
+					})}>
 
 				</LoadList>
 			</FadePanel>
