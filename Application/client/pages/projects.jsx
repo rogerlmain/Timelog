@@ -99,10 +99,7 @@ export default class ProjectsPage extends BaseControl {
 
 					headerText={can_create ? "New project" : ((project_count > 1) ? "Select a project" : null)}
 					headerSelectable={can_create} allowStatic={false}
-/* 
-					selectedClient={this.state.selected_client}
-					selectedProject={this.state.selected_project}
- */
+
 					onClientChange={client_id => this.setState ({
 						selected_client: client_id,
 						selected_project: null,
