@@ -75,20 +75,20 @@ export default class TimePicker extends BaseControl {
 			<div className={`time-picker ${column_class ()}`}>
 
 				<NumberPicker id="hours" min="1" max="12" 
-					value={this.state.value?.get_hours} loop={true}
+					value={this.state.value?.get_hours ()} loop={true}
 					onChange={data => this.update_time (Date.parts.hours, data.change )}>
 				</NumberPicker>
 
 				<Container visible={granularity != granularity_types.hourly}>
 					<NumberPicker id="minutes" min="0" max="59" step={granularity == granularity_types.quarterly ? 15 : 1}
-						value={this.state.value?.getMinutes} loop={true} padding={2}
+						value={this.state.value?.getMinutes ()} loop={true} padding={2}
 						onChange={data => this.update_time (Date.parts.minutes, data.change )}>
 					</NumberPicker>
 				</Container>
 
 				<Container visible={granularity == granularity_types.truetime}>
 					<NumberPicker id="minutes" min="0" max="59"
-						value={this.state.value?.getSeconds} loop={true} padding={2}
+						value={this.state.value?.getSeconds ()} loop={true} padding={2}
 						onChange={data => this.update_time (Date.parts.seconds, data.change )}>
 					</NumberPicker>
 				</Container>

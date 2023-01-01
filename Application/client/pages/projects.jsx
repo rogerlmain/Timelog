@@ -11,7 +11,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import ProjectForm from "client/forms/project.form";
 
 import { vertical_alignment } from "client/classes/types/constants";
-import { debug_state, isset, is_unlimited, jsonify } from "client/classes/common";
+import { debug_state, isset, is_unlimited, jsonify, not_null } from "client/classes/common";
 import { unlimited } from "client/classes/types/options";
 
 import { MasterContext } from "client/classes/types/contexts";
@@ -62,7 +62,6 @@ export default class ProjectsPage extends BaseControl {
 		this.setState ({ 
 			project_data: isset (project_id) ? ProjectStorage.get_by_id (project_id) : null,
 			selected_project: project_id,
-			updating: true,
 		});
 
 		this.project_selector.current.setState ({ 
@@ -78,28 +77,30 @@ export default class ProjectsPage extends BaseControl {
 
 	render () {
 
-		let project_data = this.project_selector.current?.state.project_data;
-		let project_count = project_data?.key_length ();
+		let project_data = this.project_selector.current?.state.project_data ?? null;
+		let project_count = project_data?.key_length () ?? 0;
 
-		let can_create = (isset (this.state.selected_client) && ((OptionsStorage.project_slots (project_count) > 0) || is_unlimited (OptionsStorage.project_limit ())));
+		let can_create = (isset (project_data) && (OptionsStorage.project_slots (project_count) > 0)) || is_unlimited (OptionsStorage.project_limit ());
+
+		let header_text = can_create ? "New project" : ((project_count > 1) ? "Select a project" : null);
 
 		return <div id={this.props.id} className="top-centered row-spaced">
 
 			<div className="project-select-form">
 				<ProjectSelector id="project_selector" ref={this.project_selector} parent={this} includeOffshoreAccounts={false} newClientButton={true}
 
-					headerText={can_create ? "New project" : ((project_count > 1) ? "Select a project" : null)}
+					headerText={header_text} hasHeader={true}
 					headerSelectable={can_create} allowStatic={false}
 
-					onClientChange={client_id => this.setState ({
-						selected_client: client_id,
+					onClientChange={client_id => this.setState ({ 
+						selected_client: client_id, 
 						selected_project: null,
-						updating: true,
 					})}
 
 					onProjectChange={project_id => this.setState ({ 
 						selected_project: project_id,
-						updating: true,
+						updating: (can_create || not_null (project_data)),
+						initialized: true,
 					})}>
 
 				</ProjectSelector>
@@ -110,10 +111,9 @@ export default class ProjectsPage extends BaseControl {
 				onEyecandy={() => ProjectStorage.get_by_id (this.state.selected_project).then (data => this.setState ({ 
 					project_data: data,
 					updating: false,
-					initialized: true
 				}))}>
 
-				{(this.state.initialized && can_create) && <ProjectForm parent={this}
+				{(this.state.initialized && (can_create || isset (this.state.selected_project))) && <ProjectForm parent={this}
 
 					formData={this.state.project_data} clientId={this.state.selected_client} 
 

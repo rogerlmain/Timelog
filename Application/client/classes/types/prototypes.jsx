@@ -16,7 +16,7 @@ Object.defineProperties (Object.prototype, {
 	"get_keys": { value: function () { return Object.keys (this) }},
 	"get_values": { value: function () { return Object.values (this) }},
 
-	"has_key": { value: function (value) { return isset (this.get_key (value)) }},
+	"has_key": { value: function (value) { return this.get_keys ().indexOf (value) >= 0 }},
 
 	"key_length": { value: function () { return this?.get_keys ()?.length ?? 0 } },
 	"map_keys": { value: function (callback) { return this?.get_keys ()?.map (callback) }},

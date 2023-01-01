@@ -9,7 +9,7 @@ import FadePanel from "client/controls/panels/fade.panel";
 import ClientSelector from "client/controls/selectors/client.selector";
 
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
-import { isset, debugging, not_set, is_empty } from "client/classes/common";
+import { isset, debugging, not_set } from "client/classes/common";
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
@@ -28,12 +28,13 @@ export default class ProjectSelector extends BaseControl {
 		onClientChange: null,
 		onProjectChange: null,
 
-		headerSelectable: false,
-
 		includeOffshoreAccounts: true,
 
 		static: false,
 		allowStatic: true,
+
+		hasHeader: false,
+		headerSelectable: false,
 
 		headerText: "Select a project",
 
@@ -79,7 +80,7 @@ export default class ProjectSelector extends BaseControl {
 
 			ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
 
-				let project_id = data.has_key (this.state.selected_project_id) ? this.state.selected_project_id : (is_empty (this.props.headerText) ? data.get_keys () [0] : null );
+				let project_id = data.has_key (this.state.selected_project_id?.toString ()) ? this.state.selected_project_id : (this.props.hasHeader ? null : data.get_keys () [0] );
 
 				switch (project_id) {
 					case this.state.selected_project_id: return this.execute (this.props.onProjectChange, project_id);
