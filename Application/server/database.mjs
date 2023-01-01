@@ -1,23 +1,12 @@
+import ini from "ini";
+
+import * as fs from "fs";
+
 import { createConnection } from "mysql";
+import { root_path } from "./constants.mjs";
 
 
-const live_testing = false;
-
-
-const local_database = {
-	host: "localhost",
-	user: "root",
-	password: "stranger",
-	database: "timelog"
-}/* local_database */
-
-
-const interserver_database = {
-	host: "208.73.201.47",
-	user: "remote",
-	password: "stranger",
-	database: "timelog"
-}/* interserver_database */
+const ini_path = `${root_path}/dbinfo.ini`;
 
 
 class Database {
@@ -83,8 +72,11 @@ class Database {
 
 
 	constructor () {
+
+		let database = ini.parse (fs.readFileSync (ini_path).toString ());
+
 		try {
-			this.connection = createConnection ((live_testing ? interserver_database : local_database));
+			this.connection = createConnection (database.bundion);
 			this.connection.connect ((error) => { if (isset (error)) console.log (error) });
 		} catch (except) {
 			console.log (except);

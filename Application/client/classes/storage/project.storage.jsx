@@ -143,7 +143,7 @@ export default class ProjectStorage extends LocalStorage {
 
 			ClientStorage.get_by_id (client_id).then (client => {
 
-				if (isset (client.token_id)) return OffshoreModel.get_projects (client.token_id, client.name).then (projects => {
+				if (isset (client?.token_id)) return OffshoreModel.get_projects (client.token_id, client.name).then (projects => {
 					
 					projects?.forEach (project => {
 						project.client_id = client_id;
