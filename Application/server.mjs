@@ -43,6 +43,9 @@ const method = { get: "get", post: "post" };
 
 const session_namespace = "timelog_session";
 
+const version = root_path.substr (root_path.lastIndexOf ("/") + 1).toLowerCase ();
+
+const port = (version == "preview") ? 3001 : 3000;
 
 let app = express ();
 
@@ -79,7 +82,7 @@ app.process = async (handler) => {
 }// process;
 
 
-app.set ("port", process.env.PORT || 3000);
+app.set ("port", process.env.PORT || port);
 
 
 app.use (express.static (root_path));
@@ -539,13 +542,10 @@ createNamespace (session_namespace);
 //     cert: file_system.readFileSync (`${root_path}/server/certificates/timelog.crt`),
 // };
 
-//let server = https.createServer (options, app).listen (app.get ("port"), "127.0.0.1", function () {
+//let server = https.createServer (options, app).listen (app.get ("port"), function () {
 	
-//let server = http.createServer (app).listen (app.get ("port"), "127.0.0.1", function () {
-
 let server = http.createServer (app).listen (app.get ("port"), function () {
-	console.log (`listening: ${root_path}`);
+	console.log (`listening to the ${version} version on port ${port}`);
 });
 
 server.keepAliveTimeout = 10000;
-

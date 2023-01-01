@@ -4,7 +4,8 @@ import { blank } from "client/classes/types/constants";
 import { unlimited } from "client/classes/types/options";
 
 
-const live_debugging = true;
+const live_debugging = false;
+const beta_version = true;
 
 
 /********/
@@ -14,6 +15,8 @@ export const detab = text => text.replace (/\n[\t]*/g, "\n");
 
 export const debugging = (active = true) => (active && window.location.hostname.equals ("localhost") || live_debugging);
 export const live = (live = true) => !debugging (live);
+
+export const beta = () => window.location.hostname.equals ("preview.bundion.com") || debugging ();
 
 
 export function boolean_value (value) { return (is_string (value) && (value.equals ("true") || value.equals ("on"))) }

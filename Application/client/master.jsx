@@ -31,7 +31,7 @@ import InvitationsModel from "client/classes/models/invitations.model";
 import OptionsModel from "client/classes/models/options.model";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
-import { debugging, isset, is_array, is_empty, is_function, is_null, is_promise, live, not_set, numeric_value } from "client/classes/common";
+import { beta, debugging, isset, is_array, is_empty, is_function, is_null, is_promise, live, not_set, numeric_value } from "client/classes/common";
 
 import { MainContext, MasterContext } from "client/classes/types/contexts";
 
@@ -41,7 +41,7 @@ import rexs_head from "resources/images/logos/rexthestrange.png";
 import logo from "resources/images/bundy.png";
 import user_image from "resources/images/guest.user.svg";
 
-import "resources/styles/home.page.css";
+import "resources/styles/master.css";
 
 
 /********/
@@ -51,7 +51,7 @@ import "resources/styles/home.page.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.1.2.6";
+const version = "1.1.3.0";
 
 
 const user_image_style = {
@@ -467,7 +467,7 @@ export default class MasterPanel extends BaseControl {
 
 	componentDidMount () {
 
-		if (live ()) this.update_clock ();
+		this.update_clock ();
 
 		this.componentDidUpdate ();
 		this.verify_invitations ();
@@ -522,6 +522,14 @@ export default class MasterPanel extends BaseControl {
 							{this.state.buttons}
 						</ExplodingPanel>
 					</div>
+
+
+					{beta () && <div className="beta-tag">
+						<div className="beta-tag-frame" style={{ top: this.signed_in () ? "-2em" : "-1.5em" }}>
+							<div className="beta-tag-bevel" />
+							<div className="beta-tag-text">BETA EDITION</div>
+						</div>
+					</div>}
 
 				</div>
 
