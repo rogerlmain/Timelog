@@ -1,5 +1,6 @@
 import LocalStorage from "client/classes/local.storage";
 import { isset, is_object } from "client/classes/common";
+import LoggingModel from "../models/logging.model";
 
 
 const store_name = "logging";
@@ -42,7 +43,7 @@ export default class LoggingStorage extends LocalStorage {
 		if (isset (result) && isset (result.start_time)) result.start_time = new Date (result.start_time);
 		return result;
 		
-	}// current_entry;
+	}/* current_entry */;
 
 
 }// LoggingStorage;

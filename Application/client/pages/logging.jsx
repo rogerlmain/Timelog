@@ -19,7 +19,7 @@ import { blank, currency_symbol, date_formats, ranges, space } from "client/clas
 import { isset, not_set, multiline_text, null_value, debugging } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
-import { MainContext } from "client/classes/types/contexts";
+import { MasterContext } from "client/classes/types/contexts";
 
 import "resources/styles/pages/logging.css";
 
@@ -51,6 +51,8 @@ export default class LoggingPage extends BaseControl {
 			project_id: null,
 
 			logged_in: false,
+
+			notes: null,
 			
 		}/* current_entry */,
 
@@ -64,7 +66,7 @@ export default class LoggingPage extends BaseControl {
 	}/* state */;
 
 
-	static contextType = MainContext;
+	static contextType = MasterContext;
 	static defaultProps = { id: "logging_page" }
 
 
@@ -72,18 +74,14 @@ export default class LoggingPage extends BaseControl {
 
 		super (props);
 
-		let current_entry = LoggingStorage.current_entry ();
+		let latest_entry = this.get_latest_entry ();
 
-		ProjectStorage.billing_rate (current_entry?.project_id, current_entry?.client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
+		ProjectStorage.billing_rate (latest_entry?.project_id, latest_entry?.client_id).then (result => this.setState ({ billing_rate: result })).catch (error => {
 			console.log (error);
 			throw (error);
 		});
 
-		this.state.current_entry = {
-			...current_entry,
-			start: (current_entry.logged_in ? new Date (current_entry?.start) : new Date ()).rounded (ranges.start),
-			end: new Date ().rounded (ranges.end),
-		}/* current_entry */;
+		this.state.current_entry = latest_entry;
 
 		if (debugging ()) console.log ("logging page created");
 
@@ -99,7 +97,17 @@ export default class LoggingPage extends BaseControl {
 	notes = () => 		{ return null_value (this.state.current_entry?.notes) }
 
 
-	project_selected = () => ((this.state?.current_entry?.project_id > 0) || OptionsStorage.single_project () || this.state.current_entry.logged_in);
+	get_latest_entry () {
+
+		let current_entry = LoggingStorage.current_entry ();
+
+		return {
+			...current_entry,
+			start: (current_entry.logged_in ? new Date (current_entry?.start) : new Date ()).rounded (ranges.start),
+			end: new Date ().rounded (ranges.end),
+		}/* current_entry */
+
+	}/* get_latest_entry */;
 
 
 	metered_bill = elapsed_time => {
@@ -151,7 +159,7 @@ export default class LoggingPage extends BaseControl {
 
 
 	elapsed_time = () => { 
-		let end_time = (this.state.current_entry.end ?? new Date ().rounded (ranges.end)).getTime ();
+		let end_time = (this.state.current_entry.end ?? new Date ()).rounded (ranges.end).getTime ();
 		return Math.max (Math.floor ((end_time - this.state.current_entry.start.getTime ()) / 1000), 0);
 	}/* elapsed_time */;
 
@@ -269,6 +277,42 @@ export default class LoggingPage extends BaseControl {
 	}/* entry_details */;
 
 
+	update_client (client_id) {
+
+		let latest_entry = this.get_latest_entry ();
+
+		if (latest_entry?.client_id == client_id) return this.setState ({ current_entry: latest_entry });
+
+		LoggingModel.get_latest_by_client (client_id).then (result => isset (result) ? this.setState ({ current_entry: {
+			client_id: client_id,
+			project_id: result?.project_id,
+			start: new Date ().rounded (ranges.start),
+			end: new Date ().rounded (ranges.end),
+			logged_in: not_set (result?.end_time),
+			notes: result?.notes,
+		} }) : null);
+
+	}/* update_client */
+
+
+	update_project (project_id) {
+
+		let latest_entry = this.get_latest_entry ();
+
+		if (latest_entry?.project_id == project_id) return this.setState ({ current_entry: latest_entry });
+
+		LoggingModel.get_latest_by_project (project_id).then (result => isset (result) ? this.setState ({ current_entry: {
+			client_id: client_id,
+			project_id: result?.project_id,
+			start: new Date ().rounded (ranges.start),
+			end: new Date ().rounded (ranges.end),
+			logged_in: not_set (result?.end_time),
+			notes: result?.notes,
+		} }) : null);
+
+	}/* update_project */
+
+
 	/********/
 
 
@@ -288,7 +332,7 @@ export default class LoggingPage extends BaseControl {
 		if (not_set (this.context)) return null;
 
 		let elapsed_time = this.state.current_entry.logged_in ? this.elapsed_time () : null;
-		let project_selected = this.project_selected ();
+		let project_selected = (this.state?.current_entry?.project_id > 0) || OptionsStorage.single_project () || this.state.current_entry.logged_in;
 
 		let log_button_panel = {
 			columnGap: "0.25em",
@@ -299,6 +343,7 @@ export default class LoggingPage extends BaseControl {
 			display: "grid",
 			gridTemplateColumns: "repeat(2, 1fr)",
 		}// if;
+
 
 		return <div id="log_panel" className="horizontally-centered">
 
@@ -313,8 +358,9 @@ export default class LoggingPage extends BaseControl {
 					hasHeader={true} 
 					headerSelectable={false} 
 
-					onClientChange={client_id => this.setState ({ current_entry: {...this.state.current_entry, client_id: client_id } })}
-					onProjectChange={project_id => this.setState ({ current_entry: {...this.state.current_entry, project_id: project_id } })}>
+					onClientChange={client_id => { if (this.state.current_entry.client_id != client_id) this.update_client (client_id) }}
+
+					onProjectChange={project_id => { if (this.state.current_entry.project_id != project_id) this.update_project (project_id) }}>
 
 				</ProjectSelector>
 			</div>

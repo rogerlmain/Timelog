@@ -318,11 +318,7 @@ Date.prototype.round_minutes = function (count, direction) {
 	// If not specified then round off
 	if (not_set (direction)) direction = ((result.getMinutes () % count) < (count / 2)) ? date_rounding.down : date_rounding.up;
 
-
-//	result.setMinutes (direction == date_rounding.down ? minutes : minutes + count);
-
-result.setMinutes ((direction == date_rounding.down) || ((direction == date_rounding.off) && ((result.getMinutes () - minutes) < (count / 2))) ? minutes : minutes + count);
-
+	result.setMinutes ((direction == date_rounding.down) || ((direction == date_rounding.off) && ((result.getMinutes () - minutes) < (count / 2))) ? minutes : minutes + count);
 
 	result.setSeconds (0);
 	result.setMilliseconds (0);

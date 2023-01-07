@@ -33,7 +33,6 @@ export default class LoadList extends BaseControl {
 
 		id: load_list_id,
 
-		label: "LoadList",
 		newButtonPage: null,
 
 		data: null,
@@ -59,6 +58,7 @@ export default class LoadList extends BaseControl {
 
 		onChange: null,
 		onEyecandy: null,
+		onContents: null,
 
 	}// defaultProps;
 
@@ -137,11 +137,12 @@ export default class LoadList extends BaseControl {
 
 		return <EyecandyPanel id={`${list_panel_id}_eyecandy_panel`} ref={this.eyecandy_panel} text="Loading..." 
 
-			onEyecandy={this.props.onEyecandy}
-		
+			eyecandyVisible={not_set (this.props.data)}
 			hAlign={this.props.hAlign} vAlign={this.props.vAlign} stretchOnly={true}
-			eyecandyVisible={not_set (this.props.data)}>
 
+			onEyecandy={this.props.onEyecandy}
+			onContents={this.props.onContents}>
+		
 			{this.select_list ()}
 
 		</EyecandyPanel>

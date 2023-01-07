@@ -99,7 +99,7 @@ export default class EyecandyPanel extends BaseControl {
 		return <ExplodingPanel id={`${this.props.id}_exploding_panel`} ref={this.exploding_panel} speed={this.animation_speed ()} 
 
 			hAlign={this.props.hAlign} vAlign={this.props.vAlign} stretchOnly={this.props.stretchOnly}
-			afterChanging={() => { if (this.state.eyecandy_visible) this.execute (this.props.onEyecandy, this) }}>
+			afterChanging={() => this.execute (this.state.eyecandy_visible ? this.props.onEyecandy : this.props.onContents)}>
 
 			{this.state.eyecandy_visible ? this.eyecandy () : this.contents ()}
 			

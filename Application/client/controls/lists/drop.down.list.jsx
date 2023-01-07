@@ -13,7 +13,7 @@ const item_padding = "0.2em 0 0.2em 0.5em";
 export default class DropDownList extends BaseControl {
 
 
-	dropdown = React.createRef ();
+	dropdown_panel = React.createRef ();
 	dropdown_list = React.createRef ();
 
 	item_list = React.createRef ();
@@ -31,7 +31,10 @@ export default class DropDownList extends BaseControl {
 		focused: false,
 		losing_focus: false,
 
+		refresh: false,
+
 		selected_value: "0",
+		selection_width: 0,
 		
 		list_class: null,
 
@@ -95,7 +98,7 @@ export default class DropDownList extends BaseControl {
 		let result = null;
 		let index = 1;
 
-		list?.forEach (child => {
+		if (isset (list)) list.forEach (child => {
 
 			let preprocessed_text = is_function (this.props.textField);
 			let value = is_function (this.props.idField) ? this.props.idField (child) : child?.[this.props.idField];
@@ -107,7 +110,7 @@ export default class DropDownList extends BaseControl {
 				style={preprocessed_text ? null : { padding: item_padding }}
 				onClick={event => this.list_click_handler (event, child)}>
 
-				{preprocessed_text ? this.props.textField (child) : (child?.[this.props.textField] ?? child?.props?.children)}
+				<span>{preprocessed_text ? this.props.textField (child) : (child?.[this.props.textField] ?? child?.props?.children)}</span>
 				
 			</div>);
 
@@ -134,14 +137,12 @@ export default class DropDownList extends BaseControl {
 	open_list () {
 		this.list_sleeve.current.style.maxHeight = `${this.item_list.current.offsetHeight}px`;
 		this.list_glyph.current.style.transform = "rotate(225deg)";
-		this.list_glyph.current.style.transform = "2px";
 	}/* open_list */;
 
 
 	close_list () {
 		this.list_sleeve.current.style.maxHeight = 0;
 		this.list_glyph.current.style.transform = "rotate(45deg)";
-		this.list_glyph.current.style.transform = "-1px";
 	}/*  close_list */;
 
 
@@ -184,29 +185,50 @@ export default class DropDownList extends BaseControl {
 		this.list_sleeve.current.addEventListener ("transitionstart", this.start_transition.bind (this));
 		this.list_sleeve.current.addEventListener ("transitionend", this.end_transition.bind (this));
 
-		this.active_selection.current.style.width = `calc(${this.dropdown_list.current.offsetWidth + this.list_glyph.current.offsetWidth}px + 0.25em)`;
-
-		this.dropdown.current.style.width = this.props?.style?.width ?? `${this.dropdown_list.current.offsetWidth}px`;
-		this.dropdown.current.style.height = this.props?.style?.height ?? `${this.dropdown_list.current.offsetHeight}px`;
-
-		this.setState ({ selected_value: this.props.selectedValue });
+		this.setState ({ refresh: true });
 
 	}/* componentDidMount */;
 
 
-	shouldComponentUpdate (new_props) {
-		if (new_props.selectedValue != this.props.selectedValue) return !!this.setState ({ selected_value: new_props.selectedValue });
+	shouldComponentUpdate (props) {
+
+		if (isset (this.props.data) && (not_set (this.props.idField))) throw "DropDownList requires an idField if data is supplied.";
+		if (isset (this.props.data) && (not_set (this.props.textField))) throw "DropDownList requires a textField if data is supplied.";
+
+		if (this.props.selectedValue != props.selectedValue) return !!this.setState ({ selected_value: props.selectedValue });
+		if (this.props.data != props.data) return !!this.setState ({ refresh: true }); 
+		
 		return true;
+
 	}/* shouldComponentUpdate */
+
+
+	componentDidUpdate () {
+		if (this.state.refresh)	{
+			
+			let max_width = 0;
+			let list = Array.from (this.item_list.current.getElementsByTagName ("span"));
+
+			list?.forEach (child => {
+				if (child.offsetWidth > max_width) max_width = child.offsetWidth
+			});
+
+			this.setState ({ 
+				refresh: false,
+				selection_width: max_width,
+			}, () => this.dropdown_panel.current.freeze ());
+
+		}// if;
+	}/* componentDidUpdate */
 
 
 	render () {
 
 		let item_list = this.child_list ();
-		let active_item = isset (this.state.selected_value) ? item_list.find (item => this.state.selected_value.matches (item.props.value)) : item_list [0];
+		let active_item = isset (item_list) ? (isset (this.state.selected_value) ? item_list.find (item => this.state.selected_value.matches (item.props.value)) : item_list [0]) : null;
 	
-		return <div id={`${this.props.id}_dropdown_panel`} className="dropdown" ref={this.dropdown} style={{ position: "relative" }}>
-			<div className="dropdown-list" ref={this.dropdown_list} style={{ zIndex: this.state.focused ? 1 : 0 , minWidth: "100%" }}>
+		return <div id={`${this.props.id}_dropdown_panel`} className="dropdown" ref={this.dropdown_panel} style={{ position: "relative" }}>
+			<div className="dropdown-list" ref={this.dropdown_list} style={{ zIndex: this.state.focused ? 1 : 0 }}>
 
 				<div className="active-dropdown-item bordered"
 				
@@ -217,11 +239,11 @@ export default class DropDownList extends BaseControl {
 				
 					onClick={event => this.setState ({ focused: true }, (this.state.opened ? this.close_list : this.open_list))}>
 
+					<div className="active-dropdown-selection" ref={this.active_selection} style={{ paddingRight: "0.25em", width: `${this.state.selection_width}px`}}>{active_item}</div>
+
 					<div id="item_list_glyph" ref={this.list_glyph} className="dropdown-glyph"
 						style={{ transition: `transform ${this.props.speed}ms ease-in-out, top ${this.props.speed}ms ease-in-out` }}>
 					</div>
-
-					<div className="active-dropdown-selection" ref={this.active_selection} style={{ paddingRight: "0.25em" }}>{active_item}</div>
 
 				</div>
 
@@ -239,8 +261,7 @@ export default class DropDownList extends BaseControl {
 
 			</div>
 		</div>
-
 	}// render;
 
 
-}// QuickTest;
+}// DropDownList;

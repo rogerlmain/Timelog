@@ -11,7 +11,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import ProjectForm from "client/forms/project.form";
 
 import { vertical_alignment } from "client/classes/types/constants";
-import { debug_state, isset, is_unlimited, jsonify, not_null } from "client/classes/common";
+import { isset, is_unlimited, not_null } from "client/classes/common";
 import { unlimited } from "client/classes/types/options";
 
 import { MasterContext } from "client/classes/types/contexts";

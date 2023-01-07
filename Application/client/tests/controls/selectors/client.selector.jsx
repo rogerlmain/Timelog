@@ -18,8 +18,8 @@ export default class ClientSelectorTest extends BaseControl {
 
 	state = { 
 		client_data: null,
-		selected_client: null
-	}
+		selected_client_id: null
+	}/* state */
 
 
 	/********/
@@ -28,6 +28,7 @@ export default class ClientSelectorTest extends BaseControl {
 	constructor (props) {
 		super (props);
 		this.state.company_id = 268;
+		this.state.selected_client_id = 138;
 	}// constructor;
 
 
@@ -42,39 +43,35 @@ export default class ClientSelectorTest extends BaseControl {
 
 	render () {
 		return <MasterContext.Provider value={{ company_id: numeric_value (this.state.company_id), master_page: this }}>
-
 			<div>
 
 				<div className="one-piece-form">
-
 					<ClientSelector id="client_selector" ref={this.client_selector} parent={this} includeOffshoreAccounts={false}
 				
 						header={"New client"}
 						headerSelectable={true}
 
-						selectedClient={this.state.selected_client}
+						selectedClientId={this.state.selected_client_id}
 		
 						onChange={client_id => this.setState ({ 
-							selected_client: client_id,
+							selected_client_id: client_id,
 							updating: true
 						})}
 
 						onLoad={data => this.setState ({ client_list: data })}>
 
 					</ClientSelector>
-
-
 				</div>
 
 				<br /><br />
 
-				<div className="two-column-grid">
+				<div className="three-column-grid">
 					<button onClick={() => this.setState ({ client_data: this.client_list ()})}>Load clients</button>
 					<button onClick={() => this.forceRefresh ()}>Force refresh</button>
+					<button onClick={() => this.setState ({ selected_client_id: 138 })}>Choose RMPC</button>
 				</div>
 
 			</div>
-
 		</MasterContext.Provider>
 	}// render;
 

@@ -80,12 +80,14 @@ export default class ProjectSelector extends BaseControl {
 
 			ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
 
-				let project_id = data.has_key (this.state.selected_project_id?.toString ()) ? this.state.selected_project_id : (this.props.hasHeader ? null : data.get_keys () [0] );
+				let project_id = data.has_key (this.props.selectedProjectId?.toString ()) ? this.state.selectedProjectId : (this.props.hasHeader ? null : data.get_keys () [0] );
 
-				switch (project_id) {
-					case this.state.selected_project_id: return this.execute (this.props.onProjectChange, project_id);
-					default: this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, this.state.selected_project_id));
-				}/* switch */;
+this.setState ({ selected_project_id: project_id });
+
+				// switch (project_id) {
+				// 	case this.state.selected_project_id: return this.execute (this.props.onProjectChange, project_id);
+				// 	default: this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, this.state.selected_project_id));
+				// }/* switch */;
 
 			}));
 
@@ -118,7 +120,7 @@ export default class ProjectSelector extends BaseControl {
 
 		return <div id={this.props.id} className="one-piece-form">
 
-			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} static={static_text}
+			<ClientSelector id="client_selector" ref={this.client_selector} parent={this} static={false}
 			
 				newButton={this.props.newClientButton || this.props.newButtons} 
 			

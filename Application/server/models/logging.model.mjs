@@ -14,6 +14,16 @@ class LoggingModel extends Database {
 	}// get_active_logging_by_company;
 
 
+	get_latest_logging_by_client (fields) {
+		this.execute_query ("get_latest_logging_by_client", [fields.account_id, fields.client_id])
+	}/* get_latest_logging_by_client */
+
+
+	get_latest_logging_by_client (fields) {
+		this.execute_query ("get_latest_logging_by_project", [fields.account_id, fields.project_id])
+	}/* get_latest_logging_by_client */
+
+
 	get_latest_entry (account_id) {
 		return this.data_query ("get_latest_entry", [account_id]);
 	}// get_latest_entry;

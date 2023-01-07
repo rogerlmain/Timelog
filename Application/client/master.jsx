@@ -31,7 +31,7 @@ import InvitationsModel from "client/classes/models/invitations.model";
 import OptionsModel from "client/classes/models/options.model";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
-import { beta, debugging, isset, is_array, is_empty, is_function, is_null, is_promise, live, not_set, numeric_value } from "client/classes/common";
+import { beta, debugging, isset, is_array, is_empty, is_function, is_null, is_promise, not_set, numeric_value } from "client/classes/common";
 
 import { MainContext, MasterContext } from "client/classes/types/contexts";
 
@@ -51,7 +51,7 @@ import "resources/styles/master.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.1.3.0";
+const version = "1.1.3.1";
 
 
 const user_image_style = {

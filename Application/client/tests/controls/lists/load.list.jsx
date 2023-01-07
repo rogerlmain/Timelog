@@ -4,8 +4,10 @@ import "classes/types/prototypes";
 import "resources/styles/main.css";
 
 import React from "react";
+
 import BaseControl from "client/controls/abstract/base.control";
 import LoadList from "client/controls/lists/load.list";
+
 import ClientStorage from "client/classes/storage/client.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
