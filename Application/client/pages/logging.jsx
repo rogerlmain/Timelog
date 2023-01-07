@@ -281,7 +281,7 @@ export default class LoggingPage extends BaseControl {
 
 		let latest_entry = this.get_latest_entry ();
 
-		if (latest_entry?.client_id == client_id) return this.setState ({ current_entry: latest_entry });
+		if (latest_entry?.client_id?.equals (client_id)) return this.setState ({ current_entry: latest_entry });
 
 		LoggingModel.get_latest_by_client (client_id).then (result => isset (result) ? this.setState ({ current_entry: {
 			client_id: client_id,
@@ -389,8 +389,12 @@ export default class LoggingPage extends BaseControl {
 								<div style={{ paddingLeft: "0.75em" }}><label htmlFor="memo" style={{ fontWeight: "bold" }}>Notes</label></div>
 								<div className="textarea-container with-some-headspace">
 									<textarea id="notes" name="notes"
-										placeholder="(optional)" defaultValue={this.notes () ?? blank}
+
+										placeholder="(optional)" value={this.notes () ?? blank} 
+										
+										onChange={event => this.setState ({ current_entry: { ...this.state.current_entry, notes: event.target.value}})}
 										onBlur={event => this.setState ({ current_entry: {...this.state.current_entry, notes: event.target.value }})}>
+
 									</textarea>
 								</div>
 							</div>

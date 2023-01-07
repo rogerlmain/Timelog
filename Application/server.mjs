@@ -232,7 +232,7 @@ app.post ("/logging", () => {
 			case "logging": logging_data.save_log_entry (fields); break;
 			case "billing": logging_data.save_billing (fields); break;
 			case "latest_by_client": logging_data.get_latest_logging_by_client (fields); break;
-			case "latest_by_client": logging_data.get_latest_logging_by_project (fields); break;
+			case "latest_by_project": logging_data.get_latest_logging_by_project (fields); break;
 		}// switch;
 
 	});

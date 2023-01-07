@@ -825,6 +825,9 @@ Location.prototype.urlParameter = function (parameter) { return this.urlParamete
 /**** Number Prototype Functions ****/
 
 
+Number.prototype.equals = function (comparison) { return parseFloat (comparison) == this }
+
+
 Number.prototype.matches = function (comparison) { return this.toString ().matches (comparison?.toString ()) }
 
 
@@ -890,6 +893,7 @@ String.prototype.toCurrency = function () {
 
 String.prototype.equals = function (comparison, case_sensitive = false) {
 	if (is_null (comparison)) return false;
+	comparison = comparison?.toString ();
 	return ((case_sensitive ? this : this.toLowerCase ()).trim () == (case_sensitive ? comparison : comparison.toLowerCase ()).trim ());
 }// equals;
 

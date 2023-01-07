@@ -19,9 +19,9 @@ class LoggingModel extends Database {
 	}/* get_latest_logging_by_client */
 
 
-	get_latest_logging_by_client (fields) {
+	get_latest_logging_by_project (fields) {
 		this.execute_query ("get_latest_logging_by_project", [fields.account_id, fields.project_id])
-	}/* get_latest_logging_by_client */
+	}/* get_latest_logging_by_project */
 
 
 	get_latest_entry (account_id) {
