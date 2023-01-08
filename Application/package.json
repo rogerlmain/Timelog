@@ -13,7 +13,7 @@
 		"start": "node server.mjs",
 		"build": "webpack --mode development",
 		"watch-start": "watch \"npm run start\" publish",
-		"watch-build": "watch \"npm run build\" client",
+		"watch-build": "watch \"npm run build\" client resources",
 		"check-types": "tsc"
 	},
 	"dependencies": {

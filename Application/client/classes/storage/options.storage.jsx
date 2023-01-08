@@ -123,7 +123,7 @@ export default class OptionsStorage extends LocalStorage {
 	static client_slots = (used = 0) => client_slots [OptionsStorage.client_limit () - 1] - used;
 
 	static project_limit = () => OptionsStorage.#get (option_types.project_limit) ?? 1;
-	static project_slots = (used = 0) => project_slots [OptionsStorage.project_limit () - 1] - used;
+	static project_slots = (used = 0) => project_slots [OptionsStorage.project_limit () - 1] - used; /* TODO: AT THE MOMENT, IT IS A TOTAL NUMBER OF PROJECTS [1, 5, ETC] - SHOULD BE PROJECTS * CLIENTS (X PROJECTS PER CLIENT) */
 
 	static billing_option = () => OptionsStorage.#get (option_types.billing_option) ?? 1;
 	static editing_option = () => OptionsStorage.#get (option_types.editing_option) ?? 1;

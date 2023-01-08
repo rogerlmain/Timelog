@@ -61,7 +61,7 @@ export default class TaskSelectorGadget extends BaseControl<TasksPageProps, Task
 		return (
 			<div id={this.props.id} className="two-column-grid task-selector-form">
 
-				<ProjectSelectorGadget id="project_selector" hasHeader={true} headerSelectable={false}
+				<ProjectSelectorGadget id="project_selector" useHeader={true} headerSelectable={false}
 					onProjectChange={(event: BaseSyntheticEvent) => {
 						this.setState ({ project_id: event.target.value }, () => this.load_tasks (this.props.onProjectChange));
 					}}>

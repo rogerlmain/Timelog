@@ -13,6 +13,7 @@ import { isset, debugging, not_set } from "client/classes/common";
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
+import OptionsStorage from "client/classes/storage/options.storage";
 
 
 export default class ProjectSelector extends BaseControl {
@@ -33,7 +34,7 @@ export default class ProjectSelector extends BaseControl {
 		static: false,
 		allowStatic: true,
 
-		hasHeader: false,
+		useHeader: false,
 		headerSelectable: false,
 
 		headerText: "Select a project",
@@ -80,14 +81,12 @@ export default class ProjectSelector extends BaseControl {
 
 			ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
 
-				let project_id = data.has_key (this.props.selectedProjectId?.toString ()) ? this.state.selectedProjectId : (this.props.hasHeader ? null : data.get_keys () [0] );
+				if (not_set (this.state.project_data)) return this.setState ({ selected_project_id: null });
 
-this.setState ({ selected_project_id: project_id });
+				let default_value = this.props.useHeader ? null : data.first_key ();
+				let project_id = data.has_key (this.props.selectedProjectId?.toString ()) ? this.props.selectedProjectId : default_value;
 
-				// switch (project_id) {
-				// 	case this.state.selected_project_id: return this.execute (this.props.onProjectChange, project_id);
-				// 	default: this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, this.state.selected_project_id));
-				// }/* switch */;
+				this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
 
 			}));
 
@@ -137,7 +136,7 @@ this.setState ({ selected_project_id: project_id });
 			</ClientSelector>
 
 			<FadePanel id={`${this.props.id}_project_selector_label_fade_panel`} visible={isset (this.state.selected_client_id)}>
-				<label htmlFor={`${this.props.id}_load_list`} style={{ fontWeight: static_text ? "bold" : null }}>Project</label>
+				<label htmlFor={`${this.props.id}_load_list`} style={{ fontWeight: "bold" }}>Project</label>
 			</FadePanel>
 			
 			<FadePanel id={`${this.props.id}_project_selector_fade_panel`} visible={isset (this.state.selected_client_id)}>
@@ -150,7 +149,7 @@ this.setState ({ selected_project_id: project_id });
 					
 					hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
-					onChange={event => this.setState ({ selected_project_id: event.target.getAttribute ("value") }, () => {
+					onChange={event => this.setState ({ selected_project_id: event.target.inherited_value () }, () => {
 						this.execute (this.props.onProjectChange, this.state.selected_project_id);
 					})}>
 

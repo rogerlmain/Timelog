@@ -22,6 +22,6 @@ create procedure save_offshore_token (
 		now()
 	);
     
-    select last_insert_id ();
+    select last_insert_id () as offshore_token_id;
 
 end??

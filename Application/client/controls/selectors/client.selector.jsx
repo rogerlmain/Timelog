@@ -7,7 +7,7 @@ import BaseControl from "client/controls/abstract/base.control";
 import Container from "client/controls/container";
 import LoadList from "client/controls/lists/load.list";
 
-import { debugging, not_set } from "client/classes/common";
+import { debugging, isset, not_set } from "client/classes/common";
 import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 import { MasterContext } from "client/classes/types/contexts";
 import { page_names } from "client/master";
@@ -84,7 +84,7 @@ export default class ClientSelector extends BaseControl {
 
 		return <Container>
 
-			<label htmlFor={`${this.props.id}_load_list`} style={{ fontWeight: static_text ? "bold" : null }}>Client</label>
+			<label htmlFor={`${this.props.id}_load_list`} style={{ fontWeight: "bold" }}>Client</label>
 
 			<LoadList id={`${this.props.id}_load_list`} ref={this.client_list} static={static_text}
 
@@ -102,10 +102,7 @@ export default class ClientSelector extends BaseControl {
 
 				hAlign={horizontal_alignment.stretch} vAlign={vertical_alignment.center}
 
-				onChange={event => {
-					let client_id = event.currentTarget.getAttribute ("value");
-					this.execute (this.props.onChange, client_id);
-				}}>
+				onChange={event => this.execute (this.props.onChange, event.target.inherited_value ())}>
 				
 			</LoadList>
 

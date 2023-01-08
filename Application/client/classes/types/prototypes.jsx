@@ -12,7 +12,9 @@ const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 
 Object.defineProperties (Object.prototype, {
 
-	"get_key": { value: function (value) { return this?.get_keys ()?.find (key => this [key] === value) } },
+	"first_key": { value: function () { return this.get_keys ()?.[0] }},
+
+	"get_key": { value: function (value) { return this.get_keys ().find (key => this [key] === value) } },
 	"get_keys": { value: function () { return Object.keys (this) }},
 	"get_values": { value: function () { return Object.values (this) }},
 
@@ -33,6 +35,22 @@ Object.defineProperties (Object.prototype, {
 		return result;
 
 	}}/* normalize */,
+
+
+	"inherited_value": { value: function () {
+
+		let value = null;
+		let control = this;
+
+		do {
+			value = control.getAttribute ("value");
+			if (isset (value)) return value;
+			control = control.parentNode;
+			if (control == document) return null;
+		} while (not_set (value));
+
+	}}/* inherited_value */,
+
 
 })/* Object.prototype */;
 

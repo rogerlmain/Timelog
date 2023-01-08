@@ -16,7 +16,7 @@ import ProjectSelector from "client/controls/selectors/project.selector";
 import LoggingModel from "client/classes/models/logging.model";
 
 import { blank, currency_symbol, date_formats, ranges, space } from "client/classes/types/constants";
-import { isset, not_set, multiline_text, null_value, debugging } from "client/classes/common";
+import { isset, not_set, multiline_text, null_value, debugging, not_empty } from "client/classes/common";
 
 import { Break } from "client/controls/html/components";
 import { MasterContext } from "client/classes/types/contexts";
@@ -283,14 +283,14 @@ export default class LoggingPage extends BaseControl {
 
 		if (latest_entry?.client_id?.equals (client_id)) return this.setState ({ current_entry: latest_entry });
 
-		LoggingModel.get_latest_by_client (client_id).then (result => isset (result) ? this.setState ({ current_entry: {
+		LoggingModel.get_latest_by_client (client_id).then (result => this.setState ({ current_entry: {
 			client_id: client_id,
-			project_id: result?.project_id,
+			project_id: result?.project_id ?? null,
 			start: new Date ().rounded (ranges.start),
 			end: new Date ().rounded (ranges.end),
-			logged_in: not_set (result?.end_time),
-			notes: result?.notes,
-		} }) : null);
+			logged_in: not_empty (result) && not_set (result?.end_time),
+			notes: result?.notes ?? null,
+		} }));
 
 	}/* update_client */
 
@@ -299,16 +299,16 @@ export default class LoggingPage extends BaseControl {
 
 		let latest_entry = this.get_latest_entry ();
 
-		if (latest_entry?.project_id == project_id) return this.setState ({ current_entry: latest_entry });
+		if (latest_entry?.project_id?.matches (project_id)) return this.setState ({ current_entry: latest_entry });
 
-		LoggingModel.get_latest_by_project (project_id).then (result => isset (result) ? this.setState ({ current_entry: {
-			client_id: client_id,
-			project_id: result?.project_id,
+		LoggingModel.get_latest_by_project (project_id).then (result => this.setState ({ current_entry: {
+			client_id: this.state.current_entry.client_id,
+			project_id: project_id,
 			start: new Date ().rounded (ranges.start),
 			end: new Date ().rounded (ranges.end),
-			logged_in: not_set (result?.end_time),
-			notes: result?.notes,
-		} }) : null);
+			logged_in: not_empty (result) && not_set (result?.end_time),
+			notes: result?.notes ?? null,
+		} }));
 
 	}/* update_project */
 
@@ -355,11 +355,10 @@ export default class LoggingPage extends BaseControl {
 					selectedClientId={this.state.current_entry.client_id} 
 					selectedProjectId={this.state.current_entry.project_id}
 
-					hasHeader={true} 
+					useHeader={not_set (this.state.current_entry?.project_id)}
 					headerSelectable={false} 
 
 					onClientChange={client_id => { if (this.state.current_entry.client_id != client_id) this.update_client (client_id) }}
-
 					onProjectChange={project_id => { if (this.state.current_entry.project_id != project_id) this.update_project (project_id) }}>
 
 				</ProjectSelector>

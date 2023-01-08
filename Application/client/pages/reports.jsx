@@ -17,6 +17,8 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import Container from "client/controls/container";
 
+import ProjectReport from "client/pages/reports/project.report";
+
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
 import { debugging, isset, is_blank, is_null, is_object, not_set } from "client/classes/common";
 
@@ -439,7 +441,7 @@ export default class ReportsPage extends BaseControl {
 
 				<div className="two-column-table">
 
-					<ProjectSelector id="report_selector" hasHeader={true} headerSelectable={false} 
+					<ProjectSelector id="report_selector" useHeader={true} headerSelectable={false} 
 						onClientChange={client_id => this.setState ({ client_id: client_id })}
 						onProjectChange={project_id => this.setState ({ project_id: project_id })}>
 					</ProjectSelector>
@@ -479,7 +481,8 @@ export default class ReportsPage extends BaseControl {
 				</div>
 			</div>	
 
-			{isset (this.state.project_id) && <FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
+			{/* {isset (this.state.project_id) &&  */}
+			<FadePanel id="report_button_panel" visible={isset (this.state.project_id)}>
 				<div className="button-panel with-headspace">
 					<SelectButton onClick={() => this.results_panel.current.animate (() => ReportsModel.get_by_project (this.state.project_id, this.state.use_dates ? {
 						start_date: this.state.start_date.format (date_formats.database_date), 
@@ -489,7 +492,7 @@ export default class ReportsPage extends BaseControl {
 						is_billable: this.has_billable_items (data),
 					})))}>Generate</SelectButton>
 				</div>
-			</FadePanel>}
+			</FadePanel>{/* } */}
 
 		</Container>
 
@@ -603,7 +606,7 @@ export default class ReportsPage extends BaseControl {
 	load_panel = () => {
 		switch (this.state.current_panel) {
 			case reports_panels.client_report: return this.client_report_panel ();
-			case reports_panels.project_report: return this.project_report_panel ();
+			case reports_panels.project_report: return <ProjectReport />
 			case reports_panels.teamster_report: return this.teamster_report_panel ();
 			case reports_panels.daily_report: return this.daily_report_panel ();
 			default: return this.report_home_panel ();
@@ -627,7 +630,11 @@ export default class ReportsPage extends BaseControl {
 				</SelectButton>
 
 				<SelectButton id="project_report_button" className="sticky-button" selected={this.state.current_panel == reports_panels.project_report} 
-					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.project_report }))}>
+					onClick={() => this.reports_panel.current.animate (() => this.setState ({ 
+						current_panel: reports_panels.project_report,
+						client_id: null,
+						project_id: null,
+					}))}>
 						
 					Project Report
 					
