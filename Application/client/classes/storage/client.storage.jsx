@@ -5,7 +5,7 @@ import ClientModel from "client/classes/models/client.model";
 import OffshoreModel from "../models/offshore.model";
 
 import { stores } from "client/classes/types/constants";
-import { isset, not_set, nulled, live, is_null } from "client/classes/common";
+import { isset, not_set, nulled, is_null } from "client/classes/common";
 
 
 const store_name = stores.clients;
