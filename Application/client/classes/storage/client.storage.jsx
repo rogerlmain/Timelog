@@ -41,12 +41,6 @@ export default class ClientStorage extends LocalStorage {
 
 		let client_id = client.client_id ?? client.id;
 
-		if (live ()) {
-			delete client.company_id;
-			delete client.client_id;
-			delete client.id;
-		}// if;
-
 		ClientStorage.#set_client_by_id (client_id, client);
 		return client;
 

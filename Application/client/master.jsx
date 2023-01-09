@@ -51,7 +51,7 @@ import "resources/styles/master.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.1.3.3";
+const version = "1.1.3.4";
 
 
 const user_image_style = {
@@ -551,7 +551,7 @@ export default class MasterPanel extends BaseControl {
 								<div>(DBA: The Roger Main Programming Company)</div>
 								<div>All rights reserved</div>
 								<br />
-								<div>Version {version} {debugging () ? "(test)" : blank}</div>
+								<div>Version {version} {debugging () ? "(test)" : (beta () ? "B" : blank)}</div>
 							</div>
 							<a href="https://journal.rexthestrange.com" target="journal"><img src={rexs_head} style={logo_image} /></a>
 						</div>

@@ -4,11 +4,10 @@ import CompanyStorage from "client/classes/storage/company.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
 import ProjectModel from "client/classes/models/project.model";
+import OffshoreModel from "client/classes/models/offshore.model";
 
 import { stores } from "client/classes/types/constants";
-import { isset, not_null, not_empty, is_promise, not_number, not_set, live, is_null } from "client/classes/common";
-import OffshoreModel from "../models/offshore.model";
-import { repository_type } from "client/forms/offshore.accounts.form";
+import { isset, not_null, is_promise, not_set } from "client/classes/common";
 
 
 const store_name = stores.projects;
@@ -76,12 +75,6 @@ export default class ProjectStorage extends LocalStorage {
 
 		let client_id = project.client_id;
 		let project_id = project.project_id;
-
-		if (live ()) {
-			delete project.company_id;
-			delete project.client_id;
-			delete project.project_id;
-		}// if;
 
 		ProjectStorage.set_store_by_id (client_id, project_id, project);
 		return project;
