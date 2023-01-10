@@ -10,7 +10,7 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 import { debugging, isset, jsonify } from "client/classes/common";
 
 import { MasterContext } from "client/classes/types/contexts";
-import { horizontal_alignment, support_address } from "client/classes/types/constants";
+import { blank, horizontal_alignment, support_address } from "client/classes/types/constants";
 
 
 const bad_credentials = <div id="bad_credentials" className="form-error">
@@ -25,6 +25,12 @@ const server_error = <div id="server_error" className="form-error">
 	<br />
 	If the problem persists, please contact {support_address}
 </div>
+
+
+const default_user = debugging () ? {
+	email: "rex@rogerlmain.com",
+	password: "stranger"
+} : null;
 
 
 export default class SigninPage extends BaseControl {
@@ -133,6 +139,9 @@ export default class SigninPage extends BaseControl {
 
 
 	render () {
+
+		let debug = debugging ();
+
 		return <div id={this.props.id} className="shadow-box">
 
 			<ExplodingPanel id="signin_error" ref={this.error_panel}>{this.state.error_message}</ExplodingPanel>
@@ -141,20 +150,11 @@ export default class SigninPage extends BaseControl {
 				<div className="one-piece-form form-table">
 
 					<label htmlFor="email">Email</label>
-					<input id="email" name="email" type="text"
-
-						//defaultValue="betty@riverdale.edu"
-						//defaultValue="rex@rogerlmain.com"
-						//defaultValue="joe@bloggs.com"
-						//defaultValue="dmitry@kgb.gov.ru"
-						//defaultValue="rex@rexthestrange.com"
-						//defaultValue="tastetestdude@gmail.com"
-
-					/>
+					<input id="email" name="email" type="text" defaultValue={debug ? (default_user?.email ?? blank) : blank} />
 
 					<label htmlFor="password">Password</label>
 					<div style={{display: 'flex', flexDirection: 'row'}}>
-						<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue="stranger" style={{ width: "100%" }} />
+						<input name="password" type={this.state.password_visible ? "text" : "password"} defaultValue={debug ? (default_user?.password ?? blank) : blank} />
 						<img className="link-control" src={"resources/images/eyeball." + (this.state.password_visible ? "off" : "on") + ".svg"}
 							onClick={() => { this.setState ({ password_visible: !this.state.password_visible })}}>
 						</img>

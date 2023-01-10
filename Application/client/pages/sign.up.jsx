@@ -47,6 +47,14 @@ const image_uploader_style = {
 }// image_uploader_style;
 
 
+const test_user = {
+	first_name: "Moe",
+	last_name: "Howard",
+	password: "stranger",
+	email: "moe@threestooges.com",
+}// test_user;
+
+
 export default class SignupPage extends BaseControl {
 
 
@@ -86,13 +94,7 @@ export default class SignupPage extends BaseControl {
 	state = {
 
 		account_type: account_types.deadbeat,
-
-		default_user: debugging () ? {
-			first_name: "Moe",
-			last_name: "Howard",
-			password: "stranger",
-			email: "moe@threestooges.com",
-		} : null,
+		default_user: (debugging () ?  test_user : null),
 		
 		payment_required: false,
 		changing_password: false,
