@@ -5,7 +5,6 @@ import { unlimited } from "client/classes/types/options";
 
 
 const live_debugging = false;
-const beta_version = true;
 
 
 /********/

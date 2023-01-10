@@ -13,7 +13,6 @@ import { isset, debugging, not_set } from "client/classes/common";
 import { page_names } from "client/master";
 
 import "resources/styles/gadgets/selector.gadget.css";
-import OptionsStorage from "client/classes/storage/options.storage";
 
 
 export default class ProjectSelector extends BaseControl {

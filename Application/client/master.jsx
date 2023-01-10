@@ -51,7 +51,7 @@ import "resources/styles/master.css";
  // Increment each level at 10 regardless of status updates
 
 
-const version = "1.1.3.4";
+const version = "1.1.3.5";
 
 
 const user_image_style = {
