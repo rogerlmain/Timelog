@@ -117,10 +117,11 @@ app.post ("/accounts", () => {
 			let account_data = new AccountsModel ();
 
 			switch (fields.action) {
-				case "save"		: account_data.save_account (fields); break;
-				case "email"	: account_data.get_by_email (fields.email_address); break;
 				case "company"	: account_data.get_by_company (fields.company_id); break;
+				case "email"	: account_data.get_by_email (fields.email_address); break;
+				case "id"		: account_data.get_by_id (fields.account_id); break;
 				case "project"	: account_data.get_by_project (fields.project_id); break;
+				case "save"		: account_data.save_account (fields); break;
 				case "task"		: account_data.get_by_task (fields.task_id); break;
 				default: break;
 			}// switch;
@@ -346,6 +347,7 @@ app.post ("/reports", () => {
 	app.process (fields => {
 		let report_data = new ReportsModel ();
 		switch (fields.action) {
+			case "daily": report_data.report_daily_by_account (fields.account_id, fields.report_date); break;
 			case "project": report_data.report_by_project (fields.project_id, fields.start_date, fields.end_date); break;
 		}// switch;
 	});

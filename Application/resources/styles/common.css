@@ -203,6 +203,14 @@ div.credit-centered *:nth-child(::even) { justify-self: flex-start }
 }/* .top-centered */
 
 
+.top-left {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+}/* .top-left */
+
+
 .vertically-spaced-out {
 	display: flex;
 	flex-direction: column;

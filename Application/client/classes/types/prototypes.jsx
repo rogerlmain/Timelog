@@ -239,6 +239,9 @@ Date.timespan = elapsed_time => {
 }// timespan;
 
 
+Date.datePart = () => new Date ().date_part ();
+
+
 // Date.elapsed: returns a time period in minutes in the format: dd:hh:mm (may need to adjust for other formats)
 Date.elapsed = function (elapsed_time /* in minutes */) {
 
@@ -304,13 +307,21 @@ Date.prototype.get_appended_day = function () {
 
 
 Date.prototype.add = function (part, amount) { 
-	this.setTime (this.getTime () + (Date.increments [part] * amount));
-	return this;
-}// add;
+	return new Date (this.getTime () + (Date.increments [part] * amount));
+}/* add */
 
 
 // returns the difference between now and the stored date in milliseconds
 Date.prototype.elapsed = function () { return (new Date ().getTime () - this.getTime ()) }
+
+
+Date.prototype.date_part = Date.prototype.get_date_part = function () { 
+	this.setMilliseconds (0);
+	this.setSeconds (0);
+	this.setMinutes (0);
+	this.setHours (0);
+	return this;
+}/* date_part */
 
 
 Date.prototype.round_hours = function (direction) {

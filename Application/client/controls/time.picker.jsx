@@ -36,10 +36,10 @@ export default class TimePicker extends BaseControl {
 		let new_time = new Date (this.state.value);
 
 		if (part == Date.parts.meridian) {
-			if ((value == Date.meridians.am) && (new_time.getHours () > 11)) new_time.add (Date.parts.hours, -12);
-			if ((value == Date.meridians.pm) && (new_time.getHours () < 12)) new_time.add (Date.parts.hours, 12);
+			if ((value == Date.meridians.am) && (new_time.getHours () > 11)) new_time = new_time.add (Date.parts.hours, -12);
+			if ((value == Date.meridians.pm) && (new_time.getHours () < 12)) new_time = new_time.add (Date.parts.hours, 12);
 		} else {
-			new_time.add (Date.parts [part], value);
+			new_time = new_time.add (Date.parts [part], value);
 		}// if;
 
 		this.setState ({ value: new_time }, () => this.execute (this.props.onChange, new_time));

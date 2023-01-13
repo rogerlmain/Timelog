@@ -53,6 +53,12 @@ export default class DateInput extends BaseControl {
 	}// componentDidMount;
 
 
+	shouldComponentUpdate (props) {
+		if (this.props.value != props.value) props.value.get_date_part ();
+		return true;
+	}/* shouldComponentUpdate */
+
+
 	render () {
 		return <div className="date-input">
 
@@ -79,10 +85,16 @@ export default class DateInput extends BaseControl {
 
 			<PopupPanel className="calendar" visible={this.state.calendar_visible && !this.props.disabled}>
 				<div className="calendar">
-					<Calendar id="select_calendar" calendarType="US" onChange={selected_date => this.setState ({ 
-						calendar_visible: false,
-						value: selected_date,
-					}, () => this.props.onChange (selected_date))} />
+					<Calendar id="select_calendar" calendarType="US" onChange={selected_date => {
+
+						selected_date = new Date ((selected_date.getTime () / 3600000) * 3600000);
+
+						this.setState ({ 
+							calendar_visible: false,
+							value: selected_date,
+						}, () => this.props.onChange (selected_date))
+					
+					}} />
 				</div>
 			</PopupPanel>
 

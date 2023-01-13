@@ -223,7 +223,8 @@ input.invalid, select.invalid {
 
 
 label {
-	margin-right: 0.3em;
+	font-weight: bold;
+	margin-right: 0.5em;
 	text-align: right;
 	white-space: nowrap;
 }/* label */

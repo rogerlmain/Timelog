@@ -17,6 +17,7 @@ import EyecandyPanel from "client/controls/panels/eyecandy.panel";
 
 import Container from "client/controls/container";
 
+import DailyReport from "client/pages/reports/daily.report";
 import ProjectReport from "client/pages/reports/project.report";
 
 import { blank, date_formats, horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
@@ -122,25 +123,6 @@ export default class ReportsPage extends BaseControl {
 
 		</EyecandyPanel>
 	</Container>
-
-
-	daily_report_panel = () => <div>
-		
-		Daily report goes here.<br />
-		<br />
-		1. Add a permission for daily_report_accounts<br />
-		2. If the user has the daily_report_accounts:<br />
-		<br />
-		&#9;yes: show a list of all company users<br />
-		&#9;no: immediately show the report for this user<br />
-		<br />
-		3. Show a report that is a list of daily activities (all projects worked on). Include:<br />
-		<br />
-		&#9;a) A total for each project<br />
-		&#9;b) A total for all projects<br />
-
-	</div>;
-
 
 
 	/********/
@@ -593,7 +575,7 @@ export default class ReportsPage extends BaseControl {
 
 		}// for;
 
-		return <div key="splah" className="teamster-report">{result}</div>
+		return <div className="simple-report teamster-report">{result}</div>
 
 	}// teamster_report;
 
@@ -608,7 +590,7 @@ export default class ReportsPage extends BaseControl {
 			case reports_panels.client_report: return this.client_report_panel ();
 			case reports_panels.project_report: return <ProjectReport />
 			case reports_panels.teamster_report: return this.teamster_report_panel ();
-			case reports_panels.daily_report: return this.daily_report_panel ();
+			case reports_panels.daily_report: return <DailyReport />;
 			default: return this.report_home_panel ();
 		}/* switch */;
 	}/* load_panel */;
@@ -624,12 +606,11 @@ export default class ReportsPage extends BaseControl {
 	
 				<SelectButton id="client_report_button" className="sticky-button" selected={this.state.current_panel == reports_panels.client_report} 
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.client_report }))}>
-						
 					Client Report
-					
 				</SelectButton>
 
 				<SelectButton id="project_report_button" className="sticky-button" selected={this.state.current_panel == reports_panels.project_report} 
+
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ 
 						current_panel: reports_panels.project_report,
 						client_id: null,
@@ -641,31 +622,27 @@ export default class ReportsPage extends BaseControl {
 				</SelectButton>
 
 				<SelectButton id="teamster_button" className="sticky-button" selected={this.state.current_panel == reports_panels.teamster_report} 
-
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.teamster_report}))}>
-						
 					Teamsters Report
-					
 				</SelectButton>
 
 				<SelectButton id="daily_button" className="sticky-button" selected={this.state.current_panel == reports_panels.daily_report} 
-
 					onClick={() => this.reports_panel.current.animate (() => this.setState ({ current_panel: reports_panels.daily_report}))}>
-						
 					Daily Report
-					
 				</SelectButton>
 
 			</div>					
 				
-			<ExplodingPanel id="reports_panel" ref={this.reports_panel} stretchOnly={true} hAlign={horizontal_alignment.left} vAlign={vertical_alignment.top}
-				afterChanging={() => { 
-					if (this.state.current_panel != reports_panels.teamster_report) return;
-					this.setState ({ teamster_report_loading: true });
-				}}>{this.load_panel ()}
-			</ExplodingPanel>
+			<div className="full-height top-left">
+				<ExplodingPanel id="reports_panel" ref={this.reports_panel} stretchOnly={true} hAlign={horizontal_alignment.left} vAlign={vertical_alignment.top}
+					afterChanging={() => { 
+						if (this.state.current_panel != reports_panels.teamster_report) return;
+						this.setState ({ teamster_report_loading: true });
+					}}>{this.load_panel ()}
+				</ExplodingPanel>
+			</div>
 			
 		</div>
-	}// render;
+	}// render;S
 
 }// ReportsPage;

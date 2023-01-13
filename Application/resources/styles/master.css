@@ -53,17 +53,23 @@ div.beta-tag-frame {
 
 div.beta-tag-bevel {
 	border: solid 0px transparent;
-	border-width:  0.8em 0.3em;
+	border-width:  11px 5px;
 	border-color: transparent var(--beta-color) var(--beta-color) transparent;
 	width: 0; height: 0;
 }/* div.beta-tag-bevel */
 
 
 div.beta-tag-frame > div.beta-tag-text {
-	display: inline-block;
+
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+	height: 22px;
+
 	border-left: none;
-	background-color: var(--beta-color);
-	color: white;
-	padding: 0.2em 0.3em 0.2em 0.2em;
-	text-align: right;
+    background-color: var(--beta-color);
+    color: white;
+    padding: 0.2em 0.3em 0.2em 0.2em;
+    text-align: right;
+
 }/* div.beta-tag-text */

@@ -34,6 +34,12 @@ export default class AccountsModel extends DataModel {
 	})/* get_by_email */;
 
 
+	static get_by_id = id => Database.fetch_data (table, { 
+		action: "id",
+		account_id: id,
+	});
+
+
 	static get_by_project (project_id, callback = null) {
 		if (is_null (project_id)) return null;
 		let parameters = new FormData ();
