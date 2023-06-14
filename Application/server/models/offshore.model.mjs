@@ -1,8 +1,10 @@
 import Database from "../database.mjs";
-import GithubHandler, { repository_type } from "../handlers/offshore/github.handler.mjs";
 
 
 export default class OffshoreModel {
+
+
+	static get_latest_projects = client_id => new Database ().data_query ("get_latest_offshore_projects", { client_id: client_id });
 
 
 	static save_token = data => new Database ().execute_query ("save_offshore_token", {
@@ -22,7 +24,7 @@ export default class OffshoreModel {
 
 
 	static get_token = token_id => new Database ().data_query ("get_offshore_token_by_id", { token_id: token_id });
-	static get_tokens = data => new Database ().data_query ("get_offshore_tokens", { company_id: data.company_id });
+	static get_tokens = company_id => new Database ().data_query ("get_offshore_tokens", { company_id: company_id });
 
 
 }// OffshoreModel;

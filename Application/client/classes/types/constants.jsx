@@ -33,7 +33,8 @@ export const support_address = "support(at)rogerlmain.com";
 
 
 export const stores = {
-	clients: "clients",
+	clients	: "clients",
+	offshore: "offshore",
 	projects: "projects",
 }// stores;
 

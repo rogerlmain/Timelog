@@ -5,7 +5,7 @@ drop procedure if exists get_latest_logging_by_client;
 
 delimiter ??
 
-create procedure get_latest_logging_by_client (account_id integer, client_id integer)
+create procedure get_latest_logging_by_client (account_id integer, client_id varchar (64))
 begin
 
 	select 
@@ -14,10 +14,10 @@ begin
         log.id as account_id,
         log.client_id,
         log.project_id,
-
+        
         clt.`name` as client_name,
         prj.`name` as project_name,
---         
+
         log.start_time,
         log.end_time,
         log.notes
@@ -28,7 +28,7 @@ begin
 		clients as clt
 	on 
 		(clt.id = log.client_id)
-	join
+	left outer join
 		projects as prj
 	on
 		(prj.id = log.project_id)

@@ -5,7 +5,7 @@ drop procedure if exists get_projects_by_client;
 
 delimiter ??
 
-create procedure get_projects_by_client (client_id integer) begin
+create procedure get_projects_by_client (client_id varchar (64)) begin
 
 	select
 		prj.id as project_id,

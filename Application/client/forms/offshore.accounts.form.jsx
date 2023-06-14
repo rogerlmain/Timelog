@@ -22,8 +22,9 @@ const rmpc_username = "rexthestrange";
 
 
 const repository_name = {
-	git: "Application token",
-	jira: "JIRA ID"
+	1: "Github",
+	2: "Gitlab",
+	3: "JIRA"
 }/* repository_type */;
 
 
@@ -102,9 +103,9 @@ export default class OffshoreAccountsForm extends BaseControl {
 
 			onChange={event => this.repository_panel?.current.animate (() => this.setState ({ repository: event.target.value }))}>
 
-			<option value={repository_type.github}>GITHub</option>
-			<option value={repository_type.gitlab}>GITLab</option>
-			<option value={repository_type.jira}>JIRA</option>
+			<option value={repository_type.github}>{repository_name [repository_type.github]}</option>
+			<option value={repository_type.gitlab}>{repository_name [repository_type.gitlab]}</option>
+			<option value={repository_type.jira}>{repository_name [repository_type.jira]}</option>
 
 		</SelectList>
 

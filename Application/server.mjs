@@ -60,7 +60,13 @@ global.request = () => getNamespace (session_namespace).active.request;
 global.response = () => getNamespace (session_namespace).active.response;
 
 
-/********/
+/**** Custom Methods ****/
+
+
+app.return_value = value => global.response ().send (JSON.stringify (value));
+
+
+/**** Configuration Methods ****/
 
 
 app.process = async (handler) => {
@@ -148,7 +154,7 @@ app.post ("/clients", () => {
 	app.process (fields => {
 		let client_data = new ClientModel ();
 		switch (fields.action) {
-			case "list_by_company": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
+			case "get_by_company": client_data.get_clients_by_company (parseInt (fields.company_id)); break;
 			case "details": client_data.get_client_by_id (fields.client_id); break;
 			case "delete": client_data.delete_client (fields.client_id); break;
 			case "save": client_data.save_client (fields); break;
@@ -268,10 +274,11 @@ app.post ("/offshore", () => {
 
 				case "save_account": OffshoreModel.save_account (fields); break;
 				case "save_token": OffshoreModel.save_token (fields); break;
-				case "get_tokens": OffshoreModel.get_tokens (fields).then (result => global.response ().send (JSON.stringify (result))); break;
+				case "get_tokens": OffshoreModel.get_tokens (fields.company_id).then (app.return_value); break;
 
-				case "get_repositories": OffshoreHandler.get_repositories (fields).then (result => global.response ().send (JSON.stringify (result))); break;
-				case "get_projects": OffshoreHandler.get_projects (fields.token, fields.repo); break;
+				case "get_clients": OffshoreHandler.get_clients (fields.company_id).then (app.return_value); break;
+				case "get_latest_projects": OffshoreHandler.get_latest_projects (fields).then (app.return_value); break;
+				case "get_projects_by_number": OffshoreHandler.get_projects_by_number (fields).then (app.return_value); break;
 				case "get_users": OffshoreHandler.get_users (fields.token, fields.repo); break;
 
 			}/* switch */;
@@ -456,6 +463,9 @@ app.post ("/signin", () => {
 			if (logging.length > 0) result.logging = logging [0] ?? blank;
 			processed.logging = true;
 		});
+
+
+
 
 		return_response ();
 

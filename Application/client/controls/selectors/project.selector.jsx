@@ -1,14 +1,17 @@
 import React from "react";
 
-import ProjectStorage from "client/classes/storage/project.storage";
-
 import BaseControl from "client/controls/abstract/base.control";
 
 import LoadList from "client/controls/lists/load.list";
 import FadePanel from "client/controls/panels/fade.panel";
 import ClientSelector from "client/controls/selectors/client.selector";
 
-import { horizontal_alignment, vertical_alignment } from "client/classes/types/constants";
+import OffshoreModel from "client/classes/models/offshore.model";
+
+import ClientStorage from "client/classes/storage/client.storage";
+import ProjectStorage from "client/classes/storage/project.storage";
+
+import { horizontal_alignment, space, vertical_alignment } from "client/classes/types/constants";
 import { isset, debugging, not_set } from "client/classes/common";
 import { page_names } from "client/master";
 
@@ -75,24 +78,60 @@ export default class ProjectSelector extends BaseControl {
 	/*********/
 
 
+	search_repo = event => {
+
+		let text = event.target.value;
+		let task_number = (text.indexOf ("#") == 0) && (text.substring (text.indexOf ("#") + 1, ((text.indexOf (space) >= 0) ? text.indexOf (space) : text.length)));
+		let is_number = task_number.is_cardinal ();
+
+		let client = this.state.client_list [this.state.selected_client_id];
+
+		if ((!is_number) && (text.length < 3)) return;
+
+		if (is_number) return !!OffshoreModel.get_projects_by_number ({ ...client, task_number: task_number }).then (task => {
+
+			alert (JSON.stringify (task));
+
+		});
+
+		OffshoreModel.get_tasks_by_search (repo_type, text).then (task => {
+
+			alert (task);
+
+		});
+
+	}/* search_repo */;
+
+
 	update_projects_list = client_id => {
-		this.setState ({ selected_client_id: client_id }, () => {
 
-			ProjectStorage.get_by_client (client_id).then (data => this.setState ({ project_data: Object.values (data) }, () => {
+		ClientStorage.get_by_id (client_id).then (client => this.setState ({ selected_client_id: client_id }, () => {
 
-				if (not_set (this.state.project_data)) return this.setState ({ selected_project_id: null });
+			ProjectStorage.get_by_client (client_id).then (data => {
 
-				let default_value = this.props.useHeader ? null : data.first_key ();
-				let project_id = data.has_key (this.props.selectedProjectId?.toString ()) ? this.props.selectedProjectId : default_value;
+				if (isset (client.type)) data ["search"] = ({ project_id: "search", name: "Search" });
+				
+				this.setState ({ project_data: Object.values (data) }, () => {
 
-				this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
+					if (not_set (this.state.project_data)) return this.setState ({ selected_project_id: null });
 
-			}));
+					let default_value = this.props.useHeader ? null : data.first_key ();
+					let project_id = data.has_key (this.props.selectedProjectId?.toString ()) ? this.props.selectedProjectId : default_value;
+
+					this.setState ({ selected_project_id: project_id }, () => this.execute (this.props.onProjectChange, project_id));
+
+				})
+				
+			});
 
 			this.execute (this.props.onClientChange, client_id);
 		
-		})/* setState */;
+		}));
+
 	}/* update_projects_list */;
+
+
+	/*********/
 
 
 	shouldComponentUpdate (new_props) {
@@ -107,7 +146,7 @@ export default class ProjectSelector extends BaseControl {
 
 	componentDidMount = () => setTimeout (() => {
 		if (not_set (this.state.selected_client_id)) return;
-		ProjectStorage.get_by_client (this.state.selected_client_id).then (data => this.setState ({ project_data: Object.values (data) }));
+		this.update_projects_list (this.state.selected_client_id);
 	}, 1)/* componentDidMount */;
 
 
@@ -137,7 +176,7 @@ export default class ProjectSelector extends BaseControl {
 			<FadePanel id={`${this.props.id}_project_selector_label_fade_panel`} visible={isset (this.state.selected_client_id)}>
 				<label htmlFor={`${this.props.id}_load_list`} style={{ fontWeight: "bold" }}>Project</label>
 			</FadePanel>
-			
+
 			<FadePanel id={`${this.props.id}_project_selector_fade_panel`} visible={isset (this.state.selected_client_id)}>
 				<LoadList id={this.props.id} label="Project" style={{ width: "100%" }} static={static_text}
 
@@ -153,6 +192,11 @@ export default class ProjectSelector extends BaseControl {
 					})}>
 
 				</LoadList>
+			</FadePanel>
+
+			<div />
+			<FadePanel id={`${this.props.id}_search_field`} visible={this.state.selected_project_id == "search"} className="full-width">
+				<input type="text" id="search_terms" name="search_terms" onChange={this.search} onChange={this.search_repo} />
 			</FadePanel>
 
 		</div>

@@ -44,7 +44,7 @@ class Database {
 	}// normalized;
 
 
-	// Use if special handling required before send 
+	// Use if special handling required before send or used locally
 	data_query (procedure, parameters = null) {
 		return new Promise ((resolve, reject) => {
 
@@ -55,10 +55,10 @@ class Database {
 			try {
 				this.connection.query (command, this.normalized (parameters), async (error, results) => {
 
-					if (isset (error)) return this.send_result_data (error);
+					if (isset (error)) return this.send_result_data (command + error);
 
 					this.connection.end ();
-					resolve (results [0]);
+					resolve (results?.[0] ?? null);
 
 				});
 			} catch (except) { reject (except) };

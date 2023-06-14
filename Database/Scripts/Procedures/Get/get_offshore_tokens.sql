@@ -8,6 +8,7 @@ create procedure get_offshore_tokens (company_id integer) begin
 
 	select 
 		oft.id as token_id,
+        oft.offshore_id,
         oft.`type`,
 		oft.token
 	from 

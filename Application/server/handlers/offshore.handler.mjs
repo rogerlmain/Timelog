@@ -1,7 +1,15 @@
 import https from "https";
 import fetch from "node-fetch";
+import LoggingModel from "../models/logging.model.mjs";
 import OffshoreModel from "../models/offshore.model.mjs";
-import GithubHandler, { repository_type } from "./offshore/github.handler.mjs";
+import GithubHandler from "./offshore/github.handler.mjs";
+
+
+export const repository_type = {
+	github	: 1,
+	gitlab	: 2,
+	jira	: 3,
+}/* repository_type */;
 
 
 export default class OffshoreHandler {
@@ -17,40 +25,56 @@ export default class OffshoreHandler {
 	}).on ("error", error => reject (error)));
 
 
-	static get_repositories = data => new Promise ((resolve, reject) => OffshoreModel.get_tokens (data).then (async tokens => {
-
+	static get_clients = company_id => new Promise ((resolve, reject) => OffshoreModel.get_tokens (company_id).then (async tokens => {
 		try {
-
-			let result = null;
-
 			for (let item of tokens) {
 				switch (item.type) {
-					case repository_type.github: result = Array.concat (result, await new GithubHandler ().get_repositories (item)); break;
+					case repository_type.github: return new GithubHandler ().get_clients (item).then (resolve).catch (reject); break;
 					case repository_type.gitlab: break;
 					case repository_type.jira: break;
-				}/* switch */;
-			}/* for */;
-
-			resolve (result);
-
+				}// switch;
+			}// for;
 		} catch (except) { reject (except) }
+	}))/* get_clients */;
 
-	}))/* get_respositories */;
+
+	static get_latest_projects = details => new Promise ((resolve, reject) => OffshoreModel.get_tokens (details.company_id).then (async tokens => {
+		try {
+			OffshoreModel.get_latest_projects (details.client_id).then (async data => {
+
+				let issues = null;
+
+				data?.forEach (project => isset (issues) ? issues.push (project.project_id) : (issues = [project.project_id]));
+
+				switch (data?.[0]?.type) {
+					case repository_type.github: resolve (await new GithubHandler ().get_projects_by_number (data?.[0]?.token, issues)); break; 
+					case repository_type.gitlab: break;
+					case repository_type.jira: break;
+				}// switch;
+
+			})/* get_latest_projects */;
+		} catch (except) { reject (except) }
+	}))/* get_latest_projects */;
 
 
-	static get_projects = (token_id, repo_code) => {
-		OffshoreModel.get_token (token_id).then (token => {
+	static get_projects_by_number = details => new Promise ((resolve, reject) => {
 
-			if (token.length > 0) token = token [0];
+		if (not_set (details.token_id)) resolve (null);
 
-			switch (token.type) {
-				case repository_type.github: new GithubHandler ().get_projects (token, repo_code); break;
+		OffshoreModel.get_token (details.token_id).then (token_data => {
+
+			let token = token_data?.[0]?.token;
+
+			switch (parseInt (details.type)) {
+				case repository_type.github: return new GithubHandler ().get_projects_by_number (token, details.task_number).then (resolve).catch (reject); break;
 				case repository_type.gitlab: break;
 				case repository_type.jira: break;
+				default: resolve (null); break;
 			}// switch;
 
 		});
-	}/* get_users */;
+		
+	})/* get_projects_by_number */;
 
 
 	static get_users = (token_id, repo_code) => {
@@ -66,14 +90,6 @@ export default class OffshoreHandler {
 
 		});
 	}/* get_users */;
-
-
-	static query = (options) => new Promise ((resolve, reject) => {
-		fetch ("https://api.github.com/graphql", options).then (response => response.json ()).then (body => resolve (body)).catch (error => {
-			console.log (error);
-			reject (error);
-		});
-	})/* query */;
 
 
 }// OffshoreHandler;

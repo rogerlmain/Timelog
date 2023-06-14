@@ -17,7 +17,7 @@ export default class ClientModel {
 
 	static get_by_company (company_id) {
 		let parameters = new FormData ();
-		parameters.set ("action", "list_by_company");
+		parameters.set ("action", "get_by_company");
 		parameters.set ("company_id", company_id);
 		return Database.fetch_data (table, parameters);
 	}// get_by_client;

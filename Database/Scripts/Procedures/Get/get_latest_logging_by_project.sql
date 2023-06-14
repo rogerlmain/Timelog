@@ -5,7 +5,7 @@ drop procedure if exists get_latest_logging_by_project;
 
 delimiter ??
 
-create procedure get_latest_logging_by_project (account_id integer, project_id integer)
+create procedure get_latest_logging_by_project (account_id integer, project_id varchar (64))
 begin
 
 	select 

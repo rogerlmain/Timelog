@@ -6,7 +6,7 @@ delimiter ??
 
 create procedure save_offshore_token (
     company_id integer,
-    `type` varchar(4),
+    `type` integer,
     offshore_id varchar(255),
     token varchar(255)
 ) begin

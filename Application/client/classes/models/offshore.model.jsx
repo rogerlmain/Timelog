@@ -45,17 +45,38 @@ export default class OffshoreModel {
 	})/* get_tokens */;
 
 
-	static get_repositories = () => Database.fetch_data (table, {
-		action: "get_repositories",
+	static get_clients = () => Database.fetch_data (table, {
+		action: "get_clients",		
 		company_id: CompanyStorage.active_company_id (),
-	})/* get_repositories */;
+	})/* get_clients */;
 
 
-	static get_projects = (token, repo) => Database.fetch_data (table, {
-		action: "get_projects",
-		token: token,
-		repo: repo,
-	})/* get_projects */;
+	// Equivalent to Bundion projects
+	static get_latest_projects = (type, client_id) => Database.fetch_data (table, {
+		action: "get_latest_projects",
+		company_id: CompanyStorage.active_company_id (),
+		type: type,
+		client_id: client_id,
+	})/* get_tasks */;
+
+
+	static get_projects_by_number = issue => new Promise ((resolve, reject) => {
+		Database.fetch_data (table, { 
+			action: "get_projects_by_number",
+			...issue,
+		}).then (result => resolve ({ 
+			client_id: issue.client_id,
+			...result, 
+		})).catch (reject);
+	})/* get_projects_by_number */;
+
+
+	static get_tasks_by_search = issue => Database.fetch_data (table, {
+		action: "get_task_by_search",
+		...issue,
+		// search_text: search_text,
+		// type: type
+	})/* get_tasks_by_search */;
 
 
 	static get_users = (token, repo) => Database.fetch_data (table, {

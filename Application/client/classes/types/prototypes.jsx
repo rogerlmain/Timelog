@@ -20,6 +20,9 @@ Object.defineProperties (Object.prototype, {
 
 	"has_key": { value: function (value) { return this.get_keys ().indexOf (value) >= 0 }},
 
+	"is_numeric": { value: function () { return !isNaN (this.toString ()) } },
+	"is_cardinal": { value: function () { return /^\d+$/.test (this) } },
+
 	"key_length": { value: function () { return this?.get_keys ()?.length ?? 0 } },
 	"map_keys": { value: function (callback) { return this?.get_keys ()?.map (callback) }},
 

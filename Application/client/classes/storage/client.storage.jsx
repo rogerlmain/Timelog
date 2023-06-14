@@ -1,5 +1,6 @@
-import CompanyStorage from "client/classes/storage/company.storage";
 import LocalStorage from "client/classes/local.storage";
+
+import CompanyStorage from "client/classes/storage/company.storage";
 
 import ClientModel from "client/classes/models/client.model";
 import OffshoreModel from "../models/offshore.model";
@@ -99,12 +100,16 @@ puke ();
 
 				data.forEach (item => add_client (item));
 
-				if (include_offshore_accounts) return OffshoreModel.get_repositories ().then (repositories => {
-					repositories?.forEach (repository => add_client (repository));
-					resolve (this.#get ()?.[company_id]);
-				});
+				if (include_offshore_accounts) return !!OffshoreModel.get_clients ().then (offshore_clients => {
 
-				resolve (this.#get ()?.[company_id])
+					let client_list = ClientStorage.#get ();
+					ClientStorage.#set ({...client_list, [company_id]: {...client_list[company_id], ...offshore_clients}});
+					
+					resolve (this.#get ()?.[company_id]);
+					
+				}); 
+					
+				resolve (this.#get ()?.[company_id]);
 
 			}).catch (reject);
 

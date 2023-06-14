@@ -7,7 +7,8 @@ import ProjectModel from "client/classes/models/project.model";
 import OffshoreModel from "client/classes/models/offshore.model";
 
 import { stores } from "client/classes/types/constants";
-import { isset, not_null, is_promise, not_set } from "client/classes/common";
+import { isset, not_null, is_promise, not_set, is_null } from "client/classes/common";
+import { repository_type } from "client/forms/offshore.accounts.form";
 
 
 const store_name = stores.projects;
@@ -130,20 +131,29 @@ export default class ProjectStorage extends LocalStorage {
 	static get_by_client (client_id) {
 		return new Promise ((resolve, reject) => {
 
-			let result = this.get_store ()?.[CompanyStorage.active_company_id ()]?.[client_id];
+			let result = this.get_store ()?.[CompanyStorage.active_company_id ()]?.[client_id] ?? null;
 
 			if (isset (result)) return resolve (result);
 
 			ClientStorage.get_by_id (client_id).then (client => {
 
-				if (isset (client?.token_id)) return OffshoreModel.get_projects (client.token_id, client.name).then (projects => {
+				if (isset (client.type)) return !!OffshoreModel.get_latest_projects (client.type, client.client_id).then (projects => {
 					
 					projects?.forEach (project => {
+
 						project.client_id = client_id;
+						project.project_id = project.id;
+						project.name = `#${project.number} ${project.title}`;
+
+						delete project.id;
+
 						ProjectStorage.set_store_project (project);
+						
+						if (is_null (result)) result = {}
+						result [project.project_id] = project;
 					});
 
-					resolve (projects);
+					resolve (result);
 					
 				});
 

@@ -71,7 +71,7 @@ projectsV2 (first: 10) { edges { node { id, title } } }
 
 	get_clients = details => new Promise ((resolve, reject) => {
 
-		let projects = null;
+		let clients = null;
 
 		details.query = `query { user (login: "${details.offshore_id}") {
 			id,
@@ -80,143 +80,27 @@ projectsV2 (first: 10) { edges { node { id, title } } }
 
 		this.query (this.github_account (details)).then (result => {
 
-			if (is_null (projects)) projects = new Array ();
+			result?.data?.user?.projectsV2?.edges?.forEach (next => {
+				
+				let client = {
+					client_id: next?.node?.id,
+					name: next?.node?.title,
+					type: repository_type.github,
+					token_id: details.token_id,
+				}/* client */;
+				
+				isset (clients) ? (clients [next?.node?.id] = client) : (clients = {[next?.node?.id]: client});
+				
+			});
 
-			result?.data?.repository?.projectsV2?.edges?.forEach (project => isset (projects) ?  projects.push ({
-				client_id: project?.node?.id,
-				name: project?.node?.title,
-				type: repository_type.github,
-				token_id: repository.token_id,
-			}));
-
-			resolve (projects);
+			resolve (clients);
 
 		}).catch (reject);
 
 	})/* get_clients */;
 
 
-	// get_clients = details => new Promise ((resolve, reject) => {
-	// 	this.get_repositories (details).then (repositories => {
-
-	// 		let projects = null;
-	// 		let repo_count = 0;
-
-	// 		repositories?.forEach (repository => {
-
-	// 			details.query = `query {repository (owner: "${repository.owner}", name: "${repository.name}") {
-	// 				id,
-	// 				name,
-	// 				projectsV2 (first: 10) { edges { node { id, title } } }
-	// 			}}`;
-
-	// 			this.query (this.github_account (details)).then (result => {
-
-	// 				if (is_null (projects)) projects = new Array ();
-
-	// 				result?.data?.repository?.projectsV2?.edges?.forEach (project => projects.push ({
-	// 					client_id: project?.node?.id,
-	// 					name: project?.node?.title,
-	// 					type: repository_type.github,
-	// 					token_id: repository.token_id,
-	// 				}));
-
-	// 				if (++repo_count == repositories.length) resolve (projects);
-
-	// 			}).catch (reject);
-
-	// 		});
-		
-	// 	});
-	// })/* get_clients */;
-
-
-// 	get_nodes
-
-// query {nodes (ids:["PVT_kwHOA7HDUM4AGiMM", "PVT_kwHOA7HDUM4AIzoO"]) {
-//   __typename,
-//   id,
-//   ... on ProjectV2 {
-//     title
-//   }
-// } } 
-
-
-	get_tasks_by_name_search = details => this.query_issues ({
-		repo: "rexthestrange/Timelog",
-		state: "open",
-		[`${search_term} in`]: "title",
-	});
-	
-		// let query = `query {search (query:"
-		
-		// 	repo:rexthestrange/Timelog 
-		// 	state:open 
-		// 	Deadbeat in:title
-			
-		// 	", type:ISSUE, first: 100
-			
-		// 	) {
-		// 	edges { 
-		// 	  node {
-		// 		... on Issue {
-		// 		  id,get_latest
-		// 		  state,
-		// 		  title,
-		// 		}
-		// 	  }
-		// 	}
-		// }}`
-
-
-	get_tasks = details => new Promise ((resolve, reject) => {
-		this.get_repositories (details).then (repositories => {
-
-			let tasks = null;
-			let repo_count = 0;
-
-			repositories?.forEach (repository => {
-
-				details.query = `query {repository (owner: "${repository.owner}", name: "${repository.name}") {
-					id,
-					name,
-					issues (first: 10) { edges { node {
-						id,
-						title,
-						number,
-						projectV2 (number: 1) {
-							id,
-							title
-						}
-					} } }
-				}}`;
-
-				OffshoreHandler.query (this.github_account (details)).then (result => {
-
-					result?.data?.repository?.issues?.edges?.forEach (issue => {
-
-						if (issue?.node?.projectV2?.id != details.project_id) return;
-						if (is_null (tasks)) tasks = new Array ();
-
-						tasks.push ({
-							project_id: issue?.node?.id,
-							name: issue?.node?.title,
-							type: repository_type.github,
-						});
-						
-					});
-
-					if (++repo_count == repositories.length) resolve (tasks);
-
-				}).catch (reject);
-
-			});
-		
-		});
-	})/* get_tasks */;
-
-
-	get_tasks_by_number = (token, issues) => {
+	get_projects_by_number = (token, issues) => {
 
 		if (!Array.isArray (issues)) issues = [issues];
 	
@@ -238,13 +122,14 @@ projectsV2 (first: 10) { edges { node { id, title } } }
 
 			response?.data?.search?.edges?.forEach (next => {
 				
-				let task = {
+				let project = {
 					title: next.node.title,
 					number: next.node.number,
-					project_id: next.node.id
+					project_id: next.node.id,
+					token_id: token,
 				}/* task */
 
-				isset (result) ? result [next.node.id] = task : result = {[next.node.id]: task};
+				isset (result) ? result [next.node.id] = project : result = {[next.node.id]: project};
 
 			});
 
@@ -252,7 +137,7 @@ projectsV2 (first: 10) { edges { node { id, title } } }
 			
 		}).catch (reject));
 
-	}/* get_tasks_by_number */;
+	}/* get_projects_by_number */;
 
 
 	get_users = (offshore_account, repo_id) => {

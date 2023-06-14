@@ -101,7 +101,10 @@ export function is_date (value) { return value instanceof Date }
 export function is_empty (value) { return (is_string (value) ? value.empty () : not_set (value, blank) || (value.length == 0)) }
 export function is_function (value) { return value instanceof Function }
 export function is_null (value) { return value == null }
+
+// Deprecated - Use String.prototype.isNumeric instead
 export function is_number (value) { return isset (value) && !isNaN (Number (value)) }
+
 export function is_object (value, include_arrays = false) { return ((value instanceof Object) && (include_arrays || not_array (value))) }
 export function is_primitive (value) { return (value !== Object (value)) }
 export function is_promise (value) { return (value instanceof Promise) }
