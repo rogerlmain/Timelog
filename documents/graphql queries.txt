@@ -1,0 +1,24 @@
+// keyword search
+
+query {search (query:"repo:rexthestrange/Timelog state:open [KEYWORD] in:title", type:ISSUE, first: 100) {
+	edges { 
+		node {
+		... on Issue {
+			id,
+			state,
+			title,
+		}
+		}
+	}
+}}
+
+
+// issue number search
+
+query {search (query:"repo:rexthestrange/Timelog state:open issue: [SPACE SEPARATED ISSUE NUMBERS]", type:ISSUE, first: 100) {
+	edges { node { ... on Issue {
+		id,
+		state,
+		title,
+	} } }
+}}

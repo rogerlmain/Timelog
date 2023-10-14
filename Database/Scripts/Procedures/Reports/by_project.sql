@@ -1,5 +1,3 @@
-use timelog;
-
 start transaction;
 
 drop procedure if exists report_by_project;

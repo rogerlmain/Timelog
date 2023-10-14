@@ -1,5 +1,3 @@
-use timelog;
-
 start transaction;
 
 drop function if exists get_rate;
