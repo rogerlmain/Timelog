@@ -289,13 +289,11 @@ export default class ProjectReport extends BaseControl {
 	}// project_report_options;
 
 
-	project_report () {
-		return <ExplodingPanel id="report_results_panel" ref={this.results_panel}>
-			{isset (this.state.entries) && <Container visible={this.state.granularity < 4}>
-				{this.daily_breakdown ()}
-			</Container>}
-		</ExplodingPanel>
-	}// project_report;
+	project_report = () => <ExplodingPanel id="report_results_panel" ref={this.results_panel}>
+		{isset (this.state.entries) && <Container visible={this.state.granularity < 4}>
+			{this.daily_breakdown ()}
+		</Container>}
+	</ExplodingPanel>
 
 	
 	/********/

@@ -1,18 +1,26 @@
 import React from "react";
 
+import Container from "client/controls/container";
 import BaseControl from "client/controls/abstract/base.control";
+import SelectButton from "client/controls/buttons/select.button";
 import DateInput from "client/controls/inputs/date.input";
+import FadePanel from "client/controls/panels/fade.panel";
+import ExplodingPanel from "client/controls/panels/exploding.panel";
 
 import ReportsModel from "client/classes/models/reports.model";
 
 import AccountStorage from "client/classes/storage/account.storage";
 import OptionsStorage from "client/classes/storage/options.storage";
 
+
 import { blank, date_formats, granularity_types, ranges } from "client/classes/types/constants";
 import { isset, is_null, not_set } from "client/classes/common";
 
 
 export default class DailyReport extends BaseControl {
+
+
+	results_panel = React.createRef ();
 
 
 	state = { 
@@ -23,12 +31,8 @@ export default class DailyReport extends BaseControl {
 
 
 	constructor (props) {
-
 		super (props);
-
 		this.state.report_date = new Date ().date_part ();
-		this.update_report ();
-
 	}/* constructor */
 
 
@@ -82,7 +86,7 @@ export default class DailyReport extends BaseControl {
 
 
 	update_report () {
-		ReportsModel.get_daily_user_report (AccountStorage.account_id (), this.state.report_date.format (date_formats.database_date)).then (data => {
+		ReportsModel.get_daily_report (AccountStorage.account_id (), this.state.report_date.format (date_formats.database_date)).then (data => {
 
 			let result = null;
 
@@ -121,12 +125,8 @@ export default class DailyReport extends BaseControl {
 		});
 	}/* update_report */
 
-
-	/********/
-
-
-	render () {
-		return <div>
+	daily_report_options () {
+		return <Container>
 
 			<div className="left-aligned">
 				<div className="two-column-grid">
@@ -135,25 +135,38 @@ export default class DailyReport extends BaseControl {
 					<div>{this.state.account?.full_name ?? AccountStorage.full_name ()}</div>
 
 					<label>Date</label>
-					<DateInput id="report_date" value={this.state.report_date} onChange={value => this.setState ({ report_date: value }, this.update_report)} />
+					<DateInput id="report_date" value={this.state.report_date} onChange={value => this.setState ({ report_date: value })} />
 
 				</div>
 			</div>
 			
-			{/* 
-
-				If permissions allow (company owner or has VIEW_DAILY_REPORT permissions - to be created): sort of like...
-
-					<DropDownList data="accounts">
-						onChange={AccountsModel.get_by_id (AccountStorage.account_id ()).then (data => this.setState ({ account: data }))}
-					</DropDownList>
-
-			*/}
-
 			<div className="simple-report three-column-grid with-lotsa-headspace">{this.report_items ()}</div>
 
-		</div>
-	}/* render */
+			<FadePanel id="report_button_panel" visible={isset (this.state.report_date)}>
+				<div className="button-panel with-headspace">
+					<SelectButton onClick={() => this.results_panel.current.animate (() => this.update_report ())}>Generate</SelectButton>
+				</div>
+			</FadePanel>
 
+		</Container>
+
+	}
+
+	daily_report = () => <ExplodingPanel id="report_results_panel" ref={this.results_panel}>
+		{isset (this.state.entries) && <Container visible={this.state.granularity < 4}>
+			{this.daily_breakdown ()}
+		</Container>}
+	</ExplodingPanel>
+
+	
+
+
+	/********/
+
+
+	render = () => <div className="horizontally-centered">
+		<div style={{ display: "inline-block" }}>{this.daily_report_options ()}</div>
+		<div className="with-headspace">{this.daily_report ()}</div>
+	</div>
 
 }/* DailyReport */

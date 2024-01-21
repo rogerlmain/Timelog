@@ -3,10 +3,7 @@ import ini from "ini";
 import * as fs from "fs";
 
 import { createConnection } from "mysql";
-import { root_path } from "./constants.mjs";
-
-
-const ini_path = `${root_path}/dbinfo.ini`;
+import { ini_path } from "./constants.mjs";
 
 
 class Database {
@@ -73,10 +70,10 @@ class Database {
 
 	constructor () {
 
-		let database = ini.parse (fs.readFileSync (ini_path).toString ());
+		let database = ini.parse (fs.readFileSync (ini_path).toString ()).database;
 
 		try {
-			this.connection = createConnection (database.bundion);
+			this.connection = createConnection (database);
 			this.connection.connect ((error) => { if (isset (error)) console.log (error) });
 		} catch (except) {
 			console.log (except);

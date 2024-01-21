@@ -14,11 +14,11 @@ export default class ReportsModel extends BaseControl {
 	})/* get_by_project */;
 
 
-	static get_daily_user_report = (account_id, report_date) => Database.fetch_data (option, {
+	static get_daily_report = (account_id, report_date) => Database.fetch_data (option, {
 		action: "daily",
 		account_id: account_id,
 		report_date: report_date,
-	})/* get_daily_user_report */
+	})/* get_daily_report */
 
 
 }// ReportsModel;

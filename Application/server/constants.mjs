@@ -10,4 +10,6 @@ const get_root_path = () => {
 
 export const server_path = dirname (fileURLToPath (import.meta.url));
 export const root_path = get_root_path (); 
+export const ini_path = `${root_path}/bninfo.ini`;
+
 
