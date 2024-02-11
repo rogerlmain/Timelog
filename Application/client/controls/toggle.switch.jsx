@@ -8,8 +8,9 @@ import { isset, is_empty, is_null, is_number, not_function, not_set } from "clie
 import "resources/styles/controls/toggle.switch.css";
 
 
-const item_width = 24;
+const item_width = 23;
 
+var me = null;
 
 export default class ToggleSwitch extends BaseControl {
 
@@ -54,9 +55,10 @@ export default class ToggleSwitch extends BaseControl {
 
 
 	selection = element => {
-		let index = this.option_elements ().indexOf (element);
-		if ((this.props.singleStep) && (Math.abs (index - this.state.selected_value) > 1)) index = this.state.selected_value + ((index > this.state.selected_value) ? 1 : -1);
-		return index;
+		let selected_index = this.option_elements ().indexOf (element);
+		let current_index = this.option_index (this.state.selected_value);
+		if ((this.props.singleStep) && (Math.abs (current_index - selected_index) > 1)) selected_index = current_index + ((selected_index > current_index) ? 1 : -1);
+		return selected_index;
 	}// selection;
 
 
@@ -82,9 +84,8 @@ export default class ToggleSwitch extends BaseControl {
 	}// transition_end;
 
 
-	option_index = () => {
-		if (is_number (this.state.selected_value)) return parseInt (this.state.selected_value);
-		let result = this.props.children.find (child => child.props.value == this.state.selected_value);
+	option_index = option => {
+		let result = this.props.children.find (child => child.props.value.toString() == option.toString());
 		return (isset (result)) ? this.props.children.indexOf (result) : 0;
 	}// option_index;
 
@@ -92,7 +93,7 @@ export default class ToggleSwitch extends BaseControl {
 	/********/
 
 
-	componentDidMount = () => this.setState ({ selected_value: this.props.value }, this.switch.current.addEventListener ("transitionend", this.transition_end));
+	componentDidMount = () => this.setState ({ selected_value: this.option_index (this.props.value) }, this.switch.current.addEventListener ("transitionend", this.transition_end));
 
 
 	shouldComponentUpdate (new_props) {
@@ -106,12 +107,14 @@ export default class ToggleSwitch extends BaseControl {
 
 	render () {
 
-		let index = (is_empty (this.props.children) || not_set (this.state.selected_value)) ? 0 : this.option_index ();
+me = this;
+
+		let index = (is_empty (this.props.children) || not_set (this.state.selected_value)) ? 0 : this.state.selected_value;
 		let control_style = { left: ((item_width + 2) * index) + this.state.drag_offset }
 
 		if (is_null (this.state.drag_position)) control_style = { ...control_style, transition: `left ${this.animation_speed ()}ms ease-in-out`}
 
-		return <div ref={this.switch_control} className={this.props.showText ? "two-column-grid" : null} style={{ ...this.props.style, position: "relative" }}>
+		return <div ref={this.switch_control} className={this.props.showText ? "two-column-grid" : null} style={{ ...this.props.style, position: "relative", fontSize: 0 }}>
 
 			{!this.props.textAlignment.equals (horizontal_alignment.left) && <div style={this.props.showText ? null : { display: "none" }}>{this.props.value}</div>}
 
@@ -120,8 +123,7 @@ export default class ToggleSwitch extends BaseControl {
 				{is_empty (this.props.children) ? null : this.props.children.map (child => {
 					return <div id={child.props.id} className="item" key={child.props.children} value={child.props.value} title={child.props.children} 
 						onClick={event => {
-							event.target.value = this.selection (event.target);
-							if (not_function (this.props.onClick) || this.props.onClick (event)) this.setState ({ selected_value: event.target.value });
+							if (not_function (this.props.onClick) || this.props.onClick (event)) this.setState ({ selected_value: this.option_index (event.target.getAttribute ("value")) });
 						}}>
 					</div>
 				})}

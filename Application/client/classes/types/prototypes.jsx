@@ -246,11 +246,17 @@ Date.datePart = () => new Date ().date_part ();
 
 
 // Date.elapsed: returns a time period in minutes in the format: dd:hh:mm (may need to adjust for other formats)
-Date.elapsed = function (elapsed_time /* in minutes */) {
+// elapsed_time in minutes
+Date.elapsed = function (elapsed_time, include_days = true) {
 
 	let days = Math.floor (elapsed_time / Date.coefficient.day);
 	let hours = Math.floor ((elapsed_time - (days * Date.coefficient.day)) / Date.coefficient.hour);
 	let mins = Math.floor ((elapsed_time - ((days * Date.coefficient.day) + (hours * Date.coefficient.hour))) / Date.coefficient.minute);
+
+	if (!include_days) {
+		hours = hours + (days * 24);
+		days = 0;
+	}// if;
 
 	return `${((days > 0) ? `${days}:` : empty)}${((days > 0) ? hours.padded (2) : hours)}:${mins.padded (2)}`;
 

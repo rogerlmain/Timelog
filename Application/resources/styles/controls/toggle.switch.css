@@ -4,19 +4,20 @@ div.toggle-switch {
 	position: relative;
 	border-radius: 999px;
 	border: solid 1px black;
+	height: var(--double-height);
 }/* div.toggle-switch */
 
 
 div.toggle-switch div.item {
-	width: 26px;
-	height: 26px;
+	width: 25px;
+	height: 25px;
 	cursor: pointer;
 }/* div.toggle-switch div.item */
 
 
 div.toggle-switch div.switch {
-	width: 26px;
-	height: 26px;
+	width: 25px;
+	height: 25px;
 	border-radius: 999px;
 	border: solid 3px white;
 	background-color: black;

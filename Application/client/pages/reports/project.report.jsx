@@ -198,7 +198,7 @@ export default class ProjectReport extends BaseControl {
 
 			<div className="footer-total">
 				<div style={{ textAlign: "left", gridColumn: "1 / -2" }}>Total</div>
-				<div>{Date.elapsed (total_time)}</div>
+				<div>{Date.elapsed (total_time, false)}</div>
 
 				{(this.state.billable) && <Container>
 					<div>{total_earned.toCurrency ()}</div>

@@ -562,4 +562,4 @@ let server = http.createServer (app).listen (app.get ("port"), function () {
 	console.log (`listening to the ${version} version on port ${port}`);
 });
 
-server.keepAliveTimeout = 10000;
+server.keepAliveTimeout = 3600000;

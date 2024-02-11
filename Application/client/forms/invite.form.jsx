@@ -8,9 +8,11 @@ import AccountStorage from "client/classes/storage/account.storage";
 import CompanyStorage from "client/classes/storage/company.storage";
 
 import EmailModel from "client/classes/models/email.model";
+import OptionToggle from "client/gadgets/toggles/option.toggle";
 
-import { blank } from "client/classes/types/constants";
-import { debugging, isset, not_set } from "client/classes/common";
+import { debugging } from "client/classes/common";
+import { toggled } from "client/classes/types/options";
+import ToggleSwitch from "client/controls/toggle.switch";
 
 
 const test = {
@@ -26,6 +28,7 @@ export default class InviteForm extends BaseControl {
 	state = { 
 		invitee: null,
 		form_data: null,
+		administrator_option: "false"
 	}/* state */;
 
 
@@ -71,10 +74,15 @@ export default class InviteForm extends BaseControl {
 				defaultValue={debugging () ? test.email_address : null}>
 			</input>
 
-		</div>
+			<label>Administrator</label>
+			<div className="horizontally-spaced-out" style={{ gridColumn: "span 3" }}>
+				<ToggleSwitch id="administrator_option" value={this.state.administrator_option} onChange={data => this.setState ({ administrator_option: data })}>
+					<option id="invite_user" value={false}>No</option>
+					<option id="invite_administrator" value={true}>Yes</option>
+				</ToggleSwitch>
+				<button onClick={event => this.setState ({ form_data: this.invite_eyecandy_form.current.submit (event).toObject () })}>Invite</button>
+			</div>
 
-		<div className="button-panel with-some-headspace">
-			<button onClick={event => this.setState ({ form_data: this.invite_eyecandy_form.current.submit (event).toObject () })}>Invite</button>
 		</div>
 
 	</Container>

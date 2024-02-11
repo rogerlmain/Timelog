@@ -301,7 +301,9 @@ export default class SettingsPage extends BaseControl {
 						<div className="span-columns horizontally-aligned">
 							<div className="one-piece-form">
 								<label htmlFor="package">{account_types?.get_key (this.state.account_type).titled ()} account</label>
-								<ToggleSwitch id="package" onChange={option => this.setState ({ account_type: parseInt (option) })}>{this.account_options ()}</ToggleSwitch>
+
+								<ToggleSwitch id="package" value={this.state.account_type} onChange={option => this.setState ({ account_type: parseInt (option) })}>{this.account_options ()}</ToggleSwitch>
+
 							</div>
 						</div>
 
@@ -318,6 +320,7 @@ export default class SettingsPage extends BaseControl {
 						{this.rounding_options ()}
 						<Break />
 						{this.billing_options ()}
+
 					</div>
 
 				</div>
