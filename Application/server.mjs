@@ -2,10 +2,11 @@ import "./server/globals.mjs";
 
 import express, { response } from "express";
 
-import file_system from "fs";
+import * as fs from "fs";
+
 import http from "http";
-import https from "https";
 import multiparty from "multiparty";
+import ini from "ini";
 
 import AccountsModel from "./server/models/accounts.model.mjs";
 
@@ -33,7 +34,7 @@ import PaymentHandler from "./server/handlers/payment.handler.mjs";
 import OffshoreHandler from "./server/handlers/offshore.handler.mjs";
 
 import { createNamespace, getNamespace } from "continuation-local-storage";
-import { root_path } from "./server/constants.mjs";
+import { ini_path, root_path } from "./server/constants.mjs";
 
 
 const countries_id = 1;
@@ -43,9 +44,14 @@ const method = { get: "get", post: "post" };
 
 const session_namespace = "timelog_session";
 
-const version = root_path.substr (root_path.lastIndexOf ("/") + 1).toLowerCase ();
+// const version = root_path.substr (root_path.lastIndexOf ("/") + 1).toLowerCase ();
 
-const port = (version == "preview") ? 3001 : 3000;
+// const port = (version == "preview") ? 3001 : 3000;
+
+const ini_data = ini.parse (fs.readFileSync (ini_path).toString ());
+
+const version = ini_data.server.version;
+const port = ini_data.server.port;
 
 let app = express ();
 

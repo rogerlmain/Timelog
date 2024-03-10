@@ -40,8 +40,8 @@ import ClientSelectorTest from "client/tests/controls/selectors/client.selector"
 
 // import RateSubformTest from "client/tests/rate.subform";
 
-// import ToggleSwitchTest from "client/tests/controls/toggle.switch";
-// import OptionToggleTest from "client/tests/gadgets/toggles/option.toggle";
+import ToggleSwitchTest from "client/tests/controls/toggle.switch";
+import OptionToggleTest from "client/tests/gadgets/toggles/option.toggle";
 
 // import ReportsPage from "client/pages/reports";
 // import DeluxeAccountForm from "client/forms/deluxe.account.form";

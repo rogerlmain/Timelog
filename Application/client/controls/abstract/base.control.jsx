@@ -13,7 +13,6 @@ const random_factor = 1000;
 
 export default class BaseControl extends React.Component {
 
-
 	constructor (props, state = {}) {
 		super (props);
 		this.state = state;

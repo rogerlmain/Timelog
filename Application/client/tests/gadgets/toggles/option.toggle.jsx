@@ -15,6 +15,7 @@ export default class OptionToggleTest extends BaseControl {
 
 	render () { 
 		return <div className="borderline" style={{ zIndex: 10, backgroundColor: "white" }}>
+			
 			<OptionToggle id="granularity" title="Granularity" values={["30 Mins", "15 Mins", "1 Min", "Truetime"]} value={OptionsStorage.granularity ()}
 				option={option_types.granularity} parent={this} 
 				onPaymentConfirmed={selected_option => {
@@ -25,6 +26,13 @@ export default class OptionToggleTest extends BaseControl {
 					}));
 				}}>
 			</OptionToggle>
+
+			<OptionToggle id="sometoggle" option={option_types.granularity} onChange={() => alert ('changed')} parent={this}>
+				<option value="first_option">First Value</option>
+				<option value="second_option">Second Value</option>
+				<option value="third_option">Third Value</option>
+			</OptionToggle>
+
 		</div>
 	}// render;
 
